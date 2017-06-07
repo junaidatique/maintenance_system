@@ -3,14 +3,14 @@
     = link_to options[:index_path], class: 'btn btn-block btn-primary btn-flat' do
       i.fa.fa-angle-double-left
       | &nbsp; Back
-  - unless options[:form].object.id.nil?
+  /- unless options[:form].object.id.nil?
     - path_array = [@user]
     - path_array << options[:form].object unless options[:form].object.class.name == 'User'
     .col-sm-4
       = link_to path_array, class: 'btn btn-block btn-info btn-flat' do
         i.fa.fa-eye
         | &nbsp; Show
-  .col-sm-4 class="#{!options[:form].object.id.nil? ? 'bc' : 'col-sm-offset-4'}"
+  .col-sm-4 class="col-sm-offset-4"
     = options[:form].button :submit, id: 'create_update_user', class: 'btn btn-block btn-success btn-flat' do
       i.fa.fa-refresh
       - if options[:form].object.id.nil?
