@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    title
+      = t :siteheading
+    = csrf_meta_tags
+    = stylesheet_link_tag    'application', media: 'all'
+    = javascript_include_tag 'application'
+    = growlyflash_static_notices
+  body.admin-lte.fixed.sidebar-mini.skin-blue-light
+    .wrapper
+      header.main-header
+        = render :partial => 'layouts/partials/header'
+      = render :partial => 'layouts/partials/side_bar'
+      .content-wrapper
+        section.content-header
+          h1
+            = content_for?(:box_heading) ? yield(:box_heading) : ''
+          = content_for?(:breadcrumbs) ? yield(:breadcrumbs) : ''
+        section.content
+          = yield
+      = content_for?(:footer_js) ? yield(:footer_js) : ''
+      = render :partial => 'layouts/partials/footer'
+    .overlay-wrapper.hide
+      .overlay
+        i.fa.fa-refresh.fa-spin

@@ -20,7 +20,6 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
@@ -50,6 +49,21 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'jquery-rails'
 gem 'mongoid', git: 'https://github.com/mongodb/mongoid.git'
 gem 'devise'
 gem 'simple_enum', '~> 2.3.0' , require: 'simple_enum/mongoid'
+gem 'slim-rails'
+gem 'growlyflash'
+gem 'bootstrap-sass'
+gem 'font-awesome-rails'
+gem 'jquery-ui-rails'
+gem 'select2-rails'
+gem 'html2slim', '~> 0.2.0'
+gem 'jquery-datatables-rails'
+gem 'ajax-datatables-rails'
+gem 'wysiwyg-rails'
+gem 'cocoon'
+gem 'cancancan'
+gem 'bootstrap3-datetimepicker-rails'
+gem 'simple_form'

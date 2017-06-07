@@ -1,0 +1,31 @@
+@import "bootstrap-sprockets";
+@import "bootstrap";
+@import "font-awesome-sprockets";
+@import "font-awesome";
+@import "growlyflash";
+
+.fa-1_5x{
+ font-size: 1.5em;
+  margin: 0 7px;
+}
+
+.margin-instead-title{
+  padding-top: 24px;
+}
+
+.btn-default.disabled{
+  background-color: #CCC;
+}
+
+.btn-file-upload{
+  width: 110px;
+}
+
+.side-bar-heading-text{
+  font-size: 1.2em;
+  white-space: normal;
+}
+
+.input-group-addon{
+  padding: 5px 12px;
+}

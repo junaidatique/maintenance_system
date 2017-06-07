@@ -1,0 +1,331 @@
+@import "font-awesome-sprockets";
+@import "font-awesome";
+
+table, tr, td, th
+{
+  /*border: 1px solid black;*/
+  border-collapse:collapse;
+}
+tr.header
+{
+  cursor:pointer;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.header .sign:after{
+  content:"+";
+  display:inline-block;
+}
+.header.expand .sign:after{
+  content:"-";
+}
+
+.top-buffer-5 {
+  margin-top: 5px;
+}
+
+.top-buffer-8 {
+  margin-top: 8px;
+}
+
+.top-buffer-10 {
+  margin-top: 10px;
+}
+
+.top-buffer-15 {
+  margin-top: 15px;
+}
+
+.top-buffer-20 {
+  margin-top: 20px;
+}
+
+.top-buffer-22 {
+  margin-top: 22px;
+}
+
+.top-buffer-24 {
+  margin-top: 24px;
+}
+
+.top-buffer-30 {
+  margin-top: 30px;
+}
+
+.top-buffer-40 {
+  margin-top: 40px;
+}
+
+.top-buffer-50 {
+  margin-top: 50px;
+}
+
+.top-buffer-60 {
+  margin-top: 60px;
+}
+
+@media (min-width: 768px) {
+  .navbar-right {
+    margin-right: 0;
+  }
+}
+.login-box-body .form-control-feedback, .register-box-body .form-control-feedback {
+  color: #777;
+  font-size: 18px;
+  top: 8px;
+}
+
+.no-sidebar-wrapper{
+  .with_out_side_bar {
+    margin-left: 0 !important;
+  }
+  .with_out_side_bar_top_header {
+    display: none;
+  }
+}
+
+input [type="checkbox"] {
+  margin-right: 5px;
+}
+
+table.show-page{
+  width: 100%;
+  td{
+    padding: 5px 7px;
+    margin: 5px 7px;
+    border: 1px solid gray;
+    &:first-child{
+      font-weight: bold;
+      width: 30%;
+      p.sub-heading {
+        font-weight: normal;
+      }
+    }
+    &:last-child{
+      //width: 70%
+    }
+  }
+  .show-page-details{
+    width: 100%;
+    thead{
+      font-weight: bold;
+      border-bottom: 1px solid gray;
+    }
+    td{
+      border: none;
+
+    }
+  }
+}
+
+.table-index .index-page-table {
+  width: 100%;
+  thead {
+    font-weight: bold;
+    border-bottom: 1px solid gray;
+  }
+  td {
+    border: none;
+    &:first-child {
+      width: 70%;
+    }
+  }
+}
+
+
+.bs-btn-margin-adj {
+  margin-top: 24px;
+}
+
+#datepicker[readonly]{
+  background-color: inherit;
+}
+#datetimepicker[readonly]{
+  background-color: inherit;
+}
+
+.btn {
+  font-weight: bold;
+}
+
+.btn-publish{
+  min-width: 111px
+}
+
+td {
+  .btn{
+    margin-left: 1% ;
+    margin-right: 1% ;
+
+    min-width: 42px;
+  }
+  .btn-publish {
+    min-width: 42px;
+  }
+}
+
+.table.table-inverse {
+  > tbody {
+    > tr {
+      > th {
+        border-bottom: 1px solid #DDDDDD;
+        border-top: 0;
+      }
+      > td {
+        border-bottom: 1px solid #DDDDDD;
+        border-top: 0;
+      }
+      &:last-child {
+        > th {
+          border-bottom: 0;
+        }
+        > td {
+          border-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+a.cke_button {
+  min-height: 23px;
+}
+
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color:    #c1c1c1;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color:    #c1c1c1;
+  opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color:    #c1c1c1;
+  opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color:    #c1c1c1;
+}
+
+.table {
+  table {
+    &.show-page-details {
+      tr {
+        a {
+          &.btn {
+            margin-top: 5px;
+          }
+        }
+        &:first-child {
+          a {
+            &.btn {
+              margin-top: 0px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+@media screen and (max-width: 850px) {
+  td {
+    .btn {
+      margin-bottom: 5%;
+    }
+  }
+}
+
+.bootstrap-timepicker-widget {
+  table {
+    td {
+      input {
+        &.form-control {
+          padding: 0;
+        }
+      }
+    }
+  }
+}
+
+.dataTables_wrapper {
+  .select2-container--bootstrap {
+    display: inline-block;
+    margin: 0 2%;
+  }
+}
+
+.select2-container {
+  width: 100% !important;
+}
+
+.missing-thumb {
+  width: 50px;
+  height: 50px;
+}
+
+.btn-verified {
+  width: 12em;
+}
+
+.table {
+  tbody {
+    tr {
+      td {
+        vertical-align: middle;
+      }
+    }
+  }
+}
+.select2-result-product {
+  padding-top: 4px;
+  padding-bottom: 3px;
+}
+
+.select2-result-product__avatar {
+  float: left;
+  width: 60px;
+  margin-right: 10px;
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: 2px;
+  }
+}
+
+.select2-result-product__meta {
+  margin-left: 70px;
+}
+
+.select2-result-product__title {
+  color: black;
+  font-weight: bold;
+  word-wrap: break-word;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.select2-result-product__forks, .select2-result-product__stargazers {
+  margin-right: 1em;
+}
+
+.select2-result-product__forks, .select2-result-product__stargazers, .select2-result-product__watchers {
+  display: inline-block;
+  color: #aaa;
+  font-size: 11px;
+}
+
+.select2-result-product__description {
+  font-size: 13px;
+  color: #777;
+  margin-top: 4px;
+}
+
+.select2-results__option--highlighted {
+  .select2-result-product__title {
+    color: white;
+  }
+  .select2-result-product__forks, .select2-result-product__stargazers, .select2-result-product__description, .select2-result-product__watchers {
+    color: #c6dcef;
+  }
+}

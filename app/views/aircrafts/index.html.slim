@@ -1,0 +1,37 @@
+= content_for :page_subtitle do
+  | Aircrafts
+
+= content_for :box_heading do
+  | Aircrafts
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th width='10%'
+                | Number
+              th width='10%'
+                | Name
+              th width='13%'
+                | Actions
+          tbody
+            - @aircrafts.each do |aircraft|
+              tr
+                td.table-row-center
+                  = aircraft.number
+                td.table-row-center
+                  = link_to aircraft.name, aircraft_path(aircraft)
+                td.text-center width='20%'
+                  = link_to aircraft_path(aircraft), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  = link_to edit_aircraft_path(aircraft), class: 'btn btn-info btn-flat ' do
+                    i.fa.fa-pencil
+                  
+                  /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
+                   /   i.fa.fa-trash
+        .col-sm-4.col-sm-offset-4
+          = link_to 'New Aircraft', new_aircraft_path, class: 'btn btn-block btn-primary btn-flat'
+        .clearfix

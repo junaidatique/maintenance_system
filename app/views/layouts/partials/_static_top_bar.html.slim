@@ -1,0 +1,10 @@
+nav.navbar.navbar-static-top role = "navigation"
+  / Sidebar toggle button
+  a.sidebar-toggle.with_out_side_bar_top_header data-toggle = "offcanvas" href = "javascript:void(0)"  role = "button"
+  - if user_signed_in?
+    .navbar-custom-menu
+      ul.nav.navbar-nav.navbar-right
+        li
+          =link_to destroy_user_session_path, :method => :delete do
+            i.fa.fa-sign-out
+            | &nbsp;Sign-out

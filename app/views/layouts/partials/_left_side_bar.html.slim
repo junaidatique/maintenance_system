@@ -1,0 +1,6 @@
+ul.sidebar-menu
+  li class="#{params[:controller] == "aircrafts" ? 'active' : ''}"
+    = link_to aircrafts_path do
+      .fa.fa-tasks
+      span.side-bar-heading-text Aircrafts
+  

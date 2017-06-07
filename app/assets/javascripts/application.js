@@ -11,5 +11,11 @@
 // about supported directives.
 //
 //= require rails-ujs
-//= require turbolinks
+//= require jquery2
+//= require jquery_ujs
+//= require jquery-ui
+//= require bootstrap-sprockets
+//= require growlyflash
+//= require select2
+//= require cocoon
 //= require_tree .

@@ -1,0 +1,60 @@
+//urls
+$url_0: url(image_path("admin/green.png"));
+$url_1: url(image_path("admin/green@2x.png"));
+
+//@extend-elements
+//original selectors
+//.icheckbox_flat-green, .iradio_flat-green
+%extend_1 {
+  display: inline-block;
+  *display: inline;
+  vertical-align: middle;
+  margin: 0;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  background: $url_0 no-repeat;
+  border: none;
+  cursor: pointer;
+}
+
+.icheckbox_flat-green {
+  @extend %extend_1;
+  background-position: 0 0;
+  &.checked {
+    background-position: -22px 0;
+    &.disabled {
+      background-position: -66px 0;
+    }
+  }
+  &.disabled {
+    background-position: -44px 0;
+    cursor: default;
+  }
+}
+
+.iradio_flat-green {
+  @extend %extend_1;
+  background-position: -88px 0;
+  &.checked {
+    background-position: -110px 0;
+    &.disabled {
+      background-position: -154px 0;
+    }
+  }
+  &.disabled {
+    background-position: -132px 0;
+    cursor: default;
+  }
+}
+
+@media(-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi), (min-resolution: 1.25dppx) {
+  .icheckbox_flat-green {
+    background-image: $url_1;
+    background-size: 176px 22px;
+  }
+  .iradio_flat-green {
+    background-image: $url_1;
+    background-size: 176px 22px;
+  }
+}
