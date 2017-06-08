@@ -1,0 +1,18 @@
+= simple_form_for(@location, html: { class: '' }) do |f|
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; General
+        .box-body
+          .row
+            .col-sm-6
+              = f.input :name
+          .row
+            .col-sm-6
+              .form-group
+                = f.check_box :status, class:'form-control'
+                = f.label I18n.t('views.commons.active')
+  == render 'common/form_action_buttons', options: { form: f, index_path: locations_path}

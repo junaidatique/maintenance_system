@@ -3,4 +3,8 @@ ul.sidebar-menu
     = link_to aircrafts_path do
       .fa.fa-tasks
       span.side-bar-heading-text Aircrafts
+  li class="#{params[:controller] == "locations" ? 'active' : ''}"
+    = link_to locations_path do
+      .fa.fa-tasks
+      span.side-bar-heading-text Locations
   
