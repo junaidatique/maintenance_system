@@ -1,6 +1,43 @@
-p#notice = notice
+= content_for :box_heading do
+  = @user.name
 
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; General
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="50%"
+                    | Number
+                  td = @user.email
+                tr
+                  th width="50%"
+                    | Name
+                  td = @user.name
+                tr
+                  th width="50%"
+                    | Rank
+                  td = @user.rank
+                tr
+                  th width="50%"
+                    | Personal Code
+                  td = @user.personal_code
+                tr
+                  th width="50%"
+                    | Role
+                  td = @user.role
+                tr
+                  th width="50%"
+                    | Status
+                  td = @user.status ? 'Active' : 'Inactive'
 
-= link_to 'Edit', edit_user_path(@user)
-'  |
-= link_to 'Back', users_path
+= render 'common/actions_buttons', back_path: users_path, edit_path: edit_user_path(@user)

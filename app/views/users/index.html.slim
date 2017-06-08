@@ -1,19 +1,41 @@
-h1 Listing users
+= content_for :page_subtitle do
+  | Users
 
-table
-  thead
-    tr
-      th
-      th
-      th
+= content_for :box_heading do
+  | Users
 
-  tbody
-    - @users.each do |user|
-      tr
-        td = link_to 'Show', user
-        td = link_to 'Edit', edit_user_path(user)
-        td = link_to 'Destroy', user, data: { confirm: 'Are you sure?' }, method: :delete
-
-br
-
-= link_to 'New User', new_user_path
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th width='10%'
+                | Name
+              th width='10%'
+                | Rank 
+              th width='10%'
+                | Personal Code
+              th width='13%'
+                | Actions
+          tbody
+            - @users.each do |user|
+              tr
+                td.table-row-center
+                  = link_to user.name, user_path(user)
+                td.table-row-center
+                  = user.rank
+                td.table-row-center
+                  = user.personal_code
+                td.text-center width='20%'
+                  = link_to user_path(user), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  = link_to edit_user_path(user), class: 'btn btn-info btn-flat ' do
+                    i.fa.fa-pencil
+                  
+                  /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
+                   /   i.fa.fa-trash
+        .col-sm-4.col-sm-offset-4
+          = link_to 'New User', new_user_path, class: 'btn btn-block btn-primary btn-flat'
+        .clearfix
