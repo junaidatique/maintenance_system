@@ -11,4 +11,8 @@ ul.sidebar-menu
     = link_to users_path do
       .fa.fa-tasks
       span.side-bar-heading-text Users
+  li class="#{params[:controller] == "flying_logs" ? 'active' : ''}"
+    = link_to flying_logs_path do
+      .fa.fa-tasks
+      span.side-bar-heading-text Flying Logs
   

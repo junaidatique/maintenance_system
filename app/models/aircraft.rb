@@ -7,4 +7,8 @@ class Aircraft
   field :number, type: String
   field :name, type: String
   field :status, type: Mongoid::Boolean
+
+  scope :active, -> { where(status: 1) }
+
+  has_many :flying_logs
 end

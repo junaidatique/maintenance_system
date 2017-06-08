@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :flying_logs
   root 'users#index'
   resources :locations
   resources :aircrafts

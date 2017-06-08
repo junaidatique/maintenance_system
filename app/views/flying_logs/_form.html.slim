@@ -1,0 +1,21 @@
+= simple_form_for(@flying_log, html: { class: '' }) do |f|
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; General
+        .box-body
+          .row
+            .col-sm-6
+              = f.input :number, label: 'Log #'
+            .col-sm-6
+              = f.input :log_date
+          .row
+            .col-sm-6
+              = f.input :aircraft, collection: Aircraft.active.all
+            .col-sm-6
+              = f.input :location, collection: Location.active.all
+         
+  == render 'common/form_action_buttons', options: { form: f, index_path: flying_logs_path}
