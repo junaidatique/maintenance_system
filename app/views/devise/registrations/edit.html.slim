@@ -1,42 +1,27 @@
-h2
-  | Edit 
-  = resource_name.to_s.humanize
-= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f|
-  = devise_error_messages!
-  .field
-    = f.label :email
-    br
-    = f.email_field :email, autofocus: true
-  - if devise_mapping.confirmable? && resource.pending_reconfirmation?
-    div
-      | Currently waiting confirmation for: 
-      = resource.unconfirmed_email
-  .field
-    = f.label :password
-    i
-      | (leave blank if you don't want to change it)
-    br
-    = f.password_field :password, autocomplete: "off"
-    - if @minimum_password_length
-      br
-      em
-        = @minimum_password_length
-        |  characters minimum
-  .field
-    = f.label :password_confirmation
-    br
-    = f.password_field :password_confirmation, autocomplete: "off"
-  .field
-    = f.label :current_password
-    i
-      | (we need your current password to confirm your changes)
-    br
-    = f.password_field :current_password, autocomplete: "off"
-  .actions
-    = f.submit "Update"
-h3
-  | Cancel my account
-p
-  | Unhappy? 
-  = button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete
-= link_to "Back", :back
+.row
+  .col-md-12
+    h3.increase-margin-bottom
+      | Update Password
+    = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f|
+      = devise_error_messages!
+      .row
+        .col-sm-3
+          .form-group.has-feedback.increase-margin-bottom
+            label
+              | Email:
+        .col-sm-9      
+          = resource.email
+      .form-group.has-feedback.increase-margin-bottom
+        = f.label :current_password
+        = f.password_field :current_password, autocomplete: "off", :class=> 'form-control'
+      .form-group.has-feedback.increase-margin-bottom
+        = f.label :password
+        = f.password_field :password, autocomplete: "off", :class=> 'form-control'
+      .form-group.has-feedback.increase-margin-bottom
+        = f.label :password_confirmation
+        = f.password_field :password_confirmation, autocomplete: "off", :class=> 'form-control'
+      .form-group.increase-margin-bottom
+        = f.submit "Update", :class => 'btn btn-filled-primary btn-filled-primary-colored btn-block'
+        = link_to :back, class: 'btn btn-block btn-primary btn-flat' do
+          i.fa.fa-angle-double-left
+          | &nbsp; Back

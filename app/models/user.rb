@@ -2,7 +2,7 @@ class User
   include Mongoid::Document
   include SimpleEnum::Mongoid
 
-  as_enum :role, admin: 0, engineer: 1
+  as_enum :role, admin: 0, engineer: 1, data_entry: 2, crew_cheif: 3
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -26,6 +26,8 @@ class User
   field :current_sign_in_ip, type: String
   field :last_sign_in_ip,    type: String
 
+  
+  
   ## Confirmable
   # field :confirmation_token,   type: String
   # field :confirmed_at,         type: Time
