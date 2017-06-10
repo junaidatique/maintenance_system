@@ -9,4 +9,6 @@ class WorkUnitCode
   has_and_belongs_to_many :user, class_name: User.name
 
   validates :code, :description, presence: true
+
+  accepts_nested_attributes_for :children
 end
