@@ -15,4 +15,8 @@ ul.sidebar-menu
     = link_to flying_logs_path do
       .fa.fa-tasks
       span.side-bar-heading-text Flying Logs
+  li class="#{params[:controller] == "work_unit_codes" ? 'active' : ''}"
+    = link_to work_unit_codes_path do 
+      .fa.fa-tasks
+      span.side-bar-heading-text Work Unit Codes
   

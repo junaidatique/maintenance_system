@@ -1,0 +1,35 @@
+= content_for :page_subtitle do
+  | Work Unit Codes
+
+= content_for :box_heading do
+  | Work Unit Codes
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th width='40%'
+                | Code
+              th width='40%'
+                | Description
+          tbody
+            - @work_unit_codes.each do |work_unit_code|
+              tr
+                td.table-row-center
+                  = link_to work_unit_code.code, work_unit_code_path(work_unit_code)
+                td.table-row-center
+                  = work_unit_code.description
+                td.text-center width='20%'
+                  = link_to work_unit_code_path(work_unit_code), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  = link_to edit_work_unit_code_path(work_unit_code), class: 'btn btn-info btn-flat ' do
+                    i.fa.fa-pencil
+                  
+                  /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
+                   /   i.fa.fa-trash
+        .col-sm-4.col-sm-offset-4
+          = link_to 'Create Work Unit Code', new_work_unit_code_path, class: 'btn btn-block btn-primary btn-flat'
+        .clearfix
