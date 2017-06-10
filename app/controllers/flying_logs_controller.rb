@@ -17,6 +17,7 @@ class FlyingLogsController < ApplicationController
     @flying_log = FlyingLog.new
     @flying_log.build_ac_configuration
     @flying_log.build_fuel
+    @flying_log.build_capt_acceptance_certificate
     
   end
 
@@ -72,6 +73,7 @@ class FlyingLogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def flying_log_params
-      params.require(:flying_log).permit(:number, :log_date, :aircraft_id, :location_id)
+      params.require(:flying_log).permit(:number, :log_date, :aircraft_id, :location_id, 
+                                flightline_servicings_attributes: [:inspection_performed, :flightline_time, :user_id, :oil_refill])
     end
 end

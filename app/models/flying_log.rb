@@ -10,11 +10,12 @@ class FlyingLog
 
   has_one :ac_configuration
   has_one :fuel
+  has_one :capt_acceptance_certificate
   has_many :flightline_servicings
 
   accepts_nested_attributes_for :ac_configuration
   accepts_nested_attributes_for :fuel
   accepts_nested_attributes_for :flightline_servicings, :reject_if => :all_blank, :allow_destroy => true
-
+  accepts_nested_attributes_for :capt_acceptance_certificate
 
 end

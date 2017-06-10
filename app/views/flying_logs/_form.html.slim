@@ -79,5 +79,20 @@
             .row
               .col-sm-6
                 = ac_f.input :fob_total, label: 'FOB Total (Lbs)'
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Capt Acceptance Certificate
+        .box-body
+          = f.simple_fields_for :capt_acceptance_certificate do |ac_f|
+            .row
+              .col-sm-6
+                = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
+              .col-sm-6
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
+            
   
   == render 'common/form_action_buttons', options: { form: f, index_path: flying_logs_path}
