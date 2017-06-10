@@ -72,6 +72,6 @@ class FlyingLogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def flying_log_params
-      params.require(:flying_log).permit(:number, :log_date, :aircraft, :location)
+      params.require(:flying_log).permit(:number, :log_date, :aircraft_id, :location_id)
     end
 end
