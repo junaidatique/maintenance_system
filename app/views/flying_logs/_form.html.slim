@@ -14,8 +14,70 @@
               = f.input :log_date
           .row
             .col-sm-6
-              = f.input :aircraft, collection: Aircraft.active.all
+              = f.association :aircraft, collection: Aircraft.active.all, label_method: :number, value_method: :id, include_blank: false
             .col-sm-6
-              = f.input :location, collection: Location.active.all
-         
+              = f.association :location, collection: Location.active.all, include_blank: false
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; A/C Configuration
+        .box-body
+          = f.simple_fields_for :ac_configuration do |ac_f|
+            .row
+              .col-sm-12
+                h5
+                  | Role Equipment State
+              .col-sm-4
+                = ac_f.input :clean, as: :boolean, checked_value: 1, unchecked_value: 0
+              .col-sm-4
+                = ac_f.input :smoke_pods, as: :boolean, checked_value: 1, unchecked_value: 0
+              .col-sm-4
+                = ac_f.input :fuel_tanks, as: :boolean, checked_value: 1, unchecked_value: 0
+            .row
+              .col-sm-6
+                = ac_f.input :cockpit, collection: enum_option_pairs(AcConfiguration, :cockpit), as: :radio_buttons 
+  .row
+    .col-md-12#div_flight_line_servicing
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-9
+              h3.box-title
+                i.fa.fa-bar-chart
+                | &nbsp;Flightline Servicing
+            .col-sm-3
+              
+        .box-body
+          div.flightline_servicings
+            = f.simple_fields_for :flightline_servicings do |flightline_servicing|
+              = render 'flightline_servicing_fields', :f => flightline_servicing
+          .row
+            .col-sm-offset-9.col-sm-3
+              = link_to_add_association "+ Add Flightline Servicing", f, :flightline_servicings, data: {:'association-insertion-node' => ".flightline_servicings", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Fuel
+        .box-body
+          = f.simple_fields_for :fuel do |ac_f|
+            .row
+              .col-sm-6
+                = ac_f.input :fuel_remaining, label: 'Remaining (Lbs)'
+              .col-sm-6
+                = ac_f.input :refill, label: 'Refill (L)'
+            .row
+              .col-sm-6
+                = ac_f.input :total_uwt, label: 'Total UWT (Lbs)'
+              .col-sm-6
+                = ac_f.input :total_main, label: 'Total Main (Lbs)'
+            .row
+              .col-sm-6
+                = ac_f.input :fob_total, label: 'FOB Total (Lbs)'
+  
   == render 'common/form_action_buttons', options: { form: f, index_path: flying_logs_path}

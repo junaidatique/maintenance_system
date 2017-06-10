@@ -15,6 +15,9 @@ class FlyingLogsController < ApplicationController
   # GET /flying_logs/new
   def new
     @flying_log = FlyingLog.new
+    @flying_log.build_ac_configuration
+    @flying_log.build_fuel
+    
   end
 
   # GET /flying_logs/1/edit
@@ -69,6 +72,6 @@ class FlyingLogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def flying_log_params
-      params.require(:flying_log).permit(:number, :log_date, :aircraft, :location)
+      params.require(:flying_log).permit(:number, :log_date, :aircraft_id, :location_id)
     end
 end

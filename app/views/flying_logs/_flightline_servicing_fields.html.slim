@@ -1,0 +1,14 @@
+.row.nested-fields
+  .col-sm-3
+    = f.input :inspection_performed, collection: enum_option_pairs(FlightlineServicing, :inspection_performed), as: :radio_buttons 
+  .col-sm-3
+    = f.input :flightline_time, input_html: { class: 'timepickerclass' }
+  .col-sm-3
+    = f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
+  .col-sm-2
+    = f.input :oil_refill
+  .col-sm-1
+    = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
+      i.fa.fa-trash
+hr
+  
