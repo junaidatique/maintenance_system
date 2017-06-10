@@ -15,6 +15,9 @@ class FlyingLogsController < ApplicationController
   # GET /flying_logs/new
   def new
     @flying_log = FlyingLog.new
+    @flying_log.build_ac_configuration
+    @flying_log.build_fuel
+    
   end
 
   # GET /flying_logs/1/edit
