@@ -27,4 +27,9 @@
               .form-group
                 = f.check_box :status, class:'form-control'
                 = f.label I18n.t('views.commons.active')
+          .row
+            .col-sm-6
+              .form-group
+                = f.association :work_unit_codes, collection: WorkUnitCode.all, label_method: :code, value_method: :id, include_blank: false
+                
   == render 'common/form_action_buttons', options: { form: f, index_path: locations_path}

@@ -2,6 +2,7 @@ class WorkUnitCode
   include Mongoid::Document
   include Mongoid::Timestamps
   include Mongoid::Tree
+  include Mongoid::Tree::Ordering
 
   field :code, type: String
   field :description, type: String
