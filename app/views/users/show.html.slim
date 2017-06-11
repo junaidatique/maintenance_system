@@ -39,5 +39,9 @@
                   th width="50%"
                     | Status
                   td = @user.status ? 'Active' : 'Inactive'
+                tr
+                  th width="50%"
+                    | Work Unit Codes
+                  td = @user.work_unit_codes.pluck(:code).join(', ')
 
 = render 'common/actions_buttons', back_path: users_path, edit_path: edit_user_path(@user)

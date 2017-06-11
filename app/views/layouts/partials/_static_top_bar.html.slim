@@ -5,7 +5,7 @@ nav.navbar.navbar-static-top role = "navigation"
     .navbar-custom-menu
       ul.nav.navbar-nav.navbar-right
         li
-          = link_to edit_user_registration_path
+          = link_to edit_user_path(current_user)
             i.fa.fa-key
             | &nbsp;Change your password
         li

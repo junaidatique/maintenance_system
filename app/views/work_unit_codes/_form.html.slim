@@ -8,10 +8,26 @@
             | &nbsp; General
         .box-body
           .row
-            .col-sm-12
+            .col-sm-6
               = f.input :code
+            .col-sm-6
+              = f.input :description
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-9
+              h3.box-title
+                i.fa.fa-bar-chart
+                | &nbsp;Children
+            .col-sm-3
+        .box-body
+          div.wuc
+            .col-sm-12   
+              = f.simple_fields_for :children do |wuc|
+                = render 'child_fields', f: wuc
           .row
             .col-sm-12
-              = f.input :description, :input_html => { :rows => 10 }
-         
+              = link_to_add_association "+ Add Work Unit Code", f, :children, data: {:'association-insertion-node' => ".wuc", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'  
   == render 'common/form_action_buttons', options: { form: f, index_path: work_unit_codes_path}

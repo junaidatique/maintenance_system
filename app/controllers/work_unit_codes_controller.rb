@@ -72,6 +72,6 @@ class WorkUnitCodesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def work_unit_code_params
-      params.require(:work_unit_code).permit(:code, :description)
+      params.require(:work_unit_code).permit(:code, :description, children_attributes: [:id, :code, :description, :_destroy])
     end
 end
