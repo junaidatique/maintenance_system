@@ -4,7 +4,7 @@ class WorkUnitCodesController < ApplicationController
   # GET /work_unit_codes
   # GET /work_unit_codes.json
   def index
-    @work_unit_codes = WorkUnitCode.roots
+    @work_unit_codes = WorkUnitCode.all
   end
 
   # GET /work_unit_codes/1
