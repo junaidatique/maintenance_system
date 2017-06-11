@@ -30,6 +30,40 @@
           .row
             .col-sm-6
               .form-group
-                = f.association :work_unit_codes, collection: WorkUnitCode.all, label_method: :code, value_method: :id, include_blank: false
-                
+                / = f.association :work_unit_codes, collection: WorkUnitCode.all, label_method: :code, value_method: :id, include_blank: false
+                = f.label :work_unit_codes
+                = f.collection_select :work_unit_code_ids, WorkUnitCode.all.limit(2), :id, :code, {}, {:selected => "daf", multiple: true, class: 'js-search-category-multiple-select'}
   == render 'common/form_action_buttons', options: { form: f, index_path: locations_path}
+
+javascript:
+  $(document).ready(function() {
+    $(".js-search-category-multiple-select").select2({
+      ajax: {
+        url: "/work_unit_codes/get_work_unit_codes",
+        dataType: 'json',
+        type: 'GET',
+        //delay: 0,
+        data: function (params) {
+          return {
+            q: params.term,
+            page: params.page
+          };
+        },
+        processResults: function (data, params) {
+          params.page = params.page || 1;
+          return {
+            results: data.items,
+            pagination: {
+              more: (params.page * 30) < data.total_count
+            }
+          };
+        }
+      },
+      minimumInputLength: 1,
+      escapeMarkup: function (markup) { return markup; },
+      //templateResult: formatproduct, // let our custom formatter work
+      //templateSelection: formatproductSelection
+    
+    })
+
+  })

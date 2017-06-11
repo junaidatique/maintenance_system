@@ -64,6 +64,16 @@ class WorkUnitCodesController < ApplicationController
     end
   end
 
+  # GET /work_unit_codes/get_work_unit_codes
+  # GET /work_unit_codes/get_work_unit_codes.json
+  def get_work_unit_codes
+    search_string = params[:q]
+    wucs = WorkUnitCode.where(code: /.*#{search_string}.*/i).limit(2)
+    respond_to do |format|
+      format.json { render json: { items: wucs, total_count: wucs.length, incomplete_results: false } }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_work_unit_code
