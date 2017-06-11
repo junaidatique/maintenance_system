@@ -93,6 +93,61 @@
                 = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
               .col-sm-6
                 = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
-            
-  
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Sortie
+        .box-body
+          = f.simple_fields_for :sortie do |ac_f|
+            .row
+              .col-sm-6
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Crew'
+              .col-sm-6
+            .row
+              .col-sm-12
+                h5
+                  | Times
+            .row
+              .col-sm-4
+                = ac_f.input :takeoff_time, input_html: { class: 'timepickerclass' }
+              .col-sm-4
+                = ac_f.input :landing_time, input_html: { class: 'timepickerclass' }
+              .col-sm-4
+                = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
+            .row
+              .col-sm-6
+                = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code), as: :radio_buttons 
+            .row
+              .col-sm-12
+                h5
+                  | Landings
+            .row
+              .col-sm-4
+                = ac_f.input :touch_go
+              .col-sm-4
+                = ac_f.input :full_stop
+              .col-sm-4
+                = ac_f.input :total
+            .row
+              .col-sm-12
+                = ac_f.input :remarks, as: :text
+                
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Capt After Flight
+        .box-body
+          = f.simple_fields_for :capt_after_flight do |ac_f|
+            .row
+              .col-sm-6
+                = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
+              .col-sm-6
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
+          
   == render 'common/form_action_buttons', options: { form: f, index_path: flying_logs_path}
