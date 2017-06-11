@@ -5,7 +5,8 @@ class User
   as_enum :role, admin: 0, engineer: 1, data_entry: 2, crew_cheif: 3
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
+  devise :database_authenticatable, 
+        # :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
   ## Database authenticatable
