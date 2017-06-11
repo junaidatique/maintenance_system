@@ -163,5 +163,72 @@
                 = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
               .col-sm-6
                 = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
-          
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Aircraft Total Times
+        .box-body
+          = f.simple_fields_for :aircraft_total_time do |ac_f|
+            .row
+              .col-sm-12
+                h5
+                  | Carried Over Totals
+            .row
+              .col-sm-4
+                = ac_f.input :carried_over_aircraft_hour
+              .col-sm-4
+                = ac_f.input :carried_over_landings
+              .col-sm-4
+                = ac_f.input :carried_over_uw_store
+            .row
+              .col-sm-12
+                h5
+                  | This Sortie
+            .row
+              .col-sm-4
+                = ac_f.input :this_sortie_aircraft_hour
+              .col-sm-4
+                = ac_f.input :this_sortie_landings
+              .col-sm-4
+                = ac_f.input :this_sortie_uw_store
+            .row
+              .col-sm-12
+                h5
+                  | New Total
+            .row
+              .col-sm-4
+                = ac_f.input :new_total_aircraft_hour
+              .col-sm-4
+                = ac_f.input :new_total_landings
+              .col-sm-4
+                = ac_f.input :new_total_uw_store
+            .row
+              .col-sm-12
+                h5
+                  | Correction
+            .row
+              .col-sm-4
+                = ac_f.input :correction_aircraft_hour
+              .col-sm-4
+                = ac_f.input :correction_landings
+              .col-sm-4
+                = ac_f.input :correction_uw_store
+            .row
+              .col-sm-12
+                h5
+                  | Corrected Total
+            .row
+              .col-sm-4
+                = ac_f.input :corrected_total_aircraft_hour
+              .col-sm-4
+                = ac_f.input :corrected_total_landings
+              .col-sm-4
+                = ac_f.input :corrected_total_uw_store
+            
+
+
+
   == render 'common/form_action_buttons', options: { form: f, index_path: flying_logs_path}

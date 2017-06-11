@@ -21,6 +21,7 @@ class FlyingLogsController < ApplicationController
     @flying_log.build_sortie
     @flying_log.build_capt_after_flight
     @flying_log.build_flightline_release
+    @flying_log.build_aircraft_total_time
     
   end
 
