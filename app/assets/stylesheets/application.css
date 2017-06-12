@@ -35,3 +35,10 @@
   padding-left: 1.5em;
 	cursor: pointer;
 }
+.box-body h5{
+  font-weight: bold;
+  font-size: 15px;
+}
+.box-body label{
+  font-size: 13px;
+}

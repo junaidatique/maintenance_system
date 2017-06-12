@@ -1,0 +1,19 @@
+h1 Listing techlogs
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @techlogs.each do |techlog|
+      tr
+        td = link_to 'Show', techlog
+        td = link_to 'Edit', edit_techlog_path(techlog)
+        td = link_to 'Destroy', techlog, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Techlog', new_techlog_path
