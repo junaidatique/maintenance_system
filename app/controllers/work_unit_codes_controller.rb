@@ -68,9 +68,9 @@ class WorkUnitCodesController < ApplicationController
   # GET /work_unit_codes/get_work_unit_codes.json
   def get_work_unit_codes
     search_string = params[:q]
-    wucs = WorkUnitCode.where(code: /.*#{search_string}.*/i).limit(2)
+    wucs = WorkUnitCode.where(code: /.*#{search_string}.*/i).limit(30)
     respond_to do |format|
-      format.json { render json: { items: wucs, total_count: wucs.length, incomplete_results: false } }
+      format.json { render json: { items: wucs.map { |w| { id: w.id.to_s, code: w.code } }, total_count: wucs.length, incomplete_results: false } }
     end
   end
 

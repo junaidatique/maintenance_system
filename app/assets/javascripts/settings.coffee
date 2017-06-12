@@ -1,5 +1,5 @@
 $(document).on 'ready', ->
-  $('select').select2 theme: 'bootstrap'
+  $('.custom-select2').select2 theme: 'bootstrap'
   $('input').iCheck
     checkboxClass: 'icheckbox_square'
     radioClass: 'iradio_square'
