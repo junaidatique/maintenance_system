@@ -93,6 +93,174 @@
                 = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
               .col-sm-6
                 = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
-            
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Sortie
+        .box-body
+          = f.simple_fields_for :sortie do |ac_f|
+            .row
+              .col-sm-6
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Crew'
+              .col-sm-6
+            .row
+              .col-sm-12
+                h5
+                  | Times
+            .row
+              .col-sm-4
+                = ac_f.input :takeoff_time, input_html: { class: 'timepickerclass' }
+              .col-sm-4
+                = ac_f.input :landing_time, input_html: { class: 'timepickerclass' }
+              .col-sm-4
+                = ac_f.input :flight_time
+            .row
+              .col-sm-6
+                = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code), as: :radio_buttons 
+            .row
+              .col-sm-12
+                h5
+                  | Landings
+            .row
+              .col-sm-4
+                = ac_f.input :touch_go
+              .col-sm-4
+                = ac_f.input :full_stop
+              .col-sm-4
+                = ac_f.input :total
+            .row
+              .col-sm-12
+                = ac_f.input :remarks, as: :text
+                
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Capt After Flight
+        .box-body
+          = f.simple_fields_for :capt_after_flight do |ac_f|
+            .row
+              .col-sm-6
+                = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
+              .col-sm-6
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Flightline Release
+        .box-body
+          = f.simple_fields_for :flightline_release do |ac_f|
+            .row
+              .col-sm-6
+                = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
+              .col-sm-6
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Aircraft Total Times
+        .box-body
+          = f.simple_fields_for :aircraft_total_time do |ac_f|
+            .row
+              .col-sm-12
+                h5
+                  | Carried Over Totals
+            .row
+              .col-sm-4
+                = ac_f.input :carried_over_aircraft_hour
+              .col-sm-4
+                = ac_f.input :carried_over_landings
+              .col-sm-4
+                = ac_f.input :carried_over_uw_store
+            .row
+              .col-sm-12
+                h5
+                  | This Sortie
+            .row
+              .col-sm-4
+                = ac_f.input :this_sortie_aircraft_hour
+              .col-sm-4
+                = ac_f.input :this_sortie_landings
+              .col-sm-4
+                = ac_f.input :this_sortie_uw_store
+            .row
+              .col-sm-12
+                h5
+                  | New Total
+            .row
+              .col-sm-4
+                = ac_f.input :new_total_aircraft_hour
+              .col-sm-4
+                = ac_f.input :new_total_landings
+              .col-sm-4
+                = ac_f.input :new_total_uw_store
+            .row
+              .col-sm-12
+                h5
+                  | Correction
+            .row
+              .col-sm-4
+                = ac_f.input :correction_aircraft_hour
+              .col-sm-4
+                = ac_f.input :correction_landings
+              .col-sm-4
+                = ac_f.input :correction_uw_store
+            .row
+              .col-sm-12
+                h5
+                  | Corrected Total
+            .row
+              .col-sm-4
+                = ac_f.input :corrected_total_aircraft_hour
+              .col-sm-4
+                = ac_f.input :corrected_total_landings
+              .col-sm-4
+                = ac_f.input :corrected_total_uw_store
+  .row
+    .col-md-12#div_techlog_servicing
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-9
+              h3.box-title
+                i.fa.fa-bar-chart
+                | &nbsp; Techlog
+            .col-sm-3
+              
+        .box-body
+          div.techlogs
+            = f.simple_fields_for :techlogs do |techlog|
+              = render 'techlog_fields', :f => techlog
+          .row
+            .col-sm-offset-9.col-sm-3
+              = link_to_add_association "+ Add Techlog", f, :techlogs, data: {:'association-insertion-node' => ".techlogs", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; After Flight Servicing
+        .box-body
+          = f.simple_fields_for :after_flight_servicing do |ac_f|
+            .row
+              .col-sm-4
+                = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
+              .col-sm-4
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
+              .col-sm-4
+                = ac_f.input :oil_refill
+              
   
   == render 'common/form_action_buttons', options: { form: f, index_path: flying_logs_path}

@@ -1,0 +1,2 @@
+module TechlogsHelper
+end

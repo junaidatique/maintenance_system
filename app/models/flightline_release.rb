@@ -1,4 +1,4 @@
-class CaptAcceptanceCertificate
+class FlightlineRelease
   include Mongoid::Document
 
   field :flight_time, type: String

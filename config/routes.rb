@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :techlogs
   resources :work_unit_codes
   resources :flying_logs
   root 'users#index'
