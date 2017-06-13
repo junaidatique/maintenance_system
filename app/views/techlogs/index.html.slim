@@ -1,19 +1,41 @@
-h1 Listing techlogs
+= content_for :page_subtitle do
+  | TechLogs
 
-table
-  thead
-    tr
-      th
-      th
-      th
+= content_for :box_heading do
+  | TechLogs
 
-  tbody
-    - @techlogs.each do |techlog|
-      tr
-        td = link_to 'Show', techlog
-        td = link_to 'Edit', edit_techlog_path(techlog)
-        td = link_to 'Destroy', techlog, data: { confirm: 'Are you sure?' }, method: :delete
-
-br
-
-= link_to 'New Techlog', new_techlog_path
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th width='10%'
+                | Number
+              th width='10%'
+                | Date
+              th width='10%'
+                | Aircraft
+              th width='13%'
+                | Actions
+          tbody
+            - @techlogs.each do |techlog|
+              tr
+                td.table-row-center
+                  = link_to techlog.number, techlog_path(techlog)
+                td.table-row-center
+                  = techlog.flying_log.log_date
+                td.table-row-center
+                  = techlog.flying_log.aircraft.number
+                td.text-center width='20%'
+                  = link_to techlog_path(techlog), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  = link_to edit_techlog_path(techlog), class: 'btn btn-info btn-flat ' do
+                    i.fa.fa-pencil
+                  
+                  /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
+                   /   i.fa.fa-trash
+        /.col-sm-4.col-sm-offset-4
+          = link_to 'Create Flying Log', new_techlog_path, class: 'btn btn-block btn-primary btn-flat'
+        .clearfix
