@@ -7,6 +7,7 @@ class WorkUnitCode
   field :code, type: String
   field :description, type: String
 
+  has_many :techlogs
   has_and_belongs_to_many :user, class_name: User.name
 
   validates :code, :description, presence: true

@@ -14,9 +14,9 @@
               = f.input :log_date
           .row
             .col-sm-6
-              = f.association :aircraft, collection: Aircraft.active.all, label_method: :number, value_method: :id, include_blank: false
+              = f.association :aircraft, collection: Aircraft.active.all, label_method: :number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
             .col-sm-6
-              = f.association :location, collection: Location.active.all, include_blank: false
+              = f.association :location, collection: Location.active.all, include_blank: false, input_html: {class: 'custom-select2'}
   .row
     .col-md-12
       .box.box-info
@@ -35,7 +35,7 @@
               .col-sm-4
                 = ac_f.input :smoke_pods, as: :boolean, checked_value: 1, unchecked_value: 0
               .col-sm-4
-                = ac_f.input :fuel_tanks, as: :boolean, checked_value: 1, unchecked_value: 0
+                = ac_f.input :third_seat, as: :boolean, checked_value: 1, unchecked_value: 0
             .row
               .col-sm-6
                 = ac_f.input :cockpit, collection: enum_option_pairs(AcConfiguration, :cockpit), as: :radio_buttons 
@@ -68,17 +68,21 @@
           = f.simple_fields_for :fuel do |ac_f|
             .row
               .col-sm-6
-                = ac_f.input :fuel_remaining, label: 'Remaining (Lbs)'
+                = ac_f.input :fuel_remaining, label: 'Remaining (Gallons)'
               .col-sm-6
-                = ac_f.input :refill, label: 'Refill (L)'
+                = ac_f.input :refill, label: 'Refill (Gallons)'
+            .row
+              .col-sm-12
+                h5
+                  | Oil
             .row
               .col-sm-6
-                = ac_f.input :total_uwt, label: 'Total UWT (Lbs)'
+                = ac_f.input :oil_remaining, label: 'Remaining'
               .col-sm-6
-                = ac_f.input :total_main, label: 'Total Main (Lbs)'
+                = ac_f.input :oil_serviced, label: 'Serviced'
             .row
               .col-sm-6
-                = ac_f.input :fob_total, label: 'FOB Total (Lbs)'
+                = ac_f.input :oil_total_qty, label: 'Total Quantity'
   .row
     .col-md-12
       .box.box-info
@@ -90,7 +94,7 @@
           = f.simple_fields_for :capt_acceptance_certificate do |ac_f|
             .row
               .col-sm-6
-                = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
+                = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
               .col-sm-6
                 = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
   .row
@@ -112,9 +116,9 @@
                   | Times
             .row
               .col-sm-4
-                = ac_f.input :takeoff_time, input_html: { class: 'timepickerclass' }
+                = ac_f.input :takeoff_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
               .col-sm-4
-                = ac_f.input :landing_time, input_html: { class: 'timepickerclass' }
+                = ac_f.input :landing_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
               .col-sm-4
                 = ac_f.input :flight_time
             .row
@@ -146,7 +150,7 @@
           = f.simple_fields_for :capt_after_flight do |ac_f|
             .row
               .col-sm-6
-                = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
+                = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
               .col-sm-6
                 = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
   .row
@@ -160,7 +164,7 @@
           = f.simple_fields_for :flightline_release do |ac_f|
             .row
               .col-sm-6
-                = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
+                = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
               .col-sm-6
                 = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
   .row
@@ -256,11 +260,10 @@
           = f.simple_fields_for :after_flight_servicing do |ac_f|
             .row
               .col-sm-4
-                = ac_f.input :flight_time, input_html: { class: 'timepickerclass' }
+                = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
               .col-sm-4
                 = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
               .col-sm-4
                 = ac_f.input :oil_refill
-              
-  
+                
   == render 'common/form_action_buttons', options: { form: f, index_path: flying_logs_path}

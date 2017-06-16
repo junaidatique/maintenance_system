@@ -21,7 +21,7 @@
             .col-sm-6
               = f.input :personal_code
             .col-sm-6
-              = f.input :role, collection: enum_option_pairs(User, :role)
+              = f.input :role, collection: enum_option_pairs(User, :role), input_html: {class: 'custom-select2'}
           .row
             .col-sm-6
               .form-group
@@ -30,6 +30,50 @@
           .row
             .col-sm-6
               .form-group
-                = f.association :work_unit_codes, collection: WorkUnitCode.all, label_method: :code, value_method: :id, include_blank: false
-                
+                / = f.association :work_unit_codes, collection: WorkUnitCode.all, label_method: :code, value_method: :id, include_blank: false
+                = f.label :work_unit_codes
+                = f.collection_select :work_unit_code_ids, f.object.work_unit_codes, :id, :code, {}, {:selected => "daf", multiple: true, class: 'js-search-category-multiple-select'}
   == render 'common/form_action_buttons', options: { form: f, index_path: locations_path}
+
+javascript:
+  $(document).ready(function() {
+    $(".js-search-category-multiple-select").select2({
+      theme: 'bootstrap',
+      ajax: {
+        url: "/work_unit_codes/get_work_unit_codes",
+        dataType: 'json',
+        type: 'GET',
+        delay: 250,
+        data: function (params) {
+          return {
+            q: params.term,
+            page: params.page
+          };
+        },
+        processResults: function (data, params) {
+          params.page = params.page || 1;
+          return {
+            results: data.items,
+            pagination: {
+              more: (params.page * 30) < data.total_count
+            }
+          };
+        }
+      },
+      minimumInputLength: 1,
+      escapeMarkup: function (markup) { return markup; },
+      templateResult: formatwuc, // let our custom formatter work
+      templateSelection: formatwucSelection
+    
+    })
+
+    function formatwuc(wuc) {
+      if (wuc.loading) return "Loading...";
+      var markup = "<div class='select2-result-wuc clearfix'>"  
+      return wuc.code;
+    }
+    function formatwucSelection (wuc) {
+      return wuc.code || wuc.text;
+    }
+
+  })

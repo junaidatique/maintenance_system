@@ -1,0 +1,16 @@
+.row.nested-fields
+  .col-sm-6
+    = f.input :pin_out, label: 'Pin Out'
+  .col-sm-6
+    = f.input :serial_number_out, label: 'S/N Out'
+.row
+  .col-sm-6
+    = f.input :pin_in, label: 'Pin In'
+  .col-sm-6
+    = f.input :serial_number_in, label: 'S/N In'
+.row
+  .col-sm-offset-11.col-sm-1
+    = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
+      i.fa.fa-trash
+hr
+  

@@ -1,6 +1,33 @@
-p#notice = notice
+= content_for :box_heading do
+  = @flying_log.number
 
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; General
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="25%"
+                    | Number
+                  td = @flying_log.number
+                  th width="25%"
+                    | Log Date
+                  td = @flying_log.log_date
+                tr
+                  th width="25%"
+                    | Aircraft
+                  td = @flying_log.aircraft.number
+                  th width="25%"
+                    | Location
+                  td = @flying_log.location.name
 
-= link_to 'Edit', edit_flying_log_path(@flying_log)
-'  |
-= link_to 'Back', flying_logs_path
+= render 'common/actions_buttons', back_path: flying_logs_path, edit_path: edit_flying_log_path(@flying_log)

@@ -1,7 +1,215 @@
 = simple_form_for(@techlog) do |f|
   = f.error_notification
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Flying Log
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody                
+                  tr
+                    th width="25%"
+                      | Number
+                    td = @techlog.flying_log.number
+                    th width="25%"
+                      | Log Date
+                    td = @techlog.flying_log.log_date
+                  tr
+                    th width="25%"
+                      | Aircraft
+                    td = @techlog.flying_log.aircraft.number
+                    th width="25%"
+                      | Location
+                    td = @techlog.flying_log.location.name
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Techlog
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody                
+                  tr
+                    th width="25%"
+                      | Number
+                    td = @techlog.number
+                    th width="25%"
+                      | Opened By
+                    td = @techlog.user.name
+                  tr
+                    th width="25%" colspan="4"
+                      | Description
+                  tr
+                    td colspan="4"
+                      = @techlog.description
+                    
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; General
+        .box-body
+          .row
+            .col-sm-6
+              = f.association :work_unit_code, label_method: "#{:code}", value_method: :id, include_blank: false
+              /= f.label :work_unit_code
+              /= f.collection_select :work_unit_code_id, @techlog.work_unit_code_id, :id, :code, {}, {}
+              /= f.collection_select :work_unit_code, WorkUnitCode.all, :id, :code, {}, {:selected => "daf", multiple: false, class: 'js-search-category-multiple-select'}
+            .col-sm-6
+              = f.input :log_time, input_html: { class: 'timepickerclass' }
+          .row
+            .col-sm-12
+              = f.input :type, collection: enum_option_pairs(Techlog, :type), as: :radio_buttons 
+            .col-sm-12
+              = f.input :action, as: :text
+  .row
+    .col-md-12#div_part_change
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-9
+              h3.box-title
+                i.fa.fa-bar-chart
+                | &nbsp; Parts Changed
+            .col-sm-3
+              
+        .box-body
+          div.change_parts
+            = f.simple_fields_for :change_parts do |change_part|
+              = render 'change_part_fields', :f => change_part
+          .row
+            .col-sm-offset-9.col-sm-3
+              = link_to_add_association "+ Add Changed Part", f, :change_parts, data: {:'association-insertion-node' => ".change_parts", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Additional
+        .box-body
+          .row
+            .col-sm-6
+              = f.input :additional_detail_form, as: :boolean, checked_value: 1, unchecked_value: 0
+            .col-sm-6
+              = f.input :component_on_hold, as: :boolean, checked_value: 1, unchecked_value: 0
+          .row
+            .col-sm-6
+              = f.input :sap_notif
+            .col-sm-6
+              = f.input :sap_wo
+          .row
+            .col-sm-6
+              = f.input :amr_no
+            .col-sm-6
+              = f.input :occurrence_report
+          .row
+            .col-sm-12
+              = f.input :tools_used, as: :text
+  
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Work
+        .box-body
+          .row
+            .col-sm-6
+              = f.input :dms_version
+          .row
+            .col-sm-12
+              h5
+                | Work Performed
+          = f.simple_fields_for :work_performed do |ac_f|
+            .row
+              .col-sm-4
+                = ac_f.input :work_date
+              .col-sm-4
+                = ac_f.input :work_time, input_html: { class: 'timepickerclass' }
+              .col-sm-4
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Personal Code'
+          .row
+            .col-sm-12
+              h5
+                | Work Inspected
+          = f.simple_fields_for :date_inspected do |ac_f|
+            .row
+              .col-sm-4
+                = ac_f.input :work_date
+              .col-sm-4
+                = ac_f.input :work_time, input_html: { class: 'timepickerclass' }
+              .col-sm-4
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Personal Code'
+          .row
+            .col-sm-12
+              h5
+                | Work Duplicate
+          = f.simple_fields_for :date_inspected do |ac_f|
+            .row
+              .col-sm-4
+                = ac_f.input :work_date
+              .col-sm-4
+                = ac_f.input :work_time, input_html: { class: 'timepickerclass' }
+              .col-sm-4
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Personal Code'
+            
 
-  .form-inputs
+              
+              
+  == render 'common/form_action_buttons', options: { form: f, index_path: locations_path}
+javascript:
+  $(document).ready(function() {
+    console.log('tjos');
+    $(".js-search-category-multiple-select").select2({
+      theme: 'bootstrap',
+      ajax: {
+        url: "/work_unit_codes/get_work_unit_codes",
+        dataType: 'json',
+        type: 'GET',
+        delay: 250,
+        data: function (params) {
+          return {
+            q: params.term,
+            page: params.page
+          };
+        },
+        processResults: function (data, params) {
+          params.page = params.page || 1;
+          return {
+            results: data.items,
+            pagination: {
+              more: (params.page * 30) < data.total_count
+            }
+          };
+        }
+      },
+      minimumInputLength: 1,
+      escapeMarkup: function (markup) { return markup; },
+      templateResult: formatwuc, // let our custom formatter work
+      templateSelection: formatwucSelection
+    
+    })
 
-  .form-actions
-    = f.button :submit
+    function formatwuc(wuc) {
+      if (wuc.loading) return "Loading...";
+      var markup = "<div class='select2-result-wuc clearfix'>"  
+      return wuc.code;
+    }
+    function formatwucSelection (wuc) {
+      return wuc.code || wuc.text;
+    }
+
+  })

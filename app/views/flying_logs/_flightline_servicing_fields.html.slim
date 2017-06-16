@@ -1,14 +1,24 @@
 .row.nested-fields
-  .col-sm-3
-    = f.input :inspection_performed, collection: enum_option_pairs(FlightlineServicing, :inspection_performed), as: :radio_buttons 
-  .col-sm-3
-    = f.input :flightline_time, input_html: { class: 'timepickerclass' }
-  .col-sm-3
-    = f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false
-  .col-sm-2
-    = f.input :oil_refill
-  .col-sm-1
-    = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
-      i.fa.fa-trash
-hr
+  .col-sm-12
+    .row
+      .col-sm-12
+        = f.input :inspection_performed, collection: enum_option_pairs(FlightlineServicing, :inspection_performed), as: :radio_buttons 
+    .row
+      .col-sm-6
+        = f.input :flight_start_time, label: 'Start Time (Local)', input_html: { class: 'timepickerclass' }
+      .col-sm-6
+        = f.input :flight_end_time, label: 'Completion Time (Local)', input_html: { class: 'timepickerclass' }
+    .row
+      .col-sm-6
+        = f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+      .col-sm-6
+        = f.input :oil_refill
+    .row
+      .col-sm-offset-9.col-sm-3
+        = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
+          i.fa.fa-trash
+    hr
+
+javascript: 
+
   

@@ -6,6 +6,8 @@ class FlyingLog
   field :log_date, type: Date
   field :is_all_approved, type: Mongoid::Boolean, default: 0
 
+  validates :number, presence: true
+
   belongs_to :aircraft
   belongs_to :location
 

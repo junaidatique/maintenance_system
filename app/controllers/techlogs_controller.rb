@@ -19,6 +19,9 @@ class TechlogsController < ApplicationController
 
   # GET /techlogs/1/edit
   def edit
+    @techlog.build_work_performed if @techlog.work_performed.blank?
+    @techlog.build_date_inspected if @techlog.date_inspected.blank?
+
   end
 
   # POST /techlogs

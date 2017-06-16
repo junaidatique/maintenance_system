@@ -1,8 +1,3 @@
-h1 Editing techlog
-
+= content_for :box_heading do
+  = @techlog.number
 == render 'form'
-
-= link_to 'Show', @techlog
-'  |
-= link_to 'Back', techlogs_path
-
