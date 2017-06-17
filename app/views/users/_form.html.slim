@@ -33,6 +33,13 @@
                 / = f.association :work_unit_codes, collection: WorkUnitCode.all, label_method: :code, value_method: :id, include_blank: false
                 = f.label :work_unit_codes
                 = f.collection_select :work_unit_code_ids, f.object.work_unit_codes, :id, :code, {}, {:selected => "daf", multiple: true, class: 'js-search-category-multiple-select'}
+            .col-sm-6
+              .form-group
+                = f.label :profile_picture
+                - if f.object.profile_picture.attachment.exists?
+                  = image_tag f.object.profile_picture.attachment.url(:small), class: 'media-object'
+                = f.fields_for :profile_picture, f.object.profile_picture do |profile_picture|
+                  = profile_picture.file_field :attachment
   == render 'common/form_action_buttons', options: { form: f, index_path: locations_path}
 
 javascript:

@@ -69,4 +69,4 @@ gem 'momentjs-rails'
 gem 'bootstrap3-datetimepicker-rails'
 gem 'simple_form'
 gem 'mongoid-tree', :require => 'mongoid/tree'
-
+gem "mongoid-paperclip"

@@ -43,6 +43,10 @@ class User
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
 
+  embeds_one :profile_picture, as: :attachable, class_name: Picture.name, cascade_callbacks: true, autobuild: true
+
+  accepts_nested_attributes_for :profile_picture
+
   has_and_belongs_to_many :work_unit_codes
   
   def active_for_authentication?

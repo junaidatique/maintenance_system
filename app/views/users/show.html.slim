@@ -43,5 +43,9 @@
                   th width="50%"
                     | Work Unit Codes
                   td = @user.work_unit_codes.pluck(:code).join(', ')
+                tr 
+                  th width="50%"
+                    | Profile Picture
+                  td = image_tag @user.profile_picture.attachment(:small)
 
 = render 'common/actions_buttons', back_path: users_path, edit_path: edit_user_path(@user)
