@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/mongodb/mongoid.git
-  revision: 95a25a77b7e211390ab7c6559281d3d0bc996beb
+  revision: a26341e3fd2aad7d7281f5855b75342b4275721c
   specs:
     mongoid (6.2.0)
       activemodel (~> 5.1)
@@ -64,7 +64,7 @@ GEM
     builder (3.2.3)
     byebug (9.0.6)
     cancancan (2.0.0)
-    capybara (2.14.2)
+    capybara (2.14.3)
       addressable
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -186,8 +186,8 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (12.0.0)
     rb-fsevent (0.9.8)
-    rb-inotify (0.9.8)
-      ffi (>= 0.5.0)
+    rb-inotify (0.9.9)
+      ffi (~> 1.0)
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
@@ -200,9 +200,9 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    select2-rails (3.5.10)
+    select2-rails (4.0.3)
       thor (~> 0.14)
-    selenium-webdriver (3.4.1)
+    selenium-webdriver (3.4.3)
       childprocess (~> 0.5)
       rubyzip (~> 1.0)
     simple_enum (2.3.0)

@@ -21,7 +21,7 @@
             .col-sm-6
               = f.input :personal_code
             .col-sm-6
-              = f.input :role, collection: enum_option_pairs(User, :role), input_html: {class: 'custom-select2'}
+              = f.input :role, collection: enum_option_pairs(User, :role), input_html: {class: 'custom-select2'}, include_blank: false
           .row
             .col-sm-6
               .form-group
