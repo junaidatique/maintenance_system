@@ -41,7 +41,7 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1.json
   def update
     respond_to do |format|
-      if @user.update(user_params)
+      if @user.update(user_update_params)
         @user.password = params[:password] unless params[:password].blank?
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
@@ -71,5 +71,8 @@ class UsersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:email, :name, :password, :rank, :personal_code, :role, :status, profile_picture_attributes: [:attachment], work_unit_code_ids: [])
+    end
+    def user_update_params
+      params.require(:user).permit(:email, :name, :rank, :personal_code, :role, :status, profile_picture_attributes: [:attachment], work_unit_code_ids: [])
     end
 end

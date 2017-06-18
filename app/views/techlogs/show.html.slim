@@ -1,6 +1,72 @@
-p#notice = notice
+= content_for :box_heading do
+  = @techlog.number
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-borderf
+        h3.box-title
+          i.fa.fa-bars
+          | &nbsp; Flying Log
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="25%"
+                    | Number
+                  td = @techlog.flying_log.number
+                  th width="25%"
+                    | Log Date
+                  td = @techlog.flying_log.log_date
+                tr
+                  th width="25%"
+                    | Aircraft
+                  td = @techlog.flying_log.aircraft.number
+                  th width="25%"
+                    | Location
+                  td = @techlog.flying_log.location.name
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-borderf
+        .row
+          .col-sm-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Techlog
+          .col-sm-6.text-right
+            = link_to create_addl_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
+              i.fa.fa-pencil
+              | &nbsp; Transfer to ADDL
+            | &nbsp;
+            = link_to create_limitation_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
+              i.fa.fa-pencil
+              | &nbsp; Transfer to Limitation Log
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="25%"
+                    | Number
+                  td = @techlog.number
+                  th width="25%"
+                    | Opened By
+                  td = @techlog.user.name
+                tr
+                  th width="25%"
+                    | Time
+                  td = @techlog.log_time
+                tr
+                  th width="25%" colspan="4"
+                    | Description
+                tr
+                  td colspan="4"
+                    = @techlog.description
+                  
+  
 
 
-= link_to 'Edit', edit_techlog_path(@techlog)
-'  |
-= link_to 'Back', techlogs_path
+= render 'common/actions_buttons', back_path: techlogs_path, edit_path: edit_techlog_path(@techlog)
