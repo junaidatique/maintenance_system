@@ -58,7 +58,7 @@ class ChangesController < ApplicationController
   def destroy
     @change.destroy
     respond_to do |format|
-      format.html { redirect_to changes_url, notice: 'Change was successfully destroyed.' }
+      format.html { redirect_to @technical_order, notice: 'Change was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -71,7 +71,7 @@ class ChangesController < ApplicationController
     end
 
     def set_change
-      @change = @technical_order.changes.find(params[:id])
+      @change = @technical_order.technical_changes.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

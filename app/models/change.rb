@@ -14,6 +14,8 @@ class Change
   after_create :update_version_number
 
   def update_version_number
-    # self.technical_order.update! version
+    self.technical_order.update! version_number: self.technical_order.version_number + 0.1
+    system_ = System.first
+    system_.update! settings: { dms_version_number: system_.settings[:dms_version_number] + 0.1}
   end
 end

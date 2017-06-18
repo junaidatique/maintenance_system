@@ -8,3 +8,4 @@
 
 User.create! email: 'admin@qsmk.com', role: :admin, password: '12345678', status: 1
 User.create! email: 'engineer@qsmk.com', role: :engineer, password: '12345678', status: 1
+System.create! settings: {dms_version_number: 0.0}
