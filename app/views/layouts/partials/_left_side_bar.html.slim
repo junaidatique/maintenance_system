@@ -19,6 +19,10 @@ ul.sidebar-menu
     = link_to techlogs_path do
       .fa.fa-tasks
       span.side-bar-heading-text TechLogs
+  li class="#{params[:controller] == "addl_logs" ? 'active' : ''}"
+    = link_to addl_logs_path do
+      .fa.fa-tasks
+      span.side-bar-heading-text ADDL Logs
   li class="#{params[:controller] == "work_unit_codes" ? 'active' : ''}"
     = link_to work_unit_codes_path do 
       .fa.fa-tasks

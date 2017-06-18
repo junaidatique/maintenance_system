@@ -1,0 +1,45 @@
+= content_for :page_subtitle do
+  | ADDL Logs
+
+= content_for :box_heading do
+  | ADDL Logs
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th width='10%'
+                | Number
+              th width='10%'
+                | Techlog
+              th width='10%'
+                | Date
+              th width='10%'
+                | Aircraft
+              th width='13%'
+                | Actions
+          tbody
+            - @addl_logs.each do |addl_log|
+              tr
+                td.table-row-center
+                  = link_to addl_log.number, addl_log_path(addl_log)
+                td.table-row-center
+                  = link_to addl_log.techlog.number, techlog_path(addl_log.techlog)
+                td.table-row-center
+                  = addl_log.techlog.flying_log.log_date
+                td.table-row-center
+                  = addl_log.techlog.flying_log.aircraft.number
+                td.text-center width='20%'
+                  = link_to addl_log_path(addl_log), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  = link_to edit_addl_log_path(addl_log), class: 'btn btn-info btn-flat ' do
+                    i.fa.fa-pencil
+                  
+                  /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
+                   /   i.fa.fa-trash
+        /.col-sm-4.col-sm-offset-4
+          = link_to 'Create Flying Log', new_addl_log_path, class: 'btn btn-block btn-primary btn-flat'
+        .clearfix

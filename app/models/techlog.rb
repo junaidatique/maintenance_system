@@ -30,6 +30,7 @@ class Techlog
   belongs_to :flying_log
   belongs_to :user
 
+  has_one :addl_log
   has_one :date_inspected
   has_one :work_performed
   has_one :work_duplicate

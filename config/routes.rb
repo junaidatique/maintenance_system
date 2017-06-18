@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   
+  resources :addl_logs
   resources :techlogs do 
     member do
       get 'create_addl_log'

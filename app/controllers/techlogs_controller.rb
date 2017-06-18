@@ -67,7 +67,10 @@ class TechlogsController < ApplicationController
   end
 
   def create_addl_log
-    puts @techlog
+    addl = AddlLog.new
+    addl.techlog = @techlog
+    addl.save
+    redirect_to addl_log_path(addl)
   end
 
   def create_limitation_log
