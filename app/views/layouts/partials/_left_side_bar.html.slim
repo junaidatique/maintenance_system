@@ -23,4 +23,8 @@ ul.sidebar-menu
     = link_to work_unit_codes_path do 
       .fa.fa-tasks
       span.side-bar-heading-text Work Unit Codes
+  li class="#{params[:controller] == "technical_orders" ? 'active' : ''}"
+    = link_to technical_orders_path do 
+      .fa.fa-tasks
+      span.side-bar-heading-text Techical Orders
   

@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
   
+  resources :technical_orders do 
+    resources :changes
+  end
   resources :techlogs
   resources :work_unit_codes do 
     collection do 

@@ -1,0 +1,59 @@
+= content_for :box_heading do
+  = @technical_order.name
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; General
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="50%"
+                    | Version Number
+                  td = @technical_order.version_number
+                tr
+                  th width="50%"
+                    | Name
+                  td = @technical_order.name
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+          .row
+            .col-md-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Technical Changes
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th
+                | Change Number
+                 
+          tbody
+            - @technical_order.technical_changes.each do |technical_change|
+              tr
+                td.table-row-center
+                  = link_to technical_change.change_number, technical_order_change_path(@technical_order, technical_change)
+                td.text-center width='20%'
+                  = link_to technical_order_change_path(@technical_order, technical_change), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  = link_to edit_technical_order_change_path(@technical_order, technical_change), class: 'btn btn-info btn-flat ' do
+                    i.fa.fa-pencil
+                  
+                  /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
+                   /   i.fa.fa-trash
+        .col-sm-4.col-sm-offset-4
+          = link_to 'New Technical Change', new_technical_order_change_path(@technical_order), class: 'btn btn-block btn-primary btn-flat'
+        .clearfix
+= render 'common/actions_buttons', back_path: technical_orders_path, edit_path: edit_technical_order_path(@technical_order)
