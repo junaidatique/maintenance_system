@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   
-  resources :techlogs
+  resources :techlogs do 
+    member do
+      get 'create_addl_log'
+      get 'create_limitation_log'
+    end
+  end
   resources :work_unit_codes do 
     collection do 
       get 'get_work_unit_codes'
