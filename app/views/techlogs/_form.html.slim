@@ -46,6 +46,10 @@
                       | Opened By
                     td = @techlog.user.name
                   tr
+                    th width="25%"
+                      | Time
+                    td = @techlog.log_time
+                  tr
                     th width="25%" colspan="4"
                       | Description
                   tr
@@ -62,15 +66,10 @@
         .box-body
           .row
             .col-sm-6
-              = f.association :work_unit_code, label_method: "#{:code}", value_method: :id, include_blank: false
-              /= f.label :work_unit_code
-              /= f.collection_select :work_unit_code_id, @techlog.work_unit_code_id, :id, :code, {}, {}
-              /= f.collection_select :work_unit_code, WorkUnitCode.all, :id, :code, {}, {:selected => "daf", multiple: false, class: 'js-search-category-multiple-select'}
+              = f.association :work_unit_code, label_method: "#{:code}", value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
             .col-sm-6
-              = f.input :log_time, input_html: { class: 'timepickerclass' }
-          .row
-            .col-sm-12
               = f.input :type, collection: enum_option_pairs(Techlog, :type), as: :radio_buttons 
+          .row
             .col-sm-12
               = f.input :action, as: :text
   .row
@@ -128,7 +127,7 @@
         .box-body
           .row
             .col-sm-6
-              = f.input :dms_version
+              = f.input :dms_version, disabled: true
           .row
             .col-sm-12
               h5
@@ -136,11 +135,11 @@
           = f.simple_fields_for :work_performed do |ac_f|
             .row
               .col-sm-4
-                = ac_f.input :work_date
+                = ac_f.input :work_date, input_html: { class: 'date_class' }
               .col-sm-4
                 = ac_f.input :work_time, input_html: { class: 'timepickerclass' }
               .col-sm-4
-                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Personal Code'
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Personal Code', input_html: {class: 'custom-select2'}
           .row
             .col-sm-12
               h5
@@ -148,23 +147,23 @@
           = f.simple_fields_for :date_inspected do |ac_f|
             .row
               .col-sm-4
-                = ac_f.input :work_date
+                = ac_f.input :work_date, input_html: { class: 'date_class' }
               .col-sm-4
                 = ac_f.input :work_time, input_html: { class: 'timepickerclass' }
               .col-sm-4
-                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Personal Code'
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Personal Code', input_html: {class: 'custom-select2'}
           .row
             .col-sm-12
               h5
                 | Work Duplicate
-          = f.simple_fields_for :date_inspected do |ac_f|
+          = f.simple_fields_for :work_duplicate do |ac_f|
             .row
               .col-sm-4
-                = ac_f.input :work_date
+                = ac_f.input :work_date, input_html: { class: 'date_class' }
               .col-sm-4
                 = ac_f.input :work_time, input_html: { class: 'timepickerclass' }
               .col-sm-4
-                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Personal Code'
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Personal Code', input_html: {class: 'custom-select2'}
             
 
               
@@ -172,7 +171,8 @@
   == render 'common/form_action_buttons', options: { form: f, index_path: locations_path}
 javascript:
   $(document).ready(function() {
-    console.log('tjos');
+
+    
     $(".js-search-category-multiple-select").select2({
       theme: 'bootstrap',
       ajax: {

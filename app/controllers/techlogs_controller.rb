@@ -1,5 +1,6 @@
 class TechlogsController < ApplicationController
-  before_action :set_techlog, only: [:show, :edit, :update, :destroy]
+  before_action :set_techlog, only: [:show, :edit, :update, :destroy, 
+    :create_addl_log, :create_limitation_log]
 
   # GET /techlogs
   # GET /techlogs.json
@@ -21,6 +22,7 @@ class TechlogsController < ApplicationController
   def edit
     @techlog.build_work_performed if @techlog.work_performed.blank?
     @techlog.build_date_inspected if @techlog.date_inspected.blank?
+    @techlog.build_work_duplicate if @techlog.work_duplicate.blank?
 
   end
 
@@ -64,6 +66,14 @@ class TechlogsController < ApplicationController
     end
   end
 
+  def create_addl_log
+    puts @techlog
+  end
+
+  def create_limitation_log
+
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_techlog
@@ -72,6 +82,13 @@ class TechlogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def techlog_params
-      params.fetch(:techlog, {})
+      params.require(:techlog).permit(:work_unit_code_id, :type, :action, :additional_detail_form, 
+                                        :component_on_hold, :sap_notif, :sap_wo, :amr_no, :occurrence_report,
+                                        :tools_used, :dms_version, 
+                                        change_parts_attributes: [:pin_out, :serial_number_out, :pin_in, :serial_number_in, :_destroy],
+                                          work_performed_attributes: [:work_date, :work_time, :user_id],
+                                          date_inspected_attributes: [:work_date, :work_time, :user_id],
+                                          work_duplicate_attributes: [:work_date, :work_time, :user_id],
+                                          )
     end
 end

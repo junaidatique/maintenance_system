@@ -1,12 +1,18 @@
 class FlyingLog
+  require 'autoinc'
+
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Mongoid::Autoinc
 
-  field :number, type: String
-  field :log_date, type: Date
+  field :number, type: Integer
+  field :log_date, type: String
   field :is_all_approved, type: Mongoid::Boolean, default: 0
 
-  validates :number, presence: true
+  #validates :number, presence: true
+
+  increments :number, seed: 1000
+
 
   belongs_to :aircraft
   belongs_to :location

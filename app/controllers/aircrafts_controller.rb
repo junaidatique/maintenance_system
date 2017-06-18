@@ -15,6 +15,12 @@ class AircraftsController < ApplicationController
   # GET /aircrafts/new
   def new
     @aircraft = Aircraft.new
+    last_aircraft = Aircraft.last
+    if last_aircraft.present?
+      @aircraft.number = last_aircraft.number + 1
+    else
+      @aircraft.number = 1001
+    end
   end
 
   # GET /aircrafts/1/edit
@@ -69,6 +75,6 @@ class AircraftsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def aircraft_params
-      params.require(:aircraft).permit(:name, :number, :status)
+      params.require(:aircraft).permit(:name, :status)
     end
 end

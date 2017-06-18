@@ -41,4 +41,5 @@
 }
 .box-body label{
   font-size: 13px;
+  text-transform: capitalize;
 }
