@@ -6,7 +6,7 @@
       | Login
     = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
       .form-group.has-feedback.increase-margin-bottom
-        = f.email_field :email, autofocus: true, :class=> 'form-control', :placeholder => 'Email'
+        = f.text_field :username, autofocus: true, :class=> 'form-control', :placeholder => 'Username'
         span.fa.fa-envelope.form-control-feedback
       .form-group.has-feedback.increase-margin-bottom
         = f.password_field :password, autocomplete: 'off', :class=> 'form-control', :placeholder => 'Password'

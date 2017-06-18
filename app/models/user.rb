@@ -11,6 +11,7 @@ class User
 
   ## Database authenticatable
   field :email,              type: String, default: ""
+  field :username,           type: String, default: ""
   field :encrypted_password, type: String, default: ""
 
   ## Recoverable
