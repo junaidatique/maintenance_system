@@ -29,10 +29,11 @@ class ChangesController < ApplicationController
     @change.technical_order = @technical_order
     
     respond_to do |format|
-      if @change.save
+      if @change.save        
         format.html { redirect_to @technical_order, notice: 'Change was successfully created.' }
         format.json { render :show, status: :created, location: @change }
       else
+        flash[:error] = @change.errors.full_messages.to_sentence
         format.html { render :new }
         format.json { render json: @change.errors, status: :unprocessable_entity }
       end
@@ -76,6 +77,6 @@ class ChangesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def change_params
-      params.require(:change).permit(:change_number)
+      params.require(:change).permit(:change_number, :change_date, :pdf_file)
     end
 end

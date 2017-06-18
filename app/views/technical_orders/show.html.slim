@@ -39,12 +39,21 @@
             tr
               th
                 | Change Number
+              th
+                | Change Date
+              th
+                | File Path
                  
           tbody
             - @technical_order.technical_changes.each do |technical_change|
               tr
                 td.table-row-center
                   = technical_change.change_number
+                td.table-row-center
+                  = technical_change.change_date
+                td
+                  - if technical_change.pdf_file.exists?
+                    = link_to 'Open file', technical_change.pdf_file.url, target: :_blank
                 td.text-center width='20%'
                   = link_to technical_order_change_path(@technical_order, technical_change), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
                      i.fa.fa-trash
