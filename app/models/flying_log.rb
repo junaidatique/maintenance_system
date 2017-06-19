@@ -28,6 +28,8 @@ class FlyingLog
   has_many :flightline_servicings
   has_many :techlogs
 
+  # embeds_many :notifications, as: :notifiable
+
   accepts_nested_attributes_for :ac_configuration
   accepts_nested_attributes_for :fuel
   accepts_nested_attributes_for :capt_acceptance_certificate
