@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   
   resources :addl_logs
+  resources :technical_orders do 
+    resources :changes
+  end
   resources :techlogs do 
     member do
       get 'create_addl_log'

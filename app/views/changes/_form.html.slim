@@ -1,0 +1,19 @@
+= simple_form_for([@technical_order, @change], html: { class: '' }) do |f|
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; General
+        .box-body
+          .row
+            .col-sm-6
+              = f.input :change_number
+            .col-sm-6
+              = f.input :change_date, input_html: { class: 'date_class' }
+          .row
+            .col-sm-6
+              = f.label :pdf_file
+              = f.file_field :pdf_file
+  == render 'common/form_action_buttons', options: { form: f, index_path: technical_order_path(@technical_order)}

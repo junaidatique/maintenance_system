@@ -1,0 +1,35 @@
+= content_for :page_subtitle do
+  | Technical Order
+
+= content_for :box_heading do
+  | Technical Order
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th width='50%'
+                | Name
+              th width='50%'
+                | Version Number 
+          tbody
+            - @technical_orders.each do |technical_order|
+              tr
+                td.table-row-center
+                  = link_to technical_order.name, technical_order_path(technical_order)
+                td.table-row-center
+                  = technical_order.version_number
+                td.text-center width='20%'
+                  = link_to technical_order_path(technical_order), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  = link_to edit_technical_order_path(technical_order), class: 'btn btn-info btn-flat ' do
+                    i.fa.fa-pencil
+                  
+                  /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
+                   /   i.fa.fa-trash
+        .col-sm-4.col-sm-offset-4
+          = link_to 'New Technical Order', new_technical_order_path, class: 'btn btn-block btn-primary btn-flat'
+        .clearfix
