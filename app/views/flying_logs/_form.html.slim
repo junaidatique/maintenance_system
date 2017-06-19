@@ -120,7 +120,7 @@
               .col-sm-4
                 = ac_f.input :landing_time, label: 'Landing Time (Local)', input_html: { class: 'timepickerclass' }
               .col-sm-4
-                = ac_f.input :flight_time
+                = ac_f.input :flight_time, label: 'Flight Time (mins)'
             .row
               .col-sm-6
                 = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code), as: :radio_buttons 

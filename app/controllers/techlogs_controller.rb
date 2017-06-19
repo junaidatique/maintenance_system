@@ -76,7 +76,10 @@ class TechlogsController < ApplicationController
   end
 
   def create_limitation_log
-
+    limit = LimitationLog.new
+    limit.techlog = @techlog
+    limit.save
+    redirect_to limitation_log_path(limit)
   end
 
   private

@@ -2,7 +2,8 @@ class User
   include Mongoid::Document
   include SimpleEnum::Mongoid
 
-  as_enum :role, admin: 0, engineer: 1, data_entry: 2, crew_cheif: 3
+  as_enum :role, admin: 0, engineer: 1, crew_cheif: 2, electrical: 3, 
+                radio: 4, instrument: 5, airframe_engine: 6, master_control: 7, pilot: 8
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, 

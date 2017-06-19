@@ -1,8 +1,4 @@
-h1 Editing limitation_log
-
+= content_for :box_heading do
+  | Limitation Log
+  = @limitation_log.number
 == render 'form'
-
-= link_to 'Show', @limitation_log
-'  |
-= link_to 'Back', limitation_logs_path
-

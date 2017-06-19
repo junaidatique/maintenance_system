@@ -19,6 +19,9 @@ class LimitationLogsController < ApplicationController
 
   # GET /limitation_logs/1/edit
   def edit
+    if @limitation_log.limitation_rectification.blank?
+      @limitation_log.build_limitation_rectification 
+    end
   end
 
   # POST /limitation_logs
@@ -69,6 +72,9 @@ class LimitationLogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def limitation_log_params
-      params.fetch(:limitation_log, {})
+      params.require(:limitation_log).permit(:description, :period_of_deferm, :due, :log_date, 
+                    :log_time, :user_id,
+                    limitation_rectification_attributes: [:description, :log_date, :log_time, :user_id]
+                    )
     end
 end

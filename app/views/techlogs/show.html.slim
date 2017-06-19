@@ -41,9 +41,10 @@
                 i.fa.fa-pencil
                 | &nbsp; Transfer to ADDL
               | &nbsp;
-            = link_to create_limitation_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
-              i.fa.fa-pencil
-              | &nbsp; Transfer to Limitation Log
+            - if LimitationLog.where(techlog_id: @techlog.id).count == 0
+              = link_to create_limitation_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
+                i.fa.fa-pencil
+                | &nbsp; Transfer to Limitation Log
       .box-body
         .row
           .col-sm-12

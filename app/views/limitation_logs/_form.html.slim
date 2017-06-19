@@ -1,7 +1,80 @@
 = simple_form_for(@limitation_log) do |f|
   = f.error_notification
+  
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Techlog
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody                
+                  tr
+                    th width="25%"
+                      | Number
+                    td = @limitation_log.techlog.number
+                    th width="25%"
+                      | Opened By
+                    td = @limitation_log.techlog.user.name
+                  tr
+                    th width="25%"
+                      | Time
+                    td = @limitation_log.techlog.log_time
+                  tr
+                    th width="25%" colspan="4"
+                      | Description
+                  tr
+                    td colspan="4"
+                      = @limitation_log.techlog.description
+                    
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; General
+        .box-body
+          .row
+            .col-sm-12
+              = f.input :description, as: :text
+          .row
+            .col-sm-6
+              = f.input :period_of_deferm
+            .col-sm-6
+              = f.input :due
+          .row
+            .col-sm-6
+              = f.input :log_date, input_html: { class: 'date_class' }
+            .col-sm-6
+              = f.input :log_time, input_html: { class: 'timepickerclass' }
+          .row
+            .col-sm-6
+              = f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Personal Code', input_html: {class: 'custom-select2'}
 
-  .form-inputs
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Rectification
+        .box-body
+          = f.simple_fields_for :limitation_rectification do |ac_f|
+            .row
+              .col-sm-12
+                = ac_f.input :description, as: :text
+            .row
+              .col-sm-6
+                = ac_f.input :log_date, input_html: { class: 'date_class' }
+              .col-sm-6
+                = ac_f.input :log_time, input_html: { class: 'timepickerclass' }
+            .row
+              .col-sm-6
+                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Personal Code', input_html: {class: 'custom-select2'}
 
-  .form-actions
-    = f.button :submit
+  == render 'common/form_action_buttons', options: { form: f, index_path: locations_path}
