@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   
+  resources :limitation_logs
   resources :addl_logs
   resources :technical_orders do 
     resources :changes

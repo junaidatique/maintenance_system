@@ -1,0 +1,19 @@
+h1 Listing limitation_logs
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @limitation_logs.each do |limitation_log|
+      tr
+        td = link_to 'Show', limitation_log
+        td = link_to 'Edit', edit_limitation_log_path(limitation_log)
+        td = link_to 'Destroy', limitation_log, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Limitation log', new_limitation_log_path

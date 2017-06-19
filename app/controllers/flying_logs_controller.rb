@@ -86,7 +86,7 @@ class FlyingLogsController < ApplicationController
     def flying_log_params
       params.require(:flying_log).permit(:log_date, :aircraft_id, :location_id,
                                 ac_configuration_attributes: [:clean, :smoke_pods, :third_seat, :cockpit],
-                                flightline_servicings_attributes: [:inspection_performed, :flight_start_time, :flight_end_time, :user_id, :hyd, :_destroy],
+                                flightline_servicings_attributes: [:id, :inspection_performed, :flight_start_time, :flight_end_time, :user_id, :hyd, :_destroy],
                                 fuel_attributes: [:fuel_remaining, :refill, :oil_remaining, :oil_serviced, :oil_total_qty],
                                 capt_acceptance_certificate_attributes: [:flight_time, :user_id],
                                 sortie_attributes: [:user_id, :takeoff_time, :landing_time, :flight_time, :sortie_code, :touch_go, :full_stop, :total, :remarks],
@@ -97,7 +97,7 @@ class FlyingLogsController < ApplicationController
                                   :new_total_aircraft_hour, :new_total_landings, :new_total_ecs_operating_hour, 
                                   :correction_aircraft_hour, :correction_landings, :correction_ecs_operating_hour, 
                                   :corrected_total_aircraft_hour, :corrected_total_landings, :corrected_total_ecs_operating_hour],
-                                techlogs_attributes: [:number, :user_id, :description],
+                                techlogs_attributes: [:id, :log_time, :user_id, :description],
                                 after_flight_servicing_attributes: [:flight_time, :user_id, :oil_refill, :through_flight]
                                 )
     end

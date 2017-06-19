@@ -49,7 +49,13 @@ class User
   accepts_nested_attributes_for :profile_picture
 
   has_and_belongs_to_many :work_unit_codes
+
+  validates :username, presence: true
   
+  def email_required?
+    false
+  end
+
   def active_for_authentication?
     super && self.status # i.e. super && self.is_active
   end

@@ -23,7 +23,9 @@ class TechlogsController < ApplicationController
     @techlog.build_work_performed if @techlog.work_performed.blank?
     @techlog.build_date_inspected if @techlog.date_inspected.blank?
     @techlog.build_work_duplicate if @techlog.work_duplicate.blank?
-
+    if @techlog.dms_version.blank?
+      @techlog.dms_version = System.first.settings['dms_version_number'] 
+    end
   end
 
   # POST /techlogs

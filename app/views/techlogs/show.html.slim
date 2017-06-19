@@ -36,10 +36,11 @@
               i.fa.fa-bars
               | &nbsp; Techlog
           .col-sm-6.text-right
-            = link_to create_addl_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
-              i.fa.fa-pencil
-              | &nbsp; Transfer to ADDL
-            | &nbsp;
+            - if AddlLog.where(techlog_id: @techlog.id).count == 0
+              = link_to create_addl_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
+                i.fa.fa-pencil
+                | &nbsp; Transfer to ADDL
+              | &nbsp;
             = link_to create_limitation_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
               i.fa.fa-pencil
               | &nbsp; Transfer to Limitation Log

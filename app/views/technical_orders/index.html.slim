@@ -11,10 +11,12 @@
         table.table.table-bordered.table-striped.data-tabled
           thead
             tr
-              th width='50%'
+              th
                 | Name
-              th width='50%'
+              th
                 | Version Number 
+              th
+                | Action 
           tbody
             - @technical_orders.each do |technical_order|
               tr

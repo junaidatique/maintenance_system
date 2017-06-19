@@ -14,6 +14,8 @@
               th width='10%'
                 | Name
               th width='10%'
+                | Username
+              th width='10%'
                 | Rank 
               th width='10%'
                 | Personal Code
@@ -24,6 +26,8 @@
               tr
                 td.table-row-center
                   = link_to user.name, user_path(user)
+                td.table-row-center
+                  = user.username
                 td.table-row-center
                   = user.rank
                 td.table-row-center
