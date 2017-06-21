@@ -1,0 +1,81 @@
+doctype html
+html
+  head
+    title
+      | QSMK
+    meta charset="UTF-8"
+    scss:
+      body {
+        height: 100%;
+        width: 100%;
+      }
+      .background-fl-image {
+        z-index: -1;
+        position: absolute;
+      }
+      .aircraft-number {
+        position: absolute;
+        top: 80px;
+        left: 50px;
+        h3 {
+          font-size: 45px;
+        }
+      }
+      .location {
+        position: absolute;
+        top: 95px;
+        left: 680px;
+        h3 {
+          font-size: 35px;
+        }
+      }
+      .fl-date {
+        position: absolute;
+        top: 95px;
+        left: 1080px;
+        h3 {
+          font-size: 35px;
+        }
+      }
+      .fl-log-number {
+        position: absolute;
+        top: 95px;
+        left: 1430px;
+        h3 {
+          font-size: 35px;
+        }
+      }
+      .ac-clean {
+        height: 50px;
+        width: 50px;
+        position: absolute;
+        top: 285px;
+        left: 128px;
+        background: yellow;
+        border-radius: 50%;
+        opacity: 0.5;
+      }
+      .ac-smoke {
+        height: 50px;
+        width: 50px;
+        position: absolute;
+        top: 280px;
+        left: 260px;
+        background: yellow;
+        border-radius: 50%;
+        opacity: 0.5;
+      }
+      .ac-third-seat {
+        height: 50px;
+        width: 50px;
+        position: absolute;
+        top: 280px;
+        left: 408px;
+        background: yellow;
+        border-radius: 50%;
+        opacity: 0.5;
+      }
+  body
+    .background-fl-image
+      = wicked_pdf_image_tag('flying-log.jpg')
+    =yield

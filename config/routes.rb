@@ -16,7 +16,11 @@ Rails.application.routes.draw do
       get 'get_work_unit_codes'
     end
   end
-  resources :flying_logs
+  resources :flying_logs do 
+    member do
+      get 'pdf'
+    end
+  end
   root 'users#index'
   resources :locations
   resources :aircrafts

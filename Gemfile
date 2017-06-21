@@ -71,4 +71,5 @@ gem 'simple_form'
 gem 'mongoid-tree', :require => 'mongoid/tree'
 gem "mongoid-paperclip"
 gem 'mongoid-autoinc'
-
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'

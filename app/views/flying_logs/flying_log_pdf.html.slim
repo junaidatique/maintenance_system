@@ -1,0 +1,19 @@
+.aircraft-number
+  h3
+    = flying_log.aircraft.number
+.location
+  h3
+    = flying_log.location.name
+.fl-date
+  h3
+    = flying_log.log_date.strftime("%Y-%m-%d")
+.fl-log-number
+  h3 
+    = flying_log.number
+- if flying_log.ac_configuration.present?
+  - if flying_log.ac_configuration.clean
+    .ac-clean
+  - if flying_log.ac_configuration.smoke_pods
+    .ac-smoke
+  - if flying_log.ac_configuration.third_seat
+    .ac-third-seat
