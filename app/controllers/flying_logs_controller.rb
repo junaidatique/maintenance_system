@@ -95,11 +95,6 @@ class FlyingLogsController < ApplicationController
         left: 0,
         right:0 
       }
-    # puts @flying_log.inspect
-    # format.pdf do
-      
-    # end
-    
   end
 
   private

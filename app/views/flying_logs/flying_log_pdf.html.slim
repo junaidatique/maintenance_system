@@ -17,3 +17,39 @@
     .ac-smoke
   - if flying_log.ac_configuration.third_seat
     .ac-third-seat
+- if flying_log.ac_configuration.cockpit.present?
+  - if flying_log.ac_configuration.cockpit == :single
+    .ac-cockpit-single
+  - else
+    .ac-cockpit-dual
+- if flying_log.fuel.present?
+  - if flying_log.fuel.fuel_remaining.present?
+    .fl-fuel-remaining
+      h3
+        = flying_log.fuel.fuel_remaining
+  - if flying_log.fuel.refill.present?
+    .fl-fuel-refill
+      h3 
+        = flying_log.fuel.refill
+  - if flying_log.fuel.oil_remaining.present?
+    .fl-fuel-oil-remaining
+      h3 
+        = flying_log.fuel.oil_remaining
+  - if flying_log.fuel.oil_serviced.present?
+    .fl-fuel-oil-serviced
+      h3 
+        = flying_log.fuel.oil_serviced
+  - if flying_log.fuel.oil_total_qty.present?
+    .fl-fuel-oil-quantity
+      h3 
+        = flying_log.fuel.oil_total_qty
+  - if flying_log.flightline_release.present?
+    - if flying_log.flightline_release.flight_time.present?
+      .fl-flightline-release-time
+        h3
+          = flying_log.flightline_release.flight_time
+    - if flying_log.flightline_release.user.personal_code.present?
+      .fl-flightline-release-personal-code
+        h3
+          = flying_log.flightline_release.user.personal_code
+
