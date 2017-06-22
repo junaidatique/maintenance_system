@@ -6,7 +6,7 @@ class FlyingLog
   include Mongoid::Autoinc
 
   field :number, type: Integer
-  field :log_date, type: DateTime
+  field :log_date, type: String
   field :is_all_approved, type: Mongoid::Boolean, default: 0
 
   #validates :number, presence: true
