@@ -6,10 +6,13 @@
     .box.box-info
       .box-header.with-border
         .row
-          .col-md-6
+          .col-sm-6
             h3.box-title
               i.fa.fa-bars
               | &nbsp; General
+          .col-sm-6.text-right
+            = link_to pdf_flying_log_path(@flying_log), class: 'btn btn-success btn-flat', target: :_blank do
+              | View QSMK Flying Log
       .box-body
         .row
           .col-sm-12

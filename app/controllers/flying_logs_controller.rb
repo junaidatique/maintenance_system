@@ -79,30 +79,27 @@ class FlyingLogsController < ApplicationController
   # GET /flying_logs/1/pdf
   # GET /flying_logs/1/pdf.json
   def pdf
-    # @flying_log
-    respond_to do |format|
-      # format.html { redirect_to flying_logs_url, notice: 'Flying log was successfully destroyed.' }
-      # format.json { head :no_content }
-      format.pdf do
-        render  pdf: "flying_log_#{@flying_log.id}",
-                orientation: 'Landscape',
-                template: 'flying_logs/flying_log_pdf.html.slim',
-                layout: 'layouts/pdf/pdf.html.slim',
-                show_as_html: false,
-                locals: {
-                  :flying_log => @flying_log
-                },
-                page_height: '17in',
-                page_width: '13in',
-                margin:  {
-                  top: 0,                     # default 10 (mm)
-                  bottom: 0,
-                  left: 0,
-                  right:0 
-                }
-      end
-
-    end
+    render  pdf: "flying_log_#{@flying_log.id}",
+      orientation: 'Landscape',
+      template: 'flying_logs/flying_log_pdf.html.slim',
+      layout: 'layouts/pdf/pdf.html.slim',
+      show_as_html: false,
+      locals: {
+        :flying_log => @flying_log
+      },
+      page_height: '17in',
+      page_width: '13in',
+      margin:  {
+        top: 0,                     # default 10 (mm)
+        bottom: 0,
+        left: 0,
+        right:0 
+      }
+    # puts @flying_log.inspect
+    # format.pdf do
+      
+    # end
+    
   end
 
   private
