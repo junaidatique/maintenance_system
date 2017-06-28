@@ -28,7 +28,7 @@ class NonFlyingDaysController < ApplicationController
 
     respond_to do |format|
       if @non_flying_day.save
-        format.html { redirect_to @non_flying_day, notice: 'Non flying day was successfully created.' }
+        format.html { redirect_to non_flying_days_url, notice: 'Non flying day was successfully created.' }
         format.json { render :show, status: :created, location: @non_flying_day }
       else
         format.html { render :new }
@@ -42,7 +42,7 @@ class NonFlyingDaysController < ApplicationController
   def update
     respond_to do |format|
       if @non_flying_day.update(non_flying_day_params)
-        format.html { redirect_to @non_flying_day, notice: 'Non flying day was successfully updated.' }
+        format.html { redirect_to non_flying_days_url, notice: 'Non flying day was successfully updated.' }
         format.json { render :show, status: :ok, location: @non_flying_day }
       else
         format.html { render :edit }
@@ -69,6 +69,6 @@ class NonFlyingDaysController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def non_flying_day_params
-      params.fetch(:non_flying_day, {})
+      params.require(:non_flying_day).permit(:date, :reason)
     end
 end

@@ -25,7 +25,7 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params)
-    @user.password = params[:password] unless params[:password].blank?
+    #@user.password = params[:password] unless params[:password].blank?
     respond_to do |format|
       if @user.save
         format.html { redirect_to @user, notice: 'User was successfully created.' }
@@ -41,8 +41,11 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1.json
   def update
     respond_to do |format|
-      if @user.update(user_update_params)
-        @user.password = params[:password] unless params[:password].blank?
+      update_param = user_params
+      if update_param[:password].blank?
+        update_param = user_update_params
+      end
+      if @user.update(update_param)
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
       else

@@ -1,4 +1,6 @@
 $(document).on 'ready', ->
+  $('.datepicker').datepicker
+    dateFormat: 'dd/mm/yy'
   $('.custom-select2').select2 theme: 'bootstrap'
   $('input').iCheck
     checkboxClass: 'icheckbox_square'

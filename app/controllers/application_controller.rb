@@ -4,7 +4,12 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 
   def after_sign_in_path_for(user)
-  	aircrafts_path
+    if user.admin?
+      aircrafts_path
+    else
+      flying_logs_path
+    end
+  	
   end
 
   private

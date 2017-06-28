@@ -1,19 +1,33 @@
-h1 Listing non_flying_days
+= content_for :page_subtitle do
+  | Non Flying Days
 
-table
-  thead
-    tr
-      th
-      th
-      th
+= content_for :box_heading do
+  | Non Flying Days
 
-  tbody
-    - @non_flying_days.each do |non_flying_day|
-      tr
-        td = link_to 'Show', non_flying_day
-        td = link_to 'Edit', edit_non_flying_day_path(non_flying_day)
-        td = link_to 'Destroy', non_flying_day, data: { confirm: 'Are you sure?' }, method: :delete
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th width='10%'
+                | Date
+              th width='10%'
+                | Reason
+              th width='13%'
+                | Actions
+          tbody
+            - @non_flying_days.each do |non_flying_day|
+              tr
+                td.table-row-center
+                  = display_date(non_flying_day.date)
+                td.table-row-center
+                  = non_flying_day.reason
+                td.text-center width='20%'
+                  = link_to edit_non_flying_day_path(non_flying_day), class: 'btn btn-info btn-flat ' do
+                    i.fa.fa-pencil
 
-br
-
-= link_to 'New Non flying day', new_non_flying_day_path
+        .col-sm-4.col-sm-offset-4
+          = link_to 'Add Non Flying Day', new_non_flying_day_path, class: 'btn btn-block btn-primary btn-flat'
+        .clearfix

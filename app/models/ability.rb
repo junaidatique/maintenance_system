@@ -8,8 +8,8 @@ class Ability
     if user.admin?
       can :manage, :all
     elsif user.master_control?
-      puts 'here 123'
       can [:read, :update], Aircraft
+      cannot :crud, NonFlyingDay
     end
   end
 end
