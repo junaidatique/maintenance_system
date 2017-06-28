@@ -9,12 +9,43 @@
         .box-body
           .row
             .col-sm-6
-              = f.input :number, disabled: true 
+              - if can? :create, Aircraft
+                = f.input :tail_number
+              - else 
+                = f.input :tail_number, disabled: true
             .col-sm-6
-              = f.input :name
+              - if can? :create, Aircraft
+                = f.input :serial_no, label: 'Serail #'
+              - else
+                = f.input :serial_no, disabled: true
           .row
             .col-sm-6
               .form-group
-                = f.check_box :status, class:'form-control'
-                = f.label I18n.t('views.commons.active')
+                = f.input :available_for_flight, as: :boolean, checked_value: 1, unchecked_value: 0
+            .col-sm-6
+              .form-group
+                - if can? :create, Aircraft
+                  = f.input :status, as: :boolean, checked_value: 1, unchecked_value: 0
+                - else 
+                  = f.input :status, as: :boolean, checked_value: 1, unchecked_value: 0, disabled: true
+  - if can? :update, @aircraft
+    .row
+      .col-md-12#div_part
+        .box.box-info
+          .box-header.with-border
+            .row
+              .col-sm-9
+                h3.box-title
+                  i.fa.fa-bar-chart
+                  | &nbsp;Parts
+              .col-sm-3
+                
+          .box-body
+            div.parts_insert
+              = f.simple_fields_for :parts do |part|
+                = render 'part_fields', :f => part
+            .row
+              .col-sm-offset-9.col-sm-3
+                = link_to_add_association "+ Add Part", f, :parts, data: {:'association-insertion-node' => ".parts_insert", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
+                    
   == render 'common/form_action_buttons', options: { form: f, index_path: aircrafts_path}

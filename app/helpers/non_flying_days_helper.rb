@@ -1,0 +1,2 @@
+module NonFlyingDaysHelper
+end

@@ -1,0 +1,28 @@
+.row.nested-fields
+  .col-sm-12
+    .row
+      .col-sm-3
+        = f.input :number
+      .col-sm-3
+        = f.input :noun
+      .col-sm-3
+        = f.input :serial_no
+      .col-sm-3
+        = f.input :calender_life, input_html: { class: 'datepicker' }
+    .row
+      .col-sm-3
+        = f.input :installed_date, input_html: { class: 'datepicker' }
+      .col-sm-3
+        = f.input :remaining_hours
+      .col-sm-3
+        = f.input :flight_hours
+      .col-sm-3
+        = f.input :no_of_landings
+
+    .row
+      .col-sm-9
+        = f.input :is_lifed, as: :boolean, checked_value: 1, unchecked_value: 0
+      .col-sm-3
+        = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
+          i.fa.fa-trash
+    hr

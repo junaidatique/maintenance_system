@@ -2,7 +2,7 @@ ul.sidebar-menu
   li class="#{params[:controller] == "aircrafts" ? 'active' : ''}"
     = link_to aircrafts_path do
       .fa.fa-tasks
-      span.side-bar-heading-text Aircrafts
+      span.side-bar-heading-text Aircraft
   li class="#{params[:controller] == "locations" ? 'active' : ''}"
     = link_to locations_path do
       .fa.fa-tasks
@@ -11,6 +11,14 @@ ul.sidebar-menu
     = link_to users_path do
       .fa.fa-tasks
       span.side-bar-heading-text Users
+  li class="#{params[:controller] == "work_unit_codes" ? 'active' : ''}"
+    = link_to work_unit_codes_path do 
+      .fa.fa-tasks
+      span.side-bar-heading-text Work Unit Codes
+  li class="#{params[:controller] == "technical_orders" ? 'active' : ''}"
+    = link_to technical_orders_path do 
+      .fa.fa-tasks
+      span.side-bar-heading-text DMS Version
   li class="#{params[:controller] == "flying_logs" ? 'active' : ''}"
     = link_to flying_logs_path do
       .fa.fa-tasks
@@ -27,12 +35,6 @@ ul.sidebar-menu
     = link_to limitation_logs_path do
       .fa.fa-tasks
       span.side-bar-heading-text Limitation Logs
-  li class="#{params[:controller] == "work_unit_codes" ? 'active' : ''}"
-    = link_to work_unit_codes_path do 
-      .fa.fa-tasks
-      span.side-bar-heading-text Work Unit Codes
-  li class="#{params[:controller] == "technical_orders" ? 'active' : ''}"
-    = link_to technical_orders_path do 
-      .fa.fa-tasks
-      span.side-bar-heading-text Techical Orders
+  
+  
   

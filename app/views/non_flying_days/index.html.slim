@@ -1,0 +1,19 @@
+h1 Listing non_flying_days
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @non_flying_days.each do |non_flying_day|
+      tr
+        td = link_to 'Show', non_flying_day
+        td = link_to 'Edit', edit_non_flying_day_path(non_flying_day)
+        td = link_to 'Destroy', non_flying_day, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Non flying day', new_non_flying_day_path
