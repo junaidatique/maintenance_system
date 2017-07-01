@@ -2,6 +2,11 @@ class Part
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  validates :number, presence: true
+  validates :serial_no, presence: true
+  validates :noun, presence: true
+  validates :is_lifed, presence: true
+
   field :number, type: String
   field :noun, type: String
   field :serial_no, type: String
@@ -13,7 +18,6 @@ class Part
   field :flight_hours, type: String
   field :no_of_landings, type: String
   field :no_of_landings_completed, type: String, default: 0
-
   field :is_lifed, type: Mongoid::Boolean
 
   belongs_to :aircraft

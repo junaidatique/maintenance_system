@@ -1,272 +1,225 @@
 = simple_form_for(@flying_log, html: { class: '' }) do |f|
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-borderf
-          h3.box-title
-            i.fa.fa-bars
-            | &nbsp; General
-        .box-body
-          .row
-            .col-sm-6
-              = f.input :number, label: 'Log #', disabled: true
-            .col-sm-6
-              = f.input :log_date
-          .row
-            .col-sm-6
-              = f.association :aircraft, collection: Aircraft.active.all, label_method: :number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
-            .col-sm-6
-              = f.association :location, collection: Location.active.all, include_blank: false, input_html: {class: 'custom-select2'}
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-borderf
-          h3.box-title
-            i.fa.fa-bars
-            | &nbsp; A/C Configuration
-        .box-body
-          = f.simple_fields_for :ac_configuration do |ac_f|
+  = f.error_notification
+  - if current_user.role == :crew_cheif and !@flying_log.is_fuel_filled
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Fuel
+          .box-body
+            = f.simple_fields_for :fuel do |ac_f|
+              .row
+                .col-sm-6
+                  = ac_f.input :fuel_remaining, label: 'Remaining (Gallons)'
+                .col-sm-6
+                  = ac_f.input :refill, label: 'Refill (Gallons)'
+              .row
+                .col-sm-12
+                  h5
+                    | Oil
+              .row
+                .col-sm-6
+                  = ac_f.input :oil_remaining, label: 'Remaining'
+                .col-sm-6
+                  = ac_f.input :oil_serviced, label: 'Serviced'
+              .row
+                .col-sm-6
+                  = ac_f.input :oil_total_qty, label: 'Total Quantity'
+  - if current_user.role == :master_control and @flying_log.is_fuel_filled and !@flying_log.is_flight_released
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Flightline Release
+          .box-body
+            = f.simple_fields_for :flightline_release do |ac_f|
+              = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }
+              .row
+                .col-sm-6
+                  = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
+                /.col-sm-6
+                  = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+  - if current_user.role == :pilot and @flying_log.is_fuel_filled and @flying_log.is_flight_released and !@flying_log.is_flight_booked
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Pilot Acceptance Certificate
+          .box-body
+            = f.simple_fields_for :capt_acceptance_certificate do |ac_f|
+              = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }
+              .row
+                .col-sm-6
+                  = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
+                /.col-sm-6
+                  = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+  - if current_user.role == :pilot and @flying_log.is_fuel_filled and @flying_log.is_flight_released and @flying_log.is_flight_booked and !@flying_log.is_pilot_back
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Sortie
+          .box-body
+            = f.simple_fields_for :sortie do |ac_f|
+              .row
+                .col-sm-6
+                  = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Crew', input_html: {class: 'custom-select2'}
+                .col-sm-6
+              .row
+                .col-sm-12
+                  h5
+                    | Times
+              .row
+                .col-sm-4
+                  = ac_f.input :takeoff_time, label: 'Takeoff Time (Local)', input_html: { class: 'timepickerclass' }
+                .col-sm-4
+                  = ac_f.input :landing_time, label: 'Landing Time (Local)', input_html: { class: 'timepickerclass' }
+                .col-sm-4
+                  = ac_f.input :flight_time, label: 'Flight Time (mins)'
+              .row
+                .col-sm-6
+                  = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code), as: :radio_buttons 
+              .row
+                .col-sm-12
+                  h5
+                    | Landings
+              .row
+                .col-sm-4
+                  = ac_f.input :touch_go
+                .col-sm-4
+                  = ac_f.input :full_stop
+                .col-sm-4
+                  = ac_f.input :total
+              .row
+                .col-sm-12
+                  = ac_f.input :remarks, as: :text
+                  
+  - else
+    
+    
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Capt After Flight
+          .box-body
+            = f.simple_fields_for :capt_after_flight do |ac_f|
+              .row
+                .col-sm-6
+                  = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
+                .col-sm-6
+                  = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+    
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Aircraft Total Times
+          .box-body
+            = f.simple_fields_for :aircraft_total_time do |ac_f|
+              .row
+                .col-sm-12
+                  h5
+                    | Carried Over Totals
+              .row
+                .col-sm-4
+                  = ac_f.input :carried_over_aircraft_hour
+                .col-sm-4
+                  = ac_f.input :carried_over_landings
+                .col-sm-4
+                  = ac_f.input :carried_over_ecs_operating_hour
+              .row
+                .col-sm-12
+                  h5
+                    | This Sortie
+              .row
+                .col-sm-4
+                  = ac_f.input :this_sortie_aircraft_hour
+                .col-sm-4
+                  = ac_f.input :this_sortie_landings
+                .col-sm-4
+                  = ac_f.input :this_sortie_ecs_operating_hour
+              .row
+                .col-sm-12
+                  h5
+                    | New Total
+              .row
+                .col-sm-4
+                  = ac_f.input :new_total_aircraft_hour
+                .col-sm-4
+                  = ac_f.input :new_total_landings
+                .col-sm-4
+                  = ac_f.input :new_total_ecs_operating_hour
+              .row
+                .col-sm-12
+                  h5
+                    | Correction
+              .row
+                .col-sm-4
+                  = ac_f.input :correction_aircraft_hour
+                .col-sm-4
+                  = ac_f.input :correction_landings
+                .col-sm-4
+                  = ac_f.input :correction_ecs_operating_hour
+              .row
+                .col-sm-12
+                  h5
+                    | Corrected Total
+              .row
+                .col-sm-4
+                  = ac_f.input :corrected_total_aircraft_hour
+                .col-sm-4
+                  = ac_f.input :corrected_total_landings
+                .col-sm-4
+                  = ac_f.input :corrected_total_ecs_operating_hour
+    .row
+      .col-md-12#div_techlog_servicing
+        .box.box-info
+          .box-header.with-border
             .row
-              .col-sm-12
-                h5
-                  | Role Equipment State
-              .col-sm-4
-                = ac_f.input :clean, as: :boolean, checked_value: 1, unchecked_value: 0
-              .col-sm-4
-                = ac_f.input :smoke_pods, as: :boolean, checked_value: 1, unchecked_value: 0
-              .col-sm-4
-                = ac_f.input :third_seat, as: :boolean, checked_value: 1, unchecked_value: 0
-            .row
-              .col-sm-6
-                = ac_f.input :cockpit, collection: enum_option_pairs(AcConfiguration, :cockpit), as: :radio_buttons 
-  .row
-    .col-md-12#div_flight_line_servicing
-      .box.box-info
-        .box-header.with-border
-          .row
-            .col-sm-9
-              h3.box-title
-                i.fa.fa-bar-chart
-                | &nbsp;Flightline Servicing
-            .col-sm-3
-              
-        .box-body
-          div.flightline_servicings
-            = f.simple_fields_for :flightline_servicings do |flightline_servicing|
-              = render 'flightline_servicing_fields', :f => flightline_servicing
-          .row
-            .col-sm-offset-9.col-sm-3
-              = link_to_add_association "+ Add Flightline Servicing", f, :flightline_servicings, data: {:'association-insertion-node' => ".flightline_servicings", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-borderf
-          h3.box-title
-            i.fa.fa-bars
-            | &nbsp; Fuel
-        .box-body
-          = f.simple_fields_for :fuel do |ac_f|
-            .row
-              .col-sm-6
-                = ac_f.input :fuel_remaining, label: 'Remaining (Gallons)'
-              .col-sm-6
-                = ac_f.input :refill, label: 'Refill (Gallons)'
-            .row
-              .col-sm-12
-                h5
-                  | Oil
-            .row
-              .col-sm-6
-                = ac_f.input :oil_remaining, label: 'Remaining'
-              .col-sm-6
-                = ac_f.input :oil_serviced, label: 'Serviced'
-            .row
-              .col-sm-6
-                = ac_f.input :oil_total_qty, label: 'Total Quantity'
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-borderf
-          h3.box-title
-            i.fa.fa-bars
-            | &nbsp; Capt Acceptance Certificate
-        .box-body
-          = f.simple_fields_for :capt_acceptance_certificate do |ac_f|
-            .row
-              .col-sm-6
-                = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
-              .col-sm-6
-                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-borderf
-          h3.box-title
-            i.fa.fa-bars
-            | &nbsp; Sortie
-        .box-body
-          = f.simple_fields_for :sortie do |ac_f|
-            .row
-              .col-sm-6
-                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Crew', input_html: {class: 'custom-select2'}
-              .col-sm-6
-            .row
-              .col-sm-12
-                h5
-                  | Times
-            .row
-              .col-sm-4
-                = ac_f.input :takeoff_time, label: 'Takeoff Time (Local)', input_html: { class: 'timepickerclass' }
-              .col-sm-4
-                = ac_f.input :landing_time, label: 'Landing Time (Local)', input_html: { class: 'timepickerclass' }
-              .col-sm-4
-                = ac_f.input :flight_time, label: 'Flight Time (mins)'
-            .row
-              .col-sm-6
-                = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code), as: :radio_buttons 
-            .row
-              .col-sm-12
-                h5
-                  | Landings
-            .row
-              .col-sm-4
-                = ac_f.input :touch_go
-              .col-sm-4
-                = ac_f.input :full_stop
-              .col-sm-4
-                = ac_f.input :total
-            .row
-              .col-sm-12
-                = ac_f.input :remarks, as: :text
+              .col-sm-9
+                h3.box-title
+                  i.fa.fa-bar-chart
+                  | &nbsp; Techlog
+              .col-sm-3
                 
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-borderf
-          h3.box-title
-            i.fa.fa-bars
-            | &nbsp; Capt After Flight
-        .box-body
-          = f.simple_fields_for :capt_after_flight do |ac_f|
+          .box-body
+            div.techlogs
+              = f.simple_fields_for :techlogs do |techlog|
+                = render 'techlog_fields', :f => techlog
             .row
-              .col-sm-6
-                = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
-              .col-sm-6
-                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-borderf
-          h3.box-title
-            i.fa.fa-bars
-            | &nbsp; Flightline Release
-        .box-body
-          = f.simple_fields_for :flightline_release do |ac_f|
-            .row
-              .col-sm-6
-                = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
-              .col-sm-6
-                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-borderf
-          h3.box-title
-            i.fa.fa-bars
-            | &nbsp; Aircraft Total Times
-        .box-body
-          = f.simple_fields_for :aircraft_total_time do |ac_f|
-            .row
-              .col-sm-12
-                h5
-                  | Carried Over Totals
-            .row
-              .col-sm-4
-                = ac_f.input :carried_over_aircraft_hour
-              .col-sm-4
-                = ac_f.input :carried_over_landings
-              .col-sm-4
-                = ac_f.input :carried_over_ecs_operating_hour
-            .row
-              .col-sm-12
-                h5
-                  | This Sortie
-            .row
-              .col-sm-4
-                = ac_f.input :this_sortie_aircraft_hour
-              .col-sm-4
-                = ac_f.input :this_sortie_landings
-              .col-sm-4
-                = ac_f.input :this_sortie_ecs_operating_hour
-            .row
-              .col-sm-12
-                h5
-                  | New Total
-            .row
-              .col-sm-4
-                = ac_f.input :new_total_aircraft_hour
-              .col-sm-4
-                = ac_f.input :new_total_landings
-              .col-sm-4
-                = ac_f.input :new_total_ecs_operating_hour
-            .row
-              .col-sm-12
-                h5
-                  | Correction
-            .row
-              .col-sm-4
-                = ac_f.input :correction_aircraft_hour
-              .col-sm-4
-                = ac_f.input :correction_landings
-              .col-sm-4
-                = ac_f.input :correction_ecs_operating_hour
-            .row
-              .col-sm-12
-                h5
-                  | Corrected Total
-            .row
-              .col-sm-4
-                = ac_f.input :corrected_total_aircraft_hour
-              .col-sm-4
-                = ac_f.input :corrected_total_landings
-              .col-sm-4
-                = ac_f.input :corrected_total_ecs_operating_hour
-  .row
-    .col-md-12#div_techlog_servicing
-      .box.box-info
-        .box-header.with-border
-          .row
-            .col-sm-9
-              h3.box-title
-                i.fa.fa-bar-chart
-                | &nbsp; Techlog
-            .col-sm-3
-              
-        .box-body
-          div.techlogs
-            = f.simple_fields_for :techlogs do |techlog|
-              = render 'techlog_fields', :f => techlog
-          .row
-            .col-sm-offset-9.col-sm-3
-              = link_to_add_association "+ Add Techlog", f, :techlogs, data: {:'association-insertion-node' => ".techlogs", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-borderf
-          h3.box-title
-            i.fa.fa-bars
-            | &nbsp; After Flight Servicing
-        .box-body
-          = f.simple_fields_for :after_flight_servicing do |ac_f|
-            .row
-              .col-sm-6
-                = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
-              .col-sm-6
-                = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
-            .row
-              .col-sm-6
-                = ac_f.input :through_flight, as: :boolean, checked_value: 1, unchecked_value: 0
-              .col-sm-6
-                = ac_f.input :oil_refill
+              .col-sm-offset-9.col-sm-3
+                = link_to_add_association "+ Add Techlog", f, :techlogs, data: {:'association-insertion-node' => ".techlogs", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; After Flight Servicing
+          .box-body
+            = f.simple_fields_for :after_flight_servicing do |ac_f|
+              .row
+                .col-sm-6
+                  = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
+                .col-sm-6
+                  = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+              .row
+                .col-sm-6
+                  = ac_f.input :through_flight, as: :boolean, checked_value: 1, unchecked_value: 0
+                .col-sm-6
+                  = ac_f.input :oil_refill
                 
   == render 'common/form_action_buttons', options: { form: f, index_path: flying_logs_path}

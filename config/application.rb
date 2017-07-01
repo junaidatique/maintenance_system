@@ -27,5 +27,8 @@ module Qsmk
     config.generators do |g|
       g.orm :mongoid
     end
+    config.time_zone = 'Kuwait'
+    config.active_record.default_timezone = :local
+
   end
 end

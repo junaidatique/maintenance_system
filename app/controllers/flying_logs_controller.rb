@@ -21,7 +21,7 @@ class FlyingLogsController < ApplicationController
     else
       @flying_log.number = 1001
     end
-    @flying_log.build_ac_configuration
+    @flying_log.build_ac_configuration 
     @flying_log.build_fuel
     @flying_log.build_capt_acceptance_certificate
     @flying_log.build_sortie
@@ -38,6 +38,14 @@ class FlyingLogsController < ApplicationController
 
   # GET /flying_logs/1/edit
   def edit
+    @flying_log.build_fuel if @flying_log.fuel.blank?
+    @flying_log.build_capt_acceptance_certificate if @flying_log.capt_acceptance_certificate.blank?
+    @flying_log.build_sortie if @flying_log.sortie.blank?
+    @flying_log.build_capt_after_flight if @flying_log.capt_after_flight.blank?
+    @flying_log.build_flightline_release if @flying_log.flightline_release.blank?
+    @flying_log.build_aircraft_total_time if @flying_log.aircraft_total_time.blank?
+    @flying_log.build_after_flight_servicing if @flying_log.after_flight_servicing.blank?
+    
   end
 
   # POST /flying_logs
@@ -66,6 +74,15 @@ class FlyingLogsController < ApplicationController
   # PATCH/PUT /flying_logs/1.json
   def update
     respond_to do |format|
+      if current_user.role == :crew_cheif and !@flying_log.is_fuel_filled
+        @flying_log.is_fuel_filled = 1
+      elsif current_user.role == :master_control and !@flying_log.is_flight_released
+        @flying_log.is_flight_released = 1
+      elsif current_user.role == :pilot and !@flying_log.is_flight_booked
+        @flying_log.is_flight_booked = 1
+      elsif current_user.role == :pilot and !@flying_log.is_pilot_back
+        @flying_log.is_pilot_back = 1
+      end
       if @flying_log.update(flying_log_params)
         format.html { redirect_to @flying_log, notice: 'Flying log was successfully updated.' }
         format.json { render :show, status: :ok, location: @flying_log }

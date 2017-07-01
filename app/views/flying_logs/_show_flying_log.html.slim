@@ -1,0 +1,261 @@
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-sm-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; General
+          .col-sm-6.text-right
+            = link_to pdf_flying_log_path(@flying_log), class: 'btn btn-success btn-flat', target: :_blank do
+              | View QSMK Flying Log
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="25%"
+                    | Number
+                  td = @flying_log.number
+                  th width="25%"
+                    | Log Date
+                  td = display_date(@flying_log.log_date) 
+                tr
+                  th width="25%"
+                    | Aircraft
+                  td = @flying_log.aircraft.tail_number
+                  th width="25%"
+                    | Location
+                  td = @flying_log.location.name
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-sm-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; A/C Configuration
+          .col-sm-6.text-right
+            
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody
+                tr
+                  th colspan="4"
+                    | Role Equipment State
+                tr
+                  th width="25%"
+                    | Clean
+                  td = (@flying_log.ac_configuration.clean) ? 'Yes' : 'No'
+                  th width="25%"
+                    | Smoke Pods
+                  td = (@flying_log.ac_configuration.smoke_pods) ? 'Yes' : 'No'
+                tr
+                  th width="25%"
+                    | Third Seat
+                  td = (@flying_log.ac_configuration.third_seat) ? 'Yes' : 'No'
+                  th
+                  td
+                tr
+                  th width="25%"
+                    | Cockpit
+                  td = @flying_log.ac_configuration.cockpit
+                  th
+                  td
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-sm-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Flightline Servicing
+          .col-sm-6.text-right
+            
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody
+                tr
+                  th width="25%"
+                    | Inspection Performed
+                  td = @flying_log.flightline_servicing.inspection_performed
+                  th width="25%"
+                  td
+                tr
+                  th width="25%"
+                    | Flight Start Time
+                  td = @flying_log.flightline_servicing.flight_start_time
+                  th
+                    | Flight Start Time
+                  td = @flying_log.flightline_servicing.flight_end_time
+                tr
+                  th width="25%"
+                    | Created By
+                  td = @flying_log.flightline_servicing.user.name
+                  th
+                    | HYD
+                  td = @flying_log.flightline_servicing.hyd
+- if @flying_log.is_fuel_filled
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Fuel
+            .col-sm-6.text-right
+              
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody
+                  tr
+                    th width="25%"
+                      | Remaining (Gallons)
+                    td = @flying_log.fuel.fuel_remaining
+                    th width="25%"
+                      |  Refill (Gallons)
+                    td = @flying_log.fuel.refill
+                  tr
+                    th
+                      | Flight Start Time
+                    td = @flying_log.fuel.oil_remaining
+                    th width="25%"
+                      | Created By
+                    td = @flying_log.fuel.oil_serviced
+                  tr
+                    
+                    th
+                      | HYD
+                    td = @flying_log.fuel.oil_total_qty
+- if @flying_log.is_flight_released
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Flightline Release
+            .col-sm-6.text-right
+              
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody
+                  tr
+                    th width="25%"
+                      | Release Time
+                    td = @flying_log.flightline_release.flight_time
+                    th width="25%"
+                      |  Released by
+                    td = @flying_log.flightline_release.user.name                  
+- if @flying_log.is_flight_booked
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Pilot Acceptance Certificate
+            .col-sm-6.text-right
+              
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody
+                  tr
+                    th width="25%"
+                      | Release Time
+                    td = @flying_log.capt_acceptance_certificate.flight_time
+                    th width="25%"
+                      |  Released by
+                    td = @flying_log.capt_acceptance_certificate.user.name
+- if @flying_log.is_pilot_back
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Sortie
+            .col-sm-6.text-right
+              
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody
+                  tr
+                    th width="25%"
+                      | Crew
+                    td = @flying_log.sortie.user.name
+                    th width="25%"
+                    td
+                  tr
+                    th colspan="4"
+                      h5
+                        | Times
+                  tr
+                    th
+                      | Takeoff Time (Local)
+                    td = @flying_log.sortie.takeoff_time
+                    th
+                      | Landing Time (Local)
+                    td = @flying_log.sortie.landing_time
+                  tr
+                    th
+                      | Flight Time (Local)
+                    td = @flying_log.sortie.flight_time
+                    th
+                    td
+                  tr
+                    th
+                      | Sortie Code
+                    td = @flying_log.sortie.sortie_code
+                    th
+                    td
+                  tr
+                    th colspan="4"
+                      h5
+                        | Landings
+                  tr
+                    th
+                      | Touch &amp; go
+                    td = @flying_log.sortie.touch_go
+                    th
+                      | Full Stop
+                    td = @flying_log.sortie.full_stop
+                  tr
+                    th
+                      | Total
+                    td = @flying_log.sortie.total
+                    th
+                    td
+                  tr
+                    th colspan="4"
+                      h5
+                        | Remarks
+                  tr
+                    td colspan="4"
+                      = @flying_log.sortie.remarks
+                  
+                  

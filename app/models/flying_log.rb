@@ -8,6 +8,10 @@ class FlyingLog
   field :number, type: Integer
   field :log_date, type: Date
   field :is_all_approved, type: Mongoid::Boolean, default: 0
+  field :is_fuel_filled, type: Mongoid::Boolean, default: 0
+  field :is_flight_released, type: Mongoid::Boolean, default: 0
+  field :is_flight_booked, type: Mongoid::Boolean, default: 0
+  field :is_pilot_back, type: Mongoid::Boolean, default: 0
 
   #validates :number, presence: true
 

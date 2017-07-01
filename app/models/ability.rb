@@ -10,6 +10,13 @@ class Ability
     elsif user.master_control?
       can [:read, :update], Aircraft
       cannot :crud, NonFlyingDay
+      can :crud, FlyingLog
+    elsif user.crew_cheif?
+      can [:read, :update], FlyingLog
+      can :crud, Techlog
+    elsif user.pilot?
+      can [:read, :update], FlyingLog
+      can :crud, Techlog
     end
   end
 end
