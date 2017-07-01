@@ -57,7 +57,7 @@
                 = ac_f.input :inspection_performed, collection: enum_option_pairs(FlightlineServicing, :inspection_performed), as: :radio_buttons 
             .row
               .col-sm-6
-                = ac_f.input :flight_start_time, label: 'Start Time (Local)', input_html: { class: 'timepickerclass' }
+                = ac_f.input :flight_start_time, label: 'Start Time (Local)', readonly: true, input_html: { value: cur_time() }
               .col-sm-6
                 = ac_f.input :hyd, label: 'HYD'
                 /= ac_f.input :flight_end_time, label: 'Completion Time (Local)', input_html: { class: 'timepickerclass' }

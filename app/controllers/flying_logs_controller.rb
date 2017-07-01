@@ -74,16 +74,17 @@ class FlyingLogsController < ApplicationController
   # PATCH/PUT /flying_logs/1.json
   def update
     respond_to do |format|
-      if current_user.role == :crew_cheif and !@flying_log.is_fuel_filled
-        @flying_log.is_fuel_filled = 1
-      elsif current_user.role == :master_control and !@flying_log.is_flight_released
-        @flying_log.is_flight_released = 1
-      elsif current_user.role == :pilot and !@flying_log.is_flight_booked
-        @flying_log.is_flight_booked = 1
-      elsif current_user.role == :pilot and !@flying_log.is_pilot_back
-        @flying_log.is_pilot_back = 1
-      end
       if @flying_log.update(flying_log_params)
+        if current_user.role == :crew_cheif and !@flying_log.is_fuel_filled
+          @flying_log.is_fuel_filled = 1
+        elsif current_user.role == :master_control and !@flying_log.is_flight_released
+          @flying_log.is_flight_released = 1
+        elsif current_user.role == :pilot and @flying_log.is_flight_released and !@flying_log.is_flight_booked
+          @flying_log.is_flight_booked = 1
+        elsif current_user.role == :pilot and @flying_log.is_flight_booked and !@flying_log.is_pilot_back
+          @flying_log.is_pilot_back = 1
+        end
+        @flying_log.save
         format.html { redirect_to @flying_log, notice: 'Flying log was successfully updated.' }
         format.json { render :show, status: :ok, location: @flying_log }
       else
@@ -132,12 +133,13 @@ class FlyingLogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def flying_log_params
-      params.require(:flying_log).permit(:log_date, :aircraft_id, :location_id,
+      unless params[:flying_log].blank?
+         params.require(:flying_log).permit(:log_date, :aircraft_id, :location_id,
                                 ac_configuration_attributes: [:clean, :smoke_pods, :third_seat, :cockpit],
                                 flightline_servicing_attributes: [:id, :inspection_performed, :flight_start_time, :flight_end_time, :user_id, :hyd, :_destroy],
                                 fuel_attributes: [:fuel_remaining, :refill, :oil_remaining, :oil_serviced, :oil_total_qty],
                                 capt_acceptance_certificate_attributes: [:flight_time, :user_id],
-                                sortie_attributes: [:user_id, :takeoff_time, :landing_time, :flight_time, :sortie_code, :touch_go, :full_stop, :total, :remarks],
+                                sortie_attributes: [:user_id, :takeoff_time, :landing_time, :flight_time, :sortie_code, :touch_go, :full_stop, :total, :remarks, pilot_feedback_attributes: [:attachment]],
                                 capt_after_flight_attributes: [:flight_time, :user_id],
                                 flightline_release_attributes: [:flight_time, :user_id],
                                 aircraft_total_time_attributes: [:carried_over_aircraft_hour, :carried_over_landings, :carried_over_ecs_operating_hour, 
@@ -148,5 +150,6 @@ class FlyingLogsController < ApplicationController
                                 techlogs_attributes: [:id, :log_time, :user_id, :description],
                                 after_flight_servicing_attributes: [:flight_time, :user_id, :oil_refill, :through_flight]
                                 )
+      end 
     end
 end

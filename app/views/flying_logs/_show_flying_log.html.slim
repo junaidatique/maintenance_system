@@ -121,6 +121,11 @@
               table.table.table-inverse
                 tbody
                   tr
+                    th colspan="4"
+                      h5
+                        | Fuel
+                  
+                  tr
                     th width="25%"
                       | Remaining (Gallons)
                     td = @flying_log.fuel.fuel_remaining
@@ -128,18 +133,21 @@
                       |  Refill (Gallons)
                     td = @flying_log.fuel.refill
                   tr
+                    th colspan="4"
+                      h5
+                        | Oil
+                  tr
                     th
-                      | Flight Start Time
+                      | Serviced
                     td = @flying_log.fuel.oil_remaining
                     th width="25%"
                       | Created By
                     td = @flying_log.fuel.oil_serviced
                   tr
-                    
                     th
-                      | HYD
+                      | Total Quantity
                     td = @flying_log.fuel.oil_total_qty
-- if @flying_log.is_flight_released
+- if @flying_log.is_fuel_filled and @flying_log.is_flight_released
   .row
     .col-md-12
       .box.box-info
@@ -163,7 +171,7 @@
                     th width="25%"
                       |  Released by
                     td = @flying_log.flightline_release.user.name                  
-- if @flying_log.is_flight_booked
+- if @flying_log.is_fuel_filled and @flying_log.is_flight_released and @flying_log.is_flight_booked
   .row
     .col-md-12
       .box.box-info
@@ -187,7 +195,7 @@
                     th width="25%"
                       |  Released by
                     td = @flying_log.capt_acceptance_certificate.user.name
-- if @flying_log.is_pilot_back
+- if @flying_log.is_fuel_filled and @flying_log.is_flight_released and @flying_log.is_flight_booked and @flying_log.is_pilot_back and @flying_log.sortie.present?
   .row
     .col-md-12
       .box.box-info
@@ -207,7 +215,9 @@
                   tr
                     th width="25%"
                       | Crew
-                    td = @flying_log.sortie.user.name
+                    td 
+                      - if @flying_log.sortie.user.present?
+                        = @flying_log.sortie.user.name
                     th width="25%"
                     td
                   tr
@@ -257,5 +267,7 @@
                   tr
                     td colspan="4"
                       = @flying_log.sortie.remarks
-                  
+                  tr
+                    td colspan="4" 
+                      = image_tag @flying_log.sortie.pilot_feedback.attachment(:small)
                   

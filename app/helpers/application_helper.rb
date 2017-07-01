@@ -4,4 +4,7 @@ module ApplicationHelper
       return input_date.strftime("%d %B %Y")
     end
   end
+  def cur_time()
+    return "#{Time.zone.now.strftime("%H:%M %p")}"
+  end
 end

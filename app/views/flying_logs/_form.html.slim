@@ -1,5 +1,6 @@
 = simple_form_for(@flying_log, html: { class: '' }) do |f|
   = f.error_notification
+  == render 'show_flying_log'
   - if current_user.role == :crew_cheif and !@flying_log.is_fuel_filled
     .row
       .col-md-12
@@ -40,7 +41,7 @@
               = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }
               .row
                 .col-sm-6
-                  = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
+                  = ac_f.input :flight_time, label: 'Time (Local)', readonly: true, input_html: { value: cur_time() }
                 /.col-sm-6
                   = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
   - if current_user.role == :pilot and @flying_log.is_fuel_filled and @flying_log.is_flight_released and !@flying_log.is_flight_booked
@@ -56,7 +57,7 @@
               = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }
               .row
                 .col-sm-6
-                  = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
+                  = ac_f.input :flight_time, label: 'Time (Local)', readonly: true, input_html: { value: cur_time() }
                 /.col-sm-6
                   = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
   - if current_user.role == :pilot and @flying_log.is_fuel_filled and @flying_log.is_flight_released and @flying_log.is_flight_booked and !@flying_log.is_pilot_back
@@ -71,7 +72,7 @@
             = f.simple_fields_for :sortie do |ac_f|
               .row
                 .col-sm-6
-                  = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Crew', input_html: {class: 'custom-select2'}
+                  = ac_f.association :user, collection: User.pilots.all, label_method: :name, value_method: :id, label: 'Crew', input_html: {class: 'custom-select2'}
                 .col-sm-6
               .row
                 .col-sm-12
@@ -101,10 +102,14 @@
               .row
                 .col-sm-12
                   = ac_f.input :remarks, as: :text
-                  
-  - else
-    
-    
+              .row
+                .col-sm-12
+                  .form-group
+                    = ac_f.label :pilot_feedback
+                    - if ac_f.object.pilot_feedback.attachment.exists?
+                      = image_tag ac_f.object.pilot_feedback.attachment.url(:small), class: 'media-object'
+                    = ac_f.fields_for :pilot_feedback, ac_f.object.pilot_feedback do |pilot_feedback|
+                      = pilot_feedback.file_field :attachment
     .row
       .col-md-12
         .box.box-info
@@ -114,12 +119,13 @@
               | &nbsp; Capt After Flight
           .box-body
             = f.simple_fields_for :capt_after_flight do |ac_f|
+              = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }
               .row
                 .col-sm-6
-                  = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
+                  = ac_f.input :flight_time, label: 'Time (Local)', readonly: true, input_html: { value: cur_time() }
                 .col-sm-6
-                  = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
-    
+                  /= ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+  - if current_user.role == :pilot and @flying_log.is_fuel_filled and @flying_log.is_flight_released and @flying_log.is_flight_booked and @flying_log.is_pilot_back
     .row
       .col-md-12
         .box.box-info
@@ -135,7 +141,7 @@
                     | Carried Over Totals
               .row
                 .col-sm-4
-                  = ac_f.input :carried_over_aircraft_hour
+                  = ac_f.input :carried_over_aircraft_hours
                 .col-sm-4
                   = ac_f.input :carried_over_landings
                 .col-sm-4
@@ -184,7 +190,7 @@
                   = ac_f.input :corrected_total_landings
                 .col-sm-4
                   = ac_f.input :corrected_total_ecs_operating_hour
-    .row
+    /.row
       .col-md-12#div_techlog_servicing
         .box.box-info
           .box-header.with-border
@@ -202,7 +208,7 @@
             .row
               .col-sm-offset-9.col-sm-3
                 = link_to_add_association "+ Add Techlog", f, :techlogs, data: {:'association-insertion-node' => ".techlogs", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
-    .row
+    /.row
       .col-md-12
         .box.box-info
           .box-header.with-borderf
