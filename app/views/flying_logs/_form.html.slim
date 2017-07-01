@@ -140,57 +140,67 @@
                   h5
                     | Carried Over Totals
               .row
-                .col-sm-4
+                .col-sm-3
+                  = ac_f.input :carried_over_engine_hours
+                .col-sm-3
                   = ac_f.input :carried_over_aircraft_hours
-                .col-sm-4
+                .col-sm-3
                   = ac_f.input :carried_over_landings
-                .col-sm-4
-                  = ac_f.input :carried_over_ecs_operating_hour
+                .col-sm-3
+                  = ac_f.input :carried_over_prop_hours
               .row
                 .col-sm-12
                   h5
                     | This Sortie
               .row
-                .col-sm-4
-                  = ac_f.input :this_sortie_aircraft_hour
-                .col-sm-4
+                .col-sm-3
+                  = ac_f.input :this_sortie_engine_hours
+                .col-sm-3
+                  = ac_f.input :this_sortie_aircraft_hours
+                .col-sm-3
                   = ac_f.input :this_sortie_landings
-                .col-sm-4
-                  = ac_f.input :this_sortie_ecs_operating_hour
+                .col-sm-3
+                  = ac_f.input :this_sortie_prop_hours
               .row
                 .col-sm-12
                   h5
                     | New Total
               .row
-                .col-sm-4
-                  = ac_f.input :new_total_aircraft_hour
-                .col-sm-4
+                .col-sm-3
+                  = ac_f.input :new_total_engine_hours
+                .col-sm-3
+                  = ac_f.input :new_total_aircraft_hours
+                .col-sm-3
                   = ac_f.input :new_total_landings
-                .col-sm-4
-                  = ac_f.input :new_total_ecs_operating_hour
+                .col-sm-3
+                  = ac_f.input :new_total_prop_hours
               .row
                 .col-sm-12
                   h5
                     | Correction
               .row
-                .col-sm-4
-                  = ac_f.input :correction_aircraft_hour
-                .col-sm-4
+                .col-sm-3
+                  = ac_f.input :correction_engine_hours
+                .col-sm-3
+                  = ac_f.input :correction_aircraft_hours
+                .col-sm-3
                   = ac_f.input :correction_landings
-                .col-sm-4
-                  = ac_f.input :correction_ecs_operating_hour
+                .col-sm-3
+                  = ac_f.input :correction_prop_hours
               .row
                 .col-sm-12
                   h5
                     | Corrected Total
               .row
-                .col-sm-4
-                  = ac_f.input :corrected_total_aircraft_hour
-                .col-sm-4
+                .col-sm-3
+                  = ac_f.input :corrected_total_engine_hours
+                .col-sm-3
+                  = ac_f.input :corrected_total_aircraft_hours
+                .col-sm-3
                   = ac_f.input :corrected_total_landings
-                .col-sm-4
-                  = ac_f.input :corrected_total_ecs_operating_hour
-    /.row
+                .col-sm-3
+                  = ac_f.input :corrected_total_prop_hours
+    .row
       .col-md-12#div_techlog_servicing
         .box.box-info
           .box-header.with-border
