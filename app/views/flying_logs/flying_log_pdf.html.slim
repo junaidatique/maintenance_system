@@ -17,11 +17,13 @@
     .ac-smoke
   - if flying_log.ac_configuration.third_seat
     .ac-third-seat
-- if flying_log.ac_configuration.cockpit.present?
-  - if flying_log.ac_configuration.cockpit == :single
-    .ac-cockpit-single
-  - else
-    .ac-cockpit-dual
+  - if flying_log.ac_configuration.cockpit.present?
+    - if flying_log.ac_configuration.cockpit == :single
+      .ac-cockpit-single
+    - else
+      .ac-cockpit-dual
+  .ac-signature
+    = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
 - if flying_log.fuel.present?
   - if flying_log.fuel.fuel_remaining.present?
     .fl-fuel-remaining
@@ -52,4 +54,118 @@
       .fl-flightline-release-personal-code
         h3
           = flying_log.flightline_release.user.personal_code
-
+    .fl-flightline-release-signature
+      = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
+- if flying_log.flightline_servicing.present?
+  .fl-flightline-servicing
+    - if flying_log.flightline_servicing.Preflight?
+      .pre.circle
+      .fl-flightline-servicing.pre.start-time
+        h3
+          = flying_log.flightline_servicing.flight_start_time
+      .fl-flightline-servicing.pre.end-time
+        h3
+          = flying_log.flightline_servicing.flight_end_time
+      .fl-flightline-servicing.pre.personal-code
+        h3 
+          = flying_log.flightline_servicing.user.personal_code
+      .fl-flightline-servicing.pre.hyd
+        h3
+          = flying_log.flightline_servicing.hyd
+      .fl-flightline-servicing.pre.signature
+        = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
+    - elsif flying_log.flightline_servicing.Thru_Flight?
+      .fl-flightline-servicing.thru.circle
+      .fl-flightline-servicing.thru.start-time
+        h3
+          = flying_log.flightline_servicing.flight_start_time
+      .fl-flightline-servicing.thru.end-time
+        h3
+          = flying_log.flightline_servicing.flight_end_time
+      .fl-flightline-servicing.thru.personal-code
+        h3 
+          = flying_log.flightline_servicing.user.personal_code
+      .fl-flightline-servicing.thru.hyd
+        h3
+          = flying_log.flightline_servicing.hyd
+      .fl-flightline-servicing.thru.signature
+        = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
+    - elsif flying_log.flightline_servicing.Post_Flight?
+      .post.circle
+      .post.start-time
+        h3
+          = flying_log.flightline_servicing.flight_start_time
+      .post.end-time
+        h3
+          = flying_log.flightline_servicing.flight_end_time
+      .post.personal-code
+        h3 
+          = flying_log.flightline_servicing.user.personal_code
+      .post.hyd
+        h3
+          = flying_log.flightline_servicing.hyd
+      .post.signature
+        = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
+- if flying_log.aircraft_total_time.present? 
+  .fl-aircraft-total-time
+    .carried-over.engine-hours
+      h3
+        = flying_log.aircraft_total_time.carried_over_engine_hours
+    .carried-over.aircraft-hours
+      h3
+        = flying_log.aircraft_total_time.carried_over_aircraft_hours
+    .carried-over.landings
+      h3
+        = flying_log.aircraft_total_time.carried_over_landings
+    .carried-over.prop-hours
+      h3
+        = flying_log.aircraft_total_time.carried_over_prop_hours
+    .sortie.engine-hours
+      h3
+        = flying_log.aircraft_total_time.this_sortie_engine_hours
+    .sortie.aircraft-hours
+      h3
+        = flying_log.aircraft_total_time.this_sortie_aircraft_hours
+    .sortie.landings
+      h3
+        = flying_log.aircraft_total_time.this_sortie_landings
+    .sortie.prop-hours
+      h3
+        = flying_log.aircraft_total_time.this_sortie_prop_hours
+    .new-total.engine-hours
+      h3
+        = flying_log.aircraft_total_time.new_total_engine_hours
+    .new-total.aircraft-hours
+      h3
+        = flying_log.aircraft_total_time.new_total_aircraft_hours
+    .new-total.landings
+      h3
+        = flying_log.aircraft_total_time.new_total_landings
+    .new-total.prop-hours
+      h3
+        = flying_log.aircraft_total_time.new_total_prop_hours
+    .correction.engine-hours
+      h3
+        = flying_log.aircraft_total_time.correction_engine_hours
+    .correction.aircraft-hours
+      h3
+        = flying_log.aircraft_total_time.correction_aircraft_hours
+    .correction.landings
+      h3
+        = flying_log.aircraft_total_time.correction_landings
+    .correction.prop-hours
+      h3
+        = flying_log.aircraft_total_time.correction_prop_hours
+    .corrected-total.engine-hours
+      h3
+        = flying_log.aircraft_total_time.corrected_total_engine_hours
+    .corrected-total.aircraft-hours
+      h3
+        = flying_log.aircraft_total_time.corrected_total_aircraft_hours
+    .corrected-total.landings
+      h3
+        = flying_log.aircraft_total_time.corrected_total_landings
+    .corrected-total.prop-hours
+      h3
+        = flying_log.aircraft_total_time.corrected_total_prop_hours
+    

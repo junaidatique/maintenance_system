@@ -40,6 +40,14 @@
                   = image_tag f.object.profile_picture.attachment.url(:small), class: 'media-object'
                 = f.fields_for :profile_picture, f.object.profile_picture do |profile_picture|
                   = profile_picture.file_field :attachment
+          .row
+            .col-sm-6
+              .form-group
+                = f.label :signature
+                - if f.object.signature.attachment.exists?
+                  = image_tag f.object.signature.attachment.url(:small), class: 'media-object'
+                = f.fields_for :signature, f.object.signature do |signature|
+                  = signature.file_field :attachment
   == render 'common/form_action_buttons', options: { form: f, index_path: users_path}
 
 javascript:

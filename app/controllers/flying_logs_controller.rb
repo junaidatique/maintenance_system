@@ -140,11 +140,11 @@ class FlyingLogsController < ApplicationController
                                 sortie_attributes: [:user_id, :takeoff_time, :landing_time, :flight_time, :sortie_code, :touch_go, :full_stop, :total, :remarks],
                                 capt_after_flight_attributes: [:flight_time, :user_id],
                                 flightline_release_attributes: [:flight_time, :user_id],
-                                aircraft_total_time_attributes: [:carried_over_aircraft_hour, :carried_over_landings, :carried_over_ecs_operating_hour, 
-                                  :this_sortie_aircraft_hour, :this_sortie_landings, :this_sortie_ecs_operating_hour, 
-                                  :new_total_aircraft_hour, :new_total_landings, :new_total_ecs_operating_hour, 
-                                  :correction_aircraft_hour, :correction_landings, :correction_ecs_operating_hour, 
-                                  :corrected_total_aircraft_hour, :corrected_total_landings, :corrected_total_ecs_operating_hour],
+                                aircraft_total_time_attributes: [:carried_over_aircraft_hours, :carried_over_landings, :carried_over_prop_hours, :carried_over_engine_hours,
+                                  :this_sortie_aircraft_hours, :this_sortie_landings, :this_sortie_prop_hours, :this_sortie_engine_hours,
+                                  :new_total_aircraft_hours, :new_total_landings, :new_total_prop_hours, :new_total_engine_hours,
+                                  :correction_aircraft_hours, :correction_landings, :correction_prop_hours, :correction_engine_hours,
+                                  :corrected_total_aircraft_hours, :corrected_total_landings, :corrected_total_prop_hours, :corrected_total_engine_hours,],
                                 techlogs_attributes: [:id, :log_time, :user_id, :description],
                                 after_flight_servicing_attributes: [:flight_time, :user_id, :oil_refill, :through_flight]
                                 )

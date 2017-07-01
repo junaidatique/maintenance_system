@@ -46,9 +46,11 @@ class User
   # field :locked_at,       type: Time
 
   embeds_one :profile_picture, as: :attachable, class_name: Picture.name, cascade_callbacks: true, autobuild: true
-
+  embeds_one :signature, as: :attachable, class_name: Picture.name, cascade_callbacks: true, autobuild: true
+  
   accepts_nested_attributes_for :profile_picture
-
+  accepts_nested_attributes_for :signature
+  
   has_and_belongs_to_many :work_unit_codes
 
   validates :username, presence: true
