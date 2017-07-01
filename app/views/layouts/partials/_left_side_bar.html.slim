@@ -1,45 +1,54 @@
 ul.sidebar-menu
-  li class="#{params[:controller] == "aircrafts" ? 'active' : ''}"
-    = link_to aircrafts_path do
-      .fa.fa-tasks
-      span.side-bar-heading-text Aircraft
-  li class="#{params[:controller] == "locations" ? 'active' : ''}"
-    = link_to locations_path do
-      .fa.fa-tasks
-      span.side-bar-heading-text Locations
-  li class="#{params[:controller] == "users" ? 'active' : ''}"
-    = link_to users_path do
-      .fa.fa-tasks
-      span.side-bar-heading-text Users
-  li class="#{params[:controller] == "work_unit_codes" ? 'active' : ''}"
-    = link_to work_unit_codes_path do 
-      .fa.fa-tasks
-      span.side-bar-heading-text Work Unit Codes
-  li class="#{params[:controller] == "technical_orders" ? 'active' : ''}"
-    = link_to technical_orders_path do 
-      .fa.fa-tasks
-      span.side-bar-heading-text DMS Version
+  - if can? :read, Aircraft
+    li class="#{params[:controller] == "aircrafts" ? 'active' : ''}"
+      = link_to aircrafts_path do
+        .fa.fa-tasks
+        span.side-bar-heading-text Aircraft
+  - if can? :read, Location
+    li class="#{params[:controller] == "locations" ? 'active' : ''}"
+      = link_to locations_path do
+        .fa.fa-tasks
+        span.side-bar-heading-text Locations
+  - if can? :read, User
+    li class="#{params[:controller] == "users" ? 'active' : ''}"
+      = link_to users_path do
+        .fa.fa-tasks
+        span.side-bar-heading-text Users
+  - if can? :read, WorkUnitCode
+    li class="#{params[:controller] == "work_unit_codes" ? 'active' : ''}"
+      = link_to work_unit_codes_path do 
+        .fa.fa-tasks
+        span.side-bar-heading-text Work Unit Codes
+  - if can? :read, TechnicalOrder
+    li class="#{params[:controller] == "technical_orders" ? 'active' : ''}"
+      = link_to technical_orders_path do 
+        .fa.fa-tasks
+        span.side-bar-heading-text DMS Version
   - if can? :read, NonFlyingDay
     li class="#{params[:controller] == "non_flying_days" ? 'active' : ''}"
       = link_to non_flying_days_path do 
         .fa.fa-tasks
         span.side-bar-heading-text Non Flying Days
-  li class="#{params[:controller] == "flying_logs" ? 'active' : ''}"
-    = link_to flying_logs_path do
-      .fa.fa-tasks
-      span.side-bar-heading-text Flying Logs
-  li class="#{params[:controller] == "techlogs" ? 'active' : ''}"
-    = link_to techlogs_path do
-      .fa.fa-tasks
-      span.side-bar-heading-text TechLogs
-  li class="#{params[:controller] == "addl_logs" ? 'active' : ''}"
-    = link_to addl_logs_path do
-      .fa.fa-tasks
-      span.side-bar-heading-text ADDL Logs
-  li class="#{params[:controller] == "limitation_log" ? 'active' : ''}"
-    = link_to limitation_logs_path do
-      .fa.fa-tasks
-      span.side-bar-heading-text Limitation Logs
+  - if can? :read, FlyingLog
+    li class="#{params[:controller] == "flying_logs" ? 'active' : ''}"
+      = link_to flying_logs_path do
+        .fa.fa-tasks
+        span.side-bar-heading-text Flying Logs
+  - if can? :read, Techlog
+    li class="#{params[:controller] == "techlogs" ? 'active' : ''}"
+      = link_to techlogs_path do
+        .fa.fa-tasks
+        span.side-bar-heading-text TechLogs
+  - if can? :read, Techlog
+    li class="#{params[:controller] == "addl_logs" ? 'active' : ''}"
+      = link_to addl_logs_path do
+        .fa.fa-tasks
+        span.side-bar-heading-text ADDL Logs
+  - if can? :read, Techlog
+    li class="#{params[:controller] == "limitation_log" ? 'active' : ''}"
+      = link_to limitation_logs_path do
+        .fa.fa-tasks
+        span.side-bar-heading-text Limitation Logs
   
   
   

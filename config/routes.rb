@@ -22,7 +22,7 @@ Rails.application.routes.draw do
       get 'pdf'
     end
   end
-  root 'users#index'
+  root 'flying_logs#index'
   resources :locations
   resources :aircrafts
   

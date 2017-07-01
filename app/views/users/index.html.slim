@@ -18,7 +18,7 @@
               th width='10%'
                 | Rank 
               th width='10%'
-                | Personal Code
+                | Role
               th width='13%'
                 | Actions
           tbody
@@ -31,7 +31,7 @@
                 td.table-row-center
                   = user.rank
                 td.table-row-center
-                  = user.personal_code
+                  = te user, :role
                 td.text-center width='20%'
                   = link_to user_path(user), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye

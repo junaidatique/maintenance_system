@@ -2,3 +2,8 @@ en:
   hello: "Hello world"
   siteheading: "QSMK"
   sitename: "QSMK"
+  enums:
+    role:
+      admin: Admin
+      crew_cheif: 'Crew Cheif'
+      master_control: 'Master Control'
