@@ -2,10 +2,13 @@ class FlightlineServicing
   include Mongoid::Document
   include SimpleEnum::Mongoid
 
-  as_enum :inspection_performed, preflight: 0, thru_flight: 1, post_flight: 1
+  as_enum :inspection_performed, Preflight: 0, Thru_Flight: 1, Post_Flight: 2
   field :flight_start_time, type: String
   field :flight_end_time, type: String
   field :hyd, type: String
+
+  validates :inspection_performed, presence: true
+  validates :flight_start_time, presence: true
 
   belongs_to :user
   belongs_to :flying_log

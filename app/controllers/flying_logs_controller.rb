@@ -29,6 +29,10 @@ class FlyingLogsController < ApplicationController
     @flying_log.build_flightline_release
     @flying_log.build_aircraft_total_time
     @flying_log.build_after_flight_servicing
+    @flying_log.build_flightline_servicing
+
+
+    @flying_log.log_date = Time.now.strftime("%d/%m/%Y")
     
   end
 
@@ -40,12 +44,18 @@ class FlyingLogsController < ApplicationController
   # POST /flying_logs.json
   def create
     @flying_log = FlyingLog.new(flying_log_params)
-
+    @flying_log.log_date = Time.now.strftime("%Y-%m-%d")
     respond_to do |format|
       if @flying_log.save
         format.html { redirect_to @flying_log, notice: 'Flying log was successfully created.' }
         format.json { render :show, status: :created, location: @flying_log }
       else
+        last_flying_log = FlyingLog.last
+        if last_flying_log.present?
+          @flying_log.number = last_flying_log.number + 1
+        else
+          @flying_log.number = 1001
+        end
         format.html { render :new }
         format.json { render json: @flying_log.errors, status: :unprocessable_entity }
       end
@@ -107,7 +117,7 @@ class FlyingLogsController < ApplicationController
     def flying_log_params
       params.require(:flying_log).permit(:log_date, :aircraft_id, :location_id,
                                 ac_configuration_attributes: [:clean, :smoke_pods, :third_seat, :cockpit],
-                                flightline_servicings_attributes: [:id, :inspection_performed, :flight_start_time, :flight_end_time, :user_id, :hyd, :_destroy],
+                                flightline_servicing_attributes: [:id, :inspection_performed, :flight_start_time, :flight_end_time, :user_id, :hyd, :_destroy],
                                 fuel_attributes: [:fuel_remaining, :refill, :oil_remaining, :oil_serviced, :oil_total_qty],
                                 capt_acceptance_certificate_attributes: [:flight_time, :user_id],
                                 sortie_attributes: [:user_id, :takeoff_time, :landing_time, :flight_time, :sortie_code, :touch_go, :full_stop, :total, :remarks],

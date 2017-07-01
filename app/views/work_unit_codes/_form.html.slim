@@ -24,9 +24,8 @@
             .col-sm-3
         .box-body
           div.wuc
-            .col-sm-12   
-              = f.simple_fields_for :children do |wuc|
-                = render 'child_fields', f: wuc
+            = f.simple_fields_for :children do |wuc|
+              = render 'child_fields', f: wuc
           .row
             .col-sm-offset-9.col-sm-3
               = link_to_add_association "+ Add Work Unit Code", f, :children, data: {:'association-insertion-node' => ".wuc", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'  

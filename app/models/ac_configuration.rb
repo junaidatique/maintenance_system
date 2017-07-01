@@ -6,7 +6,7 @@ class AcConfiguration
   field :smoke_pods, type: Mongoid::Boolean
   field :third_seat, type: Mongoid::Boolean
 
-  as_enum :cockpit, single: 1, dual: 2
+  as_enum :cockpit, Single: 1, Dual: 2
 
   belongs_to :flying_log
 
