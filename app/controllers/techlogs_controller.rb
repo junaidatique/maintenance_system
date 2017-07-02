@@ -1,6 +1,6 @@
 class TechlogsController < ApplicationController
   before_action :set_techlog, only: [:show, :edit, :update, :destroy, 
-    :create_addl_log, :create_limitation_log]
+    :create_addl_log, :create_limitation_log, :pdf]
 
   # GET /techlogs
   # GET /techlogs.json
@@ -94,6 +94,25 @@ class TechlogsController < ApplicationController
     limit.techlog = @techlog
     limit.save
     redirect_to limitation_log_path(limit)
+  end
+
+  def pdf
+    render  pdf: "techlog_#{@techlog.id}",
+      orientation: 'Landscape',
+      template: 'techlogs/techlog_pdf.html.slim',
+      layout: 'layouts/pdf/pdf.html.slim',
+      show_as_html: false,
+      locals: {
+        :techlog => @techlog
+      },
+      page_height: '25in',
+      page_width: '18in',
+      margin:  {
+        top: 0,                     # default 10 (mm)
+        bottom: 0,
+        left: 0,
+        right:0 
+      }
   end
 
   private

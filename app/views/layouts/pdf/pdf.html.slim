@@ -21,12 +21,28 @@ html
           font-size: 45px;
         }
       }
+      .tl-aircraft-number {
+        position: absolute;
+        top: 90px;
+        left: 50px;
+        h3 {
+          font-size: 55px;
+        }
+      }
       .location {
         position: absolute;
         top: 95px;
         left: 680px;
         h3 {
           font-size: 35px;
+        }
+      }
+      .tl-location {
+        position: absolute;
+        top: 105px;
+        left: 1080px;
+        h3 {
+          font-size: 45px;
         }
       }
       .fl-date {
@@ -37,12 +53,45 @@ html
           font-size: 25px;
         }
       }
+      .tl-date {
+        position: absolute;
+        top: 110px;
+        left: 1680px;
+        h3 {
+          font-size: 35px;
+        }
+      }
+      .tl-log-time {
+        position: absolute;
+        top: 110px;
+        left: 2280px;
+        h3 {
+          font-size: 35px;
+        }
+      }
+      .tl-description {
+        position: absolute;
+        top: 550px;
+        left: 60px;
+        p {
+          font-size: 45px;
+          width: 1500px;
+        }
+      }
       .fl-log-number {
         position: absolute;
         top: 95px;
         left: 1430px;
         h3 {
           font-size: 35px;
+        }
+      }
+      .tl-log-number {
+        position: absolute;
+        top: 95px;
+        left: 1630px;
+        h3 {
+          font-size: 45px;
         }
       }
       .ac-clean {
@@ -414,6 +463,4 @@ html
         }
       }
   body
-    .background-fl-image
-      = wicked_pdf_image_tag('flying-log.jpg')
     =yield

@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     member do
       get 'create_addl_log'
       get 'create_limitation_log'
+      get 'pdf'
     end
   end
   resources :work_unit_codes do 

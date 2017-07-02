@@ -17,6 +17,8 @@
                 | Date
               th width='10%'
                 | Aircraft
+              th width='10%'
+                | PDF
               th width='13%'
                 | Actions
           tbody
@@ -28,6 +30,8 @@
                   = display_date(techlog.log_date) 
                 td.table-row-center
                   = techlog.aircraft.tail_number
+                td.table-row-center
+                  = link_to('PDF', pdf_techlog_path(techlog, format: :pdf), target: :_blank)
                 td.text-center width='20%'
                   = link_to techlog_path(techlog), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye
