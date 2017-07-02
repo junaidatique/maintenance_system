@@ -22,7 +22,7 @@
                 tr
                   th width="25%"
                     | Aircraft
-                  td = @techlog.flying_log.aircraft.number
+                  td = @techlog.flying_log.aircraft.tail_number
                   th width="25%"
                     | Location
                   td = @techlog.flying_log.location.name
@@ -36,15 +36,16 @@
               i.fa.fa-bars
               | &nbsp; Techlog
           .col-sm-6.text-right
-            - if AddlLog.where(techlog_id: @techlog.id).count == 0
-              = link_to create_addl_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
-                i.fa.fa-pencil
-                | &nbsp; Transfer to ADDL
-              | &nbsp;
-            - if LimitationLog.where(techlog_id: @techlog.id).count == 0
-              = link_to create_limitation_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
-                i.fa.fa-pencil
-                | &nbsp; Transfer to Limitation Log
+            - if current_user.role == :engineer
+              - if AddlLog.where(techlog_id: @techlog.id).count == 0
+                = link_to create_addl_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
+                  i.fa.fa-pencil
+                  | &nbsp; Transfer to ADDL
+                | &nbsp;
+              - if LimitationLog.where(techlog_id: @techlog.id).count == 0
+                = link_to create_limitation_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
+                  i.fa.fa-pencil
+                  | &nbsp; Transfer to Limitation Log
       .box-body
         .row
           .col-sm-12

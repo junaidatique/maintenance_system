@@ -25,9 +25,9 @@
                 td.table-row-center
                   = link_to techlog.number, techlog_path(techlog)
                 td.table-row-center
-                  /= techlog.flying_log.log_date
+                  = display_date(techlog.log_date) 
                 td.table-row-center
-                  /= techlog.flying_log.aircraft.number
+                  = techlog.aircraft.tail_number
                 td.text-center width='20%'
                   = link_to techlog_path(techlog), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye
@@ -36,6 +36,6 @@
                   
                   /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
                    /   i.fa.fa-trash
-        /.col-sm-4.col-sm-offset-4
+        .col-sm-4.col-sm-offset-4
           = link_to 'Create Flying Log', new_techlog_path, class: 'btn btn-block btn-primary btn-flat'
         .clearfix

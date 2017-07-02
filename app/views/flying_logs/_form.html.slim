@@ -125,7 +125,7 @@
                   = ac_f.input :flight_time, label: 'Time (Local)', readonly: true, input_html: { value: cur_time() }
                 .col-sm-6
                   /= ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
-  - if current_user.role == :pilot and @flying_log.is_fuel_filled and @flying_log.is_flight_released and @flying_log.is_flight_booked and @flying_log.is_pilot_back
+  - if current_user.role == :master_control and @flying_log.is_fuel_filled and @flying_log.is_flight_released and @flying_log.is_flight_booked and @flying_log.is_pilot_back
     .row
       .col-md-12
         .box.box-info
@@ -218,24 +218,26 @@
             .row
               .col-sm-offset-9.col-sm-3
                 = link_to_add_association "+ Add Techlog", f, :techlogs, data: {:'association-insertion-node' => ".techlogs", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
-    /.row
-      .col-md-12
-        .box.box-info
-          .box-header.with-borderf
-            h3.box-title
-              i.fa.fa-bars
-              | &nbsp; After Flight Servicing
-          .box-body
-            = f.simple_fields_for :after_flight_servicing do |ac_f|
-              .row
-                .col-sm-6
-                  = ac_f.input :flight_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
-                .col-sm-6
-                  = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
-              .row
-                .col-sm-6
-                  = ac_f.input :through_flight, as: :boolean, checked_value: 1, unchecked_value: 0
-                .col-sm-6
-                  = ac_f.input :oil_refill
+    - if @flying_log.flightline_servicing.inspection_performed_cd == 2
+      .row
+        .col-md-12
+          .box.box-info
+            .box-header.with-borderf
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; After Flight Servicing
+            .box-body
+              = f.simple_fields_for :after_flight_servicing do |ac_f|
+                = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }
+                .row
+                  .col-sm-6
+                    = ac_f.input :flight_time, label: 'Time (Local)', readonly: true, input_html: { value: cur_time() }
+                  .col-sm-6
+                    /= ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+                .row
+                  .col-sm-6
+                    /= ac_f.input :through_flight, as: :boolean, checked_value: 1, unchecked_value: 0
+                  .col-sm-6
+                    = ac_f.input :oil_refill
                 
   == render 'common/form_action_buttons', options: { form: f, index_path: flying_logs_path}

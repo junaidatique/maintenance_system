@@ -29,7 +29,7 @@
                 td.table-row-center
                   = display_date(flying_log.log_date) 
                 td.table-row-center
-                  = flying_log.aircraft.number
+                  = flying_log.aircraft.tail_number
                 td.table-row-center
                   = link_to('PDF', pdf_flying_log_path(flying_log, format: :pdf), target: :_blank)
                 td.text-center width='20%'

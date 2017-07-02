@@ -48,16 +48,21 @@ class FlyingLog
   after_create :create_techlogs
 
   def create_techlogs
-    if self.flightline_servicing.inspection_performed == :Preflight
+    puts 'here'
+    puts self.flightline_servicing.inspect
+    if self.flightline_servicing.inspection_performed_cd == 0
       wucs = WorkUnitCode.preflight
-    elsif self.flightline_servicing.inspection_performed == :Thru_Flight
+    elsif self.flightline_servicing.inspection_performed_cd == 1
       wucs = WorkUnitCode.thru_flight
-    elsif self.flightline_servicing.inspection_performed == :Post_Flight
+    elsif self.flightline_servicing.inspection_performed_cd == 2
       wucs = WorkUnitCode.post_flight
     end
+    f = self
     wucs.each do |work|
-      Techlog.create({type: :Flight, log_status: :techlog, log_time: "#{Time.now.strftime("%H:%M %p")}", 
-        description: self.flightline_servicing.inspection_performed, work_unit_code: work.id})
+      Techlog.create({type_cd: 0, log_status_cd: 1, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
+        description: f.flightline_servicing.inspection_performed, work_unit_code: work.id, 
+        user_id: f.flightline_servicing.user_id, log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
+        aircraft_id: f.aircraft_id, flying_log_id: f.id, location_id: f.location_id})
     end
   end
 

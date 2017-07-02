@@ -38,6 +38,19 @@ class FlyingLogsController < ApplicationController
 
   # GET /flying_logs/1/edit
   def edit
+    if current_user.role == :crew_cheif
+      if @flying_log.flightline_servicing.inspection_performed_cd == 0
+        wuc = WorkUnitCode.where(is_pre_flight: true).where(is_crew_cheif: true).first
+      elsif @flying_log.flightline_servicing.inspection_performed_cd == 1
+        wuc = WorkUnitCode.where(is_thru_flight: true).where(is_crew_cheif: true).first
+      elsif @flying_log.flightline_servicing.inspection_performed_cd == 2
+        wuc = WorkUnitCode.where(is_post_flight: true).where(is_crew_cheif: true).first
+      end
+      techlog = Techlog.where(flying_log: @flying_log, work_unit_code: wuc).first
+      if !techlog.is_completed
+        redirect_to techlog_path(techlog), :flash => { :error => "Please fill this techlog first." }
+      end
+    end
     @flying_log.build_fuel if @flying_log.fuel.blank?
     @flying_log.build_capt_acceptance_certificate if @flying_log.capt_acceptance_certificate.blank?
     @flying_log.build_sortie if @flying_log.sortie.blank?

@@ -9,6 +9,7 @@ class WorkUnitCode
   field :is_pre_flight, type: Mongoid::Boolean, default: 0
   field :is_thru_flight, type: Mongoid::Boolean, default: 0
   field :is_post_flight, type: Mongoid::Boolean, default: 0
+  field :is_crew_cheif, type: Mongoid::Boolean, default: 0
 
   has_many :techlogs
   has_and_belongs_to_many :user, class_name: User.name

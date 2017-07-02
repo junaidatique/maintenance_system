@@ -5,7 +5,12 @@ class TechlogsController < ApplicationController
   # GET /techlogs
   # GET /techlogs.json
   def index
-    @techlogs = Techlog.all
+    if current_user.role == :crew_cheif or current_user.role == :radio or current_user.role == :electrical or current_user.role == :instrument
+      @techlogs = Techlog.where(:work_unit_code_id.in => current_user.work_unit_code_ids)
+    else
+      @techlogs = Techlog.all
+    end
+    
   end
 
   # GET /techlogs/1
@@ -16,6 +21,13 @@ class TechlogsController < ApplicationController
   # GET /techlogs/new
   def new
     @techlog = Techlog.new
+    @techlog.log_date = Time.now.strftime("%d/%m/%Y")
+    @techlog.build_work_performed if @techlog.work_performed.blank?
+    @techlog.build_date_inspected if @techlog.date_inspected.blank?
+    @techlog.build_work_duplicate if @techlog.work_duplicate.blank?
+    if @techlog.dms_version.blank?
+      @techlog.dms_version = System.first.settings['dms_version_number'] 
+    end
   end
 
   # GET /techlogs/1/edit
@@ -32,7 +44,7 @@ class TechlogsController < ApplicationController
   # POST /techlogs.json
   def create
     @techlog = Techlog.new(techlog_params)
-
+    @techlog.log_date = Time.now.strftime("%Y-%m-%d")
     respond_to do |format|
       if @techlog.save
         format.html { redirect_to @techlog, notice: 'Techlog was successfully created.' }
@@ -49,6 +61,8 @@ class TechlogsController < ApplicationController
   def update
     respond_to do |format|
       if @techlog.update(techlog_params)
+        @techlog.is_completed = true
+        @techlog.save
         format.html { redirect_to @techlog, notice: 'Techlog was successfully updated.' }
         format.json { render :show, status: :ok, location: @techlog }
       else
@@ -90,7 +104,8 @@ class TechlogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def techlog_params
-      params.require(:techlog).permit(:work_unit_code_id, :type, :action, :additional_detail_form, 
+      params.require(:techlog).permit(:work_unit_code_id, :aircraft_id, :location_id, :log_date, :log_time,
+                                        :type, :action, :additional_detail_form, 
                                         :component_on_hold, :sap_notif, :sap_wo, :amr_no, :occurrence_report,
                                         :tools_used, :dms_version, 
                                         change_parts_attributes: [:pin_out, :serial_number_out, :pin_in, :serial_number_in, :_destroy],
