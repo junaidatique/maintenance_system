@@ -168,4 +168,75 @@
     .corrected-total.prop-hours
       h3
         = flying_log.aircraft_total_time.corrected_total_prop_hours
+- if flying_log.capt_after_flight.present?
+  .pilot-after-flight
+    .time-local
+      h3 
+        = flying_log.capt_after_flight.flight_time
+    .pilot-name
+      h3 
+        = flying_log.capt_after_flight.user.name
+    .rank
+      h3 
+        = flying_log.capt_after_flight.user.rank
+    .signature
+      = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
+- if flying_log.capt_acceptance_certificate.present?
+  .pilot-acceptance-certificate
+    .time-local
+      h3 
+        = flying_log.capt_acceptance_certificate.flight_time
+    .pilot-name
+      h3 
+        = flying_log.capt_acceptance_certificate.user.name
+    .rank
+      h3 
+        = flying_log.capt_acceptance_certificate.user.rank
+    .signature
+      = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
+
+- if flying_log.after_flight_servicing.present?
+  .after-flight-servicing
+    .time-local
+      h3 
+        = flying_log.after_flight_servicing.flight_time
+    .personal-code
+      h3 
+        = flying_log.after_flight_servicing.user.personal_code
+    .signature
+      = wicked_pdf_image_tag(flying_log.after_flight_servicing.user.signature.attachment)
+    .oil-refill
+      h3 
+        = flying_log.after_flight_servicing.oil_refill
+- if flying_log.sortie.present?
+  .sortie
+    .sortie-code
+      h3
+        = flying_log.sortie.sortie_code
+    .crew-name
+      h3
+        = flying_log.sortie.user.name
+    .take-off-time
+      h3
+        = flying_log.sortie.takeoff_time
+    .landing-time
+      h3
+        = flying_log.sortie.landing_time
+    .flight-time 
+      h3
+        = flying_log.sortie.flight_time
+    .touch-go
+      h3
+        = flying_log.sortie.touch_go
+    .full-stop
+      h3
+        = flying_log.sortie.full_stop
+    .total
+      h3
+        = flying_log.sortie.total
+    .remarks
+      p
+        = flying_log.sortie.remarks
     
+
+
