@@ -8,9 +8,11 @@ html
     = csrf_meta_tags
     = growlyflash_static_notices
   body.login-page
+    .container-fluid
+      = image_tag "login_screen.png", class: 'login-img'
     .login-box
       .login-logo
-        a href="#"
+        /a href="#"
           b
             = t :sitename
       #container-devise-box

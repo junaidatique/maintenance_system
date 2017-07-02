@@ -5,10 +5,14 @@ class TechlogsController < ApplicationController
   # GET /techlogs
   # GET /techlogs.json
   def index
-    if current_user.role == :crew_cheif or current_user.role == :radio or current_user.role == :electrical or current_user.role == :instrument
-      @techlogs = Techlog.where(:work_unit_code_id.in => current_user.work_unit_code_ids)
-    else
+    if current_user.role == :admin
       @techlogs = Techlog.all
+    else
+      @techlogs = Techlog.where(:work_unit_code_id.in => current_user.work_unit_code_ids)
+    #if current_user.role == :crew_cheif or current_user.role == :radio or current_user.role == :electrical or current_user.role == :instrument
+      
+    #else
+      
     end
     
   end

@@ -3369,12 +3369,13 @@ table.text-center {
 }
 
 .login-page, .register-page {
-  background: #d2d6de;
+  // background: #d2d6de;
+  background: #ffffff;
 }
 
 .login-box, .register-box {
   width: 360px;
-  margin: 7% auto;
+  margin: 3% auto;
 }
 
 @media (max-width: 768px) {
@@ -3386,7 +3387,7 @@ table.text-center {
 
 .login-box-body, .register-box-body {
   background: #fff;
-  padding: 20px;
+  // padding: 20px;
   color: #444;
   border-top: 0;
   color: #666;

@@ -51,6 +51,9 @@ class FlyingLogsController < ApplicationController
         redirect_to techlog_path(techlog), :flash => { :error => "Please fill this techlog first." }
       end
     end
+    if Techlog.where(flying_log: @flying_log, is_completed: false).count > 0
+      redirect_to flying_log_path(@flying_log), :flash => { :error => "Techlog for this Flying log are still not completed." }
+    end
     @flying_log.build_fuel if @flying_log.fuel.blank?
     @flying_log.build_capt_acceptance_certificate if @flying_log.capt_acceptance_certificate.blank?
     @flying_log.build_sortie if @flying_log.sortie.blank?

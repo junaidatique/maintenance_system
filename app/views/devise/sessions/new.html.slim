@@ -1,9 +1,10 @@
 .row
-  .col-md-12.top-buffer-50
-.row
   .col-md-12
-    h3.increase-margin-bottom
+    h3.increase-margin-bottom.text-center
       | Login
+    .row
+      .col-sm-12
+        .top-buffer-20
     = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
       .form-group.has-feedback.increase-margin-bottom
         = f.text_field :username, autofocus: true, :class=> 'form-control', :placeholder => 'Username'
