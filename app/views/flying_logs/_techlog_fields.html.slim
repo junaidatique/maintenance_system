@@ -1,16 +1,19 @@
-.row.nested-fields
-  .col-sm-12
-    .row
-      .col-sm-6
-        = f.input :log_time, label: 'Time (Local)', input_html: { class: 'timepickerclass' }
-      .col-sm-6
-        = f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, label: 'Opened By', input_html: {class: 'custom-select2'}
-    .row
-      .col-sm-12
-        = f.input :description, as: :text
-    .row
-      .col-sm-offset-11.col-sm-1
-        = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
-          i.fa.fa-trash
-    hr
-      
+- if f.object.type_cd != 0
+  .row.nested-fields
+    .col-sm-12
+      = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
+      .row
+        .col-sm-6
+          = f.association :work_unit_code, collection: WorkUnitCode.all, label_method: :code, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+        
+          
+          
+      .row
+        .col-sm-12
+          = f.input :description, as: :text
+      .row
+        .col-sm-offset-11.col-sm-1
+          = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
+            i.fa.fa-trash
+      hr
+        

@@ -50,8 +50,7 @@ class FlyingLogsController < ApplicationController
       if !techlog.is_completed
         redirect_to techlog_path(techlog), :flash => { :error => "Please fill this techlog first." }
       end
-    end
-    if Techlog.where(flying_log: @flying_log, is_completed: false).count > 0
+    elsif Techlog.where(flying_log: @flying_log, is_completed: false).count > 0
       redirect_to flying_log_path(@flying_log), :flash => { :error => "Techlog for this Flying log are still not completed." }
     end
     @flying_log.build_fuel if @flying_log.fuel.blank?
@@ -71,6 +70,7 @@ class FlyingLogsController < ApplicationController
     @flying_log.log_date = Time.now.strftime("%Y-%m-%d")
     respond_to do |format|
       if @flying_log.save
+        @flying_log.flightline_service
         format.html { redirect_to @flying_log, notice: 'Flying log was successfully created.' }
         format.json { render :show, status: :created, location: @flying_log }
       else
@@ -91,14 +91,18 @@ class FlyingLogsController < ApplicationController
   def update
     respond_to do |format|
       if @flying_log.update(flying_log_params)
-        if current_user.role == :crew_cheif and !@flying_log.is_fuel_filled
-          @flying_log.is_fuel_filled = 1
-        elsif current_user.role == :master_control and !@flying_log.is_flight_released
-          @flying_log.is_flight_released = 1
-        elsif current_user.role == :pilot and @flying_log.is_flight_released and !@flying_log.is_flight_booked
-          @flying_log.is_flight_booked = 1
-        elsif current_user.role == :pilot and @flying_log.is_flight_booked and !@flying_log.is_pilot_back
-          @flying_log.is_pilot_back = 1
+        # puts current_user.inspect
+        # puts @flying
+        if current_user.role == :crew_cheif and @flying_log.flightline_serviced?
+          @flying_log.fill_fuel
+        elsif current_user.role == :master_control and @flying_log.fuel_filled?
+          @flying_log.flight_release
+        elsif current_user.role == :pilot and @flying_log.flight_released?
+          @flying_log.book_flight
+        elsif current_user.role == :pilot and @flying_log.flight_booked?
+          @flying_log.pilot_back
+        elsif current_user.role == :master_control and @flying_log.pilot_commented?
+          @flying_log.complete_log
         end
         @flying_log.save
         format.html { redirect_to @flying_log, notice: 'Flying log was successfully updated.' }
@@ -163,7 +167,7 @@ class FlyingLogsController < ApplicationController
                                   :new_total_aircraft_hours, :new_total_landings, :new_total_prop_hours, :new_total_engine_hours,
                                   :correction_aircraft_hours, :correction_landings, :correction_prop_hours, :correction_engine_hours,
                                   :corrected_total_aircraft_hours, :corrected_total_landings, :corrected_total_prop_hours, :corrected_total_engine_hours,],
-                                techlogs_attributes: [:id, :log_time, :user_id, :description],
+                                techlogs_attributes: [:id, :work_unit_code_id, :user_id, :description, :_destroy],
                                 after_flight_servicing_attributes: [:flight_time, :user_id, :oil_refill, :through_flight]
                                 )
       end 

@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  flying_log: one
+  namespace: MyString
+  event: MyString
+  from: MyString
+  to: MyString
+  created_at: 2017-08-14 23:41:28
+
+two:
+  flying_log: two
+  namespace: MyString
+  event: MyString
+  from: MyString
+  to: MyString
+  created_at: 2017-08-14 23:41:28

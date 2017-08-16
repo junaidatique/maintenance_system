@@ -103,7 +103,7 @@
                   th
                     | HYD
                   td = @flying_log.flightline_servicing.hyd
-- if @flying_log.is_fuel_filled
+- if @flying_log.fuel_filled? or @flying_log.flight_released? or @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed?
   .row
     .col-md-12
       .box.box-info
@@ -147,7 +147,7 @@
                     th
                       | Total Quantity
                     td = @flying_log.fuel.oil_total_qty
-- if @flying_log.is_fuel_filled and @flying_log.is_flight_released
+- if @flying_log.flight_released? or @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed?
   .row
     .col-md-12
       .box.box-info
@@ -171,7 +171,7 @@
                     th width="25%"
                       |  Released by
                     td = @flying_log.flightline_release.user.name                  
-- if @flying_log.is_fuel_filled and @flying_log.is_flight_released and @flying_log.is_flight_booked
+- if @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed?
   .row
     .col-md-12
       .box.box-info
@@ -195,7 +195,7 @@
                     th width="25%"
                       |  Released by
                     td = @flying_log.capt_acceptance_certificate.user.name
-- if @flying_log.is_fuel_filled and @flying_log.is_flight_released and @flying_log.is_flight_booked and @flying_log.is_pilot_back and @flying_log.sortie.present?
+- if @flying_log.pilot_commented? or @flying_log.log_completed?
   .row
     .col-md-12
       .box.box-info
@@ -270,4 +270,26 @@
                   tr
                     td colspan="4" 
                       = image_tag @flying_log.sortie.pilot_feedback.attachment(:small)
-                  
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Capt After Flight
+            .col-sm-6.text-right
+              
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody
+                  tr
+                    th width="25%"
+                      | Time
+                    td = @flying_log.capt_after_flight.flight_time
+                    th width="25%"
+                      | Capt
+                    td = @flying_log.capt_after_flight.user.name

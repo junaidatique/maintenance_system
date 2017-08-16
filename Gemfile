@@ -73,3 +73,5 @@ gem "mongoid-paperclip"
 gem 'mongoid-autoinc'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
+gem 'state_machines-audit_trail'
+gem 'state_machines-mongoid'

@@ -5,18 +5,33 @@ class FlyingLog
   include Mongoid::Timestamps
   include Mongoid::Autoinc
 
+  
   field :number, type: Integer
   field :log_date, type: Date
-  field :is_all_approved, type: Mongoid::Boolean, default: 0
-  field :is_fuel_filled, type: Mongoid::Boolean, default: 0
-  field :is_flight_released, type: Mongoid::Boolean, default: 0
-  field :is_flight_booked, type: Mongoid::Boolean, default: 0
-  field :is_pilot_back, type: Mongoid::Boolean, default: 0
 
-  #validates :number, presence: true
+  state_machine initial: :started do
+    audit_trail initial: false,  context: [:aircraft, :location]
+    event :flightline_service do
+      transition started: :flightline_serviced
+    end
+    event :fill_fuel do
+      transition flightline_serviced: :fuel_filled
+    end
+    event :flight_release do
+      transition fuel_filled: :flight_released
+    end
+    event :book_flight do
+      transition flight_released: :flight_booked
+    end
+    event :pilot_back do
+      transition flight_booked: :pilot_commented
+    end
+    event :complete_log do
+      transition pilot_commented: :log_completed
+    end
+  end
 
   increments :number, seed: 1000
-
 
   belongs_to :aircraft
   belongs_to :location
@@ -33,6 +48,7 @@ class FlyingLog
   has_many :techlogs
 
   # embeds_many :notifications, as: :notifiable
+  embeds_many :flying_log_state_transitions
 
   accepts_nested_attributes_for :ac_configuration
   accepts_nested_attributes_for :fuel
@@ -48,8 +64,6 @@ class FlyingLog
   after_create :create_techlogs
 
   def create_techlogs
-    puts 'here'
-    puts self.flightline_servicing.inspect
     if self.flightline_servicing.inspection_performed_cd == 0
       wucs = WorkUnitCode.preflight
     elsif self.flightline_servicing.inspection_performed_cd == 1
