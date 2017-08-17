@@ -304,8 +304,14 @@ function _init() {
    */
   $.AdminLTE.pushMenu = {
     activate: function (toggleBtn) {
+      console.log('here PushMenu');
       //Get the screen sizes
       var screenSizes = $.AdminLTE.options.screenSizes;
+
+      if ($(window).width() < (screenSizes.md - 1)) {
+        console.log('inside');
+        $("body").toggleClass('sidebar-collapse');
+      }
 
       //Enable sidebar toggle
       $(toggleBtn).on('click', function (e) {

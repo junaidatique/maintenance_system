@@ -73,7 +73,7 @@ class FlyingLog
     end
     f = self
     wucs.each do |work|
-      Techlog.create({type_cd: 0, log_status_cd: 1, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
+      Techlog.create({type_cd: 0, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
         description: f.flightline_servicing.inspection_performed, work_unit_code: work.id, 
         user_id: f.flightline_servicing.user_id, log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
         aircraft_id: f.aircraft_id, flying_log_id: f.id, location_id: f.location_id})

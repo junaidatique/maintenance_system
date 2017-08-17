@@ -34,6 +34,9 @@ class Techlog
   field :tools_used, type: String
   field :dms_version, type: String
   field :is_completed, type: Mongoid::Boolean, default: 0
+  field :user_generated, type: Mongoid::Boolean, default: 0
+
+  validates :description, presence: true
 
   increments :number, seed: 1000
 

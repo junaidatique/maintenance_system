@@ -1,16 +1,14 @@
-.row.nested-fields
-  .col-sm-6
-    = f.input :pin_out, label: 'Pin Out'
-  .col-sm-6
-    = f.input :serial_number_out, label: 'S/N Out'
-.row
-  .col-sm-6
-    = f.input :pin_in, label: 'Pin In'
-  .col-sm-6
-    = f.input :serial_number_in, label: 'S/N In'
-.row
-  .col-sm-offset-11.col-sm-1
-    = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
-      i.fa.fa-trash
-hr
-  
+.nested-fields
+  .row
+    .col-md-12
+      .row
+        .col-sm-5
+          = f.association :old_part, collection: @techlog.aircraft.parts.all, label_method: :number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+        .col-sm-5
+          = f.association :new_part, collection: @techlog.aircraft.parts.all, label_method: :number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+        .col-sm-offset-1.col-sm-1
+          br
+          = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
+            i.fa.fa-trash
+      hr
+        

@@ -2,10 +2,6 @@ class Aircraft
   include Mongoid::Document
   include Mongoid::Timestamps
 
-
-  validates :tail_number, presence: true
-  validates :serial_no, presence: true
-
   field :number, type: Integer
   field :tail_number, type: String
   field :serial_no, type: String
@@ -18,6 +14,9 @@ class Aircraft
   field :landings, type: Integer, default: 0
 
 
+  validates :tail_number, presence: true
+  validates :serial_no, presence: true
+  
   scope :active, -> { where(status: 1) }
   scope :available, -> { where(available_for_flight: 1) }
 

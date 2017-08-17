@@ -54,6 +54,7 @@ class TechlogsController < ApplicationController
         format.html { redirect_to @techlog, notice: 'Techlog was successfully created.' }
         format.json { render :show, status: :created, location: @techlog }
       else
+        puts @techlog.errors.inspect
         format.html { render :new }
         format.json { render json: @techlog.errors, status: :unprocessable_entity }
       end
@@ -64,6 +65,21 @@ class TechlogsController < ApplicationController
   # PATCH/PUT /techlogs/1.json
   def update
     respond_to do |format|
+      assign_params = params.dup;
+
+      puts params[:techlog][:change_parts_attributes].inspect
+      params[:techlog][:change_parts_attributes].each do |value,cp|
+        puts cp.inspect
+        puts cp[:id].inspect
+        puts cp[:_destroy].inspect
+        if cp[:id].present? and cp[:_destroy].to_s == "1" and ChangePart.find(cp[:id]).present?
+          puts 'here'
+          ChangePart.find(cp[:id]).destroy 
+          params[:techlog][:change_parts_attributes].delete(value)
+        end
+      end
+
+      puts params[:techlog][:change_parts_attributes].inspect
       if @techlog.update(techlog_params)
         @techlog.is_completed = true
         @techlog.save
@@ -127,14 +143,14 @@ class TechlogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def techlog_params
-      params.require(:techlog).permit(:work_unit_code_id, :aircraft_id, :location_id, :log_date, :log_time,
+      params.require(:techlog).permit(:user_id,:work_unit_code_id, :aircraft_id, :location_id, :log_date, :log_time,
                                         :type, :action, :additional_detail_form, 
                                         :component_on_hold, :sap_notif, :sap_wo, :amr_no, :occurrence_report,
-                                        :tools_used, :dms_version, 
-                                        change_parts_attributes: [:pin_out, :serial_number_out, :pin_in, :serial_number_in, :_destroy],
-                                          work_performed_attributes: [:work_date, :work_time, :user_id],
-                                          date_inspected_attributes: [:work_date, :work_time, :user_id],
-                                          work_duplicate_attributes: [:work_date, :work_time, :user_id],
-                                          )
+                                        :tools_used, :dms_version, :description, 
+                                        change_parts_attributes: [:id, :old_part_id, :new_part_id, :_destroy],
+                                        work_performed_attributes: [:work_date, :work_time, :user_id],
+                                        date_inspected_attributes: [:work_date, :work_time, :user_id],
+                                        work_duplicate_attributes: [:work_date, :work_time, :user_id],
+                                      )
     end
 end

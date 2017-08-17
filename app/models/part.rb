@@ -21,5 +21,10 @@ class Part
   field :is_lifed, type: Mongoid::Boolean
 
   belongs_to :aircraft
+  has_one :old_part, class_name: 'ChangePart' 
+  has_one :new_part, class_name: 'ChangePart'
+
+  accepts_nested_attributes_for :old_part
+  accepts_nested_attributes_for :new_part
 
 end

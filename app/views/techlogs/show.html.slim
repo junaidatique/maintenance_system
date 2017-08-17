@@ -1,75 +1,61 @@
 = content_for :box_heading do
   = @techlog.number
+== render 'techlog_basic_show'
 .row
   .col-md-12
     .box.box-info
       .box-header.with-borderf
         h3.box-title
           i.fa.fa-bars
-          | &nbsp; Flying Log
+          | &nbsp; General
       .box-body
         .row
           .col-sm-12
             table.table.table-inverse
-              tbody                
+              tbody
                 tr
+                  th width="25%" colspan="4"
+                    | Action
+                tr
+                  td colspan="4"
+                    = @techlog.action
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-borderf
+        h3.box-title
+          i.fa.fa-bars
+          | &nbsp; Parts Changed
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody
+                - @techlog.change_parts.each do |part|
+                  tr
+                    th width="25%" 
+                      | Old Part 
+                    th width="25%" 
+                      = part.old_part.number
+                    th width="25%" 
+                      | New Part 
+                    th width="25%" 
+                      = part.new_part.number
+                
+
+                /tr
                   th width="25%"
                     | Number
                   td = @techlog.flying_log.number
                   th width="25%"
                     | Log Date
                   td = @techlog.flying_log.log_date
-                tr
+                /tr
                   th width="25%"
                     | Aircraft
                   td = @techlog.flying_log.aircraft.tail_number
                   th width="25%"
                     | Location
                   td = @techlog.flying_log.location.name
-.row
-  .col-md-12
-    .box.box-info
-      .box-header.with-borderf
-        .row
-          .col-sm-6
-            h3.box-title
-              i.fa.fa-bars
-              | &nbsp; Techlog
-          .col-sm-6.text-right
-            - if current_user.role == :engineer
-              - if AddlLog.where(techlog_id: @techlog.id).count == 0
-                = link_to create_addl_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
-                  i.fa.fa-pencil
-                  | &nbsp; Transfer to ADDL
-                | &nbsp;
-              - if LimitationLog.where(techlog_id: @techlog.id).count == 0
-                = link_to create_limitation_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
-                  i.fa.fa-pencil
-                  | &nbsp; Transfer to Limitation Log
-      .box-body
-        .row
-          .col-sm-12
-            table.table.table-inverse
-              tbody                
-                tr
-                  th width="25%"
-                    | Number
-                  td = @techlog.number
-                  th width="25%"
-                    | Opened By
-                  td = @techlog.user.name
-                tr
-                  th width="25%"
-                    | Time
-                  td = @techlog.log_time
-                tr
-                  th width="25%" colspan="4"
-                    | Description
-                tr
-                  td colspan="4"
-                    = @techlog.description
-                  
-  
-
 
 = render 'common/actions_buttons', back_path: techlogs_path, edit_path: edit_techlog_path(@techlog)
