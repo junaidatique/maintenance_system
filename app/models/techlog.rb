@@ -36,6 +36,19 @@ class Techlog
   field :is_completed, type: Mongoid::Boolean, default: 0
   field :user_generated, type: Mongoid::Boolean, default: 0
 
+  # ADDL
+  field :addl_period_of_deferm, type: String
+  field :addl_due, type: String
+  field :addl_log_date, type: Date
+  field :addl_log_time, type: String
+
+  # Limitation Log
+  field :limitation_description, type: String
+  field :limitation_period_of_deferm, type: String
+  field :limitation_due, type: String
+  field :limitation_log_date, type: Date
+  field :limitation_log_time, type: String
+
   validates :description, presence: true
 
   increments :number, seed: 1000
@@ -45,8 +58,9 @@ class Techlog
   belongs_to :user
   belongs_to :aircraft, optional: true
   belongs_to :location, optional: true
-
   
+
+
   has_one :date_inspected
   has_one :work_performed
   has_one :work_duplicate
@@ -61,6 +75,9 @@ class Techlog
 
   after_create :set_aircraft
 
+  scope :techloged, -> { where(state: :techloged) }
+  scope :addled, -> { where(state: :addled) }
+  scope :limited, -> { where(state: :limited) }
   
   def set_aircraft
     if self.flying_log.present?

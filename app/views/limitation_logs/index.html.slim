@@ -22,20 +22,20 @@
               th width='13%'
                 | Actions
           tbody
-            - @limitation_logs.each do |limitation_log|
+            - @limitation_logs.each do |tech_log|
               tr
                 td.table-row-center
-                  = link_to limitation_log.number, limitation_log_path(limitation_log)
+                  = link_to techlog.number, techlog_path(techlog)
                 td.table-row-center
-                  = link_to limitation_log.techlog.number, techlog_path(limitation_log.techlog)
+                  = display_date(techlog.log_date) 
                 td.table-row-center
-                  = limitation_log.techlog.flying_log.log_date
+                  = techlog.aircraft.tail_number
                 td.table-row-center
-                  = limitation_log.techlog.flying_log.aircraft.number
+                  = link_to('PDF', pdf_techlog_path(techlog, format: :pdf), target: :_blank)
                 td.text-center width='20%'
-                  = link_to limitation_log_path(limitation_log), class: 'btn btn-success btn-flat ' do
+                  = link_to techlog_path(techlog), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye
-                  = link_to edit_limitation_log_path(limitation_log), class: 'btn btn-info btn-flat ' do
+                  = link_to edit_techlog_path(techlog), class: 'btn btn-info btn-flat ' do
                     i.fa.fa-pencil
                   
                   /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do

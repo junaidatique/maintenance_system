@@ -1,61 +1,68 @@
 = content_for :box_heading do
   = @techlog.number
 == render 'techlog_basic_show'
-.row
-  .col-md-12
-    .box.box-info
-      .box-header.with-borderf
-        h3.box-title
-          i.fa.fa-bars
-          | &nbsp; General
-      .box-body
-        .row
-          .col-sm-12
-            table.table.table-inverse
-              tbody
-                tr
-                  th width="25%" colspan="4"
-                    | Action
-                tr
-                  td colspan="4"
-                    = @techlog.action
-.row
-  .col-md-12
-    .box.box-info
-      .box-header.with-borderf
-        h3.box-title
-          i.fa.fa-bars
-          | &nbsp; Parts Changed
-      .box-body
-        .row
-          .col-sm-12
-            table.table.table-inverse
-              tbody
-                - @techlog.change_parts.each do |part|
+- if @techlog.is_completed
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; General
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody
+                  tr
+                    th width="25%" colspan="4"
+                      | Action
+                  tr
+                    td colspan="4"
+                      = @techlog.action
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Parts Changed
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody
+                  - @techlog.change_parts.each do |part|
+                    tr
+                      th width="25%" 
+                        | Old Part 
+                      th width="25%" 
+                        = part.old_part.number
+                      th width="25%" 
+                        | New Part 
+                      th width="25%" 
+                        = part.new_part.number
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; General
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody
                   tr
                     th width="25%" 
-                      | Old Part 
+                      | Additional Detail Form 
                     th width="25%" 
-                      = part.old_part.number
+                      = @techlog.additional_detail_form
                     th width="25%" 
-                      | New Part 
+                      | Component On Hold
                     th width="25%" 
-                      = part.new_part.number
-                
+                      = @techlog.component_on_hold
 
-                /tr
-                  th width="25%"
-                    | Number
-                  td = @techlog.flying_log.number
-                  th width="25%"
-                    | Log Date
-                  td = @techlog.flying_log.log_date
-                /tr
-                  th width="25%"
-                    | Aircraft
-                  td = @techlog.flying_log.aircraft.tail_number
-                  th width="25%"
-                    | Location
-                  td = @techlog.flying_log.location.name
 
 = render 'common/actions_buttons', back_path: techlogs_path, edit_path: edit_techlog_path(@techlog)

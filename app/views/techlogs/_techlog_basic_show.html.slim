@@ -35,16 +35,20 @@
               i.fa.fa-bars
               | &nbsp; Techlog
           .col-sm-6.text-right
-            - if current_user.role == :engineer
-              - if AddlLog.where(techlog_id: @techlog.id).count == 0
+            - if current_user.role == :engineer or current_user.role == :admin
+              - if @techlog.log_techloged? and !@techlog.is_completed
                 = link_to create_addl_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
                   i.fa.fa-pencil
                   | &nbsp; Transfer to ADDL
                 | &nbsp;
-              - if LimitationLog.where(techlog_id: @techlog.id).count == 0
                 = link_to create_limitation_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
                   i.fa.fa-pencil
                   | &nbsp; Transfer to Limitation Log
+              - if @techlog.log_addled? or @techlog.log_limited?
+                = link_to create_techlog_techlog_path(@techlog), class: 'btn btn-info btn-flat'
+                  i.fa.fa-pencil
+                  | &nbsp; Transfer back to Techlog
+                | &nbsp;
       .box-body
         .row
           .col-sm-12

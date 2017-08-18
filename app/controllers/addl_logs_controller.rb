@@ -4,7 +4,7 @@ class AddlLogsController < ApplicationController
   # GET /addl_logs
   # GET /addl_logs.json
   def index
-    @addl_logs = AddlLog.all
+    @addl_logs = Techlog.addled
   end
 
   # GET /addl_logs/1
@@ -19,7 +19,7 @@ class AddlLogsController < ApplicationController
 
   # GET /addl_logs/1/edit
   def edit
-    @addl_log.build_addl_rectification if @addl_log.addl_rectification.blank?
+    @techlog.addl_log_date = Time.now.strftime("%d/%m/%Y")
   end
 
   # POST /addl_logs
@@ -65,7 +65,8 @@ class AddlLogsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_addl_log
-      @addl_log = AddlLog.find(params[:id])
+      @addl_log = Techlog.find(params[:id])
+      @techlog = Techlog.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

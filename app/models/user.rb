@@ -3,7 +3,7 @@ class User
   include SimpleEnum::Mongoid
 
   as_enum :role, admin: 0, engineer: 1, crew_cheif: 2, electrical: 3, 
-                radio: 4, instrument: 5, airframe_engine: 6, master_control: 7, pilot: 8
+                radio: 4, instrument: 5, airframe: 6, master_control: 7, pilot: 8, engine: 9
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, 

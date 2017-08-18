@@ -37,9 +37,7 @@
                     i.fa.fa-eye
                   = link_to edit_techlog_path(techlog), class: 'btn btn-info btn-flat ' do
                     i.fa.fa-pencil
-                  
-                  /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
-                   /   i.fa.fa-trash
+                    
         .col-sm-4.col-sm-offset-4
           = link_to 'Create TechLog', new_techlog_path, class: 'btn btn-block btn-primary btn-flat'
         .clearfix

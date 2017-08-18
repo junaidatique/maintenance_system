@@ -19,9 +19,7 @@ class LimitationLogsController < ApplicationController
 
   # GET /limitation_logs/1/edit
   def edit
-    if @limitation_log.limitation_rectification.blank?
-      @limitation_log.build_limitation_rectification 
-    end
+    @techlog.limitation_log_date = Time.now.strftime("%d/%m/%Y")
   end
 
   # POST /limitation_logs
@@ -67,7 +65,8 @@ class LimitationLogsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_limitation_log
-      @limitation_log = LimitationLog.find(params[:id])
+      @limitation_log = Techlog.find(params[:id])
+      @techlog = Techlog.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

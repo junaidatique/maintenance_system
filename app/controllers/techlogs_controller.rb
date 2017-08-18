@@ -1,14 +1,14 @@
 class TechlogsController < ApplicationController
   before_action :set_techlog, only: [:show, :edit, :update, :destroy, 
-    :create_addl_log, :create_limitation_log, :pdf]
+    :create_addl_log, :create_limitation_log, :pdf, :create_techlog]
 
   # GET /techlogs
   # GET /techlogs.json
   def index
     if current_user.role == :admin
-      @techlogs = Techlog.all
+      @techlogs = Techlog.techloged
     else
-      @techlogs = Techlog.where(:work_unit_code_id.in => current_user.work_unit_code_ids)
+      @techlogs = Techlog.techloged.where(:work_unit_code_id.in => current_user.work_unit_code_ids)
     #if current_user.role == :crew_cheif or current_user.role == :radio or current_user.role == :electrical or current_user.role == :instrument
       
     #else
@@ -65,25 +65,30 @@ class TechlogsController < ApplicationController
   # PATCH/PUT /techlogs/1.json
   def update
     respond_to do |format|
-      assign_params = params.dup;
-
-      puts params[:techlog][:change_parts_attributes].inspect
-      params[:techlog][:change_parts_attributes].each do |value,cp|
-        puts cp.inspect
-        puts cp[:id].inspect
-        puts cp[:_destroy].inspect
-        if cp[:id].present? and cp[:_destroy].to_s == "1" and ChangePart.find(cp[:id]).present?
-          puts 'here'
-          ChangePart.find(cp[:id]).destroy 
-          params[:techlog][:change_parts_attributes].delete(value)
+      if params[:techlog][:change_parts_attributes].present?
+        params[:techlog][:change_parts_attributes].each do |value,cp|
+          if cp[:id].present? and cp[:_destroy].to_s == "1" and ChangePart.find(cp[:id]).present?          
+            ChangePart.find(cp[:id]).destroy 
+            params[:techlog][:change_parts_attributes].delete(value)
+          end
         end
       end
-
-      puts params[:techlog][:change_parts_attributes].inspect
-      if @techlog.update(techlog_params)
-        @techlog.is_completed = true
-        @techlog.save
-        format.html { redirect_to @techlog, notice: 'Techlog was successfully updated.' }
+      
+      if @techlog.update(techlog_params)        
+        if @techlog.log_techloged?
+          @techlog.is_completed = true
+          @techlog.save
+          format.html { redirect_to @techlog, notice: 'Techlog was successfully updated.' }
+        elsif @techlog.log_addled?
+          @techlog.addl_log_date = Time.now.strftime("%Y-%m-%d")
+          @techlog.save
+          format.html { redirect_to addl_log_path(@techlog), notice: 'Techlog was successfully updated.' }
+        elsif @techlog.log_limited?
+          @techlog.limitation_log_date = Time.now.strftime("%Y-%m-%d")
+          @techlog.save
+          format.html { redirect_to limitation_log_path(@techlog), notice: 'Techlog was successfully updated.' }
+        end
+        
         format.json { render :show, status: :ok, location: @techlog }
       else
         format.html { render :edit }
@@ -103,17 +108,17 @@ class TechlogsController < ApplicationController
   end
 
   def create_addl_log
-    addl = AddlLog.new
-    addl.techlog = @techlog
-    addl.save
-    redirect_to addl_log_path(addl)
+    @techlog.change_to_addl_log
+    redirect_to addl_log_path(@techlog)
+  end
+  def create_techlog
+    @techlog.back_to_techlog_log
+    redirect_to techlog_path(@techlog)
   end
 
   def create_limitation_log
-    limit = LimitationLog.new
-    limit.techlog = @techlog
-    limit.save
-    redirect_to limitation_log_path(limit)
+    @techlog.add_to_limitation_log
+    redirect_to limitation_log_path(@techlog)
   end
 
   def pdf
@@ -146,7 +151,9 @@ class TechlogsController < ApplicationController
       params.require(:techlog).permit(:user_id,:work_unit_code_id, :aircraft_id, :location_id, :log_date, :log_time,
                                         :type, :action, :additional_detail_form, 
                                         :component_on_hold, :sap_notif, :sap_wo, :amr_no, :occurrence_report,
-                                        :tools_used, :dms_version, :description, 
+                                        :tools_used, :dms_version, :description,
+                                        :addl_period_of_deferm, :addl_due, :addl_log_time, :addl_log_date,
+                                        :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description,
                                         change_parts_attributes: [:id, :old_part_id, :new_part_id, :_destroy],
                                         work_performed_attributes: [:work_date, :work_time, :user_id],
                                         date_inspected_attributes: [:work_date, :work_time, :user_id],
