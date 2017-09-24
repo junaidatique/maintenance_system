@@ -1,0 +1,12 @@
+p#notice = notice
+
+p
+  strong Flying date:
+  = @flying_plan.flying_date
+p
+  strong Aircraft:
+  = @flying_plan.aircraft
+
+= link_to 'Edit', edit_flying_plan_path(@flying_plan)
+'  |
+= link_to 'Back', flying_plans_path

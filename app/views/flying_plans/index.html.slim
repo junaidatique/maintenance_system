@@ -1,0 +1,37 @@
+= content_for :page_subtitle do
+  | Flying Plan
+
+= content_for :box_heading do
+  | Flying Plan
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th width='10%'
+                | Date
+              th width='10%'
+                | Is Flying
+              th width='10%'
+                | Aircrafts
+              th width='10%'
+                | Reason
+              th width='13%'
+                | Actions
+          tbody
+            - @flying_plans.each do |non_flying_day|
+              tr
+                td.table-row-center
+                  = display_date(non_flying_day.flying_date)
+                td.table-row-center
+                  = non_flying_day.reason
+                td.text-center width='20%'
+                  = link_to edit_non_flying_day_path(non_flying_day), class: 'btn btn-info btn-flat ' do
+                    i.fa.fa-pencil
+
+        .col-sm-4.col-sm-offset-4
+          = link_to 'Create Flying Plan', new_flying_plan_path, class: 'btn btn-block btn-primary btn-flat'
+        .clearfix

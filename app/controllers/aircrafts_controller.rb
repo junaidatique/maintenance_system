@@ -63,6 +63,17 @@ class AircraftsController < ApplicationController
     end
   end
 
+  # GET /aircrafts/get_aircrafts
+  # GET /aircrafts/get_aircrafts.json
+  def get_aircrafts
+    search_string = params[:q]
+    aircrafts = Aircraft.where(tail_number: /.*#{search_string}.*/i).limit(30)
+    respond_to do |format|
+      format.json { render json: { items: aircrafts.map { |a| { id: a.id.to_s, tail_number: a.tail_number } }, total_count: aircrafts.length, incomplete_results: false } }
+    end
+  end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_aircraft

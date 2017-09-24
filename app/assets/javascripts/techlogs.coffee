@@ -1,5 +1,4 @@
 $(document).on 'ready', ->
-  console.log $(window).width()
   $('.date_class').datepicker
     dateFormat: 'dd/mm/yy'
   $('#div_part_change').on 'cocoon:after-insert', ->

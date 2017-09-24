@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   
+  resources :flying_plans
   resources :non_flying_days
   resources :limitation_logs
   resources :addl_logs
@@ -26,7 +27,11 @@ Rails.application.routes.draw do
   end
   root 'flying_logs#index'
   resources :locations
-  resources :aircrafts
+  resources :aircrafts  do 
+    collection do 
+      get 'get_aircrafts'
+    end
+  end
   
   devise_for :users, :skip => [:registrations]
   as :user do

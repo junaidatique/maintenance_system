@@ -304,7 +304,6 @@ function _init() {
    */
   $.AdminLTE.pushMenu = {
     activate: function (toggleBtn) {
-      console.log('here PushMenu');
       //Get the screen sizes
       var screenSizes = $.AdminLTE.options.screenSizes;
 

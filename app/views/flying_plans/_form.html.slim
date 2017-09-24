@@ -1,0 +1,25 @@
+= simple_form_for(@flying_plan, html: { class: '' }) do |f|
+  = f.error_notification
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; General
+        .box-body
+          .row
+            .col-sm-6
+              = f.input :flying_date, input_html: {class: 'datepicker'}
+          .row
+            .col-sm-12
+              = f.input :is_flying, as: :radio_buttons
+          .row.flying-aircrafts.hide
+            .col-sm-6
+              .form-group
+                = f.label :aircrafts
+                = f.collection_select :aircraft_ids, f.object.aircrafts, :id, :tail_number, {}, {:selected => "daf", multiple: true, class: 'aircraft-select2'}
+          .row.non-flying-reason.hide
+            .col-sm-12
+              = f.input :reason, as: :text
+  == render 'common/form_action_buttons', options: { form: f, index_path: flying_plans_path}

@@ -25,10 +25,10 @@ ul.sidebar-menu
         .fa.fa-gear
         span.side-bar-heading-text DMS Version
   - if can? :read, NonFlyingDay
-    li class="#{params[:controller] == "non_flying_days" ? 'active' : ''}"
-      = link_to non_flying_days_path do 
-        .fa.fa-close
-        span.side-bar-heading-text Non Flying Days
+    li class="#{params[:controller] == "flying_plan" ? 'active' : ''}"
+      = link_to flying_plans_path do 
+        .fa.fa-plane
+        span.side-bar-heading-text Flying Plan
   - if can? :read, FlyingLog
     li class="#{params[:controller] == "flying_logs" ? 'active' : ''}"
       = link_to flying_logs_path do

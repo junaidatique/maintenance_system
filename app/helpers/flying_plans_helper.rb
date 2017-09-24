@@ -1,0 +1,2 @@
+module FlyingPlansHelper
+end
