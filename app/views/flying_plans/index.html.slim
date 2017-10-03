@@ -27,11 +27,14 @@
                 td.table-row-center
                   = display_date(non_flying_day.flying_date)
                 td.table-row-center
+                  = non_flying_day.is_flying ? 'Yes' : 'No'
+                td
+                  = non_flying_day.aircrafts.map(&:tail_number).join(', ')
+                td
                   = non_flying_day.reason
                 td.text-center width='20%'
-                  = link_to edit_non_flying_day_path(non_flying_day), class: 'btn btn-info btn-flat ' do
+                  = link_to edit_flying_plan_path(non_flying_day), class: 'btn btn-info btn-flat ' do
                     i.fa.fa-pencil
-
         .col-sm-4.col-sm-offset-4
           = link_to 'Create Flying Plan', new_flying_plan_path, class: 'btn btn-block btn-primary btn-flat'
         .clearfix

@@ -1,12 +1,46 @@
-p#notice = notice
+= content_for :box_heading do
+  = display_date(@flying_plan.flying_date)
 
-p
-  strong Flying date:
-  = @flying_plan.flying_date
-p
-  strong Aircraft:
-  = @flying_plan.aircraft
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; General
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="50%"
+                    | Is Flying
+                  td = @flying_plan.is_flying ? 'Yes' : 'No'
+                - if @flying_plan.is_flying
+                  tr
+                    th width="50%"
+                      | Aircraft
+                    td = @flying_plan.aircrafts.map(&:tail_number).join(",")
+                - else 
+                  tr
+                    th width="50%"
+                      | Reason
+                    td = @flying_plan.reason
 
-= link_to 'Edit', edit_flying_plan_path(@flying_plan)
-'  |
-= link_to 'Back', flying_plans_path
+= render 'common/actions_buttons', back_path: flying_plans_path, edit_path: edit_flying_plan_path(@flying_plan)
+
+/ p#notice = notice
+
+/ p
+/   strong Flying date:
+/   = @flying_plan.flying_date
+/ p
+/   strong Aircraft:
+/   = @flying_plan.aircraft
+
+/ = link_to 'Edit', edit_flying_plan_path(@flying_plan)
+/ '  |
+/ = link_to 'Back', flying_plans_path

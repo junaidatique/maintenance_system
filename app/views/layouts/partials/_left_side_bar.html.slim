@@ -24,8 +24,8 @@ ul.sidebar-menu
       = link_to technical_orders_path do 
         .fa.fa-gear
         span.side-bar-heading-text DMS Version
-  - if can? :read, NonFlyingDay
-    li class="#{params[:controller] == "flying_plan" ? 'active' : ''}"
+  - if can? :read, FlyingPlan
+    li class="#{params[:controller] == "flying_plans" ? 'active' : ''}"
       = link_to flying_plans_path do 
         .fa.fa-plane
         span.side-bar-heading-text Flying Plan
