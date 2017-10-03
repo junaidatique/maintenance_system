@@ -82,7 +82,7 @@ class AircraftsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def aircraft_params
-      params.require(:aircraft).permit(:tail_number, :serial_no, :available_for_flight, :status,
+      params.require(:aircraft).permit(:tail_number, :serial_no, :fuel_capacity, :oil_capacity, :available_for_flight,
                                       parts_attributes: [:id, :number, :noun, :serial_no, :calender_life, 
                                         :installed_date,  :remaining_hours, :flight_hours, :no_of_landings,
                                         :is_lifed, :_destroy])

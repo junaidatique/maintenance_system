@@ -21,14 +21,17 @@
                 = f.input :serial_no, disabled: true
           .row
             .col-sm-6
-              .form-group
-                = f.input :available_for_flight, as: :boolean, checked_value: 1, unchecked_value: 0
+              - if can? :create, Aircraft
+                = f.input :fuel_capacity
+              - else 
+                = f.input :fuel_capacity, disabled: true
             .col-sm-6
-              .form-group
-                - if can? :create, Aircraft
-                  = f.input :status, as: :boolean, checked_value: 1, unchecked_value: 0
-                - else 
-                  = f.input :status, as: :boolean, checked_value: 1, unchecked_value: 0, disabled: true
+              - if can? :create, Aircraft
+                = f.input :oil_capacity
+              - else
+                = f.input :oil_capacity, disabled: true
+          
+              
   - if can? :update, @aircraft
     .row
       .col-md-12#div_part

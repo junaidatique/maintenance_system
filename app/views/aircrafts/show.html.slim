@@ -25,6 +25,13 @@
                   td = @aircraft.serial_no
                 tr
                   th width="25%"
+                    | Fuel Capacity
+                  td = @aircraft.fuel_capacity
+                  th width="25%"
+                    | Oil Capacity
+                  td = @aircraft.oil_capacity
+                tr
+                  th width="25%"
                     | Flight hours
                   td = @aircraft.flight_hours
                   th width="25%"
@@ -36,13 +43,7 @@
                   td = @aircraft.landings
                   th width="25%"
                   td 
-                tr
-                  th width="25%"
-                    | Available for Flight
-                  td = @aircraft.available_for_flight ? 'Yes' : 'No'
-                  th width="25%"
-                    | Status
-                  td = @aircraft.status ? 'Active' : 'Inactive'
+                
   .row
   .col-md-12
     .box.box-info
