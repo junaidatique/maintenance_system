@@ -12,6 +12,9 @@
               = f.input :code
             .col-sm-6
               = f.input :description
+          .row
+            .col-sm-12
+              = f.input :wuc_type, collection: enum_option_pairs(WorkUnitCode, :wuc_type), as: :radio_buttons 
   .row
     .col-md-12
       .box.box-info
