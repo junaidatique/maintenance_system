@@ -38,6 +38,9 @@ class FlyingLogsController < ApplicationController
 
   # GET /flying_logs/1/edit
   def edit
+    # TODO update this code for WUC of crewcheif
+
+
     if current_user.role == :crew_cheif
       if @flying_log.flightline_servicing.inspection_performed_cd == 0
         wuc = WorkUnitCode.where(is_pre_flight: true).where(is_crew_cheif: true).first
