@@ -5,6 +5,16 @@ class Techlog
   include SimpleEnum::Mongoid
   include Mongoid::Autoinc
 
+  validate :flying_log_values
+  attr_accessor :current_user
+  def flying_log_values
+    if flying_log.present? and current_user.role == :crew_cheif
+      if flying_log.fuel_refill.blank?
+        errors.add(:fuel_refill, "can't be in empty")
+      end
+    end
+  end
+
 
   state_machine initial: :techloged, namespace: :'log' do
     audit_trail initial: false
@@ -61,10 +71,10 @@ class Techlog
   
 
 
-  has_one :date_inspected
-  has_one :work_performed
-  has_one :work_duplicate
-  has_many :change_parts
+  has_one :date_inspected, dependent: :destroy
+  has_one :work_performed, dependent: :destroy
+  has_one :work_duplicate, dependent: :destroy
+  has_many :change_parts, dependent: :destroy
 
   embeds_many :techlog_state_transitions
 
@@ -72,6 +82,8 @@ class Techlog
   accepts_nested_attributes_for :date_inspected
   accepts_nested_attributes_for :work_duplicate
   accepts_nested_attributes_for :change_parts
+  accepts_nested_attributes_for :flying_log
+
 
   after_create :set_aircraft
 

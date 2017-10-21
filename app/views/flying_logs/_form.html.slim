@@ -1,33 +1,7 @@
 = simple_form_for(@flying_log, html: { class: '' }) do |f|
   = f.error_notification
   == render 'show_flying_log'
-  - if current_user.role == :crew_cheif and @flying_log.flightline_serviced?
-    .row
-      .col-md-12
-        .box.box-info
-          .box-header.with-borderf
-            h3.box-title
-              i.fa.fa-bars
-              | &nbsp; Fuel
-          .box-body
-            = f.simple_fields_for :fuel do |ac_f|
-              .row
-                .col-sm-6
-                  = ac_f.input :fuel_remaining, label: 'Remaining (Gallons)'
-                .col-sm-6
-                  = ac_f.input :refill, label: 'Refill (Gallons)'
-              .row
-                .col-sm-12
-                  h5
-                    | Oil
-              .row
-                .col-sm-6
-                  = ac_f.input :oil_remaining, label: 'Remaining'
-                .col-sm-6
-                  = ac_f.input :oil_serviced, label: 'Serviced'
-              .row
-                .col-sm-6
-                  = ac_f.input :oil_total_qty, label: 'Total Quantity'
+    
   - if current_user.role == :master_control and @flying_log.fuel_filled?
     .row
       .col-md-12

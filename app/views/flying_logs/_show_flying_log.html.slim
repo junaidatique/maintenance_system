@@ -128,10 +128,10 @@
                   tr
                     th width="25%"
                       | Remaining (Gallons)
-                    td = @flying_log.fuel.fuel_remaining
+                    td = @flying_log.fuel_remaining
                     th width="25%"
                       |  Refill (Gallons)
-                    td = @flying_log.fuel.refill
+                    td = @flying_log.fuel_refill
                   tr
                     th colspan="4"
                       h5
@@ -139,14 +139,14 @@
                   tr
                     th
                       | Serviced
-                    td = @flying_log.fuel.oil_remaining
+                    td = @flying_log.oil_remaining
                     th width="25%"
                       | Created By
-                    td = @flying_log.fuel.oil_serviced
+                    td = @flying_log.oil_serviced
                   tr
                     th
                       | Total Quantity
-                    td = @flying_log.fuel.oil_total_qty
+                    td = @flying_log.oil_total_qty
 - if @flying_log.flight_released? or @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed?
   .row
     .col-md-12

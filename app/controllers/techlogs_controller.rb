@@ -64,17 +64,22 @@ class TechlogsController < ApplicationController
   # PATCH/PUT /techlogs/1
   # PATCH/PUT /techlogs/1.json
   def update
+    # puts @techlog.inspect
+    # puts params.inspect
+    # puts techlog_params.inspect
+
     respond_to do |format|
-      if params[:techlog][:change_parts_attributes].present?
-        params[:techlog][:change_parts_attributes].each do |value,cp|
-          if cp[:id].present? and cp[:_destroy].to_s == "1" and ChangePart.find(cp[:id]).present?          
-            ChangePart.find(cp[:id]).destroy 
-            params[:techlog][:change_parts_attributes].delete(value)
-          end
-        end
-      end
-      
-      if @techlog.update(techlog_params)        
+    #   if params[:techlog][:change_parts_attributes].present?
+    #     params[:techlog][:change_parts_attributes].each do |value,cp|
+    #       if cp[:id].present? and cp[:_destroy].to_s == "1" and ChangePart.find(cp[:id]).present?          
+    #         ChangePart.find(cp[:id]).destroy 
+    #         params[:techlog][:change_parts_attributes].delete(value)
+    #       end
+    #     end
+    #   end
+      result = @techlog.update(techlog_params)
+      puts result.inspect
+      if result
         if @techlog.log_techloged?
           @techlog.is_completed = true
           @techlog.save
@@ -144,6 +149,7 @@ class TechlogsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_techlog
       @techlog = Techlog.find(params[:id])
+      @techlog.current_user = current_user
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -154,6 +160,7 @@ class TechlogsController < ApplicationController
                                         :tools_used, :dms_version, :description,
                                         :addl_period_of_deferm, :addl_due, :addl_log_time, :addl_log_date,
                                         :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description,
+                                        flying_log_attributes: [ :fuel_refill, :oil_serviced, :oil_total_qty ],
                                         change_parts_attributes: [:id, :old_part_id, :new_part_id, :_destroy],
                                         work_performed_attributes: [:work_date, :work_time, :user_id],
                                         date_inspected_attributes: [:work_date, :work_time, :user_id],

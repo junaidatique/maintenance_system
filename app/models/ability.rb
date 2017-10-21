@@ -19,6 +19,9 @@ class Ability
       end
         
       can :crud, Techlog
+    elsif user.radio?
+      can :read, FlyingLog
+      can :crud, Techlog
     elsif user.pilot?
       can [:read, :update], FlyingLog
       can :crud, Techlog

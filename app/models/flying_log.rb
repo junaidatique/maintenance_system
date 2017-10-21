@@ -5,9 +5,24 @@ class FlyingLog
   include Mongoid::Timestamps
   include Mongoid::Autoinc
 
-  
+
+  # validates :fuel_refill, presence: true, if: :is_flightline_serviced?
+  # validates :oil_serviced, presence: true, if: :is_flightline_serviced?
+
   field :number, type: Integer
   field :log_date, type: Date
+
+  field :fuel_remaining, type: String
+  field :fuel_refill, type: String
+  field :oil_remaining, type: String
+  field :oil_serviced, type: String
+  field :oil_total_qty, type: String
+
+
+  # def is_flightline_serviced?
+  #   puts state == "flightline_serviced"
+  #   state == "flightline_serviced"
+  # end
 
   state_machine initial: :started do
     audit_trail initial: false,  context: [:aircraft, :location]
@@ -36,22 +51,20 @@ class FlyingLog
   belongs_to :aircraft
   belongs_to :location
 
-  has_one :ac_configuration
-  has_one :fuel
-  has_one :capt_acceptance_certificate
-  has_one :sortie
-  has_one :capt_after_flight
-  has_one :flightline_release
-  has_one :aircraft_total_time
-  has_one :after_flight_servicing
-  has_one :flightline_servicing
-  has_many :techlogs
+  has_one :ac_configuration, dependent: :destroy
+  has_one :capt_acceptance_certificate, dependent: :destroy
+  has_one :sortie, dependent: :destroy
+  has_one :capt_after_flight, dependent: :destroy
+  has_one :flightline_release, dependent: :destroy
+  has_one :aircraft_total_time, dependent: :destroy
+  has_one :after_flight_servicing, dependent: :destroy
+  has_one :flightline_servicing, dependent: :destroy
+  has_many :techlogs, dependent: :destroy
 
   # embeds_many :notifications, as: :notifiable
   embeds_many :flying_log_state_transitions
 
   accepts_nested_attributes_for :ac_configuration
-  accepts_nested_attributes_for :fuel
   accepts_nested_attributes_for :capt_acceptance_certificate
   accepts_nested_attributes_for :sortie
   accepts_nested_attributes_for :capt_after_flight

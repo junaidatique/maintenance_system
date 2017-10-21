@@ -14,6 +14,10 @@ class FlyingLogsController < ApplicationController
 
   # GET /flying_logs/new
   def new
+    if FlyingPlan.where(is_flying: true).where(flying_date: Time.zone.now.strftime("%Y-%m-%d")).blank?
+      redirect_to flying_logs_path, :flash => { :error => "Flying is not allowed for today." }
+    end
+
     @flying_log = FlyingLog.new
     last_flying_log = FlyingLog.last
     if last_flying_log.present?
@@ -22,7 +26,6 @@ class FlyingLogsController < ApplicationController
       @flying_log.number = 1001
     end
     @flying_log.build_ac_configuration 
-    @flying_log.build_fuel
     @flying_log.build_capt_acceptance_certificate
     @flying_log.build_sortie
     @flying_log.build_capt_after_flight
@@ -73,7 +76,9 @@ class FlyingLogsController < ApplicationController
     @flying_log.log_date = Time.now.strftime("%Y-%m-%d")
     respond_to do |format|
       if @flying_log.save
-        @flying_log.flightline_service
+        puts @flying_log.flightline_service
+        puts @flying_log.inspect
+
         format.html { redirect_to @flying_log, notice: 'Flying log was successfully created.' }
         format.json { render :show, status: :created, location: @flying_log }
       else
@@ -83,6 +88,7 @@ class FlyingLogsController < ApplicationController
         else
           @flying_log.number = 1001
         end
+        puts @flying_log.errors.inspect
         format.html { render :new }
         format.json { render json: @flying_log.errors, status: :unprocessable_entity }
       end

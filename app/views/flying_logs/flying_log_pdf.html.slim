@@ -26,27 +26,27 @@
       .ac-cockpit-dual
   .ac-signature
     = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
-- if flying_log.fuel.present?
-  - if flying_log.fuel.fuel_remaining.present?
+- if flying_log.present?
+  - if flying_log.fuel_remaining.present?
     .fl-fuel-remaining
       h3
-        = flying_log.fuel.fuel_remaining
-  - if flying_log.fuel.refill.present?
+        = flying_log.fuel_remaining
+  - if flying_log.fuel_refill.present?
     .fl-fuel-refill
       h3 
-        = flying_log.fuel.refill
-  - if flying_log.fuel.oil_remaining.present?
+        = flying_log.fuel_refill
+  - if flying_log.oil_remaining.present?
     .fl-fuel-oil-remaining
       h3 
-        = flying_log.fuel.oil_remaining
-  - if flying_log.fuel.oil_serviced.present?
+        = flying_log.oil_remaining
+  - if flying_log.oil_serviced.present?
     .fl-fuel-oil-serviced
       h3 
-        = flying_log.fuel.oil_serviced
-  - if flying_log.fuel.oil_total_qty.present?
+        = flying_log.oil_serviced
+  - if flying_log.oil_total_qty.present?
     .fl-fuel-oil-quantity
       h3 
-        = flying_log.fuel.oil_total_qty
+        = flying_log.oil_total_qty
   - if flying_log.flightline_release.present?
     - if flying_log.flightline_release.flight_time.present?
       .fl-flightline-release-time

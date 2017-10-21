@@ -1,6 +1,32 @@
-= simple_form_for(@techlog) do |f|
+= simple_form_for(@techlog, html: { novalidate: true }) do |f|
   = f.error_notification
+  - if @techlog.errors.full_messages.count > 0
+    .alert.alert-danger
+      ul
+        - @techlog.errors.full_messages.each do |error_message|
+          li
+            = error_message
   == render 'techlog_basic_show'
+  - if !@techlog.flying_log.blank? and  current_user.role == :crew_cheif and @techlog.flying_log.flightline_serviced?
+    = f.simple_fields_for :flying_log do |ac_f|
+      .row
+        .col-md-12
+          .box.box-info
+            .box-header.with-borderf
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Fuel
+            .box-body
+              .row
+                .col-sm-6
+                  = ac_f.input :fuel_refill, as: :float, label: "Refill (Gallons): Total Capacity #{@techlog.flying_log.aircraft.fuel_capacity} (Gallons)", input_html: { max: @techlog.flying_log.aircraft.fuel_capacity, required: true, min: 0 }
+              .row
+                .col-sm-12
+                  h5
+                    | Oil
+              .row
+                .col-sm-6
+                  = ac_f.input :oil_serviced, as: :float, label: "Serviced (Gallons) : Total Capacity #{@techlog.flying_log.aircraft.oil_capacity} (Gallons)", input_html: { max: @techlog.flying_log.aircraft.oil_capacity, required: true, min: 0 }
 
   .row
     .col-md-12
@@ -31,6 +57,7 @@
           .row
             .col-sm-offset-9.col-sm-3
               = link_to_add_association "+ Add Changed Part", f, :change_parts, data: {:'association-insertion-node' => ".change_parts", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
+  
   .row
     .col-md-12
       .box.box-info

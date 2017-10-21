@@ -47,6 +47,7 @@ class AircraftsController < ApplicationController
         format.html { redirect_to @aircraft, notice: 'Aircraft was successfully updated.' }
         format.json { render :show, status: :ok, location: @aircraft }
       else
+        puts @aircraft.errors.inspect
         format.html { render :edit }
         format.json { render json: @aircraft.errors, status: :unprocessable_entity }
       end

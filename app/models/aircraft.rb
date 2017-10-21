@@ -5,9 +5,15 @@ class Aircraft
   field :number, type: Integer
   field :tail_number, type: String
   field :serial_no, type: String
+  
   field :fuel_capacity, type: Float, default: 0
   field :oil_capacity, type: Float, default: 0
   
+  field :type_model, type: String
+  field :type_series, type: String
+
+  field :organization, type: String
+
   field :available_for_flight, type: Mongoid::Boolean
   
   field :flight_hours, type: Float, default: 0
