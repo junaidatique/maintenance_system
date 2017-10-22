@@ -46,7 +46,6 @@ master_control = User.create! username: 'master_control', name: 'Master Control'
 aircraft_300  = Aircraft.create! number: '300', tail_number: 'QS300', serial_no: '#300', fuel_capacity: '15', oil_capacity: '15'
 Aircraft.create! number: '301', tail_number: 'QS301', serial_no: '#301', fuel_capacity: '15', oil_capacity: '15'
 
-Location.create! name: 'Doha', status: 1
-Location.create! name: 'Wukair', status: 1
+
 FlyingPlan.create! flying_date: Time.zone.now.strftime("%Y-%m-%d"), is_flying: true, aircraft_ids: [aircraft_300.id]
 System.create! settings: {dms_version_number: 0.0}

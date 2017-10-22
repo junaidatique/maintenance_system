@@ -11,7 +11,4 @@ class FlyingLogStateTransition
   def aircraft=(a)
     puts a.inspect
   end
-  def location=(l)
-    puts l.inspect
-  end
 end

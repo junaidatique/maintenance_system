@@ -26,7 +26,6 @@ Rails.application.routes.draw do
     end
   end
   root 'flying_logs#index'
-  resources :locations
   resources :aircrafts  do 
     collection do 
       get 'get_aircrafts'

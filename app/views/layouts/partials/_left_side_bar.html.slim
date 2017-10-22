@@ -4,11 +4,6 @@ ul.sidebar-menu
       = link_to aircrafts_path do
         .fa.fa-plane
         span.side-bar-heading-text Aircraft
-  - if can? :read, Location
-    li class="#{params[:controller] == "locations" ? 'active' : ''}"
-      = link_to locations_path do
-        .fa.fa-location-arrow
-        span.side-bar-heading-text Locations
   - if can? :read, User
     li class="#{params[:controller] == "users" ? 'active' : ''}"
       = link_to users_path do

@@ -23,8 +23,14 @@
                       | Aircraft
                     td = @techlog.flying_log.aircraft.tail_number
                     th width="25%"
-                      | Location
-                    td = @techlog.flying_log.location.name
+                    td
+                  tr
+                    th width="25%"
+                      | Location From
+                    td = @techlog.flying_log.location_from
+                    th width="25%"
+                      | Location To
+                    td = @techlog.flying_log.location_to
 .row
   .col-md-12
     .box.box-info
@@ -73,8 +79,16 @@
                     | Aircraft
                   td = @techlog.aircraft.tail_number
                   th width="25%"
-                    | Location
-                  td = @techlog.location.name
+                    
+                  td
+                tr
+                  th width="25%"
+                    | Location From
+                  td 
+                    = @techlog.location_from
+                  th width="25%"
+                    | Location To
+                  td = @techlog.location_to
                 tr
                   th width="25%"
                     | Work Unit Code
@@ -85,7 +99,6 @@
                   th width="25%"
                     | Type
                   td = @techlog.type
-
                 tr
                   th width="25%" colspan="4"
                     | Description

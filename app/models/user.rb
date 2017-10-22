@@ -3,11 +3,11 @@ class User
   include SimpleEnum::Mongoid
 
   as_enum :role, admin: 0, engineer: 1, crew_cheif: 2, electrical: 3, 
-                radio: 4, instrument: 5, airframe: 6, master_control: 7, pilot: 8, engine: 9
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
+                radio: 4, instrument: 5, airframe: 6, master_control: 7, pilot: 8, engine: 9,
+                squadron_engineering_officer: 10, chief_maintenance_officer: 11, 
+                flight_commander: 12, deputy_flight_commander: 13,  central_tool_store: 14
+  
   devise :database_authenticatable, 
-        # :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
   ## Database authenticatable
@@ -34,17 +34,6 @@ class User
   field :personal_code, type: String
   field :status,        type: Mongoid::Boolean
     
-  ## Confirmable
-  # field :confirmation_token,   type: String
-  # field :confirmed_at,         type: Time
-  # field :confirmation_sent_at, type: Time
-  # field :unconfirmed_email,    type: String # Only if using reconfirmable
-
-  ## Lockable
-  # field :failed_attempts, type: Integer, default: 0 # Only if lock strategy is :failed_attempts
-  # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
-  # field :locked_at,       type: Time
-
   embeds_one :profile_picture, as: :attachable, class_name: Picture.name, cascade_callbacks: true, autobuild: true
   embeds_one :signature, as: :attachable, class_name: Picture.name, cascade_callbacks: true, autobuild: true
   

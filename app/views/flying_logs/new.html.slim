@@ -19,7 +19,13 @@
             .col-sm-6
               = f.association :aircraft, collection: Aircraft.active.all, label_method: :tail_number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
             .col-sm-6
-              = f.association :location, collection: Location.active.all, include_blank: false, input_html: {class: 'custom-select2'}
+              
+          .row
+            .col-sm-6
+              = f.input :location_from
+            .col-sm-6
+              = f.input :location_to
+              
   .row
     .col-md-12
       .box.box-info

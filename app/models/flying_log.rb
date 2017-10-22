@@ -5,27 +5,23 @@ class FlyingLog
   include Mongoid::Timestamps
   include Mongoid::Autoinc
 
-
-  # validates :fuel_refill, presence: true, if: :is_flightline_serviced?
-  # validates :oil_serviced, presence: true, if: :is_flightline_serviced?
-
   field :number, type: Integer
   field :log_date, type: Date
+  field :fuel_remaining, type: Float, default: 0
+  field :fuel_refill, type: Float, default: 0
+  field :oil_remaining, type: Float, default: 0
+  field :oil_serviced, type: Float, default: 0
+  field :oil_total_qty, type: Float, default: 0
+  field :location_from, type: String
+  field :location_to, type: String
+  
+  validates :location_from, presence: true
+  validates :location_to, presence: true  
 
-  field :fuel_remaining, type: String
-  field :fuel_refill, type: String
-  field :oil_remaining, type: String
-  field :oil_serviced, type: String
-  field :oil_total_qty, type: String
-
-
-  # def is_flightline_serviced?
-  #   puts state == "flightline_serviced"
-  #   state == "flightline_serviced"
-  # end
+  increments :number, seed: 1000
 
   state_machine initial: :started do
-    audit_trail initial: false,  context: [:aircraft, :location]
+    audit_trail initial: false,  context: [:aircraft]
     event :flightline_service do
       transition started: :flightline_serviced
     end
@@ -46,11 +42,8 @@ class FlyingLog
     end
   end
 
-  increments :number, seed: 1000
-
   belongs_to :aircraft
-  belongs_to :location
-
+  
   has_one :ac_configuration, dependent: :destroy
   has_one :capt_acceptance_certificate, dependent: :destroy
   has_one :sortie, dependent: :destroy
@@ -89,8 +82,9 @@ class FlyingLog
       Techlog.create({type_cd: 0, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
         description: f.flightline_servicing.inspection_performed, work_unit_code: work.id, 
         user_id: f.flightline_servicing.user_id, log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
-        aircraft_id: f.aircraft_id, flying_log_id: f.id, location_id: f.location_id})
+        aircraft_id: f.aircraft_id, flying_log_id: f.id})
     end
   end
+
 
 end

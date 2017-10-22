@@ -18,6 +18,8 @@
               th width='10%'
                 | Aircraft
               th width='10%'
+                | WUC
+              th width='10%'
                 | PDF
               th width='13%'
                 | Actions
@@ -30,6 +32,8 @@
                   = display_date(techlog.log_date) 
                 td.table-row-center
                   = techlog.aircraft.tail_number
+                td.table-row-center
+                  = techlog.work_unit_code.code
                 td.table-row-center
                   = link_to('PDF', pdf_techlog_path(techlog, format: :pdf), target: :_blank)
                 td.text-center width='20%'

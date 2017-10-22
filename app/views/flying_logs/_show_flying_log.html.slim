@@ -27,8 +27,15 @@
                     | Aircraft
                   td = @flying_log.aircraft.tail_number
                   th width="25%"
-                    | Location
-                  td = @flying_log.location.name
+                  td 
+                tr
+                  th width="25%"
+                    | Location From
+                  td = @flying_log.location_from
+                  th width="25%"
+                    | Location To
+                  td = @flying_log.location_to
+
 .row
   .col-md-12
     .box.box-info
