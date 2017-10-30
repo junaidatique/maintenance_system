@@ -9,10 +9,10 @@
 preflight         = WorkUnitCode.create! code: 'preflight', description: 'Preflight'
 preflight_crew    = WorkUnitCode.create! code: 'preflight_crew', 
                       description: 'Preflight Crew', parent_id: preflight, wuc_type_cd: 0
-preflight_elect   = WorkUnitCode.create! code: 'preflight_elect', 
-                      description: 'Preflight electrical', parent_id: preflight, wuc_type_cd: 0
-preflight_radio   = WorkUnitCode.create! code: 'preflight_radio', 
-                      description: 'Preflight Radio', parent_id: preflight, wuc_type_cd: 0
+# preflight_elect   = WorkUnitCode.create! code: 'preflight_elect', 
+#                       description: 'Preflight electrical', parent_id: preflight, wuc_type_cd: 0
+# preflight_radio   = WorkUnitCode.create! code: 'preflight_radio', 
+#                       description: 'Preflight Radio', parent_id: preflight, wuc_type_cd: 0
 thru_flight       = WorkUnitCode.create! code: 'thru_flight', description: 'Thru_Flight'
 thru_flight_crew  = WorkUnitCode.create! code: 'thru_flight_crew', 
                       description: 'Thru_Flight Crew', parent_id: thru_flight, wuc_type_cd: 1
@@ -27,6 +27,11 @@ post_flight_elect = WorkUnitCode.create! code: 'post_flight_elect',
                       description: 'Post_Flight electrical', parent_id: post_flight, wuc_type_cd: 2
 post_flight_radio = WorkUnitCode.create! code: 'post_flight_radio', 
                       description: 'Post_Flight Radio', parent_id: post_flight, wuc_type_cd: 2
+other_wuc         = WorkUnitCode.create! code: 'other', description: 'Other'
+other1_wuc        = WorkUnitCode.create! code: 'other1', description: 'other1 wuc', 
+                      parent_id: other_wuc, wuc_type_cd: 3
+other2_wuc        = WorkUnitCode.create! code: 'other2', description: 'other2 wuc', 
+                      parent_id: other_wuc, wuc_type_cd: 3
 
 admin       = User.create! username: 'admin', name: 'Admin', 
                 role: :admin, password: '12345678', status: 1
@@ -34,16 +39,18 @@ engineer    = User.create! username: 'engineer', name: 'Engineer',
                 role: :engineer, password: '12345678', status: 1
 crew        = User.create! username: 'crew', name: 'Crew Cheif', 
                 role: :crew_cheif, password: '12345678', status: 1, work_unit_codes: [preflight_crew, thru_flight_crew, post_flight_crew]
-electrical  = User.create! username: 'electrical', name: 'Electrical', 
-                role: :electrical, password: '12345678', status: 1, work_unit_codes: [preflight_elect, thru_flight_elect, post_flight_elect]
-radio       = User.create! username: 'radio', name: 'Radio', 
-                role: :radio, password: '12345678', status: 1, work_unit_codes: [preflight_radio, thru_flight_radio, post_flight_radio]
+# electrical  = User.create! username: 'electrical', name: 'Electrical', 
+#                 role: :electrical, password: '12345678', status: 1, work_unit_codes: [preflight_elect, thru_flight_elect, post_flight_elect]
+# radio       = User.create! username: 'radio', name: 'Radio', 
+#                 role: :radio, password: '12345678', status: 1, work_unit_codes: [preflight_radio, thru_flight_radio, post_flight_radio]
 pilot       = User.create! username: 'pilot', name: 'Pilot', 
+                role: :pilot, password: '12345678', status: 1
+pilot2       = User.create! username: 'pilot2', name: 'Pilot2', 
                 role: :pilot, password: '12345678', status: 1
 master_control = User.create! username: 'master_control', name: 'Master Control', 
                 role: :master_control, password: '12345678', status: 1
 
-aircraft_300  = Aircraft.create! number: '300', tail_number: 'QS300', serial_no: '#300', fuel_capacity: '15', oil_capacity: '15'
+aircraft_300  = Aircraft.create! number: '300', tail_number: 'QS300', serial_no: '#300', fuel_capacity: '15', oil_capacity: '15', flight_hours: 1, engine_hours: 1, landings: 1, prop_hours: 1
 Aircraft.create! number: '301', tail_number: 'QS301', serial_no: '#301', fuel_capacity: '15', oil_capacity: '15'
 
 

@@ -1,0 +1,306 @@
+@mixin position-abs-mixin($top, $left) {
+  position: absolute;
+  top: $top;
+  left: $left;
+}
+.background-image {
+  z-index: -1;
+  position: absolute;
+}
+.aircraft-number {
+  @include position-abs-mixin(115px, 40px);
+  
+}  
+.fl-location_from {
+  @include position-abs-mixin(115px, 680px);
+  
+}
+.fl-location_to {
+  @include position-abs-mixin(115px, 850px);
+}  
+.fl-date {
+  @include position-abs-mixin(115px, 1080px);  
+}  
+.fl-log-number {
+  @include position-abs-mixin(115px, 1430px);  
+}
+.ac-clean {
+  @include position-abs-mixin(285px, 128px);  
+  height: 50px;
+  width: 50px;  
+  background: yellow;
+  border-radius: 50%;
+  opacity: 0.5;
+}
+.ac-smoke {
+  @include position-abs-mixin(285px, 260px);  
+  height: 50px;
+  width: 50px;
+  background: yellow;
+  border-radius: 50%;
+  opacity: 0.5;
+}
+.ac-third-seat {
+  @include position-abs-mixin(285px, 408px);  
+  height: 50px;
+  width: 50px;
+  background: yellow;
+  border-radius: 50%;
+  opacity: 0.5;
+}
+.ac-cockpit-single {
+  @include position-abs-mixin(235px, 574px);  
+  height: 50px;
+  width: 50px;
+  background: yellow;
+  border-radius: 50%;
+  opacity: 0.5;
+}
+.ac-cockpit-dual {
+  @include position-abs-mixin(300px, 574px);  
+  height: 50px;
+  width: 50px;
+  background: yellow;
+  border-radius: 50%;
+  opacity: 0.5;
+}
+.ac-signature {
+  @include position-abs-mixin(400px, 95px);    
+  img {
+    height: 60px;
+  }
+}
+.fl-fuel-remaining {
+  @include position-abs-mixin(510px, 100px); 
+}
+.fl-fuel-refill {
+  @include position-abs-mixin(510px, 330px); 
+}
+.fl-fuel-oil-remaining {
+  @include position-abs-mixin(510px, 570px); 
+}
+.fl-fuel-oil-serviced {
+  @include position-abs-mixin(510px, 780px); 
+}
+.fl-fuel-oil-quantity {
+  @include position-abs-mixin(510px, 1000px); 
+}
+.fl-flightline-release-time {
+  @include position-abs-mixin(630px, 1280px); 
+}
+.fl-flightline-release-personal-code {
+  @include position-abs-mixin(630px, 1520px);   
+}
+.fl-flightline-release-signature {
+  @include position-abs-mixin(630px, 1820px); 
+  img {
+    height: 60px;
+  }
+}
+.fl-flightline-servicing {
+  .pre {
+    position: absolute;
+    top: 245px;
+  }
+  .thru {
+    position: absolute;
+    top: 321px;
+  }
+  .post {
+    position: absolute;
+    top: 401px;
+  }
+  .circle {
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    left: 836px;
+    background: yellow;
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+  .start-time {
+    position: absolute;
+    left: 1008px;
+    
+  }
+  .end-time {
+    position: absolute;
+    left: 1170px;
+  }
+  .personal-code {
+    position: absolute;
+    left: 1340px;
+  }
+  .hyd {
+    position: absolute;
+    left: 1596px;
+    h3 {
+      font-size: 25px;
+    }
+  }
+  .signature {
+    position: absolute;
+    left: 1896px;
+    img {
+      height: 60px;
+    }
+  }
+}
+.fl-aircraft-total-time {
+
+  h3 {
+    font-size: 35px;
+  }
+  .carried-over {
+    position: absolute;
+    top: 740px;
+  }
+  .sortie {
+    position: absolute;
+    top: 820px;
+  }
+  .correction {
+    position: absolute;
+    top: 970px;
+  }
+  .new-total {
+    position: absolute;
+    top: 900px;
+  }
+  .corrected-total {
+    position: absolute;
+    top: 1050px;
+  }
+  .engine-hours {
+    position: absolute;
+    left: 1470px;
+  }
+  .aircraft-hours {
+    position: absolute;
+    left: 1740px;
+  }
+  .landings {
+    position: absolute;
+    left: 1970px;
+  }
+  .prop-hours {
+    position: absolute;
+    left: 2170px;
+  }
+}
+.pilot-after-flight {
+  .time-local {
+    @include position-abs-mixin(1310px, 100px);
+  }
+  .pilot-name {
+    @include position-abs-mixin(1310px, 330px);
+  }
+  .rank {
+    @include position-abs-mixin(1310px, 640px);
+  }
+  .signature {
+    @include position-abs-mixin(1310px, 810px);
+    img {
+      height: 60px;
+    }
+  }
+}
+.pilot-acceptance-certificate {
+  h3 {
+    font-size: 35px;
+  }
+  .time-local {
+    @include position-abs-mixin(700px, 100px);
+  }
+  .pilot-name {
+    @include position-abs-mixin(700px, 330px);
+  }
+  .rank {
+    @include position-abs-mixin(700px, 730px);
+  }
+  .signature {
+    @include position-abs-mixin(705px, 890px);
+    img {
+      height: 60px;
+    }
+  }
+} 
+.after-flight-servicing {
+  h3 {
+    font-size: 35px;
+  }
+  .time-local {
+    @include position-abs-mixin(705px, 890px);  
+    
+  }
+  .personal-code {
+    position: absolute;
+    top: 1510px;
+    left: 530px;
+  }
+  .oil-refill {
+    position: absolute;
+    top: 1510px;
+    left: 1010px;
+  }
+  .signature {
+    position: absolute;
+    top: 1510px;
+    left: 870px;
+    img {
+      height: 60px;
+    }
+  }
+}
+.sortie {
+  
+  .sortie-code {
+    @include position-abs-mixin(915px, 100px);
+  }
+  .crew-name {
+    @include position-abs-mixin(810px, 100px);
+  }
+  .landing-time {
+    @include position-abs-mixin(810px, 825px);
+  }
+  .take-off-time {
+    @include position-abs-mixin(810px, 590px);
+    img {
+      height: 60px;
+    }
+  }
+  .flight-time {
+    @include position-abs-mixin(810px, 1065px);
+  }
+  .touch-go {
+    @include position-abs-mixin(920px, 590px);
+  }
+  .full-stop {
+    @include position-abs-mixin(920px, 825px);
+    
+  }
+  .total {
+    @include position-abs-mixin(920px, 1065px);
+  }
+  .remarks {
+    @include position-abs-mixin(1040px, 100px);
+    width: 1100px;
+  }
+  .techlog-numbers {
+    position: absolute;
+    left: 1250px;
+    .techlog_1 {
+      position: absolute;
+      top: 1280px;
+    }
+    .techlog_2 {
+      position: absolute;
+      top: 1400px;
+    }
+    .techlog_3 {
+      position: absolute;
+      top: 1520px;
+    }
+  }
+}

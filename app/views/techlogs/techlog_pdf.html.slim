@@ -1,17 +1,18 @@
-.background-fl-image
-  = wicked_pdf_image_tag('tech-log.jpg')  
-.tl-aircraft-number
-  h3
-    = techlog.number
-.tl-location
-  h3
-    = techlog.location.name
-.tl-date
-  h3
-    = techlog.log_date
-.tl-log-time
-  h3 
-    = techlog.log_time
-.tl-description
-  p
-    = techlog.description
+.techlog_pdf 
+  .background-image
+    = wicked_pdf_image_tag('tech-log.jpg')  
+  .tl-aircraft-number
+    h3
+      = techlog.number
+  .tl-location
+    h3
+      = techlog.location.name
+  .tl-date
+    h3
+      = techlog.log_date
+  .tl-log-time
+    h3 
+      = techlog.log_time
+  .tl-description
+    p
+      = techlog.description

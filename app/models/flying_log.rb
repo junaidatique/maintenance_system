@@ -7,11 +7,11 @@ class FlyingLog
 
   field :number, type: Integer
   field :log_date, type: Date
-  field :fuel_remaining, type: Float, default: 0
-  field :fuel_refill, type: Float, default: 0
-  field :oil_remaining, type: Float, default: 0
-  field :oil_serviced, type: Float, default: 0
-  field :oil_total_qty, type: Float, default: 0
+  field :fuel_remaining, type: Float
+  field :fuel_refill, type: Float
+  field :oil_remaining, type: Float
+  field :oil_serviced, type: Float
+  field :oil_total_qty, type: Float
   field :location_from, type: String
   field :location_to, type: String
   
@@ -68,6 +68,7 @@ class FlyingLog
   accepts_nested_attributes_for :techlogs
 
   after_create :create_techlogs
+  before_create :update_times
 
   def create_techlogs
     if self.flightline_servicing.inspection_performed_cd == 0
@@ -86,5 +87,16 @@ class FlyingLog
     end
   end
 
+  def update_times
+    build_aircraft_total_time
+    aircraft_total_time.carried_over_engine_hours     = aircraft.engine_hours
+    aircraft_total_time.carried_over_aircraft_hours   = aircraft.flight_hours
+    aircraft_total_time.carried_over_landings         = aircraft.landings
+    aircraft_total_time.carried_over_prop_hours       = aircraft.prop_hours
+    aircraft_total_time.corrected_total_engine_hours     = aircraft.engine_hours
+    aircraft_total_time.corrected_total_aircraft_hours   = aircraft.flight_hours
+    aircraft_total_time.corrected_total_landings         = aircraft.landings
+    aircraft_total_time.corrected_total_prop_hours       = aircraft.prop_hours
+  end
 
 end

@@ -264,7 +264,7 @@
                   tr
                     th
                       | Total
-                    td = @flying_log.sortie.total
+                    td = @flying_log.sortie.total_landings
                     th
                     td
                   tr
@@ -273,10 +273,8 @@
                         | Remarks
                   tr
                     td colspan="4"
-                      = @flying_log.sortie.remarks
-                  tr
-                    td colspan="4" 
-                      = image_tag @flying_log.sortie.pilot_feedback.attachment(:small)
+                      = @flying_log.techlogs.where(type_cd: 1).map{|techlog| techlog.description}.join("<br>").html_safe
+                  
   .row
     .col-md-12
       .box.box-info

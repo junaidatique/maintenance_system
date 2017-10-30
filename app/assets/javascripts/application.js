@@ -21,4 +21,5 @@
 //= require moment
 //= require bootstrap-datetimepicker
 //= require functions
+//= require autocomplete-rails
 //= require_tree .

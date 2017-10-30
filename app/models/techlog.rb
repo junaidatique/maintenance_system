@@ -84,6 +84,7 @@ class Techlog
   accepts_nested_attributes_for :flying_log
 
   after_create :set_aircraft
+  after_update :update_flying_log_end_time
 
   scope :techloged, -> { where(state: :techloged) }
   scope :addled, -> { where(state: :addled) }
@@ -91,10 +92,21 @@ class Techlog
   
   def set_aircraft
     if self.flying_log.present?
-      self.aircraft_id = self.flying_log.aircraft_id
-      self.location_from = self.flying_log.location_from
-      self.location_to = self.flying_log.location_to
+      self.aircraft_id    = self.flying_log.aircraft_id
+      self.location_from  = self.flying_log.location_from
+      self.location_to    = self.flying_log.location_to
+      self.log_date       = Time.zone.now.strftime("%Y-%m-%d")
+      self.log_time       = Time.zone.now.strftime("%H:%M %p")
       self.save
+    end
+  end
+
+  def update_flying_log_end_time
+    if self.flying_log.present?
+      if flying_log.techlogs.where(is_completed: false).count == 0
+        flying_log.flightline_servicing.flight_end_time = Time.zone.now.strftime("%H:%M %p")
+        flying_log.flightline_servicing.save!
+      end
     end
   end
 end

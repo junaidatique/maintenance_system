@@ -18,6 +18,7 @@ class Aircraft
   
   field :flight_hours, type: Float, default: 0
   field :engine_hours, type: Float, default: 0
+  field :prop_hours, type: Float, default: 0
   field :landings, type: Integer, default: 0
 
 

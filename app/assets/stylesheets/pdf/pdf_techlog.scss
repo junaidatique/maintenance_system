@@ -1,0 +1,55 @@
+.techlog_pdf {
+  .background-image {
+    z-index: -1;
+    position: absolute;
+  }  
+  .tl-aircraft-number {
+    position: absolute;
+    top: 90px;
+    left: 50px;
+    h3 {
+      font-size: 55px;
+    }
+  }
+  .tl-location {
+    position: absolute;
+    top: 105px;
+    left: 1080px;
+    h3 {
+      font-size: 45px;
+    }
+  }
+  .tl-date {
+    position: absolute;
+    top: 110px;
+    left: 1680px;
+    h3 {
+      font-size: 35px;
+    }
+  }
+  .tl-log-time {
+    position: absolute;
+    top: 110px;
+    left: 2280px;
+    h3 {
+      font-size: 35px;
+    }
+  }
+  .tl-description {
+    position: absolute;
+    top: 550px;
+    left: 60px;
+    p {
+      font-size: 45px;
+      width: 1500px;
+    }
+  }
+  .tl-log-number {
+    position: absolute;
+    top: 95px;
+    left: 1630px;
+    h3 {
+      font-size: 45px;
+    }
+  }  
+}

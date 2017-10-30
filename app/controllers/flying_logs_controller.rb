@@ -1,3 +1,4 @@
+require 'combine_pdf'
 class FlyingLogsController < ApplicationController
   before_action :set_flying_log, only: [:show, :edit, :update, :destroy, :pdf]
 
@@ -42,16 +43,9 @@ class FlyingLogsController < ApplicationController
   # GET /flying_logs/1/edit
   def edit
     # TODO update this code for WUC of crewcheif
-
-
     if current_user.role == :crew_cheif
-      if @flying_log.flightline_servicing.inspection_performed_cd == 0
-        wuc = WorkUnitCode.where(is_pre_flight: true).where(is_crew_cheif: true).first
-      elsif @flying_log.flightline_servicing.inspection_performed_cd == 1
-        wuc = WorkUnitCode.where(is_thru_flight: true).where(is_crew_cheif: true).first
-      elsif @flying_log.flightline_servicing.inspection_performed_cd == 2
-        wuc = WorkUnitCode.where(is_post_flight: true).where(is_crew_cheif: true).first
-      end
+      inspection_performed = @flying_log.flightline_servicing.inspection_performed_cd
+      wuc = WorkUnitCode.where(wuc_type_cd: inspection_performed).where(:id.in => current_user.work_unit_code_ids).first
       techlog = Techlog.where(flying_log: @flying_log, work_unit_code: wuc).first
       if !techlog.is_completed
         redirect_to techlog_path(techlog), :flash => { :error => "Please fill this techlog first." }
@@ -100,17 +94,22 @@ class FlyingLogsController < ApplicationController
   def update
     respond_to do |format|
       if @flying_log.update(flying_log_params)
-        # puts current_user.inspect
-        # puts @flying
         if current_user.role == :master_control and @flying_log.fuel_filled?
           @flying_log.flight_release
         elsif current_user.role == :pilot and @flying_log.flight_released?
           @flying_log.book_flight
         elsif current_user.role == :pilot and @flying_log.flight_booked?
           @flying_log.pilot_back
+          @flying_log.sortie.total_landings = @flying_log.sortie.touch_go.to_i + @flying_log.sortie.full_stop.to_i
+          @flying_log.sortie.flight_minutes = @flying_log.sortie.calculate_flight_minutes
+          @flying_log.sortie.flight_time = @flying_log.sortie.calculate_flight_time
+          @flying_log.sortie.total_landings = @flying_log.sortie.calculate_landings
+          @flying_log.sortie.update_aircraft_times
+          @flying_log.sortie.save!
         elsif current_user.role == :master_control and @flying_log.pilot_commented?
           @flying_log.complete_log
         end
+        
         @flying_log.save
         format.html { redirect_to @flying_log, notice: 'Flying log was successfully updated.' }
         format.json { render :show, status: :ok, location: @flying_log }
@@ -134,22 +133,58 @@ class FlyingLogsController < ApplicationController
   # GET /flying_logs/1/pdf
   # GET /flying_logs/1/pdf.json
   def pdf
-    render  pdf: "flying_log_#{@flying_log.id}",
-      orientation: 'Landscape',
-      template: 'flying_logs/flying_log_pdf.html.slim',
-      layout: 'layouts/pdf/pdf.html.slim',
-      show_as_html: false,
-      locals: {
-        :flying_log => @flying_log
-      },
-      page_height: '17in',
-      page_width: '13in',
-      margin:  {
-        top: 0,                     # default 10 (mm)
-        bottom: 0,
-        left: 0,
-        right:0 
-      }
+    # techlogs  = @flying_log.techlogs.where(type_cd: 1).limit(3).offset(0)
+    # pdf_data = render(
+    #             pdf: "flying_log_#{@flying_log.id}",
+    #             orientation: 'Landscape',
+    #             template: 'flying_logs/flying_log_pdf.html.slim',
+    #             layout: 'layouts/pdf/pdf.html.slim',
+    #             show_as_html: false,
+    #             locals: {
+    #               flying_log: @flying_log,
+    #               techlogs: techlogs
+    #             },
+    #             page_height: '17in',
+    #             page_width: '13in',
+    #             margin:  {
+    #               top: 0,
+    #               bottom: 0,
+    #               left: 0,
+    #               right:0 
+    #             }
+    #           )
+            
+      
+    i = 0
+    num = @flying_log.techlogs.count
+    merged_certificates = CombinePDF.new
+    begin
+      techlogs  = @flying_log.techlogs.where(type_cd: "1").limit(3).offset(i)
+      pdf_data = render_to_string(
+                  pdf: "flying_log_#{@flying_log.id}",
+                  orientation: 'Landscape',
+                  template: 'flying_logs/flying_log_pdf.html.slim',
+                  layout: 'layouts/pdf/pdf.html.slim',
+                  show_as_html: false,
+                  locals: {
+                    flying_log: @flying_log,
+                    techlogs: techlogs
+                  },
+                  page_height: '17in',
+                  page_width: '13in',
+                  margin:  {
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right:0 
+                  }
+                )
+              
+      merged_certificates  << CombinePDF.parse(pdf_data)
+      i +=3  
+    end while i < num
+    send_data merged_certificates.to_pdf, :disposition => 'inline', :type => "application/pdf"
+
   end
 
   private
@@ -164,16 +199,11 @@ class FlyingLogsController < ApplicationController
          params.require(:flying_log).permit(:log_date, :aircraft_id, :location_from, :location_to,
                                 ac_configuration_attributes: [:clean, :smoke_pods, :third_seat, :cockpit],
                                 flightline_servicing_attributes: [:id, :inspection_performed, :flight_start_time, :flight_end_time, :user_id, :hyd, :_destroy],
-                                capt_acceptance_certificate_attributes: [:flight_time, :user_id],
-                                sortie_attributes: [:user_id, :takeoff_time, :landing_time, :flight_time, :sortie_code, :touch_go, :full_stop, :total, :remarks, pilot_feedback_attributes: [:attachment]],
+                                capt_acceptance_certificate_attributes: [:flight_time, :view_history, :user_id],
+                                sortie_attributes: [:user_id,:second_pilot_id, :third_seat_name, :takeoff_time, :landing_time, :sortie_code, :touch_go, :full_stop], 
                                 capt_after_flight_attributes: [:flight_time, :user_id],
                                 flightline_release_attributes: [:flight_time, :user_id],
-                                aircraft_total_time_attributes: [:carried_over_aircraft_hours, :carried_over_landings, :carried_over_prop_hours, :carried_over_engine_hours,
-                                  :this_sortie_aircraft_hours, :this_sortie_landings, :this_sortie_prop_hours, :this_sortie_engine_hours,
-                                  :new_total_aircraft_hours, :new_total_landings, :new_total_prop_hours, :new_total_engine_hours,
-                                  :correction_aircraft_hours, :correction_landings, :correction_prop_hours, :correction_engine_hours,
-                                  :corrected_total_aircraft_hours, :corrected_total_landings, :corrected_total_prop_hours, :corrected_total_engine_hours,],
-                                techlogs_attributes: [:id, :work_unit_code_id, :user_id, :description, :_destroy],
+                                techlogs_attributes: [:id, :work_unit_code_id, :user_id, :description, :type_cd, :_destroy],
                                 after_flight_servicing_attributes: [:flight_time, :user_id, :oil_refill, :through_flight]
                                 )
       end 

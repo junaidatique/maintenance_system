@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :work_unit_codes do 
     collection do 
       get 'get_work_unit_codes'
+      get :autocomplete_codes
     end
   end
   resources :flying_logs do 

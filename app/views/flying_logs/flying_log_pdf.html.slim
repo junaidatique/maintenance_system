@@ -1,20 +1,15 @@
-.background-fl-image
+.background-image
   = wicked_pdf_image_tag('flying-log.jpg')  
 .aircraft-number
-  h3
-    = flying_log.aircraft.number
+  = flying_log.aircraft.number
 .fl-location_from
-  h3
-    = flying_log.location_from
+  = flying_log.location_from
 .fl-location_to
-  h3
-    = flying_log.location_to
+  = flying_log.location_to
 .fl-date
-  h3
-    = flying_log.log_date
+  = flying_log.log_date
 .fl-log-number
-  h3 
-    = flying_log.number
+  = flying_log.number
 - if flying_log.ac_configuration.present?
   - if flying_log.ac_configuration.clean
     .ac-clean
@@ -23,42 +18,35 @@
   - if flying_log.ac_configuration.third_seat
     .ac-third-seat
   - if flying_log.ac_configuration.cockpit.present?
-    - if flying_log.ac_configuration.cockpit == :single
+    - if flying_log.ac_configuration.cockpit == :Single
       .ac-cockpit-single
     - else
       .ac-cockpit-dual
   .ac-signature
-    = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
+    = wicked_pdf_image_tag flying_log.flightline_servicing.user.signature.attachment
 - if flying_log.present?
   - if flying_log.fuel_remaining.present?
     .fl-fuel-remaining
-      h3
-        = flying_log.fuel_remaining
+      = flying_log.fuel_remaining
   - if flying_log.fuel_refill.present?
     .fl-fuel-refill
-      h3 
-        = flying_log.fuel_refill
+      = flying_log.fuel_refill
   - if flying_log.oil_remaining.present?
     .fl-fuel-oil-remaining
-      h3 
-        = flying_log.oil_remaining
+      = flying_log.oil_remaining
   - if flying_log.oil_serviced.present?
     .fl-fuel-oil-serviced
-      h3 
-        = flying_log.oil_serviced
+      = flying_log.oil_serviced
   - if flying_log.oil_total_qty.present?
     .fl-fuel-oil-quantity
-      h3 
-        = flying_log.oil_total_qty
+      = flying_log.oil_total_qty
   - if flying_log.flightline_release.present?
     - if flying_log.flightline_release.flight_time.present?
       .fl-flightline-release-time
-        h3
-          = flying_log.flightline_release.flight_time
+        = flying_log.flightline_release.flight_time
     - if flying_log.flightline_release.user.personal_code.present?
       .fl-flightline-release-personal-code
-        h3
-          = flying_log.flightline_release.user.personal_code
+        = flying_log.flightline_release.user.personal_code
     .fl-flightline-release-signature
       = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
 - if flying_log.flightline_servicing.present?
@@ -66,182 +54,143 @@
     - if flying_log.flightline_servicing.Preflight?
       .pre.circle
       .fl-flightline-servicing.pre.start-time
-        h3
-          = flying_log.flightline_servicing.flight_start_time
+        = flying_log.flightline_servicing.flight_start_time
       .fl-flightline-servicing.pre.end-time
-        h3
-          = flying_log.flightline_servicing.flight_end_time
+        = flying_log.flightline_servicing.flight_end_time
       .fl-flightline-servicing.pre.personal-code
-        h3 
-          = flying_log.flightline_servicing.user.personal_code
+        = flying_log.flightline_servicing.user.personal_code
       .fl-flightline-servicing.pre.hyd
-        h3
-          = flying_log.flightline_servicing.hyd
+        = flying_log.flightline_servicing.hyd
       .fl-flightline-servicing.pre.signature
         = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
     - elsif flying_log.flightline_servicing.Thru_Flight?
       .fl-flightline-servicing.thru.circle
       .fl-flightline-servicing.thru.start-time
-        h3
-          = flying_log.flightline_servicing.flight_start_time
+        = flying_log.flightline_servicing.flight_start_time
       .fl-flightline-servicing.thru.end-time
-        h3
-          = flying_log.flightline_servicing.flight_end_time
+        = flying_log.flightline_servicing.flight_end_time
       .fl-flightline-servicing.thru.personal-code
-        h3 
-          = flying_log.flightline_servicing.user.personal_code
+        = flying_log.flightline_servicing.user.personal_code
       .fl-flightline-servicing.thru.hyd
-        h3
-          = flying_log.flightline_servicing.hyd
+        = flying_log.flightline_servicing.hyd
       .fl-flightline-servicing.thru.signature
         = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
     - elsif flying_log.flightline_servicing.Post_Flight?
       .post.circle
       .post.start-time
-        h3
-          = flying_log.flightline_servicing.flight_start_time
+        = flying_log.flightline_servicing.flight_start_time
       .post.end-time
-        h3
-          = flying_log.flightline_servicing.flight_end_time
+        = flying_log.flightline_servicing.flight_end_time
       .post.personal-code
-        h3 
-          = flying_log.flightline_servicing.user.personal_code
+        = flying_log.flightline_servicing.user.personal_code
       .post.hyd
-        h3
-          = flying_log.flightline_servicing.hyd
+        = flying_log.flightline_servicing.hyd
       .post.signature
         = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
 - if flying_log.aircraft_total_time.present? 
   .fl-aircraft-total-time
     .carried-over.engine-hours
-      h3
-        = flying_log.aircraft_total_time.carried_over_engine_hours
+      = flying_log.aircraft_total_time.carried_over_engine_hours
     .carried-over.aircraft-hours
-      h3
-        = flying_log.aircraft_total_time.carried_over_aircraft_hours
+      = flying_log.aircraft_total_time.carried_over_aircraft_hours
     .carried-over.landings
-      h3
-        = flying_log.aircraft_total_time.carried_over_landings
+      = flying_log.aircraft_total_time.carried_over_landings
     .carried-over.prop-hours
-      h3
-        = flying_log.aircraft_total_time.carried_over_prop_hours
+      = flying_log.aircraft_total_time.carried_over_prop_hours
     .sortie.engine-hours
-      h3
-        = flying_log.aircraft_total_time.this_sortie_engine_hours
+      = flying_log.aircraft_total_time.this_sortie_engine_hours
     .sortie.aircraft-hours
-      h3
-        = flying_log.aircraft_total_time.this_sortie_aircraft_hours
+      = flying_log.aircraft_total_time.this_sortie_aircraft_hours
     .sortie.landings
-      h3
-        = flying_log.aircraft_total_time.this_sortie_landings
+      = flying_log.aircraft_total_time.this_sortie_landings
     .sortie.prop-hours
-      h3
-        = flying_log.aircraft_total_time.this_sortie_prop_hours
+      = flying_log.aircraft_total_time.this_sortie_prop_hours
     .new-total.engine-hours
-      h3
-        = flying_log.aircraft_total_time.new_total_engine_hours
+      = flying_log.aircraft_total_time.new_total_engine_hours
     .new-total.aircraft-hours
-      h3
-        = flying_log.aircraft_total_time.new_total_aircraft_hours
+      = flying_log.aircraft_total_time.new_total_aircraft_hours
     .new-total.landings
-      h3
-        = flying_log.aircraft_total_time.new_total_landings
+      = flying_log.aircraft_total_time.new_total_landings
     .new-total.prop-hours
-      h3
-        = flying_log.aircraft_total_time.new_total_prop_hours
+      = flying_log.aircraft_total_time.new_total_prop_hours
     .correction.engine-hours
-      h3
-        = flying_log.aircraft_total_time.correction_engine_hours
+      = flying_log.aircraft_total_time.correction_engine_hours
     .correction.aircraft-hours
-      h3
-        = flying_log.aircraft_total_time.correction_aircraft_hours
+      = flying_log.aircraft_total_time.correction_aircraft_hours
     .correction.landings
-      h3
-        = flying_log.aircraft_total_time.correction_landings
+      = flying_log.aircraft_total_time.correction_landings
     .correction.prop-hours
-      h3
-        = flying_log.aircraft_total_time.correction_prop_hours
+      = flying_log.aircraft_total_time.correction_prop_hours
     .corrected-total.engine-hours
-      h3
-        = flying_log.aircraft_total_time.corrected_total_engine_hours
+      = flying_log.aircraft_total_time.corrected_total_engine_hours
     .corrected-total.aircraft-hours
-      h3
-        = flying_log.aircraft_total_time.corrected_total_aircraft_hours
+      = flying_log.aircraft_total_time.corrected_total_aircraft_hours
     .corrected-total.landings
-      h3
-        = flying_log.aircraft_total_time.corrected_total_landings
+      = flying_log.aircraft_total_time.corrected_total_landings
     .corrected-total.prop-hours
-      h3
-        = flying_log.aircraft_total_time.corrected_total_prop_hours
+      = flying_log.aircraft_total_time.corrected_total_prop_hours
 - if flying_log.capt_after_flight.present?
   .pilot-after-flight
     .time-local
-      h3 
-        = flying_log.capt_after_flight.flight_time
+      = flying_log.capt_after_flight.flight_time
     .pilot-name
-      h3 
-        = flying_log.capt_after_flight.user.name
+      = flying_log.capt_after_flight.user.name
     .rank
-      h3 
-        = flying_log.capt_after_flight.user.rank
+      = flying_log.capt_after_flight.user.rank
     .signature
       = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
 - if flying_log.capt_acceptance_certificate.present?
   .pilot-acceptance-certificate
     .time-local
-      h3 
-        = flying_log.capt_acceptance_certificate.flight_time
+      = flying_log.capt_acceptance_certificate.flight_time
     .pilot-name
-      h3 
-        = flying_log.capt_acceptance_certificate.user.name
+      = flying_log.capt_acceptance_certificate.user.name
     .rank
-      h3 
-        = flying_log.capt_acceptance_certificate.user.rank
+      = flying_log.capt_acceptance_certificate.user.rank
     .signature
       = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
 
 - if flying_log.after_flight_servicing.present?
   .after-flight-servicing
     .time-local
-      h3 
-        = flying_log.after_flight_servicing.flight_time
+      = flying_log.after_flight_servicing.flight_time
     .personal-code
-      h3 
-        = flying_log.after_flight_servicing.user.personal_code
+      = flying_log.after_flight_servicing.user.personal_code
     .signature
       = wicked_pdf_image_tag(flying_log.after_flight_servicing.user.signature.attachment)
     .oil-refill
-      h3 
-        = flying_log.after_flight_servicing.oil_refill
+      = flying_log.after_flight_servicing.oil_refill
 - if flying_log.sortie.present?
   .sortie
     .sortie-code
-      h3
-        = flying_log.sortie.sortie_code
+      = flying_log.sortie.sortie_code
     .crew-name
-      h3
-        = flying_log.sortie.user.name
+      - if flying_log.ac_configuration.cockpit != :Single
+        = flying_log.sortie.second_pilot.name
+        br
+      - if flying_log.ac_configuration.third_seat
+        = flying_log.sortie.third_seat_name
     .take-off-time
-      h3
-        = flying_log.sortie.takeoff_time
+      = flying_log.sortie.takeoff_time
     .landing-time
-      h3
-        = flying_log.sortie.landing_time
+      = flying_log.sortie.landing_time
     .flight-time 
-      h3
-        = flying_log.sortie.flight_time
+      = flying_log.sortie.flight_minutes
+      | &nbsp;mins 
+      br
+      = @flying_log.sortie.flight_time
     .touch-go
-      h3
-        = flying_log.sortie.touch_go
+      = flying_log.sortie.touch_go
     .full-stop
-      h3
-        = flying_log.sortie.full_stop
+      = flying_log.sortie.full_stop
     .total
-      h3
-        = flying_log.sortie.total
+      = flying_log.sortie.total_landings
     .remarks
-      p
-        = flying_log.sortie.remarks
-    
-
-
+      = techlogs.map{|techlog| techlog.description}.join("<br>").html_safe
+    .techlog-numbers
+      - i = 1
+      - techlogs.each do |techlog|
+        div[class="techlog_#{i}"]
+          = techlog.number
+        - i += 1
+      
