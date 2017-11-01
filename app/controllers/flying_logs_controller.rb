@@ -156,10 +156,11 @@ class FlyingLogsController < ApplicationController
             
       
     i = 0
-    num = @flying_log.techlogs.count
+    num = @flying_log.techlogs.where(type_cd: 1).count
     merged_certificates = CombinePDF.new
     begin
       techlogs  = @flying_log.techlogs.where(type_cd: "1").limit(3).offset(i)
+      puts techlogs
       pdf_data = render_to_string(
                   pdf: "flying_log_#{@flying_log.id}",
                   orientation: 'Landscape',

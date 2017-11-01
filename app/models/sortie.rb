@@ -41,25 +41,27 @@ class Sortie
 
   def update_aircraft_times
     f_total = self.flying_log.aircraft_total_time
-    f_total.this_sortie_aircraft_hours = flight_minutes
+    f_total.this_sortie_aircraft_hours = (flight_minutes.to_f / 60).round(2)
     f_total.this_sortie_landings       = total_landings
-    f_total.this_sortie_engine_hours   = flight_minutes
-    f_total.this_sortie_prop_hours     = flight_minutes
+    f_total.this_sortie_engine_hours   = (flight_minutes.to_f / 60).round(2)
+    f_total.this_sortie_prop_hours     = (flight_minutes.to_f / 60).round(2)
 
-    total_landings        = f_total.carried_over_landings.to_i + total_landings.to_i
+    t_landings        = f_total.carried_over_landings.to_i + total_landings.to_i
     total_aircraft_hours  = f_total.carried_over_aircraft_hours.to_f + (flight_minutes.to_f / 60)
     total_engine_hours    = f_total.carried_over_engine_hours.to_f + (flight_minutes.to_f / 60)
     total_prop_hours      = f_total.carried_over_prop_hours.to_f + (flight_minutes.to_f / 60)
 
-    f_total.new_total_landings        = total_landings.round(2)
+    f_total.new_total_landings        = t_landings
     f_total.new_total_aircraft_hours  = total_aircraft_hours.round(2)
     f_total.new_total_engine_hours    = total_engine_hours.round(2)
     f_total.new_total_prop_hours      = total_prop_hours.round(2)
 
     f_total.corrected_total_engine_hours     = total_engine_hours.round(2)
     f_total.corrected_total_aircraft_hours   = total_aircraft_hours.round(2)
-    f_total.corrected_total_landings         = total_landings.round(2)
+    f_total.corrected_total_landings         = t_landings
     f_total.corrected_total_prop_hours       = total_prop_hours.round(2)
+
+    self.flying_log.aircraft.update_part_values flying_log
 
   end
 end

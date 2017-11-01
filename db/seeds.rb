@@ -1,58 +1,172 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
-
-preflight         = WorkUnitCode.create! code: 'preflight', description: 'Preflight'
-preflight_crew    = WorkUnitCode.create! code: 'preflight_crew', 
-                      description: 'Preflight Crew', parent_id: preflight, wuc_type_cd: 0
-# preflight_elect   = WorkUnitCode.create! code: 'preflight_elect', 
-#                       description: 'Preflight electrical', parent_id: preflight, wuc_type_cd: 0
-# preflight_radio   = WorkUnitCode.create! code: 'preflight_radio', 
-#                       description: 'Preflight Radio', parent_id: preflight, wuc_type_cd: 0
-thru_flight       = WorkUnitCode.create! code: 'thru_flight', description: 'Thru_Flight'
-thru_flight_crew  = WorkUnitCode.create! code: 'thru_flight_crew', 
-                      description: 'Thru_Flight Crew', parent_id: thru_flight, wuc_type_cd: 1
-thru_flight_elect = WorkUnitCode.create! code: 'thru_flight_elect', 
-                      description: 'Thru_Flight electrical', parent_id: thru_flight, wuc_type_cd: 1
-thru_flight_radio = WorkUnitCode.create! code: 'thru_flight_radio', 
-                      description: 'Thru_Flight Radio', parent_id: thru_flight, wuc_type_cd: 1
-post_flight       = WorkUnitCode.create! code: 'post_flight', description: 'Post_Flight'
-post_flight_crew  = WorkUnitCode.create! code: 'post_flight_crew', 
-                      description: 'Post_Flight Crew', parent_id: post_flight, wuc_type_cd: 2
-post_flight_elect = WorkUnitCode.create! code: 'post_flight_elect', 
-                      description: 'Post_Flight electrical', parent_id: post_flight, wuc_type_cd: 2
-post_flight_radio = WorkUnitCode.create! code: 'post_flight_radio', 
-                      description: 'Post_Flight Radio', parent_id: post_flight, wuc_type_cd: 2
-other_wuc         = WorkUnitCode.create! code: 'other', description: 'Other'
-other1_wuc        = WorkUnitCode.create! code: 'other1', description: 'other1 wuc', 
-                      parent_id: other_wuc, wuc_type_cd: 3
-other2_wuc        = WorkUnitCode.create! code: 'other2', description: 'other2 wuc', 
-                      parent_id: other_wuc, wuc_type_cd: 3
-
-admin       = User.create! username: 'admin', name: 'Admin', 
-                role: :admin, password: '12345678', status: 1
-engineer    = User.create! username: 'engineer', name: 'Engineer', 
-                role: :engineer, password: '12345678', status: 1
-crew        = User.create! username: 'crew', name: 'Crew Cheif', 
-                role: :crew_cheif, password: '12345678', status: 1, work_unit_codes: [preflight_crew, thru_flight_crew, post_flight_crew]
-# electrical  = User.create! username: 'electrical', name: 'Electrical', 
-#                 role: :electrical, password: '12345678', status: 1, work_unit_codes: [preflight_elect, thru_flight_elect, post_flight_elect]
-# radio       = User.create! username: 'radio', name: 'Radio', 
-#                 role: :radio, password: '12345678', status: 1, work_unit_codes: [preflight_radio, thru_flight_radio, post_flight_radio]
-pilot       = User.create! username: 'pilot', name: 'Pilot', 
-                role: :pilot, password: '12345678', status: 1
-pilot2       = User.create! username: 'pilot2', name: 'Pilot2', 
-                role: :pilot, password: '12345678', status: 1
-master_control = User.create! username: 'master_control', name: 'Master Control', 
-                role: :master_control, password: '12345678', status: 1
-
-aircraft_300  = Aircraft.create! number: '300', tail_number: 'QS300', serial_no: '#300', fuel_capacity: '15', oil_capacity: '15', flight_hours: 1, engine_hours: 1, landings: 1, prop_hours: 1
-Aircraft.create! number: '301', tail_number: 'QS301', serial_no: '#301', fuel_capacity: '15', oil_capacity: '15'
+cur_time  = Time.now
+puts 'Creating Aircraft'
+aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
 
 
-FlyingPlan.create! flying_date: Time.zone.now.strftime("%Y-%m-%d"), is_flying: true, aircraft_ids: [aircraft_300.id]
+aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+
+aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+
+aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+
+Aircraft.each do |aircraft|
+  for i in 1..16
+    calender_life = ''
+    installed_date = (cur_time).strftime("%Y-%m-%d")
+    total_hours = 0
+    total_landings = 0
+    is_lifed = false
+    if i == 5 or i == 6 or i == 7 or i == 8
+      is_lifed = true
+      calender_life = (cur_time + (60*60*24*365)).strftime("%Y-%m-%d")
+    elsif i == 9 or i == 10 or i == 11 or i == 12
+      is_lifed = true
+      total_hours = 400
+    elsif i == 13 or i == 14 or i == 15 or i == 16
+      is_lifed = true
+      total_landings = 200
+    end
+    Part.create({
+      aircraft: aircraft, number: "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}", 
+      serial_no: "#{Faker::Number.number(5)}", 
+      description: Faker::Lorem.words(1 + rand(4)).join(" "), 
+      is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
+      total_part_hours: total_hours, total_landings: total_landings })
+  end
+end
+
+puts 'Aircraft Created'
+puts 'Creating FlyingPlan'
+(1..10).each do |day|
+  is_flying = Faker::Boolean.boolean
+  aircraft_ids = []
+  reason = ''
+  if (is_flying)
+    aircraft_ids = Aircraft.limit(1+rand(Aircraft.count)).sort_by{rand}.map{|aircraft| aircraft.id.to_s}
+  else
+    reason = Faker::Lorem.sentence(3)
+  end
+  FlyingPlan.create! flying_date: day.business_days.ago.strftime("%Y-%m-%d"), is_flying: is_flying, aircraft_ids: aircraft_ids, reason: reason
+  print '.'
+end
+puts ''
+puts 'FlyingPlan Created'
+
+puts 'Creating Users'
+User.roles.each do |role_name, role_key|
+  User.create! username: role_name, name: role_name.to_s.sub('_',' '), 
+                 role: role_name, password: '12345678', status: 1, personal_code: Faker::Number.number(6), rank: Faker::Lorem.word
+  print '.'
+end
+puts ''
+puts 'Users Created'
+
+puts 'Creating WorkUnitCodes'
+WorkUnitCode.wuc_types.each do |work_unit_code,code_key|
+  w_code = WorkUnitCode.create code: work_unit_code.downcase, description: work_unit_code.to_s.sub('_',' ')
+  print '.'
+  ["crew_cheif", "electrical", "radio", "instrument", "airframe", "engine"].each do |role_name, role_key|
+      WorkUnitCode.create code: "#{work_unit_code.downcase}_#{role_name.downcase}", description: "#{work_unit_code.to_s.sub('_',' ')} #{role_name.to_s.sub('_',' ')}", parent_id: w_code, wuc_type_cd: code_key
+  end
+end
+puts ''
+puts 'WorkUnitCodes Created'
+##################################################################
+sleep(2)
+puts 'Creating Pre flight Flyiing Log'
+flying_log = FlyingLog.new
+last_flying_log = FlyingLog.last
+if last_flying_log.present?
+  flying_log.number = last_flying_log.number + 1
+else
+  flying_log.number = 1001
+end
+
+
+flying_log.log_date = Time.now.strftime("%Y-%m-%d")
+flying_log.aircraft = Aircraft.limit(1).sort_by{rand}.first
+flying_log.location_from = Faker::Lorem.word
+flying_log.location_to = Faker::Lorem.word
+
+flying_log.build_ac_configuration
+flying_log.ac_configuration.clean = 1
+flying_log.ac_configuration.smoke_pods = 1
+flying_log.ac_configuration.third_seat = 1
+flying_log.ac_configuration.cockpit_cd = 1 + rand(2)
+
+flying_log.build_flightline_servicing
+flying_log.flightline_servicing.user = User.where(role_cd: 7).first
+flying_log.flightline_servicing.inspection_performed = 0
+
+flying_log.flightline_servicing.flight_start_time = cur_time.strftime("%H:%M %p")
+flying_log.flightline_servicing.flight_end_time   = (cur_time + (10*60)).strftime("%H:%M %p")
+flying_log.flightline_servicing.hyd = Faker::Lorem.word
+
+flying_log.save
+
+flying_log.flightline_service
+
+flying_log.fuel_refill = 1 + rand(flying_log.aircraft.fuel_capacity)
+flying_log.oil_serviced = 1 + rand(flying_log.aircraft.oil_capacity)
+flying_log.update_fuel
+flying_log.save
+flying_log.fill_fuel
+
+
+flying_log.techlogs.where(type_cd: 0).each do |techlog|
+  techlog.action = Faker::Lorem.sentence
+  techlog.is_completed = true
+  techlog.save
+end
+
+flying_log.build_flightline_release
+flying_log.flightline_release.flight_time = cur_time.strftime("%H:%M %p")
+flying_log.flightline_release.user = User.where(role_cd: 7).first
+flying_log.flight_release
+flying_log.save
+
+flying_log.build_capt_acceptance_certificate
+flying_log.capt_acceptance_certificate.flight_time = cur_time.strftime("%H:%M %p")
+flying_log.capt_acceptance_certificate.view_history = 1
+flying_log.capt_acceptance_certificate.user = User.where(role_cd: 8).first
+flying_log.book_flight
+flying_log.save
+
+flying_log.build_sortie
+flying_log.sortie.user = User.where(role_cd: 8).first
+if flying_log.ac_configuration.cockpit_cd == 2
+  flying_log.sortie.second_pilot = User.where(role_cd: 13).first
+end
+flying_log.sortie.third_seat_name = Faker::Lorem.word
+flying_log.sortie.takeoff_time = (cur_time - (10*60)).strftime("%H:%M %p")
+flying_log.sortie.landing_time = (cur_time + (10*60)).strftime("%H:%M %p")
+flying_log.sortie.sortie_code_cd = 2
+flying_log.sortie.touch_go = rand(5)
+flying_log.sortie.full_stop = 1 + rand(3)
+flying_log.save
+flying_log.pilot_back
+
+flying_log.sortie.total_landings = flying_log.sortie.touch_go.to_i + flying_log.sortie.full_stop.to_i
+flying_log.sortie.flight_minutes  = flying_log.sortie.calculate_flight_minutes
+flying_log.sortie.flight_time     = flying_log.sortie.calculate_flight_time
+flying_log.sortie.total_landings  = flying_log.sortie.calculate_landings
+flying_log.sortie.update_aircraft_times
+flying_log.sortie.save
+
+flying_log.build_capt_after_flight
+flying_log.capt_after_flight.flight_time = cur_time.strftime("%H:%M %p")
+flying_log.capt_after_flight.user = User.where(role_cd: 7).first
+flying_log.save
+sleep(2)
+flying_log = FlyingLog.first
+techlog_count = (2+rand(5))
+for i in 1..techlog_count
+   Techlog.create({type_cd: 1.to_s, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
+        description: Faker::Lorem.sentence, 
+        work_unit_code: WorkUnitCode.where(wuc_type_cd: 3).leaves.limit(1).offset(rand(3)).first, 
+        user_id: flying_log.flightline_servicing.user_id, 
+        log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
+        aircraft_id: flying_log.aircraft_id, flying_log_id: flying_log.id})
+end
+
 System.create! settings: {dms_version_number: 0.0}

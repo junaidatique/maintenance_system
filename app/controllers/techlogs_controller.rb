@@ -79,9 +79,7 @@ class TechlogsController < ApplicationController
     #   end
       if @techlog.update(techlog_params)
         if @techlog.flying_log.present?
-          @techlog.flying_log.fuel_remaining  = @techlog.flying_log.aircraft.fuel_capacity.to_f - @techlog.flying_log.fuel_refill.to_f
-          @techlog.flying_log.oil_remaining   = @techlog.flying_log.aircraft.oil_capacity.to_f - @techlog.flying_log.oil_serviced.to_f
-          @techlog.flying_log.oil_total_qty   = @techlog.flying_log.aircraft.oil_capacity
+          @techlog.flying_log.update_fuel
           @techlog.flying_log.fill_fuel
         end
         if @techlog.log_techloged?

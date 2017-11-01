@@ -99,4 +99,10 @@ class FlyingLog
     aircraft_total_time.corrected_total_prop_hours       = aircraft.prop_hours
   end
 
+  def update_fuel
+    self.fuel_remaining  = aircraft.fuel_capacity.to_f - fuel_refill.to_f
+    self.oil_remaining   = aircraft.oil_capacity.to_f - oil_serviced.to_f
+    self.oil_total_qty   = aircraft.oil_capacity
+  end
+
 end

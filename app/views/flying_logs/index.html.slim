@@ -17,8 +17,6 @@
                 | Date
               th width='10%'
                 | Aircraft
-              th width='10%'
-                | PDF
               th width='13%'
                 | Actions
           tbody
@@ -30,9 +28,10 @@
                   = display_date(flying_log.log_date) 
                 td.table-row-center
                   = flying_log.aircraft.tail_number
-                td.table-row-center
-                  = link_to('PDF', pdf_flying_log_path(flying_log, format: :pdf), target: :_blank)
+                
                 td.text-center width='20%'
+                  = link_to pdf_flying_log_path(flying_log), class: 'btn btn-success btn-flat', target: :_blank do
+                    i.fa.fa-file-pdf-o
                   = link_to flying_log_path(flying_log), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye
                   - if can? :update, FlyingLog

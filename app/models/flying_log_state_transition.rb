@@ -9,6 +9,6 @@ class FlyingLogStateTransition
   embedded_in :flying_log
   
   def aircraft=(a)
-    puts a.inspect
+    # puts a.inspect
   end
 end

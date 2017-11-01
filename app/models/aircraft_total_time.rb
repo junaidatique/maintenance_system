@@ -16,7 +16,6 @@ class AircraftTotalTime
   field :new_total_engine_hours, type: Float, default: 0
   field :new_total_prop_hours, type: Float, default: 0
 
-
   field :correction_aircraft_hours, type: Float, default: 0
   field :correction_landings, type: Integer, default: 0
   field :correction_engine_hours, type: Float, default: 0

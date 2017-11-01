@@ -8,7 +8,7 @@
   .col-md-12
     .box.box-info
       .box-body
-        table.table.table-bordered.table-striped.aircraft-table
+        table.table.table-bordered.table-striped.data-tabled
           thead
             tr
               th width='10%'
@@ -34,19 +34,3 @@
           - if can? :create, Aircraft
             = link_to 'New Aircraft', new_aircraft_path, class: 'btn btn-block btn-primary btn-flat'
         .clearfix
-javascript:
-  $(document).ready(function() {
-    var dt;
-    dt = $('.aircraft-table').DataTable({
-      responsive: true,
-      "paging":   false,
-      "ordering": false,
-      "searching": false,
-      language: {
-        'paginate': {
-          'previous': '<i class="fa fa-angle-left"></i>',
-          'next': '<i class="fa fa-angle-right"></i>'
-        }
-      }
-    });
-  });

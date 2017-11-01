@@ -61,7 +61,9 @@
               th
                 | Number
               th
-                | Noun
+                | Serial #
+              th
+                | Description
               th
                 | Calender Life
               th
@@ -75,19 +77,16 @@
                 td.table-row-center
                   = part.number
                 td.table-row-center
-                  = part.noun
+                  = part.serial_no
+                td.table-row-center
+                  = part.description
                 td.table-row-center
                   = display_date(part.calender_life)
                 td.table-row-center
-                  = part.flight_hours_completed
+                  = part.part_hours_completed
                 td.table-row-center
-                  = part.no_of_landings_completed
-                /td
-                  - if technical_change.pdf_file.exists?
-                    = link_to 'Open file', technical_change.pdf_file.url, target: :_blank
-                /td.text-center width='20%'
-                  = link_to technical_order_change_path(@technical_order, technical_change), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
-                     i.fa.fa-trash
+                  = part.landings_completed
+                
         
         .clearfix
 
