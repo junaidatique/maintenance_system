@@ -1,0 +1,50 @@
+= content_for :page_subtitle do
+  | Parts
+
+= content_for :box_heading do
+  | Parts
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th
+                | Aircraft
+              th
+                | Number
+              th
+                | Serial #
+              th
+                | Description
+              th
+                | Calender Life
+              th
+                | Hours Completed
+              th
+                | Landings
+                 
+          tbody
+            - @parts.each do |part|
+              tr
+                td.table-row-center
+                  = part.aircraft.tail_number
+                td.table-row-center
+                  = part.number
+                td.table-row-center
+                  = part.serial_no
+                td.table-row-center
+                  = part.description
+                td.table-row-center
+                  = display_date(part.calender_life)
+                td.table-row-center
+                  = part.part_hours_completed
+                td.table-row-center
+                  = part.landings_completed
+                
+        .col-sm-4.col-sm-offset-4
+          - if can? :create, Part
+            = link_to 'Upload Excel', new_part_path, class: 'btn btn-block btn-primary btn-flat'
+        .clearfix

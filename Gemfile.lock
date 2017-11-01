@@ -208,6 +208,9 @@ GEM
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
+    roo (2.7.1)
+      nokogiri (~> 1)
+      rubyzip (~> 1.1, < 2.0.0)
     ruby-rc4 (0.1.5)
     ruby_dep (1.5.0)
     rubyzip (1.2.1)
@@ -314,6 +317,7 @@ DEPENDENCIES
   puma (~> 3.7)
   rails (~> 5.1.1)
   rails-jquery-autocomplete
+  roo
   sass-rails (~> 5.0)
   select2-rails
   selenium-webdriver

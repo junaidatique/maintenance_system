@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   
   resources :flying_plans
+  resources :parts  do
+    collection do
+      post :import
+    end
+  end
   resources :non_flying_days
   resources :limitation_logs
   resources :addl_logs

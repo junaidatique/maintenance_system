@@ -31,25 +31,4 @@
               - else
                 = f.input :oil_capacity, disabled: true
           
-              
-  - if can? :update, @aircraft
-    .row
-      .col-md-12#div_part
-        .box.box-info
-          .box-header.with-border
-            .row
-              .col-sm-9
-                h3.box-title
-                  i.fa.fa-bar-chart
-                  | &nbsp;Parts
-              .col-sm-3
-                
-          .box-body
-            div.parts_insert
-              = f.simple_fields_for :parts do |part|
-                = render 'part_fields', :f => part
-            .row
-              .col-sm-offset-9.col-sm-3
-                = link_to_add_association "+ Add Part", f, :parts, data: {:'association-insertion-node' => ".parts_insert", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
-                    
   == render 'common/form_action_buttons', options: { form: f, index_path: aircrafts_path}
