@@ -165,7 +165,7 @@
     .sortie-code
       = flying_log.sortie.sortie_code
     .crew-name
-      - if flying_log.ac_configuration.cockpit != :Single
+      - if flying_log.ac_configuration.cockpit_cd == 2 and flying_log.sortie.second_pilot.present?
         = flying_log.sortie.second_pilot.name
         br
       - if flying_log.ac_configuration.third_seat

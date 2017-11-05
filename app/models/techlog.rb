@@ -6,6 +6,8 @@ class Techlog
   include Mongoid::Autoinc
 
   as_enum :type, Flight: 0, Maintenance: 1, Scheduled: 2
+  as_enum :condition, completed: 1, interm: 2, created: 0
+
   field :log_time, type: String
   field :log_date, type: Date
   field :number, type: Integer
