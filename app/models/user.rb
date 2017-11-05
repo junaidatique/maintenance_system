@@ -1,5 +1,6 @@
 class User
   include Mongoid::Document
+  include Mongoid::Timestamps
   include SimpleEnum::Mongoid
 
   as_enum :role, admin: 0, engineer: 1, crew_cheif: 2, electrical: 3, 
@@ -9,6 +10,7 @@ class User
   
   devise :database_authenticatable, 
          :recoverable, :rememberable, :trackable, :validatable
+
 
   ## Database authenticatable
   field :email,              type: String, default: ""
@@ -43,7 +45,9 @@ class User
   has_and_belongs_to_many :work_unit_codes
 
   validates :username, presence: true
-  
+  scope :online, -> { gt(updated_at: 10.minutes.ago) }
+
+
   def email_required?
     false
   end
@@ -54,5 +58,12 @@ class User
 
   def inactive_message
     "Sorry, this account has been deactivated."
+  end
+  def online?
+    if updated_at.present?
+      updated_at > 10.minutes.ago
+    else 
+      false
+    end
   end
 end

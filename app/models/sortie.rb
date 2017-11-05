@@ -33,9 +33,9 @@ class Sortie
     total_landings = touch_go.to_i + full_stop.to_i
   end
 
-  def calculate_flight_time flight_minutes
-    hours = flight_minutes.to_i / 60
-    mins  = flight_minutes.to_i % 60
+  def calculate_flight_time
+    hours = self.flight_minutes.to_i / 60
+    mins  = self.flight_minutes.to_i % 60
     mins_to_table = 0
     case mins
     when 3..8

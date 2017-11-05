@@ -19,6 +19,8 @@
                 | Rank 
               th width='10%'
                 | Role
+              th width='10%'
+                | Online
               th width='13%'
                 | Actions
           tbody
@@ -32,6 +34,8 @@
                   = user.rank
                 td.table-row-center
                   = te user, :role
+                td.table-row-center
+                  = user.online? ? 'Yes' : 'No'
                 td.text-center width='20%'
                   = link_to user_path(user), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye
