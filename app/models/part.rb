@@ -2,12 +2,14 @@ class Part
   include Mongoid::Document
   include Mongoid::Timestamps
 
+
   validates :number, presence: true
   validates :description, presence: true
 
   field :number, type: String
   field :description, type: String
   field :serial_no, type: String
+  field :quantity, type: Integer
 
   field :calender_life, type: Date
   field :installed_date, type: Date
@@ -23,6 +25,7 @@ class Part
   field :is_lifed, type: Mongoid::Boolean
 
   belongs_to :aircraft
+  embeds_many :part_histories
   # has_one :old_part, class_name: 'ChangePart' 
   # has_one :new_part, class_name: 'ChangePart'
 
@@ -30,6 +33,17 @@ class Part
   # accepts_nested_attributes_for :new_part
 
   after_create :update_record
+  after_update :create_history
+
+  def create_history
+    part_history = PartHistory.new
+    part_history.number = self.number
+    part_history.description = self.description
+    part_history.total_landings = self.total_landings
+    part_history.part = self
+    part_history.save
+    #self.part_histories << part_history
+  end
 
   def update_record
     self.remaining_hours = self.total_part_hours.to_f - self.part_hours_completed.to_f

@@ -1,6 +1,65 @@
-p#notice = notice
+= content_for :box_heading do
+  | Part:&nbsp;
+  = @part.number
 
-
-= link_to 'Edit', edit_part_path(@part)
-'  |
-= link_to 'Back', parts_path
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; General
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="25%"
+                    | Aircraft Number
+                  td
+                    - if @part.aircraft.present? 
+                      = @part.aircraft.tail_number
+                    - else 
+                      | N/A
+                  th width="25%"
+                    | Part #
+                  td = @part.number
+                tr
+                  th width="25%"
+                    | Part Serial #
+                  td = @part.serial_no
+                  th width="25%"
+                    | Part Quantity
+                  td = @part.quantity
+                tr
+                  th width="25%"
+                    | Part Calender Life
+                  td = (@part.calender_life) 
+                  th width="25%"
+                    | Part Installed Date
+                  td = display_date(@part.installed_date)
+                tr
+                  th width="25%"
+                    | Total Part Hours
+                  td = (@part.total_part_hours) 
+                  th width="25%"
+                    | Remaining Hours 
+                  td = @part.remaining_hours
+                tr
+                  th width="25%"
+                    | Total Landings
+                  td = (@part.total_landings) 
+                  th width="25%"
+                    | Remaining Landings 
+                  td = @part.landings_remaining
+                /tr
+                  th width="25%"
+                    | Landings
+                  td = @aircraft.landings
+                  th width="25%"
+                    | Prop Hours
+                  td = @aircraft.prop_hours
+      

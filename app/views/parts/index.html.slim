@@ -30,9 +30,10 @@
             - @parts.each do |part|
               tr
                 td.table-row-center
-                  = part.aircraft.tail_number
+                  - if part.aircraft.present?
+                    = part.aircraft.tail_number
                 td.table-row-center
-                  = part.number
+                  = link_to part.number, part_path(part)
                 td.table-row-center
                   = part.serial_no
                 td.table-row-center
