@@ -29,6 +29,7 @@ Aircraft.each do |aircraft|
     Part.create({
       aircraft: aircraft, number: "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}", 
       serial_no: "#{Faker::Number.number(5)}", 
+      quantity: rand(10) + 1, 
       description: Faker::Lorem.words(1 + rand(4)).join(" "), 
       is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
       total_part_hours: total_hours, total_landings: total_landings })

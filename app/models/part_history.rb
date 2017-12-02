@@ -1,6 +1,7 @@
 class PartHistory
   include Mongoid::Document
-
+  include Mongoid::Timestamps
+  
   field :number, type: String
   field :description, type: String
   field :serial_no, type: String

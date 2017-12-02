@@ -37,9 +37,22 @@ class Part
 
   def create_history
     part_history = PartHistory.new
+    part_history.aircraft = (self.aircraft.present?) ? self.aircraft.id.to_s : ''
     part_history.number = self.number
     part_history.description = self.description
+    part_history.serial_no = self.serial_no
+    part_history.quantity = self.quantity
+    
+    part_history.calender_life = self.calender_life
+    part_history.installed_date = self.installed_date
+
+    part_history.total_part_hours = self.total_part_hours
+    part_history.remaining_hours = self.remaining_hours
+    part_history.part_hours_completed = self.part_hours_completed
+    
     part_history.total_landings = self.total_landings
+    part_history.landings_completed = self.landings_completed
+    part_history.landings_remaining = self.landings_remaining
     part_history.part = self
     part_history.save
     #self.part_histories << part_history
