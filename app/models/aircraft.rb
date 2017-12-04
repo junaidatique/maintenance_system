@@ -28,7 +28,7 @@ class Aircraft
   validates :oil_capacity, presence: true
   
   scope :available, -> { where(available_for_flight: 1) }
-  scope :active, -> { where(id: FlyingPlan.where(is_flying: true).where(flying_date: Time.zone.now.strftime("%Y-%m-%d")).first.aircrafts.map(&:id).join(',')) }
+  scope :active, -> { where(:id.in => FlyingPlan.where(is_flying: true).where(flying_date: Time.zone.now.strftime("%Y-%m-%d")).first.aircrafts.map(&:id)) }
 
   has_many :flying_logs
   has_many :parts

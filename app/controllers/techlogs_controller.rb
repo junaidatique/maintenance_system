@@ -42,6 +42,15 @@ class TechlogsController < ApplicationController
     if @techlog.dms_version.blank?
       @techlog.dms_version = System.first.settings['dms_version_number'] 
     end
+    puts '---------'
+    puts current_user.work_unit_code_ids.inspect
+    puts @techlog.work_unit_code.id.inspect
+    puts '---------'
+    if current_user.work_unit_code_ids.include? @techlog.work_unit_code.id
+      puts 'here'
+      @techlog.is_viewed = true
+      @techlog.save :validate => false
+    end
   end
 
   # POST /techlogs

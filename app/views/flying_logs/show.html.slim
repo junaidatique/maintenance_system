@@ -2,5 +2,53 @@
   = @flying_log.number
 
 = render 'show_flying_log'
+- if current_user.role == :master_control || current_user.role == :engineer || current_user.role == :admin
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Techlogs
+            .col-sm-6.text-right
+              
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-bordered.table-striped.data-tabled
+                thead
+                  tr
+                    th width='10%'
+                      | Number
+                    th width='10%'
+                      | Viewed
+                    th width='10%'
+                      | Aircraft
+                    th width='10%'
+                      | WUC
+                    th width='10%'
+                      | Completed
+                    th width='13%'
+                      | Actions
+                tbody
+                  - @flying_log.techlogs.each do |techlog|
+                    tr
+                      td.table-row-center
+                        = link_to techlog.number, techlog_path(techlog)
+                      td.table-row-center
+                        = (techlog.is_viewed) ? 'Yes' : 'No'
+                      td.table-row-center
+                        = techlog.aircraft.tail_number
+                      td.table-row-center
+                        = techlog.work_unit_code.code
+                      td.table-row-center
+                        = (techlog.is_completed) ? 'Yes' : 'No'
+                      td.text-center width='20%'
+                        = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
+                          i.fa.fa-file-pdf-o
+                    
+                    
 
 = render 'common/actions_buttons', back_path: flying_logs_path, edit_path: edit_flying_log_path(@flying_log)

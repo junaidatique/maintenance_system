@@ -80,18 +80,20 @@ class Part
         part_number = row[1]
         serial_no   = row[2]
         description = row[3]
-        is_lifed    = row[4]
-        calender_life    = row[5]
-        installed_date    = row[6]
-        total_part_hours    = row[7]
-        part_hours_completed    = row[8]
-        total_landings    = row[9]
-        landings_completed    = row[10]
+        quantity    = row[4]
+        is_lifed    = row[5]
+        calender_life         = row[6]
+        installed_date        = row[7]
+        total_part_hours      = row[8]
+        part_hours_completed  = row[9]
+        total_landings        = row[10]
+        landings_completed    = row[11]
         part = Part.where(number: part_number)
         if part.present?
           part.update({
             serial_no: serial_no, 
             description: description, 
+            quantity: quantity, 
             is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
             total_part_hours: total_part_hours,part_hours_completed: part_hours_completed,
             total_landings: total_landings, landings_completed: landings_completed })
@@ -101,6 +103,7 @@ class Part
             number: part_number, 
             serial_no: serial_no, 
             description: description, 
+            quantity: quantity, 
             is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
             total_part_hours: total_part_hours,part_hours_completed: part_hours_completed,
             total_landings: total_landings, landings_completed: landings_completed })

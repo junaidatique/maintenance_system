@@ -1,4 +1,5 @@
 cur_time  = Time.now
+System.create! settings: {dms_version_number: 0.0}
 puts 'Creating Aircraft'
 aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
 
@@ -66,7 +67,8 @@ puts 'Creating WorkUnitCodes'
 WorkUnitCode.wuc_types.each do |work_unit_code,code_key|
   w_code = WorkUnitCode.create code: work_unit_code.downcase, description: work_unit_code.to_s.sub('_',' ')
   print '.'
-  ["crew_cheif", "electrical", "radio", "instrument", "airframe", "engine"].each do |role_name, role_key|
+  # , "electrical", "radio", "instrument", "airframe", "engine"
+  ["crew_cheif"].each do |role_name, role_key|
       WorkUnitCode.create code: "#{work_unit_code.downcase}_#{role_name.downcase}", description: "#{work_unit_code.to_s.sub('_',' ')} #{role_name.to_s.sub('_',' ')}", parent_id: w_code, wuc_type_cd: code_key
   end
 end

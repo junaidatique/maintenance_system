@@ -26,6 +26,7 @@ class Techlog
   field :is_completed, type: Mongoid::Boolean, default: 0
   field :user_generated, type: Mongoid::Boolean, default: 0
 
+  field :is_viewed, type: Mongoid::Boolean, default: 0
 
   # ADDL
   field :addl_period_of_deferm, type: String
