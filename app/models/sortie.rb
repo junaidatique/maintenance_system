@@ -3,6 +3,7 @@ class Sortie
   include SimpleEnum::Mongoid
 
   as_enum :sortie_code, C1: 1, C2: 2, C3: 3, C4: 4, C5: 5
+  as_enum :pilot_comment, Satisfactory: 'SAT', Un_satisfactory: 'Un Sat'
   field :takeoff_time, type: String
   field :landing_time, type: String
   field :flight_time, type: String # tenth conversion table
@@ -17,7 +18,7 @@ class Sortie
   validates :landing_time, presence: true
   validates :touch_go, presence: true
   validates :full_stop, presence: true
-  validates :sortie_code, presence: true
+  validates :pilot_comment, presence: true
 
   belongs_to :user, optional: true
   belongs_to :flying_log

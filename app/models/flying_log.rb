@@ -37,8 +37,11 @@ class FlyingLog
     event :pilot_back do
       transition flight_booked: :pilot_commented
     end
+    event :techlog_check do
+      transition pilot_commented: :logs_created
+    end
     event :complete_log do
-      transition pilot_commented: :log_completed
+      transition logs_created: :log_completed
     end
   end
 
@@ -65,7 +68,7 @@ class FlyingLog
   accepts_nested_attributes_for :aircraft_total_time
   accepts_nested_attributes_for :after_flight_servicing
   accepts_nested_attributes_for :flightline_servicing
-  accepts_nested_attributes_for :techlogs
+  accepts_nested_attributes_for :techlogs, reject_if: :all_blank, allow_destroy: true
 
   after_create :create_techlogs
   before_create :update_times

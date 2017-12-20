@@ -110,7 +110,7 @@
                   th
                     | HYD
                   td = @flying_log.flightline_servicing.hyd
-- if @flying_log.fuel_filled? or @flying_log.flight_released? or @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed?
+- if @flying_log.fuel_filled? or @flying_log.flight_released? or @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed? or @flying_log.logs_created?
   .row
     .col-md-12
       .box.box-info
@@ -154,7 +154,7 @@
                     th
                       | Total Quantity
                     td = @flying_log.oil_total_qty
-- if @flying_log.flight_released? or @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed?
+- if @flying_log.flight_released? or @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed? or @flying_log.logs_created?
   .row
     .col-md-12
       .box.box-info
@@ -178,7 +178,7 @@
                     th width="25%"
                       |  Released by
                     td = @flying_log.flightline_release.user.name                  
-- if @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed?
+- if @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed? or @flying_log.logs_created?
   .row
     .col-md-12
       .box.box-info
@@ -200,9 +200,12 @@
                       | Release Time
                     td = @flying_log.capt_acceptance_certificate.flight_time
                     th width="25%"
+                      | Mission
+                    td = @flying_log.capt_acceptance_certificate.mission
+                    th width="25%"
                       |  Released by
                     td = @flying_log.capt_acceptance_certificate.user.name
-- if @flying_log.pilot_commented? or @flying_log.log_completed?
+- if @flying_log.pilot_commented? or @flying_log.log_completed? or @flying_log.logs_created?
   .row
     .col-md-12
       .box.box-info
@@ -248,8 +251,10 @@
                     th
                       | Sortie Code
                     td = @flying_log.sortie.sortie_code
-                    th
-                    td
+                    th 
+                      | Pilot Comment
+                    td = @flying_log.sortie.pilot_comment
+
                   tr
                     th colspan="4"
                       h5
@@ -266,7 +271,8 @@
                       | Total
                     td = @flying_log.sortie.total_landings
                     th
-                    td
+                      | Sortie Code
+                    td = @flying_log.sortie.sortie_code
                   tr
                     th colspan="4"
                       h5

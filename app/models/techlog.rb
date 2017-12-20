@@ -42,13 +42,21 @@ class Techlog
   field :limitation_log_time, type: String
 
 
-  validates :description, presence: true
+  # validates :description, presence: true
+  validate :description_validation
   validate :flying_log_values
   attr_accessor :current_user
   def flying_log_values
     if flying_log.present? and current_user.present? and current_user.role == :crew_cheif
       if flying_log.fuel_refill.blank?
-        errors.add(:fuel_refill, "can't be in empty")
+        errors.add(:fuel_refill, "can't be empty")
+      end
+    end
+  end
+  def description_validation
+    if flying_log.blank? or (flying_log.present? and flying_log.sortie.present? and flying_log.sortie.pilot_comment == 'Un_satisfactory')
+      if description.blank?
+        errors.add(:description, "can't be empty")
       end
     end
   end
@@ -68,7 +76,7 @@ class Techlog
     end
   end
 
-  belongs_to :work_unit_code
+  belongs_to :work_unit_code, optional: true
   belongs_to :flying_log, optional: true
   belongs_to :user
   belongs_to :aircraft, optional: true
@@ -92,6 +100,8 @@ class Techlog
   scope :techloged, -> { where(state: :techloged) }
   scope :addled, -> { where(state: :addled) }
   scope :limited, -> { where(state: :limited) }
+  scope :completed, -> { where(is_completed: true) }
+  scope :incomplete, -> { where(is_completed: false) }
   
   def set_aircraft
     if self.flying_log.present?
@@ -106,7 +116,7 @@ class Techlog
 
   def update_flying_log_end_time
     if self.flying_log.present?
-      if flying_log.techlogs.where(is_completed: false).count == 0
+      if flying_log.techlogs.incomplete.count == 0
         flying_log.flightline_servicing.flight_end_time = Time.zone.now.strftime("%H:%M %p")
         flying_log.flightline_servicing.save!
       end

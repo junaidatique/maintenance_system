@@ -50,7 +50,7 @@ class FlyingLogsController < ApplicationController
       if !techlog.is_completed
         redirect_to techlog_path(techlog), :flash => { :error => "Please fill this techlog first." }
       end
-    elsif Techlog.where(flying_log: @flying_log, is_completed: false).count > 0
+    elsif Techlog.where(flying_log: @flying_log).incomplete.count > 0 and !@flying_log.pilot_commented?
       redirect_to flying_log_path(@flying_log), :flash => { :error => "Techlog for this Flying log are still not completed." }
     end
     
@@ -92,21 +92,34 @@ class FlyingLogsController < ApplicationController
   # PATCH/PUT /flying_logs/1
   # PATCH/PUT /flying_logs/1.json
   def update
-    respond_to do |format|
-      if @flying_log.update(flying_log_params)
+    respond_to do |format|      
+      if current_user.role == :pilot and @flying_log.flight_booked? and flying_log_params[:sortie_attributes][:pilot_comment] == 'Satisfactory'
+        update_params = flying_log_params.except(:techlogs_attributes)
+      else
+        update_params = flying_log_params
+      end
+
+      if @flying_log.update(update_params)
         if current_user.role == :master_control and @flying_log.fuel_filled?
           @flying_log.flight_release
         elsif current_user.role == :pilot and @flying_log.flight_released?
           @flying_log.book_flight
         elsif current_user.role == :pilot and @flying_log.flight_booked?
-          @flying_log.pilot_back
+          
           @flying_log.sortie.total_landings = @flying_log.sortie.touch_go.to_i + @flying_log.sortie.full_stop.to_i
           @flying_log.sortie.flight_minutes = @flying_log.sortie.calculate_flight_minutes
-          @flying_log.sortie.flight_time = @flying_log.sortie.calculate_flight_time
+          @flying_log.sortie.flight_time    = @flying_log.sortie.calculate_flight_time
           @flying_log.sortie.total_landings = @flying_log.sortie.calculate_landings
           @flying_log.sortie.update_aircraft_times
           @flying_log.sortie.save!
-        elsif current_user.role == :master_control and @flying_log.pilot_commented?
+          @flying_log.pilot_back
+        elsif (current_user.role == :master_control or current_user.role == :engineer or current_user.role == :admin) and @flying_log.pilot_commented?
+          @flying_log.techlog_check
+          if @flying_log.flightline_servicing.inspection_performed_cd != 2 and @flying_log.techlogs.incomplete.count == 0
+            @flying_log.complete_log
+          end
+
+        elsif (current_user.role == :master_control or current_user.role == :admin) and @flying_log.pilot_commented?
           @flying_log.complete_log
         end
         
@@ -115,7 +128,7 @@ class FlyingLogsController < ApplicationController
         format.json { render :show, status: :ok, location: @flying_log }
       else
         format.html { render :edit }
-        format.json { render json: @flying_log.errors, status: :unprocessable_entity }
+        format.json { render json: @flying_log.errors, status: :unprocessable_entity }        
       end
     end
   end
@@ -156,10 +169,11 @@ class FlyingLogsController < ApplicationController
             
       
     i = 0
-    num = @flying_log.techlogs.where(type_cd: 1).count
+    num = @flying_log.techlogs.where(type_cd: 1.to_s).count
     merged_certificates = CombinePDF.new
+    
     begin
-      techlogs  = @flying_log.techlogs.where(type_cd: "1").limit(3).offset(i)
+      techlogs  = @flying_log.techlogs.where(type_cd: 1.to_S).limit(3).offset(i)
       puts techlogs
       pdf_data = render_to_string(
                   pdf: "flying_log_#{@flying_log.id}",
@@ -200,8 +214,9 @@ class FlyingLogsController < ApplicationController
          params.require(:flying_log).permit(:log_date, :aircraft_id, :location_from, :location_to,
                                 ac_configuration_attributes: [:clean, :smoke_pods, :third_seat, :cockpit],
                                 flightline_servicing_attributes: [:id, :inspection_performed, :flight_start_time, :flight_end_time, :user_id, :hyd, :_destroy],
-                                capt_acceptance_certificate_attributes: [:flight_time, :view_history, :user_id],
-                                sortie_attributes: [:user_id,:second_pilot_id, :third_seat_name, :takeoff_time, :landing_time, :sortie_code, :touch_go, :full_stop], 
+                                capt_acceptance_certificate_attributes: [:flight_time, :view_history, :user_id, :mission],
+                                sortie_attributes: [:user_id,:second_pilot_id, :third_seat_name, :takeoff_time, 
+                                  :landing_time, :sortie_code, :touch_go, :pilot_comment, :full_stop, :sortie_code], 
                                 capt_after_flight_attributes: [:flight_time, :user_id],
                                 flightline_release_attributes: [:flight_time, :user_id],
                                 techlogs_attributes: [:id, :work_unit_code_id, :user_id, :description, :type_cd, :_destroy],

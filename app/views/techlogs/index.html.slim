@@ -29,9 +29,9 @@
                 td.table-row-center
                   = display_date(techlog.log_date) 
                 td.table-row-center
-                  = techlog.aircraft.tail_number
+                  = techlog.aircraft.tail_number 
                 td.table-row-center
-                  = techlog.work_unit_code.code
+                  = techlog.work_unit_code.code unless techlog.work_unit_code.blank?
                 td.text-center width='20%'
                   = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
                     i.fa.fa-file-pdf-o

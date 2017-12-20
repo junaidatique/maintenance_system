@@ -42,7 +42,7 @@
                       td.table-row-center
                         = techlog.aircraft.tail_number
                       td.table-row-center
-                        = techlog.work_unit_code.code
+                        = techlog.work_unit_code.code unless techlog.work_unit_code.blank?
                       td.table-row-center
                         = (techlog.is_completed) ? 'Yes' : 'No'
                       td.text-center width='20%'

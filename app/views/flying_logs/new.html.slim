@@ -17,7 +17,7 @@
               = f.input :log_date, disabled: true
           .row
             .col-sm-6
-              = f.association :aircraft, collection: Aircraft.active.all, label_method: :tail_number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+              = f.association :aircraft, collection: Aircraft.active.available.all, label_method: :tail_number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
             .col-sm-6
               
           .row
