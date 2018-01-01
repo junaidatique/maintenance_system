@@ -42,7 +42,7 @@
               | &nbsp; Techlog
           .col-sm-6.text-right
             - if current_user.role == :engineer or current_user.role == :admin
-              - if @techlog.log_techloged? and !@techlog.is_completed
+              - if @techlog.log_techloged? and !@techlog.is_completed?
                 /= link_to create_addl_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
                   i.fa.fa-pencil
                   | &nbsp; Transfer to ADDL

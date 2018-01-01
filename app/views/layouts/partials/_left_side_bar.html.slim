@@ -8,7 +8,12 @@ ul.sidebar-menu
     li class="#{params[:controller] == "parts" ? 'active' : ''}"
       = link_to parts_path do
         .fa.fa-paper-plane 
-        span.side-bar-heading-text Parts
+        span.side-bar-heading-text Parts  
+  - if can? :read, Part
+    li class="#{params[:controller] == "tools" ? 'active' : ''}"
+      = link_to tools_path do
+        .fa.fa-wrench 
+        span.side-bar-heading-text Tools
   - if can? :read, User
     li class="#{params[:controller] == "users" ? 'active' : ''}"
       = link_to users_path do

@@ -1,7 +1,7 @@
 = content_for :box_heading do
   = @techlog.number
 == render 'techlog_basic_show'
-- if @techlog.is_completed
+- if @techlog.is_completed?
   .row
     .col-md-12
       .box.box-info

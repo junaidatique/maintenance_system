@@ -63,7 +63,6 @@ class PartsController < ApplicationController
 
   def import
     Part.import(params[:file_excel])
-
     redirect_to parts_path, notice: 'Parts imported.'
   end
 

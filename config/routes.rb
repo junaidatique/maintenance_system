@@ -1,7 +1,12 @@
 Rails.application.routes.draw do
   
+  resources :tools do
+    collection do
+      post :import
+    end
+  end
   resources :flying_plans
-  resources :parts  do
+  resources :parts do
     collection do
       post :import
     end

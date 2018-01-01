@@ -6,7 +6,7 @@ class Techlog
   include Mongoid::Autoinc
 
   as_enum :type, Flight: 0, Maintenance: 1, Scheduled: 2
-  as_enum :condition, completed: 1, interm: 2, created: 0
+  as_enum :condition, completed: 1, interm: 2, created: 0, field: { default: 1 }
 
   field :log_time, type: String
   field :log_date, type: Date
@@ -101,6 +101,7 @@ class Techlog
   accepts_nested_attributes_for :change_parts
   accepts_nested_attributes_for :flying_log
 
+  after_create :set_condition
   after_create :set_aircraft
   after_update :update_flying_log_end_time
 
@@ -111,6 +112,10 @@ class Techlog
   scope :completed, -> { where(is_completed: true) }
   scope :incomplete, -> { where(is_completed: false) }
   
+  def is_completed?
+    return is_completed ? true : false
+  end
+
   def set_aircraft
     if self.flying_log.present?
       self.aircraft_id    = self.flying_log.aircraft_id

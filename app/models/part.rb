@@ -3,14 +3,11 @@ class Part
   include Mongoid::Timestamps
 
 
-  validates :number, presence: true
-  validates :description, presence: true
-
   field :number, type: String
   field :description, type: String
   field :serial_no, type: String
   field :number_serial_no, type: String
-  field :quantity, type: Integer
+  field :quantity, type: Float, default: 0
 
   field :calender_life, type: Date
   field :installed_date, type: Date
@@ -27,11 +24,9 @@ class Part
 
   belongs_to :aircraft, optional: true 
   embeds_many :part_histories
-  # has_one :old_part, class_name: 'ChangePart' 
-  # has_one :new_part, class_name: 'ChangePart'
-
-  # accepts_nested_attributes_for :old_part
-  # accepts_nested_attributes_for :new_part
+  
+  validates :number, presence: true
+  validates :description, presence: true
 
   after_create :update_record
   after_update :create_history
@@ -66,49 +61,44 @@ class Part
   end
 
   def self.import(file)    
-    xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
-    puts xlsx.inspect
-    header = xlsx.row(1)
-    puts header.inspect
+    xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)    
+    header = xlsx.row(1)    
     (2..xlsx.last_row).each do |i|
-      row       = xlsx.row(i)
-      aircraft  = Aircraft.where(tail_number: row[0]).first
-      
-      # unless aircraft.blank?
-        part_number = row[1]
-        serial_no   = row[2]
-        description = row[3]
-        quantity    = row[4]
-        is_lifed    = row[5]
-        calender_life         = row[6]
-        installed_date        = row[7]
-        total_part_hours      = row[8]
-        part_hours_completed  = row[9]
-        total_landings        = row[10]
-        landings_completed    = row[11]
-        part = Part.where(number: part_number)
-        part_number_serial_no = "#{part_number}-#{serial_no}"
-        if part.present?
-          part.update({
-            serial_no: serial_no, 
-            description: description, 
-            quantity: quantity, 
-            is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
-            total_part_hours: total_part_hours,part_hours_completed: part_hours_completed,
-            total_landings: total_landings, landings_completed: landings_completed })
-        else
-          Part.create!({
-            aircraft: aircraft, 
-            number: part_number, 
-            serial_no: serial_no, 
-            number_serial_no: part_number_serial_no, 
-            description: description, 
-            quantity: quantity, 
-            is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
-            total_part_hours: total_part_hours,part_hours_completed: part_hours_completed,
-            total_landings: total_landings, landings_completed: landings_completed })
-        end
-      # end
+      row         = xlsx.row(i)
+      aircraft    = Aircraft.where(tail_number: row[0]).first
+      part_number = row[1]
+      serial_no   = row[2]
+      description = row[3]
+      quantity    = row[4]
+      is_lifed    = row[5]
+      calender_life         = row[6]
+      installed_date        = row[7]
+      total_part_hours      = row[8]
+      part_hours_completed  = row[9]
+      total_landings        = row[10]
+      landings_completed    = row[11]
+      part = Part.where(number: part_number)
+      part_number_serial_no = "#{part_number}-#{serial_no}"
+      if part.present?
+        part.update({
+          serial_no: serial_no, 
+          description: description, 
+          quantity: quantity, 
+          is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
+          total_part_hours: total_part_hours,part_hours_completed: part_hours_completed,
+          total_landings: total_landings, landings_completed: landings_completed })
+      else
+        Part.create!({
+          aircraft: aircraft, 
+          number: part_number, 
+          serial_no: serial_no, 
+          number_serial_no: part_number_serial_no, 
+          description: description, 
+          quantity: quantity, 
+          is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
+          total_part_hours: total_part_hours,part_hours_completed: part_hours_completed,
+          total_landings: total_landings, landings_completed: landings_completed })
+      end      
     end
   end
 

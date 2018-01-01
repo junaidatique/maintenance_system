@@ -1,0 +1,38 @@
+= content_for :page_subtitle do
+  | Tools
+
+= content_for :box_heading do
+  | Tools
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th
+                | Number
+              th
+                | Name
+              th
+                | Total Quantity
+              th
+                | Quantity Available
+          tbody
+            - @tools.each do |tool|
+              tr
+                td.table-row-center
+                  = tool.number
+                td.table-row-center
+                  = tool.name
+                td.table-row-center
+                  = tool.total_quantity
+                td.table-row-center
+                  = tool.quantity_in_hand
+                
+                
+        .col-sm-4.col-sm-offset-4
+          - if can? :create, Part
+            = link_to 'Upload Excel', new_tool_path, class: 'btn btn-block btn-primary btn-flat'
+        .clearfix
