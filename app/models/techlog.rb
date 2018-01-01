@@ -62,9 +62,9 @@ class Techlog
   end
 
   increments :number, seed: 1000
-
-  state_machine initial: :techloged, namespace: :'log' do
-    audit_trail initial: false
+  
+  state_machine :log_state, initial: :techloged, namespace: :'log' do
+    #audit_trail initial: false
     event :change_to_addl do
       transition techloged: :addled
     end
@@ -73,6 +73,13 @@ class Techlog
     end
     event :back_to_techlog do
       transition [:addled, :limited] => :techloged
+    end
+  end
+
+  state_machine :status_state, initial: :started, namespace: :'status' do
+    #audit_trail initial: false
+    event :change_parts do
+      transition started: :parts_demanded
     end
   end
 
@@ -97,9 +104,10 @@ class Techlog
   after_create :set_aircraft
   after_update :update_flying_log_end_time
 
-  scope :techloged, -> { where(state: :techloged) }
-  scope :addled, -> { where(state: :addled) }
-  scope :limited, -> { where(state: :limited) }
+  scope :techloged, -> { where(log_state: :techloged) }
+  scope :addled, -> { where(log_state: :addled) }
+  scope :limited, -> { where(log_state: :limited) }
+  
   scope :completed, -> { where(is_completed: true) }
   scope :incomplete, -> { where(is_completed: false) }
   

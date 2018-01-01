@@ -47,7 +47,11 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'faker', :git => 'git://github.com/stympy/faker.git', :branch => 'master'
   gem 'business_time'
-
+  gem 'ruby-debug-ide', '0.6.0'
+  gem 'debase', '0.2.1'
+  gem 'rcodetools'
+  gem 'rubocop'
+  gem 'rufo'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

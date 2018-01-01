@@ -1,4 +1,4 @@
-cur_time  = Time.now
+cur_time = Time.now
 System.create! settings: {dms_version_number: 0.0}
 puts 'Creating Aircraft'
 aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
@@ -10,8 +10,9 @@ aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no:
 
 aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
 
-Aircraft.each do |aircraft|
-  for i in 1..16
+(0..Aircraft.count).each do |j|
+  aircraft = Aircraft.limit(1).offset(j).first
+  (1..16).each do |i|
     calender_life = ''
     installed_date = (cur_time).strftime("%Y-%m-%d")
     total_hours = 0
@@ -27,9 +28,13 @@ Aircraft.each do |aircraft|
       is_lifed = true
       total_landings = 200
     end
+    part_number = "#{Faker::Number.number(8)}"
+    serial_no = "#{Faker::Number.number(5)}"
+    part_number_serial_no = "#{part_number}-#{serial_no}"
     Part.create({
-      aircraft: aircraft, number: "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}", 
-      serial_no: "#{Faker::Number.number(5)}", 
+      aircraft: aircraft, number: part_number, 
+      serial_no: serial_no, 
+      number_serial_no: part_number_serial_no, 
       quantity: rand(10) + 1, 
       description: Faker::Lorem.words(1 + rand(4)).join(" "), 
       is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
@@ -58,7 +63,7 @@ puts 'FlyingPlan Created'
 puts 'Creating Users'
 User.roles.each do |role_name, role_key|
   User.create! username: role_name, name: role_name.to_s.sub('_',' '), 
-                 role: role_name, password: '12345678', status: 1, personal_code: Faker::Number.number(6), rank: Faker::Lorem.word
+                 role: role_name, password: 'test1234', status: 1, personal_code: Faker::Number.number(6), rank: Faker::Lorem.word
   print '.'
 end
 puts ''
@@ -167,16 +172,24 @@ flying_log.capt_after_flight.flight_time = cur_time.strftime("%H:%M %p")
 flying_log.capt_after_flight.user = User.where(role_cd: 7).first
 flying_log.save
 puts 'book in'
+flying_log.pilot_back
 #sleep(2)
-flying_log = FlyingLog.first
+# flying_log = FlyingLog.first
 techlog_count = (2+rand(5))
+puts "techlog count #{techlog_count}"
+puts "createing techlogs"
+flying_log.sortie.sortie_code = 2
 for i in 1..techlog_count
-   Techlog.create({type_cd: 1.to_s, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
+  print '.'
+   Techlog.create!({type_cd: 1.to_s, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
         description: Faker::Lorem.sentence, 
-        #work_unit_code: WorkUnitCode.where(wuc_type_cd: 3).leaves.limit(1).offset(rand(3)).first, 
+        work_unit_code: WorkUnitCode.where(wuc_type_cd: 3).leaves.first, 
         user_id: User.where(role_cd: 7).first, 
         log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
         aircraft_id: flying_log.aircraft_id, flying_log_id: flying_log.id})
 end
-flying_log.pilot_back
+puts ''
+flying_log.save!
+flying_log.techlog_check
+puts 'All done'
 

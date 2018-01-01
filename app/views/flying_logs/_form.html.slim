@@ -131,8 +131,7 @@
             = f.simple_fields_for :sortie do |ac_f|
               .row
                 .col-sm-6
-                  = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code), as: :radio_buttons
-    /- if 
+                  = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code), as: :radio_buttons    
     .row
       .col-md-12#div_techlog_servicing
         .box.box-info

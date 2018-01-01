@@ -21,7 +21,7 @@ class FlyingLog
   increments :number, seed: 1000
 
   state_machine initial: :started do
-    audit_trail initial: false,  context: [:aircraft]
+    #audit_trail initial: false,  context: [:aircraft]
     event :flightline_service do
       transition started: :flightline_serviced
     end
