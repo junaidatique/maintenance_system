@@ -6,7 +6,7 @@ class Techlog
   include Mongoid::Autoinc
 
   as_enum :type, Flight: 0, Maintenance: 1, Scheduled: 2
-  as_enum :condition, completed: 1, interm: 2, created: 0, field: { default: 1 }
+  as_enum :condition, open: 0, interm: 2, completed: 1
 
   field :log_time, type: String
   field :log_date, type: Date
@@ -78,9 +78,9 @@ class Techlog
 
   state_machine :status_state, initial: :started, namespace: :'status' do
     #audit_trail initial: false
-    event :change_parts do
-      transition started: :parts_demanded
-    end
+    # event :change_parts do
+    #   transition started: :parts_demanded
+    # end
   end
 
   belongs_to :work_unit_code, optional: true
@@ -90,15 +90,14 @@ class Techlog
 
   has_one :date_inspected, dependent: :destroy
   has_one :work_performed, dependent: :destroy
-  has_one :work_duplicate, dependent: :destroy
-  has_many :change_parts, dependent: :destroy
+  has_one :work_duplicate, dependent: :destroy  
+  has_and_belongs_to_many :parts
 
   embeds_many :techlog_state_transitions
 
   accepts_nested_attributes_for :work_performed
   accepts_nested_attributes_for :date_inspected
-  accepts_nested_attributes_for :work_duplicate
-  accepts_nested_attributes_for :change_parts
+  accepts_nested_attributes_for :work_duplicate  
   accepts_nested_attributes_for :flying_log
 
   after_create :set_condition
@@ -125,6 +124,11 @@ class Techlog
       self.log_time       = Time.zone.now.strftime("%H:%M %p")
       self.save
     end
+  end
+
+  def set_condition
+    self.condition_cd = 0
+    self.save
   end
 
   def update_flying_log_end_time

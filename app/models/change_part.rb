@@ -4,5 +4,5 @@ class ChangePart
   belongs_to :old_part, class_name: 'Part'
   belongs_to :new_part, class_name: 'Part'
 
-  belongs_to :techlog
+  # belongs_to :techlog
 end

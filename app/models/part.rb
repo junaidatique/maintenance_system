@@ -24,7 +24,8 @@ class Part
 
   belongs_to :aircraft, optional: true 
   embeds_many :part_histories
-  
+  has_and_belongs_to_many :techlogs
+
   validates :number, presence: true
   validates :description, presence: true
 

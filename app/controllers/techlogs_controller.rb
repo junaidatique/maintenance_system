@@ -78,14 +78,7 @@ class TechlogsController < ApplicationController
     # puts techlog_params.inspect
 
     respond_to do |format|
-    #   if params[:techlog][:change_parts_attributes].present?
-    #     params[:techlog][:change_parts_attributes].each do |value,cp|
-    #       if cp[:id].present? and cp[:_destroy].to_s == "1" and ChangePart.find(cp[:id]).present?          
-    #         ChangePart.find(cp[:id]).destroy 
-    #         params[:techlog][:change_parts_attributes].delete(value)
-    #       end
-    #     end
-    #   end
+    
       if @techlog.update(techlog_params)
         if @techlog.flying_log.present?
           @techlog.flying_log.update_fuel
@@ -172,7 +165,7 @@ class TechlogsController < ApplicationController
                                         :addl_period_of_deferm, :addl_due, :addl_log_time, :addl_log_date,
                                         :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description,
                                         flying_log_attributes: [ :fuel_refill, :oil_serviced, :oil_total_qty ],
-                                        change_parts_attributes: [:id, :old_part_id, :new_part_id, :_destroy],
+                                        part_ids: [],              
                                         work_performed_attributes: [:work_date, :work_time, :user_id],
                                         date_inspected_attributes: [:work_date, :work_time, :user_id],
                                         work_duplicate_attributes: [:work_date, :work_time, :user_id],
