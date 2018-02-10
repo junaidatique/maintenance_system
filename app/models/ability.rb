@@ -12,6 +12,11 @@ class Ability
       cannot :crud, NonFlyingDay
       can :crud, FlyingLog
       can :crud, Techlog
+    elsif user.engineer?
+      can [:read, :update], Aircraft
+      cannot :crud, NonFlyingDay
+      can :crud, FlyingLog
+      can :crud, Techlog
     elsif user.crew_cheif?
       can :read, FlyingLog
       can :update, FlyingLog do |flying_log|

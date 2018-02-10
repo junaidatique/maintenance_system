@@ -66,7 +66,25 @@
             .col-sm-6
               .form-group
                 = f.label :parts
-                = f.collection_select :part_ids, f.object.parts, :id, :code, {}, {:selected => "daf", multiple: true, class: 'parts-select2'}          
+                /= f.collection_select :part_ids, f.object.parts, :id, :code, {}, {:selected => "daf", multiple: true, class: 'parts-select2'}          
+  
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-9
+              h3.box-title
+                i.fa.fa-bar-chart
+                | &nbsp; Tools
+            .col-sm-3
+              
+        .box-body
+          .row
+            .col-sm-6
+              .form-group
+                = f.label :tools
+                /= f.collection_select :part_ids, f.object.parts, :id, :code, {}, {:selected => "daf", multiple: true, class: 'parts-select2'}          
   
   .row
     .col-md-12
