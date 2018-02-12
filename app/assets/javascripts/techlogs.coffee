@@ -18,6 +18,11 @@ $(document).on 'ready', ->
     $('.timepickerclass').datetimepicker
       format: 'hh:mm A'
     return
+  
+  if ($('[name="techlog[condition]"]:checked').val() == 'open')
+    $(".action_div").addClass 'hide'
+  else
+    $(".action_div").removeClass 'hide'          
 
   $('#techlog_condition_interm').on 'ifChecked', (event) ->
     $(".action_div").removeClass 'hide'

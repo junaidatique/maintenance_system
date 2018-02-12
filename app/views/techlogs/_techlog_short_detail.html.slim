@@ -1,0 +1,50 @@
+.box-body
+  .row
+    .col-sm-12
+      table.table.table-inverse
+        tbody                
+          tr
+            th width="25%"
+              | Number
+            td = techlog.number
+            th width="25%"
+              | Opened By
+            td = techlog.user.name
+          tr
+            th width="25%"
+              | Date
+            td = display_date(techlog.log_date)
+            th width="25%"
+              | Time
+            td = techlog.log_time
+          tr
+            th width="25%"
+              | Aircraft
+            td = techlog.aircraft.tail_number
+            th width="25%"
+              | Status
+            td = techlog.condition.to_s.titleize
+          tr
+            th width="25%"
+              | Location From
+            td 
+              = techlog.location_from
+            th width="25%"
+              | Location To
+            td = techlog.location_to
+          tr
+            th width="25%"
+              | Work Unit Code
+            td 
+              = techlog.work_unit_code.code
+              | /
+              = techlog.work_unit_code.description
+            th width="25%"
+              | Type
+            td = techlog.type
+          tr
+            th width="25%" colspan="4"
+              | Description
+          tr
+            td colspan="4"
+              = techlog.description

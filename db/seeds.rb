@@ -200,7 +200,7 @@ for i in 1..techlog_count
   print '.'
   Techlog.create!({type_cd: 1.to_s, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
         description: Faker::Lorem.sentence, 
-        work_unit_code: WorkUnitCode.where(wuc_type_cd: 3).leaves.first, 
+        work_unit_code: WorkUnitCode.where(wuc_type_cd: 3).leaves.sort_by{rand}.first, 
         user_id: User.where(role_cd: 7).first, 
         log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
         aircraft_id: flying_log.aircraft_id, flying_log_id: flying_log.id})

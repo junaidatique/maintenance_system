@@ -16,13 +16,14 @@
               th width='10%'
                 | Date
               th width='10%'
-                | Aircraft
+                | Aircraft              
+              th width='10%'
+                | WUC
+              th width='10%'
+                | Log Status
               - if current_user.role == :central_tool_store
                 th width='10%'
-                  | Status
-              - else
-                th width='10%'
-                  | WUC
+                  | Tools Status  
               th width='13%'
                 | Actions
           tbody
@@ -35,18 +36,23 @@
                 td.table-row-center
                   = techlog.aircraft.tail_number 
                 td.table-row-center
-                  - if current_user.role == :central_tool_store
+                  = techlog.work_unit_code.code unless techlog.work_unit_code.blank?                
+                td.table-row-center
+                  = techlog.condition.to_s.titleize
+                - if current_user.role == :central_tool_store
+                  td.table-row-center
                     = techlog.tools_state.titleize
-                  - else                  
-                    = techlog.work_unit_code.code unless techlog.work_unit_code.blank?
+                  
+                    
                 td.text-center width='20%'
                   = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
                     i.fa.fa-file-pdf-o
                   
                   = link_to techlog_path(techlog), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye
-                  = link_to edit_techlog_path(techlog), class: 'btn btn-info btn-flat ' do
-                    i.fa.fa-pencil
+                  - if !techlog.is_completed?
+                    = link_to edit_techlog_path(techlog), class: 'btn btn-info btn-flat ' do
+                      i.fa.fa-pencil
                     
         .col-sm-4.col-sm-offset-4
           = link_to 'Create TechLog', new_techlog_path, class: 'btn btn-block btn-primary btn-flat'

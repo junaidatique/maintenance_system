@@ -41,13 +41,19 @@ class Techlog
   field :limitation_log_date, type: Date
   field :limitation_log_time, type: String
 
-
-  # validates :description, presence: true  
+  
   attr_accessor :current_user
 
   validate :description_validation
   validate :flying_log_values
   validate :verify_complete
+  validate :verify_interm
+
+  def verify_interm
+    if condition_cd == 2 and action.blank?
+      errors.add(:action, " can't be blank")
+    end
+  end
 
   def flying_log_values
     if flying_log.present? and current_user.present? and current_user.role == :crew_cheif
@@ -65,8 +71,11 @@ class Techlog
   end
   def verify_complete    
     if condition_cd == 1 and (tools_state == "requested" or tools_state == "provided") 
-      errors.add(:status, " there are some tools that are not returned yet. ")      
+      errors.add(:status, " there are some tools that are not returned yet. ")
+    elsif interm_log.present? and !interm_log.is_completed?
+      errors.add(:status, " This techlog has an interm log. Please complete that log first. ")
     end
+    
   end
 
   increments :number, seed: 1000
@@ -107,10 +116,12 @@ class Techlog
   belongs_to :flying_log, optional: true
   belongs_to :user
   belongs_to :aircraft, optional: true
+  belongs_to :parent_techlog, class_name: Techlog.name, inverse_of: :interm_log, optional: true
 
   has_one :date_inspected, dependent: :destroy
   has_one :work_performed, dependent: :destroy
   has_one :work_duplicate, dependent: :destroy  
+  has_one :interm_log, class_name: Techlog.name, inverse_of: :parent_techlog
   has_many :change_parts, dependent: :destroy
   has_many :assigned_tools, dependent: :destroy, inverse_of: :techlog
 
@@ -127,7 +138,8 @@ class Techlog
   after_create :set_aircraft
   after_create :set_dms_version
   after_update :update_flying_log_end_time
-
+  after_update :create_interm_log, if: Proc.new { |t_log| t_log.condition_cd == 2 }
+  
   scope :techloged, -> { where(log_state: :techloged) }
   scope :addled, -> { where(log_state: :addled) }
   scope :limited, -> { where(log_state: :limited) }
@@ -166,5 +178,16 @@ class Techlog
         flying_log.flightline_servicing.save!
       end
     end
+  end
+  
+  def create_interm_log    
+    if interm_log.blank?
+      temp_interm_log = self.clone
+      temp_interm_log.parent_techlog = self
+      temp_interm_log.number = Techlog.last.number + 1
+      temp_interm_log.description = self.action
+      temp_interm_log.action = ''
+      temp_interm_log.save
+    end    
   end
 end
