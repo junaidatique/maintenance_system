@@ -1,11 +1,23 @@
 .nested-fields
   .row
     .col-md-12
-      .row
+      = f.input :old_part_id, as: :hidden
+      - if current_user.work_unit_codes.include? @techlog.work_unit_code and f.object.requested_by.blank?
+        = f.input :requested_by_id, as: :hidden, input_html: { value: current_user.id }
+      .row          
         .col-sm-5
-          = f.association :old_part, collection: @techlog.aircraft.parts.all, label_method: :number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+          - if current_user.work_unit_codes.include? @techlog.work_unit_code and f.object.old_part.blank?
+            = f.input :old_part, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s), :as => :autocomplete, input_html: {id_element: "#id"}
+          - else
+            label Part # and Serial #
+            br
+            = f.object.old_part.number_serial_no
+            |  (
+            = f.object.old_part.quantity_left
+            |  Left)
         .col-sm-5
-          = f.association :new_part, collection: @techlog.aircraft.parts.all, label_method: :number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+          - if current_user.work_unit_codes.include? @techlog.work_unit_code
+            = f.input :quantity_required  
         .col-sm-offset-1.col-sm-1
           br
           = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do

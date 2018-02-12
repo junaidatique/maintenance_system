@@ -38,7 +38,12 @@
         .box-body
           .row
             .col-sm-12
-              = f.input :condition, collection: enum_option_pairs(Techlog, :condition), as: :radio_buttons 
+              - if current_user.work_unit_codes.include? @techlog.work_unit_code
+                = f.input :condition, collection: enum_option_pairs(Techlog, :condition), as: :radio_buttons
+              - else 
+                label Condition
+                br
+                = @techlog.condition.to_s.titleize
   .row
     .col-md-12.action_div.hide
       .box.box-info
@@ -51,25 +56,26 @@
             .col-sm-12
               = f.input :action, as: :text
   .row
-    .col-md-12
+    .col-md-12#div_part_change
       .box.box-info
         .box-header.with-border
           .row
             .col-sm-9
               h3.box-title
                 i.fa.fa-bar-chart
-                | &nbsp; Parts
+                | &nbsp; Parts Replacement
             .col-sm-3
               
         .box-body
+          div.change_parts            
+            = f.simple_fields_for :change_parts do |change_part|
+              = render 'change_part_fields', :f => change_part
           .row
-            .col-sm-6
-              .form-group
-                = f.label :parts
-                /= f.collection_select :part_ids, f.object.parts, :id, :code, {}, {:selected => "daf", multiple: true, class: 'parts-select2'}          
-  
+            .col-sm-offset-9.col-sm-3
+              - if current_user.work_unit_codes.include? @techlog.work_unit_code
+                = link_to_add_association "+ Replace Part", f, :change_parts, data: {:'association-insertion-node' => ".change_parts", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat' 
   .row
-    .col-md-12
+    .col-md-12#div_assigned_tools
       .box.box-info
         .box-header.with-border
           .row
@@ -80,40 +86,42 @@
             .col-sm-3
               
         .box-body
+          div.assigned_tools            
+            = f.simple_fields_for :assigned_tools do |assigned_tool|
+              = render 'assigned_tool_fields', :f => assigned_tool
           .row
-            .col-sm-6
-              .form-group
-                = f.label :tools
-                /= f.collection_select :part_ids, f.object.parts, :id, :code, {}, {:selected => "daf", multiple: true, class: 'parts-select2'}          
+            .col-sm-offset-9.col-sm-3
+              - if current_user.work_unit_codes.include? @techlog.work_unit_code and !@techlog.tools_returned?
+                = link_to_add_association "+ Required Tool", f, :assigned_tools, data: {:'association-insertion-node' => ".assigned_tools", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat' 
+  - if current_user.role == :logistics
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Additional
+          .box-body
+            .row
+              .col-sm-6
+                = f.input :additional_detail_form, as: :boolean, checked_value: 1, unchecked_value: 0
+              .col-sm-6
+                = f.input :nmcs_pmcs, as: :boolean, checked_value: 1, unchecked_value: 0
+            .row
+              .col-sm-6
+                = f.input :demand_notif
+              .col-sm-6
+                = f.input :amf_reference_no
+            .row
+              .col-sm-6
+                = f.input :pdr_number
+              .col-sm-6
+                = f.input :occurrence_report
+            /.row
+              .col-sm-12
+                = f.input :tools_used, as: :text
   
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-borderf
-          h3.box-title
-            i.fa.fa-bars
-            | &nbsp; Additional
-        .box-body
-          .row
-            .col-sm-6
-              = f.input :additional_detail_form, as: :boolean, checked_value: 1, unchecked_value: 0
-            .col-sm-6
-              = f.input :component_on_hold, as: :boolean, checked_value: 1, unchecked_value: 0
-          .row
-            .col-sm-6
-              = f.input :sap_notif
-            .col-sm-6
-              = f.input :sap_wo
-          .row
-            .col-sm-6
-              = f.input :amr_no
-            .col-sm-6
-              = f.input :occurrence_report
-          .row
-            .col-sm-12
-              = f.input :tools_used, as: :text
-  
-  .row
+  /.row
     .col-md-12
       .box.box-info
         .box-header.with-borderf

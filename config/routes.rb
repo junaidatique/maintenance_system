@@ -3,12 +3,14 @@ Rails.application.routes.draw do
   resources :tools do
     collection do
       post :import
+      get :autocomplete
     end
   end
   resources :flying_plans
   resources :parts do
     collection do
       post :import
+      get :autocomplete
     end
   end
   resources :non_flying_days

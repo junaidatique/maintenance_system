@@ -6,7 +6,8 @@ class User
   as_enum :role, admin: 0, engineer: 1, crew_cheif: 2, electrical: 3, 
                 radio: 4, instrument: 5, airframe: 6, master_control: 7, pilot: 8, engine: 9,
                 squadron_engineering_officer: 10, chief_maintenance_officer: 11, 
-                flight_commander: 12, deputy_flight_commander: 13,  central_tool_store: 14
+                flight_commander: 12, deputy_flight_commander: 13,  central_tool_store: 14,
+                logistics: 15
   
   devise :database_authenticatable, 
          :recoverable, :rememberable, :trackable, :validatable

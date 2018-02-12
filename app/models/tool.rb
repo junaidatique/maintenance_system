@@ -7,6 +7,8 @@ class Tool
   field :total_quantity, type: Integer
   field :quantity_in_hand, type: Integer
 
+  has_many :assigned_tools, dependent: :destroy, inverse_of: :tool
+
   def self.import(file)    
     xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)    
     header = xlsx.row(1)    

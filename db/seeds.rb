@@ -32,11 +32,13 @@ aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no:
     part_number = "#{Faker::Number.number(8)}"
     serial_no = "#{Faker::Number.number(5)}"
     part_number_serial_no = "#{part_number}-#{serial_no}"
+    quantity = rand(10) + 1
     Part.create({
       aircraft: aircraft, number: part_number, 
       serial_no: serial_no, 
       number_serial_no: part_number_serial_no, 
-      quantity: rand(10) + 1, 
+      quantity: quantity, 
+      quantity_left: rand(10) + 1, 
       description: Faker::Lorem.words(1 + rand(4)).join(" "), 
       is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
       total_part_hours: total_hours, total_landings: total_landings })
@@ -77,13 +79,18 @@ end
 puts ''
 puts 'Users Created'
 puts 'Creating WorkUnitCodes'
-#WorkUnitCode.wuc_types.each do |work_unit_code,code_key|
-{'Preflight' => 0, "Thru_Flight" => 1, "Post_Flight" => 2, "Other" => 3}.each do |work_unit_code,code_key|
+WorkUnitCode.wuc_types.each do |work_unit_code,code_key|  
   w_code = WorkUnitCode.create code: work_unit_code.downcase, description: work_unit_code.to_s.sub('_',' ')
   print '.'
   
-  ["crew_cheif"].each do |role_name, role_key|
-      WorkUnitCode.create code: "#{work_unit_code.downcase}_#{role_name.downcase}", description: "#{work_unit_code.to_s.sub('_',' ')} #{role_name.to_s.sub('_',' ')}", parent_id: w_code, wuc_type_cd: code_key
+  ["crew_cheif", "electrical", "radio"].each do |role_name, role_key|
+    work_unit_code_value = WorkUnitCode.create code: "#{work_unit_code.downcase}_#{role_name.downcase}", description: "#{work_unit_code.to_s.sub('_',' ')} #{role_name.to_s.sub('_',' ')}", parent_id: w_code, wuc_type_cd: code_key
+    role_id = User::roles[role_name]
+    u = User.where(role_cd: role_id).first
+    unless u.blank?
+      u.work_unit_codes << work_unit_code_value
+      u.save
+    end
   end
 end
 puts ''

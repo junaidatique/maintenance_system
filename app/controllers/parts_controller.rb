@@ -66,6 +66,19 @@ class PartsController < ApplicationController
     redirect_to parts_path, notice: 'Parts imported.'
   end
 
+  # GET /parts/autocomplete_codes
+  # GET /parts/autocomplete_codes.json
+  def autocomplete
+    search_string = params[:term]
+    aircraft_id = params[:aircraft_id]
+    parts = Part.gt(quantity_left: 0).where(number: /.*#{search_string}.*/i)
+    unless aircraft_id.blank?
+      parts = parts.where(aircraft_id: aircraft_id)
+    end
+    record = parts.limit(5)
+    render :json => record.map { |part| {id: part._id.to_s, label: "#{part.number_serial_no} (#{part.quantity_left} left)", value: "#{part.number_serial_no} (#{part.quantity_left} left)" } }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_part

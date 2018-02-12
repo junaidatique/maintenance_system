@@ -1,7 +1,15 @@
 $(document).on 'ready', ->
   $('.date_class').datepicker
     dateFormat: 'dd/mm/yy'
-  $('#div_part_change').on 'cocoon:after-insert', ->
+  $('#div_part_change').on 'cocoon:before-insert', (e, row) ->
+    id = $(row.find('input.autocomplete')[0]).attr('id')    
+    $(row.find('input.autocomplete')[0]).attr('data-id-element', '#' + id + '_id')
+    
+  $('#div_assigned_tools').on 'cocoon:before-insert', (e, row) ->
+    id = $(row.find('input.autocomplete')[0]).attr('id')    
+    $(row.find('input.autocomplete')[0]).attr('data-id-element', '#' + id + '_id')
+    
+  $('#div_part_change').on 'cocoon:after-insert', ->    
     $('select.custom-select2').select2 theme: 'bootstrap'
     $('input').iCheck
       checkboxClass: 'icheckbox_square'
@@ -18,13 +26,4 @@ $(document).on 'ready', ->
   $('#techlog_condition_open').on 'ifChecked', (event) ->
     $(".action_div").addClass 'hide'
 
-  format_parts = (wuc) ->
-    if wuc.loading
-      return 'Loading...'
-    markup = '<div class=\'select2-result-wuc clearfix\'>'
-    wuc.code
-
-  formatPartsSelection = (wuc) ->
-    wuc.code or wuc.text
-
-  window.select2_multisearch '.wuc-select2', '/parts/get_parts?', format_parts, formatPartsSelection
+  

@@ -5,7 +5,8 @@ class PartHistory
   field :number, type: String
   field :description, type: String
   field :serial_no, type: String
-  field :quantity, type: Integer
+  field :quantity, type: Float, default: 0
+  field :quantity_left, type: Float, default: 0
 
   field :calender_life, type: Date
   field :installed_date, type: Date

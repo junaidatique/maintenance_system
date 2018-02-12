@@ -8,6 +8,7 @@ class Part
   field :serial_no, type: String
   field :number_serial_no, type: String
   field :quantity, type: Float, default: 0
+  field :quantity_left, type: Float, default: 0
 
   field :calender_life, type: Date
   field :installed_date, type: Date
@@ -24,7 +25,9 @@ class Part
 
   belongs_to :aircraft, optional: true 
   embeds_many :part_histories
-  has_and_belongs_to_many :techlogs
+  has_many :old_parts, class_name: 'ChangePart', inverse_of: :old_parts
+  has_many :new_parts, class_name: 'ChangePart', inverse_of: :new_parts  
+
 
   validates :number, presence: true
   validates :description, presence: true
@@ -39,6 +42,7 @@ class Part
     part_history.description = self.description
     part_history.serial_no = self.serial_no
     part_history.quantity = self.quantity
+    part_history.quantity_left = self.quantity_left
 
     part_history.calender_life = self.calender_life
     part_history.installed_date = self.installed_date
@@ -96,6 +100,7 @@ class Part
           number_serial_no: part_number_serial_no, 
           description: description, 
           quantity: quantity, 
+          quantity_left: quantity_left, 
           is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
           total_part_hours: total_part_hours,part_hours_completed: part_hours_completed,
           total_landings: total_landings, landings_completed: landings_completed })

@@ -63,7 +63,15 @@ class ToolsController < ApplicationController
 
   def import
     Tool.import(params[:file_excel])
-    redirect_to tools_path, notice: 'Parts imported.'
+    redirect_to tools_path, notice: 'Tools imported.'
+  end
+
+  # GET /tools/autocomplete_codes
+  # GET /tools/autocomplete_codes.json
+  def autocomplete
+    search_string = params[:term]
+    record = Tool.gt(quantity_in_hand: 0).where(number: /.*#{search_string}.*/i).limit(5)    
+    render :json => record.map { |tool| {id: tool._id.to_s, label: "#{tool.number} (#{tool.quantity_in_hand} left)", value: "#{tool.number} (#{tool.quantity_in_hand} left)" } }
   end
 
   private

@@ -10,8 +10,7 @@ $(document).on 'ready', ->
     format: 'hh:mm A'
 
   $('#div_techlog_servicing').on 'cocoon:before-insert', (e, row) ->
-    id = $(row.find('input.autocomplete')[0]).attr('id')
-    console.log $(row.find('input.autocomplete')[0])
+    id = $(row.find('input.autocomplete')[0]).attr('id')    
     $(row.find('input.autocomplete')[0]).attr('data-id-element', '#' + id + '_id')
 
 

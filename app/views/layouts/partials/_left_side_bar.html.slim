@@ -9,7 +9,7 @@ ul.sidebar-menu
       = link_to parts_path do
         .fa.fa-paper-plane 
         span.side-bar-heading-text Parts  
-  - if can? :read, Part
+  - if can? :read, Tool
     li class="#{params[:controller] == "tools" ? 'active' : ''}"
       = link_to tools_path do
         .fa.fa-wrench 

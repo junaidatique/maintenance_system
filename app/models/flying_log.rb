@@ -86,7 +86,7 @@ class FlyingLog
       Techlog.create({type_cd: 0, condition_cd: 0, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
         description: f.flightline_servicing.inspection_performed, work_unit_code: work.id, 
         user_id: f.flightline_servicing.user_id, log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
-        aircraft_id: f.aircraft_id, flying_log_id: f.id})
+        aircraft_id: f.aircraft_id, flying_log_id: f.id, dms_version: System.first.settings['dms_version_number'] })
     end
   end
 
