@@ -5,8 +5,12 @@ class TechlogsController < ApplicationController
   # GET /techlogs
   # GET /techlogs.json
   def index
-    if current_user.role == :admin
+    if current_user.role == :admin or current_user.role == :master_control or current_user.role == :engineer
       @techlogs = Techlog.techloged
+    elsif current_user.role == :central_tool_store 
+      @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
+    elsif current_user.role == :logistics
+      @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
     else
       @techlogs = Techlog.techloged.where(:work_unit_code_id.in => current_user.work_unit_code_ids)
     #if current_user.role == :crew_cheif or current_user.role == :radio or current_user.role == :electrical or current_user.role == :instrument
@@ -41,13 +45,8 @@ class TechlogsController < ApplicationController
     @techlog.build_work_duplicate if @techlog.work_duplicate.blank?
     if @techlog.dms_version.blank?
       @techlog.dms_version = System.first.settings['dms_version_number'] 
-    end
-    puts '---------'
-    puts current_user.work_unit_code_ids.inspect
-    puts @techlog.work_unit_code.id.inspect
-    puts '---------'
-    if current_user.work_unit_code_ids.include? @techlog.work_unit_code.id
-      puts 'here'
+    end    
+    if current_user.work_unit_code_ids.include? @techlog.work_unit_code.id      
       @techlog.is_viewed = true
       @techlog.save :validate => false
     end
@@ -78,19 +77,46 @@ class TechlogsController < ApplicationController
     # puts techlog_params.inspect
 
     respond_to do |format|
-    #   if params[:techlog][:change_parts_attributes].present?
-    #     params[:techlog][:change_parts_attributes].each do |value,cp|
-    #       if cp[:id].present? and cp[:_destroy].to_s == "1" and ChangePart.find(cp[:id]).present?          
-    #         ChangePart.find(cp[:id]).destroy 
-    #         params[:techlog][:change_parts_attributes].delete(value)
-    #       end
-    #     end
-    #   end
       if @techlog.update(techlog_params)
+        # Parts required 
+        if @techlog.parts_started? and @techlog.change_parts.count > 0
+          @techlog.parts_requested_parts
+        end
+        if current_user.role == :logistics
+          if @techlog.change_parts.where(available: 0).count > 0
+            @techlog.parts_not_available_parts
+          else
+            change_part_all =  @techlog.change_parts.where("this.quantity_required == this.quantity_provided").where(provided: false)
+            change_part_all.each do |cp|            
+              cp.provided = true
+              cp.update
+            end
+            change_parts_count = @techlog.change_parts.where("this.quantity_required != this.quantity_provided").count
+            # if @techlog.change_parts.where(available: 0).count
+            if change_parts_count > 0
+              @techlog.parts_pending_parts
+            else            
+              @techlog.parts_provided_parts
+            end
+          end
+        end
+        
+        # Tools 
+        if @techlog.tools_started? and @techlog.assigned_tools.count > 0
+          @techlog.tools_requested_tools
+        end
+        if @techlog.tools_requested? and current_user.role == :central_tool_store
+          @techlog.tools_provided_tools
+        end
+        if @techlog.tools_provided? and current_user.role == :central_tool_store and @techlog.assigned_tools.where(is_returned: false).count == 0
+          @techlog.tools_returned_tools
+        end
+        # this one is for crew cheif
         if @techlog.flying_log.present?
           @techlog.flying_log.update_fuel
           @techlog.flying_log.fill_fuel
         end
+
         if @techlog.log_techloged?
           @techlog.is_completed = true
           @techlog.save
@@ -106,7 +132,7 @@ class TechlogsController < ApplicationController
         end
         
         format.json { render :show, status: :ok, location: @techlog }
-      else
+      else        
         format.html { render :edit }
         format.json { render json: @techlog.errors, status: :unprocessable_entity }
       end
@@ -155,7 +181,7 @@ class TechlogsController < ApplicationController
         right:0 
       }
   end
-
+  
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_techlog
@@ -166,13 +192,15 @@ class TechlogsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def techlog_params
       params.require(:techlog).permit(:user_id,:work_unit_code_id, :aircraft_id, :location_id, :log_date, :log_time,
-                                        :type, :action, :additional_detail_form, 
-                                        :component_on_hold, :sap_notif, :sap_wo, :amr_no, :occurrence_report,
-                                        :tools_used, :dms_version, :description,
+                                        :type, :condition, :action, :additional_detail_form, 
+                                        :nmcs_pmcs, :demand_notif, :amf_reference_no, :pdr_number, :occurrence_report,
+                                        :description,
                                         :addl_period_of_deferm, :addl_due, :addl_log_time, :addl_log_date,
                                         :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description,
                                         flying_log_attributes: [ :fuel_refill, :oil_serviced, :oil_total_qty ],
-                                        change_parts_attributes: [:id, :old_part_id, :new_part_id, :_destroy],
+                                        change_parts_attributes: [:id, :requested_by_id, :assigned_by_id, :old_part_id, :quantity_required, :new_part_id, :quantity_provided, :available, :_destroy],
+                                        assigned_tools_attributes: [:id, :requested_by_id, :tool_id, :quantity_required,
+                                        :quantity_assigned, :is_returned, :_destroy],
                                         work_performed_attributes: [:work_date, :work_time, :user_id],
                                         date_inspected_attributes: [:work_date, :work_time, :user_id],
                                         work_duplicate_attributes: [:work_date, :work_time, :user_id],

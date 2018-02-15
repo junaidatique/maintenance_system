@@ -1,14 +1,62 @@
-.nested-fields
+.nested-fields  
   .row
     .col-md-12
-      .row
-        .col-sm-5
-          = f.association :old_part, collection: @techlog.aircraft.parts.all, label_method: :number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
-        .col-sm-5
-          = f.association :new_part, collection: @techlog.aircraft.parts.all, label_method: :number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
-        .col-sm-offset-1.col-sm-1
-          br
-          = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
-            i.fa.fa-trash
+      = f.input :old_part_id, as: :hidden
+      = f.input :new_part_id, as: :hidden
+      - if current_user.work_unit_codes.include? @techlog.work_unit_code and f.object.requested_by.blank?
+        = f.input :requested_by_id, as: :hidden, input_html: { value: current_user.id }
+      - if current_user.role == :logistics
+        = f.input :assigned_by_id, as: :hidden, input_html: { value: current_user.id }
+      .row          
+        .col-sm-3
+          - if current_user.work_unit_codes.include? @techlog.work_unit_code and f.object.old_part.blank?
+            = f.input :old_part, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :include), :as => :autocomplete, input_html: {id_element: "#id"}
+          - else
+            label Part # and Serial #
+            br
+            = f.object.old_part.number_serial_no
+            |  (
+            = f.object.old_part.quantity_left
+            |  Left)
+        .col-sm-2
+          - if current_user.work_unit_codes.include? @techlog.work_unit_code and !f.object.provided
+            = f.input :quantity_required  
+          - else             
+            label Quantity Requested
+            br
+            = f.object.quantity_required
+            
+        .col-sm-3
+          - if current_user.role == :logistics and !f.object.provided
+            - if f.object.new_part.present?
+              = f.input :new_part, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id", value: "#{f.object.new_part.number_serial_no} (#{f.object.new_part.quantity_left} left)"}
+            - else 
+             = f.input :new_part, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id"} 
+          - elsif f.object.new_part.present?
+            label Part # and Serial #
+            br
+            = f.object.new_part.number_serial_no
+            |  (
+            = f.object.new_part.quantity_left
+            |  Left)
+        .col-sm-2          
+            - if current_user.role == :logistics and !f.object.provided
+              = f.input :quantity_provided  
+            - elsif f.object.new_part.present?             
+              label Quantity Provided
+              br
+              = f.object.quantity_provided
+        .col-sm-1
+          - if current_user.role == :logistics and !f.object.provided
+            = f.input :available, label: 'available', as: :boolean, checked_value: 1, unchecked_value: 0, class: 'part_available[]'
+          - elsif @techlog.parts_provided?            
+            label Available
+            br
+            = (f.object.available) ? 'Yes' : 'No'
+        .col-sm-1
+          - if current_user.work_unit_codes.include? @techlog.work_unit_code and !f.object.provided
+            br
+            = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
+              i.fa.fa-trash
       hr
         

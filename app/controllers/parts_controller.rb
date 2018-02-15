@@ -63,8 +63,25 @@ class PartsController < ApplicationController
 
   def import
     Part.import(params[:file_excel])
-
     redirect_to parts_path, notice: 'Parts imported.'
+  end
+
+  # GET /parts/autocomplete_codes
+  # GET /parts/autocomplete_codes.json
+  def autocomplete
+    search_string = params[:term]
+    aircraft_id = params[:aircraft_id]
+    search_type = params[:search_type]
+    parts = Part.gt(quantity_left: 0).where(number: /.*#{search_string}.*/i)
+    if aircraft_id.present? 
+      if search_type == 'include'
+        parts = parts.where(aircraft_id: aircraft_id)
+      else
+        parts = parts.where(:aircraft_id.ne => aircraft_id)
+      end
+    end
+    record = parts.limit(5)
+    render :json => record.map { |part| {id: part._id.to_s, label: "#{part.number_serial_no} (#{part.quantity_left} left)", value: "#{part.number_serial_no} (#{part.quantity_left} left)" } }
   end
 
   private

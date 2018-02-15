@@ -50,7 +50,7 @@ class FlyingLogsController < ApplicationController
       if !techlog.is_completed
         redirect_to techlog_path(techlog), :flash => { :error => "Please fill this techlog first." }
       end
-    elsif Techlog.where(flying_log: @flying_log).incomplete.count > 0 and !@flying_log.pilot_commented?
+    elsif Techlog.where(flying_log: @flying_log).incomplete.count > 0 and !@flying_log.logs_created?
       redirect_to flying_log_path(@flying_log), :flash => { :error => "Techlog for this Flying log are still not completed." }
     end
     

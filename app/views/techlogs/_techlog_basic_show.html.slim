@@ -42,7 +42,7 @@
               | &nbsp; Techlog
           .col-sm-6.text-right
             - if current_user.role == :engineer or current_user.role == :admin
-              - if @techlog.log_techloged? and !@techlog.is_completed
+              - if @techlog.log_techloged? and !@techlog.is_completed?
                 = link_to create_addl_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
                   i.fa.fa-pencil
                   | &nbsp; Transfer to ADDL
@@ -55,55 +55,31 @@
                   i.fa.fa-pencil
                   | &nbsp; Transfer back to Techlog
                 | &nbsp;
-      .box-body
-        .row
-          .col-sm-12
-            table.table.table-inverse
-              tbody                
-                tr
-                  th width="25%"
-                    | Number
-                  td = @techlog.number
-                  th width="25%"
-                    | Opened By
-                  td = @techlog.user.name
-                tr
-                  th width="25%"
-                    | Date
-                  td = display_date(@techlog.log_date)
-                  th width="25%"
-                    | Time
-                  td = @techlog.log_time
-                tr
-                  th width="25%"
-                    | Aircraft
-                  td = @techlog.aircraft.tail_number
-                  th width="25%"
-                    
-                  td
-                tr
-                  th width="25%"
-                    | Location From
-                  td 
-                    = @techlog.location_from
-                  th width="25%"
-                    | Location To
-                  td = @techlog.location_to
-                tr
-                  th width="25%"
-                    | Work Unit Code
-                  td 
-                    = @techlog.work_unit_code.code
-                    | /
-                    = @techlog.work_unit_code.description
-                  th width="25%"
-                    | Type
-                  td = @techlog.type
-                tr
-                  th width="25%" colspan="4"
-                    | Description
-                tr
-                  td colspan="4"
-                    = @techlog.description
-                  
-  
+      = render 'techlog_short_detail', techlog: @techlog      
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-borderf
+        h3.box-title
+          i.fa.fa-bars
+          | &nbsp; DMS Version (
+          = @techlog.dms_version
+          | )
+- if @techlog.interm_log.present?  
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Interm Log
+      = render 'techlog_short_detail', techlog: @techlog.interm_log
+- if @techlog.parent_techlog.present?  
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Parent Log
+      = render 'techlog_short_detail', techlog: @techlog.parent_techlog

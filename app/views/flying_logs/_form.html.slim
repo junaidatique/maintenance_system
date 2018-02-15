@@ -22,8 +22,7 @@
               .row
                 .col-sm-6
                   = ac_f.input :flight_time, label: 'Time (Local)', readonly: true, input_html: { value: cur_time() }
-                /.col-sm-6
-                  = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+                
   - if current_user.role == :pilot and @flying_log.flight_released?
     .row
       .col-md-12
@@ -42,8 +41,7 @@
                   = ac_f.input :flight_time, label: 'Time (Local)', readonly: true, input_html: { value: cur_time() }
                 .col-sm-4
                   = ac_f.input :view_history, label: 'I have reviwed Aircraft History', as: :boolean, checked_value: 1, unchecked_value: 0
-                /.col-sm-6
-                  = ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+                
   - if current_user.role == :pilot and @flying_log.flight_booked?
     .row
       .col-md-12
@@ -131,8 +129,7 @@
             = f.simple_fields_for :sortie do |ac_f|
               .row
                 .col-sm-6
-                  = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code), as: :radio_buttons
-    /- if 
+                  = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code), as: :radio_buttons    
     .row
       .col-md-12#div_techlog_servicing
         .box.box-info

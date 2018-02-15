@@ -1,0 +1,23 @@
+= simple_form_for(@tool, :url => import_tools_path, :method => :post, html: { multipart: true}) do |f|
+  = f.error_notification
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; General
+        .box-body
+          .row
+            .col-sm-6
+              = file_field_tag :file_excel
+  .row
+    .col-sm-4
+      = link_to tools_path, class: 'btn btn-block btn-primary btn-flat' do
+        i.fa.fa-angle-double-left
+        | &nbsp; Back
+    
+    .col-sm-4 class="col-sm-offset-4"
+      = button_tag :submit, id: 'create_update_user', class: 'btn btn-block btn-success btn-flat' do
+        i.fa.fa-refresh
+        |  Upload Excel

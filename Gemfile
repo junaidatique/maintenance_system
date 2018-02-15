@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-
+ruby '2.3.3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.1'
 # Use Puma as the app server
@@ -47,7 +47,11 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'faker', :git => 'git://github.com/stympy/faker.git', :branch => 'master'
   gem 'business_time'
-
+  gem 'ruby-debug-ide', '0.6.0'
+  gem 'debase', '0.2.1'
+  gem 'rcodetools'
+  gem 'rubocop'
+  gem 'rufo'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

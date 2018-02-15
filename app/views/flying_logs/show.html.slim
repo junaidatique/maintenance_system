@@ -44,7 +44,7 @@
                       td.table-row-center
                         = techlog.work_unit_code.code unless techlog.work_unit_code.blank?
                       td.table-row-center
-                        = (techlog.is_completed) ? 'Yes' : 'No'
+                        = techlog.is_completed? ? 'Yes' : 'No'
                       td.text-center width='20%'
                         = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
                           i.fa.fa-file-pdf-o
