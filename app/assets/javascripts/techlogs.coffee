@@ -2,7 +2,8 @@ $(document).on 'ready', ->
   $('.date_class').datepicker
     dateFormat: 'dd/mm/yy'
   $('#div_part_change').on 'cocoon:before-insert', (e, row) ->
-    id = $(row.find('input.autocomplete')[0]).attr('id')    
+    id = $(row.find('input.autocomplete')[0]).attr('id') 
+    console.log id   
     $(row.find('input.autocomplete')[0]).attr('data-id-element', '#' + id + '_id')
     
   $('#div_assigned_tools').on 'cocoon:before-insert', (e, row) ->
@@ -30,5 +31,11 @@ $(document).on 'ready', ->
     $(".action_div").removeClass 'hide'
   $('#techlog_condition_open').on 'ifChecked', (event) ->
     $(".action_div").addClass 'hide'
+
+
+  $('.techlog_change_parts_available input[type="checkbox"]').on 'ifUnchecked', (evnet) ->
+    $(".addition_values").removeClass 'hide'
+  $('.techlog_change_parts_available input[type="checkbox"]').on 'ifChecked', (evnet) ->
+    $(".addition_values").addClass 'hide'
 
   

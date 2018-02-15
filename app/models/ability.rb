@@ -28,6 +28,9 @@ class Ability
     elsif user.central_tool_store?
       can :crud, Tool
       can :rud, Techlog
+    elsif user.logistics?
+      can :crud, Part
+      can :rud, Techlog
     elsif user.radio?
       can :read, FlyingLog
       can :crud, Techlog

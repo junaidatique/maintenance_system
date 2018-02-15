@@ -8,7 +8,9 @@ class ApplicationController < ActionController::Base
     if user.admin?
       aircrafts_path    
     elsif user.central_tool_store?
-      tools_path
+      tools_path    
+    elsif user.logistics?
+      parts_path
     else
       flying_logs_path
     end

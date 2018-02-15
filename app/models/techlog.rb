@@ -21,7 +21,7 @@ class Techlog
   field :amf_reference_no, type: String
   field :pdr_number, type: String  
   field :occurrence_report, type: String
-  field :tools_used, type: String
+  # field :tools_used, type: String
   field :dms_version, type: String
   field :is_completed, type: Mongoid::Boolean, default: 0
   field :user_generated, type: Mongoid::Boolean, default: 0
@@ -72,6 +72,8 @@ class Techlog
   def verify_complete    
     if condition_cd == 1 and (tools_state == "requested" or tools_state == "provided") 
       errors.add(:status, " there are some tools that are not returned yet. ")
+    elsif condition_cd == 1 and (parts_state == "requested" or parts_state == "pending" or parts_state == "not_available")
+      errors.add(:status, " Some parts are missing. ")
     elsif interm_log.present? and !interm_log.is_completed?
       errors.add(:status, " This techlog has an interm log. Please complete that log first. ")
     end
@@ -91,13 +93,28 @@ class Techlog
       transition [:addled, :limited] => :techloged
     end
   end
-
+  # For now
+  # request part
+  # provide part
+  # if not available then request
+  # request completed mark as avaiable
+  # once required and provided quantity are same lets not edit it.
+  
   state_machine :parts_state, initial: :started, namespace: :'parts' do
     event :parts_requested do
       transition started: :requested
     end
     event :parts_provided do
-      transition requested: :provided
+      transition [:requested, :pending, :not_available] => :provided
+    end
+    event :parts_pending do
+      transition requested: :pending
+    end
+    event :parts_not_available do
+      transition [:requested, :pending] => :not_available
+    end
+    event :parts_available do
+      transition not_available: :provided
     end
   end
   state_machine :tools_state, initial: :started, namespace: :'tools' do

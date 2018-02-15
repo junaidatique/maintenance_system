@@ -8,7 +8,9 @@ class TechlogsController < ApplicationController
     if current_user.role == :admin or current_user.role == :master_control or current_user.role == :engineer
       @techlogs = Techlog.techloged
     elsif current_user.role == :central_tool_store 
-      @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])
+      @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
+    elsif current_user.role == :logistics
+      @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
     else
       @techlogs = Techlog.techloged.where(:work_unit_code_id.in => current_user.work_unit_code_ids)
     #if current_user.role == :crew_cheif or current_user.role == :radio or current_user.role == :electrical or current_user.role == :instrument
@@ -74,9 +76,32 @@ class TechlogsController < ApplicationController
     # puts params.inspect
     # puts techlog_params.inspect
 
-    respond_to do |format|      
+    respond_to do |format|
       if @techlog.update(techlog_params)
         # Parts required 
+        if @techlog.parts_started? and @techlog.change_parts.count > 0
+          @techlog.parts_requested_parts
+        end
+        if current_user.role == :logistics
+          if @techlog.change_parts.where(available: 0).count > 0
+            @techlog.parts_not_available_parts
+          else
+            change_part_all =  @techlog.change_parts.where("this.quantity_required == this.quantity_provided").where(provided: false)
+            change_part_all.each do |cp|            
+              cp.provided = true
+              cp.update
+            end
+            change_parts_count = @techlog.change_parts.where("this.quantity_required != this.quantity_provided").count
+            # if @techlog.change_parts.where(available: 0).count
+            if change_parts_count > 0
+              @techlog.parts_pending_parts
+            else            
+              @techlog.parts_provided_parts
+            end
+          end
+        end
+        
+        # Tools 
         if @techlog.tools_started? and @techlog.assigned_tools.count > 0
           @techlog.tools_requested_tools
         end
@@ -86,10 +111,12 @@ class TechlogsController < ApplicationController
         if @techlog.tools_provided? and current_user.role == :central_tool_store and @techlog.assigned_tools.where(is_returned: false).count == 0
           @techlog.tools_returned_tools
         end
+        # this one is for crew cheif
         if @techlog.flying_log.present?
           @techlog.flying_log.update_fuel
           @techlog.flying_log.fill_fuel
         end
+
         if @techlog.log_techloged?
           @techlog.is_completed = true
           @techlog.save
@@ -166,12 +193,12 @@ class TechlogsController < ApplicationController
     def techlog_params
       params.require(:techlog).permit(:user_id,:work_unit_code_id, :aircraft_id, :location_id, :log_date, :log_time,
                                         :type, :condition, :action, :additional_detail_form, 
-                                        :component_on_hold, :sap_notif, :sap_wo, :amr_no, :occurrence_report,
-                                        :tools_used, :description,
+                                        :nmcs_pmcs, :demand_notif, :amf_reference_no, :pdr_number, :occurrence_report,
+                                        :description,
                                         :addl_period_of_deferm, :addl_due, :addl_log_time, :addl_log_date,
                                         :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description,
                                         flying_log_attributes: [ :fuel_refill, :oil_serviced, :oil_total_qty ],
-                                        change_parts_attributes: [:id, :requested_by_id, :old_part_id, :quantity_required, :_destroy],
+                                        change_parts_attributes: [:id, :requested_by_id, :assigned_by_id, :old_part_id, :quantity_required, :new_part_id, :quantity_provided, :available, :_destroy],
                                         assigned_tools_attributes: [:id, :requested_by_id, :tool_id, :quantity_required,
                                         :quantity_assigned, :is_returned, :_destroy],
                                         work_performed_attributes: [:work_date, :work_time, :user_id],

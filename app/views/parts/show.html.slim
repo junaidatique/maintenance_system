@@ -32,8 +32,15 @@
                     | Part Serial #
                   td = @part.serial_no
                   th width="25%"
+                    
+                  td 
+                tr
+                  th width="25%"
                     | Part Quantity
                   td = @part.quantity
+                  th width="25%"
+                    | Quantity Left
+                  td = @part.quantity_left
                 tr
                   th width="25%"
                     | Part Calender Life

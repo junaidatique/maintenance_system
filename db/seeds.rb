@@ -38,7 +38,7 @@ aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no:
       serial_no: serial_no, 
       number_serial_no: part_number_serial_no, 
       quantity: quantity, 
-      quantity_left: rand(10) + 1, 
+      quantity_left: quantity, 
       description: Faker::Lorem.words(1 + rand(4)).join(" "), 
       is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
       total_part_hours: total_hours, total_landings: total_landings })
@@ -192,7 +192,7 @@ puts 'book in'
 flying_log.pilot_back
 #sleep(2)
 # flying_log = FlyingLog.first
-techlog_count = (2+rand(5))
+techlog_count = (8+rand(5))
 puts "techlog count #{techlog_count}"
 puts "createing techlogs"
 flying_log.sortie.sortie_code = 2
