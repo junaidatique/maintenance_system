@@ -3,13 +3,13 @@ cur_time = Time.now
 System.create! settings: {dms_version_number: 0.0}
 puts 'Creating Aircraft'
 aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-
-
 aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-
 aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-
 aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_303  = Aircraft.create! number: '304', tail_number: 'QA304', serial_no: '#304', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_303  = Aircraft.create! number: '305', tail_number: 'QA305', serial_no: '#305', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_303  = Aircraft.create! number: '306', tail_number: 'QA306', serial_no: '#306', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_303  = Aircraft.create! number: '307', tail_number: 'QA307', serial_no: '#307', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
 
 (0..Aircraft.count).each do |j|
   aircraft = Aircraft.limit(1).offset(j).first
@@ -99,8 +99,8 @@ puts 'WorkUnitCodes Created'
 # return
 ##################################################################
 #sleep(2)
-
-puts 'Creating Pre flight Flying Log'
+(0..24).each do |fl_log|
+  puts 'Creating Pre flight Flying Log'
 flying_log = FlyingLog.new
 last_flying_log = FlyingLog.last
 if last_flying_log.present?
@@ -143,7 +143,7 @@ flying_log.fill_fuel
 # ToDo
 flying_log.techlogs.where(type_cd: 0).each do |techlog|
   techlog.action = Faker::Lorem.sentence
-  techlog.is_completed = true
+  techlog.condition_cd = 1
   techlog.save
 end
 puts 'techlog finished'
@@ -208,5 +208,14 @@ end
 puts ''
 flying_log.save!
 flying_log.techlog_check
+flying_log.techlogs.where(type_cd: 1.to_s).each do |techlog|
+  techlog.action = Faker::Lorem.sentence
+  techlog.condition_cd = 1
+  techlog.save
+end
+flying_log.complete_log
+end
+
+
 puts 'All done'
 

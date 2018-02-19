@@ -30,6 +30,47 @@
           .box-header.with-borderf
             h3.box-title
               i.fa.fa-bars
+              | &nbsp; Aircraft History
+          .box-body
+            .row
+              .col-md-12
+                .box.box-info
+                  .box-body
+                    table.table.table-bordered.table-striped.data-tabled
+                      thead
+                        tr
+                          th width='10%'
+                            | Number
+                          th width='10%'
+                            | Date
+                          th width='10%'
+                            | Description
+                          th width='10%'
+                            | Action Taken                          
+                          th width='13%'
+                            | Detail
+                      tbody
+                        - @flying_log.aircraft.techlogs.where(type_cd: 1).order(number: :desc).each do |techlog|
+                          tr
+                            td.table-row-center
+                              = link_to techlog.number, techlog_path(techlog)
+                            td.table-row-center
+                              = display_date(techlog.log_date) 
+                            td.table-row-center
+                              = techlog.description
+                            td.table-row-center
+                              = techlog.action                            
+                                
+                            td.text-center width='20%'
+                              = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
+                                i.fa.fa-file-pdf-o                                                            
+                                
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
               | &nbsp; Pilot Acceptance Certificate
           .box-body
             = f.simple_fields_for :capt_acceptance_certificate do |ac_f|

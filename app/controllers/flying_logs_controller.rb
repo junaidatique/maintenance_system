@@ -173,7 +173,7 @@ class FlyingLogsController < ApplicationController
     merged_certificates = CombinePDF.new
     
     begin
-      techlogs  = @flying_log.techlogs.where(type_cd: 1.to_S).limit(3).offset(i)
+      techlogs  = @flying_log.techlogs.where(type_cd: 1.to_s).limit(3).offset(i)
       puts techlogs
       pdf_data = render_to_string(
                   pdf: "flying_log_#{@flying_log.id}",

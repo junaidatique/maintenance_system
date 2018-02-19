@@ -3,11 +3,26 @@ class User
   include Mongoid::Timestamps
   include SimpleEnum::Mongoid
 
-  as_enum :role, admin: 0, engineer: 1, crew_cheif: 2, electrical: 3, 
-                radio: 4, instrument: 5, airframe: 6, master_control: 7, pilot: 8, engine: 9,
-                squadron_engineering_officer: 10, chief_maintenance_officer: 11, 
-                flight_commander: 12, deputy_flight_commander: 13,  central_tool_store: 14,
-                logistics: 15
+  as_enum :role, 
+                admin: 0, 
+                chief_maintenance_officer: 11, 
+                squadron_engineering_officer: 10,
+                flightline_supervisor: 17,
+                crew_cheif: 2, 
+                electro_mac_technician: 3, 
+                radio_technician: 4, 
+                engineer: 1, 
+                airframe_officer: 6, 
+                master_control: 7, 
+                engine: 9,
+                pilot: 8,                                 
+                flight_commander: 12, 
+                deputy_flight_commander: 13,  
+                central_tool_store: 14,
+                logistics_supervisor: 15,
+                docker_cheif: 18
+
+                
   
   devise :database_authenticatable, 
          :recoverable, :rememberable, :trackable, :validatable

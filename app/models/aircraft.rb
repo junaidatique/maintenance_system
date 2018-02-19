@@ -34,6 +34,7 @@ class Aircraft
   
 
   has_many :flying_logs
+  has_many :techlogs
   has_many :parts
 
   accepts_nested_attributes_for :parts, :allow_destroy => true

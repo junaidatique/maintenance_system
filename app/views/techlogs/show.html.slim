@@ -1,4 +1,5 @@
 = content_for :box_heading do
+  | Techlog: 
   = @techlog.number
 == render 'techlog_basic_show'
 .row
@@ -27,72 +28,72 @@
                     td = assigned_tool.is_returned ? 'Yes' : 'No'
             - else
               | No tool requested.        
-  - if @techlog.is_completed?
-    .row
-      .col-md-12
-        .box.box-info
-          .box-header.with-borderf
-            h3.box-title
-              i.fa.fa-bars
-              | &nbsp; General
-          .box-body
-            .row
-              .col-sm-12
-                table.table.table-inverse
-                  tbody
-                    tr
-                      th width="25%" colspan="4"
-                        | Action
-                    tr
-                      td colspan="4"
-                        = @techlog.action
+- if @techlog.is_completed?
   .row
     .col-md-12
       .box.box-info
         .box-header.with-borderf
           h3.box-title
             i.fa.fa-bars
-            | &nbsp; Parts Changed
+            | &nbsp; General
         .box-body
           .row
             .col-sm-12
-              - if @techlog.change_parts.count > 0
-                table.table.table-inverse
-                  thead
-                    th Old Part                    
-                    th Quantity Required
-                    th Requested By
-                    th New Part
-                    th Quantity Provided
-                    th Provided By
-                  tbody                  
-                  - @techlog.change_parts.each do |change_part|
-                    tr                    
-                      td = change_part.old_part.number_serial_no
-                      td = change_part.quantity_required
-                      td = change_part.requested_by.name
-                      td 
-                        - if change_part.new_part.present?
-                          = change_part.new_part.number_serial_no
-                      td 
-                        - if change_part.new_part.present?
-                          = change_part.quantity_provided
-                      td
-                        - if change_part.new_part.present?
-                          = change_part.assigned_by.name
-              - else
-                | No parts are changed.        
+              table.table.table-inverse
                 tbody
-                  - @techlog.change_parts.each do |part|
-                    tr
-                      th width="25%" 
-                        | Old Part 
-                      th width="25%" 
-                        = part.old_part.number
-                      th width="25%" 
-                        | New Part 
-                      th width="25%" 
-                        = part.new_part.number
+                  tr
+                    th width="25%" colspan="4"
+                      | Action
+                  tr
+                    td colspan="4"
+                      = @techlog.action
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-borderf
+        h3.box-title
+          i.fa.fa-bars
+          | &nbsp; Parts Changed
+      .box-body
+        .row
+          .col-sm-12
+            - if @techlog.change_parts.count > 0
+              table.table.table-inverse
+                thead
+                  th Old Part                    
+                  th Quantity Required
+                  th Requested By
+                  th New Part
+                  th Quantity Provided
+                  th Provided By
+                tbody                  
+                - @techlog.change_parts.each do |change_part|
+                  tr                    
+                    td = change_part.old_part.number_serial_no
+                    td = change_part.quantity_required
+                    td = change_part.requested_by.name
+                    td 
+                      - if change_part.new_part.present?
+                        = change_part.new_part.number_serial_no
+                    td 
+                      - if change_part.new_part.present?
+                        = change_part.quantity_provided
+                    td
+                      - if change_part.new_part.present?
+                        = change_part.assigned_by.name
+            - else
+              | No parts are changed.        
+              tbody
+                - @techlog.change_parts.each do |part|
+                  tr
+                    th width="25%" 
+                      | Old Part 
+                    th width="25%" 
+                      = part.old_part.number
+                    th width="25%" 
+                      | New Part 
+                    th width="25%" 
+                      = part.new_part.number
   /.row
     .col-md-12
       .box.box-info

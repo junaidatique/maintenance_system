@@ -8,6 +8,8 @@ class Ability
     alias_action :index, :read, to: :ir
     if user.admin?
       can :manage, :all
+    elsif user.chief_maintenance_officer?
+      can :manage, :all
     elsif user.master_control?
       can [:read, :update], Aircraft
       cannot :crud, NonFlyingDay
@@ -32,6 +34,9 @@ class Ability
       can :crud, Part
       can :rud, Techlog
     elsif user.radio?
+      can :read, FlyingLog
+      can :crud, Techlog    
+    elsif user.electrical?
       can :read, FlyingLog
       can :crud, Techlog
     elsif user.pilot?

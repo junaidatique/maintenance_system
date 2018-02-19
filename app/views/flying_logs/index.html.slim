@@ -20,7 +20,7 @@
               th width='13%'
                 | Actions
           tbody
-            - @flying_logs.each do |flying_log|
+            - @flying_logs.order(created_at: :desc).each do |flying_log|
               tr
                 td.table-row-center
                   = link_to flying_log.number, flying_log_path(flying_log)

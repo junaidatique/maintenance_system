@@ -4,7 +4,8 @@ class Techlog
   include Mongoid::Document
   include SimpleEnum::Mongoid
   include Mongoid::Autoinc
-
+  include Mongoid::Timestamps
+  
   as_enum :type, Flight: 0, Maintenance: 1, Scheduled: 2
   as_enum :condition, open: 0, interm: 2, completed: 1
 

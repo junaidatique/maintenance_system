@@ -10,6 +10,7 @@ $(document).on 'ready', ->
     window.dt.destroy()
   dt = $('.data-tabled').DataTable(
     responsive: true
+    bSort: false
     language: 'paginate':
       'previous': '<i class="fa fa-angle-left"></i>'
       'next': '<i class="fa fa-angle-right"></i>')

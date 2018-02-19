@@ -40,6 +40,9 @@ class TechlogsController < ApplicationController
 
   # GET /techlogs/1/edit
   def edit
+    if @techlog.is_completed?
+      redirect_to techlog_path(techlog), :flash => { :error => "You can't edit completed techlog." }
+    end
     @techlog.build_work_performed if @techlog.work_performed.blank?
     @techlog.build_date_inspected if @techlog.date_inspected.blank?
     @techlog.build_work_duplicate if @techlog.work_duplicate.blank?
