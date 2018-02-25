@@ -4,23 +4,24 @@ class User
   include SimpleEnum::Mongoid
 
   as_enum :role, 
-                admin: 0, 
-                chief_maintenance_officer: 11, 
-                squadron_engineering_officer: 10,
-                flightline_supervisor: 17,
-                crew_cheif: 2, 
-                electro_mac_technician: 3, 
-                radio_technician: 4, 
-                engineer: 1, 
-                airframe_officer: 6, 
-                master_control: 7, 
-                engine: 9,
-                pilot: 8,                                 
-                flight_commander: 12, 
-                deputy_flight_commander: 13,  
-                central_tool_store: 14,
-                logistics_supervisor: 15,
-                docker_cheif: 18
+                admin: 0,
+                chief_maintenance_officer: 1,
+                squadron_engineering_officer: 2,
+                flightline_supervisor: 3,
+                crew_cheif: 4,
+                pilot: 5,
+                logistics: 6,
+                engg: 7,
+                inst_fitt: 8,
+                eng_fitt: 9,
+                afr_fitt: 10,
+                ro_fitt: 11,
+                log_asst: 12,
+                elect_fitt: 13,
+                gen_fitt: 14,                
+                master_control: 15,
+                central_tool_store: 16
+                
 
                 
   
@@ -50,6 +51,7 @@ class User
   field :name,          type: String
   field :rank,          type: String
   field :personal_code, type: String
+  field :trade,         type: String
   field :status,        type: Mongoid::Boolean
     
   embeds_one :profile_picture, as: :attachable, class_name: Picture.name, cascade_callbacks: true, autobuild: true
@@ -60,7 +62,7 @@ class User
   
   has_and_belongs_to_many :work_unit_codes
 
-  validates :username, presence: true
+  validates :username, presence: true, uniqueness: true  
   scope :online, -> { gt(updated_at: 10.minutes.ago) }
 
 

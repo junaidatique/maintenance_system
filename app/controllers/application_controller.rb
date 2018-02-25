@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
       aircrafts_path    
     elsif user.central_tool_store?
       tools_path    
-    elsif user.logistics_supervisor?
+    elsif user.logistics?
       parts_path
     else
       flying_logs_path

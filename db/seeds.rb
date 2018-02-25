@@ -11,6 +11,280 @@ aircraft_303  = Aircraft.create! number: '305', tail_number: 'QA305', serial_no:
 aircraft_303  = Aircraft.create! number: '306', tail_number: 'QA306', serial_no: '#306', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
 aircraft_303  = Aircraft.create! number: '307', tail_number: 'QA307', serial_no: '#307', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
 
+users_list = [
+      {
+      "sno": 0,
+      "rank": "",
+      "name": "admin",
+      "personal_code": "",
+      "trade": "Admin"
+    },
+    {
+      "sno": 1,
+      "rank": "Maj Gen",
+      "name": "SALEM",
+      "personal_code": "1848",
+      "trade": "PILOT"
+    },
+    {
+      "sno": 2,
+      "rank": "Brig Gen",
+      "name": "YOUSAF",
+      "personal_code": "1849",
+      "trade": "PILOT"
+    },
+    {
+      "sno": 3,
+      "rank": "Col",
+      "name": "ATA",
+      "personal_code": "10899",
+      "trade": "PILOT"
+    },
+    {
+      "sno": 4,
+      "rank": "Lt Col",
+      "name": "MUAZZAM",
+      "personal_code": "11020",
+      "trade": "ENGG"
+    },
+    {
+      "sno": 5,
+      "rank": "Lt Col",
+      "name": "SHAHERYAR",
+      "personal_code": "11693",
+      "trade": "PILOT"
+    },
+    {
+      "sno": 6,
+      "rank": "Maj",
+      "name": "SHAMSI",
+      "personal_code": "12555",
+      "trade": "ENGG"
+    },
+    {
+      "sno": 7,
+      "rank": "Maj",
+      "name": "SHAHID",
+      "personal_code": "12582",
+      "trade": "LOGISTICS"
+    },
+    {
+      "sno": 8,
+      "rank": "Maj",
+      "name": "SHAHBAZ",
+      "personal_code": "14669",
+      "trade": "PILOT"
+    },
+    {
+      "sno": 9,
+      "rank": "Maj",
+      "name": "ATIF",
+      "personal_code": "14724",
+      "trade": "PILOT"
+    },
+    {
+      "sno": 10,
+      "rank": "Maj",
+      "name": "ADEEL",
+      "personal_code": "14754",
+      "trade": "PILOT"
+    },
+    {
+      "sno": 11,
+      "rank": "Capt",
+      "name": "JAWAD",
+      "personal_code": "N/A",
+      "trade": "PILOT"
+    },
+    {
+      "sno": 12,
+      "rank": "Capt",
+      "name": "BASIT",
+      "personal_code": "N/A",
+      "trade": "PILOT"
+    },
+    {
+      "sno": 13,
+      "rank": "Capt",
+      "name": "ZAHID",
+      "personal_code": "N/A",
+      "trade": "PILOT"
+    },
+    {
+      "sno": 14,
+      "rank": "Capt",
+      "name": "ZAHEER",
+      "personal_code": "N/A",
+      "trade": "PILOT"
+    },
+    {
+      "sno": 15,
+      "rank": "Wrt Off",
+      "name": "DOST",
+      "personal_code": "857352",
+      "trade": "INST Fitt"
+    },
+    {
+      "sno": 16,
+      "rank": "Chf Tech",
+      "name": "RASHID",
+      "personal_code": "858778",
+      "trade": "ENG Fitt"
+    },
+    {
+      "sno": 17,
+      "rank": "Chf Tech",
+      "name": "JAMIL",
+      "personal_code": "859024",
+      "trade": "AFR Fitt"
+    },
+    {
+      "sno": 18,
+      "rank": "Chf Tech",
+      "name": "MANSOOR",
+      "personal_code": "859282",
+      "trade": "ENG Fitt"
+    },
+    {
+      "sno": 19,
+      "rank": "Chf Tech",
+      "name": "AYUB",
+      "personal_code": "859302",
+      "trade": "AFR Fitt"
+    },
+    {
+      "sno": 20,
+      "rank": "Chf Tech",
+      "name": "RAFIQUE",
+      "personal_code": "859820",
+      "trade": "RO Fitt"
+    },
+    {
+      "sno": 21,
+      "rank": "Chf Tech",
+      "name": "GHULAM MOHAYUDIN",
+      "personal_code": "860610",
+      "trade": "AFR Fitt"
+    },
+    {
+      "sno": 22,
+      "rank": "Chf Tech",
+      "name": "EJAZ",
+      "personal_code": "861135",
+      "trade": "AFR Fitt"
+    },
+    {
+      "sno": 23,
+      "rank": "Chf Tech",
+      "name": "SADIQ",
+      "personal_code": "862262",
+      "trade": "AFR Fitt"
+    },
+    {
+      "sno": 24,
+      "rank": "Chf Tech",
+      "name": "SAJJAD",
+      "personal_code": "862296",
+      "trade": "ENG Fitt"
+    },
+    {
+      "sno": 25,
+      "rank": "Snr Tech",
+      "name": "AKRAM",
+      "personal_code": "496446",
+      "trade": "LOG ASST"
+    },
+    {
+      "sno": 26,
+      "rank": "Snr Tech",
+      "name": "DILDAR",
+      "personal_code": "868183",
+      "trade": "ELECT Fitt"
+    },
+    {
+      "sno": 27,
+      "rank": "Cpl Tech",
+      "name": "AAMIR",
+      "personal_code": "869207",
+      "trade": "ELECT Fitt"
+    },
+    {
+      "sno": 28,
+      "rank": "Cpl Tech",
+      "name": "SAEED",
+      "personal_code": "871107",
+      "trade": "AFR Fitt"
+    },
+    {
+      "sno": 29,
+      "rank": "Cpl Tech",
+      "name": "BILAL",
+      "personal_code": "871199",
+      "trade": "ENG Fitt"
+    },
+    {
+      "sno": 30,
+      "rank": "Cpl Tech",
+      "name": "ABDULLAH",
+      "personal_code": "871401",
+      "trade": "AFR Fitt"
+    },
+    {
+      "sno": 31,
+      "rank": "Cpl Tech",
+      "name": "AKHTAR",
+      "personal_code": "871672",
+      "trade": "ELECT Fitt"
+    },
+    {
+      "sno": 32,
+      "rank": "Cpl Tech",
+      "name": "JAVED",
+      "personal_code": "871915",
+      "trade": "INST Fitt"
+    },
+    {
+      "sno": 33,
+      "rank": "Cpl Tech",
+      "name": "WASEEM",
+      "personal_code": "872832",
+      "trade": "ENG Fitt"
+    },
+    {
+      "sno": 34,
+      "rank": "CH/H",
+      "name": "SIKANDAR",
+      "personal_code": "AMF/0422",
+      "trade": "GEN Fitt"
+    },
+    {
+      "sno": 35,
+      "rank": "MC-1",
+      "name": "TAJ",
+      "personal_code": "AMF/1012",
+      "trade": "RO Fitt"
+    }
+  ]
+  
+  puts 'creating users'
+  users_list.each do |user|
+    # puts user[:sno].inspect
+    u = User.new
+    u.name = user[:name].titleize
+    u.username = user[:name].downcase.gsub(' ','_')
+    u.rank = user[:rank]
+    u.trade = user[:trade]
+    u.password = 'test1234'
+    u.status = 1
+    u.role_cd = User.roles[user[:trade].downcase.gsub(" ", "_")]
+    u.trade = user[:trade]
+    u.save!    
+    print '.'
+  end
+  puts ''
+  puts 'user created'
+
+
 (0..Aircraft.count).each do |j|
   aircraft = Aircraft.limit(1).offset(j).first
   (1..16).each do |i|
@@ -70,28 +344,28 @@ end
 puts ''
 puts 'FlyingPlan Created'
 
-puts 'Creating Users'
-User.roles.each do |role_name, role_key|
-  User.create! username: role_name, name: role_name.to_s.sub('_',' '), 
-                role: role_name, password: 'test1234', status: 1, personal_code: Faker::Number.number(6), rank: Faker::Lorem.word
-  print '.'
-end
-puts ''
-puts 'Users Created'
+# puts 'Creating Users'
+# User.roles.each do |role_name, role_key|
+#   User.create! username: role_name, name: role_name.to_s.sub('_',' '), 
+#                 role: role_name, password: 'test1234', status: 1, personal_code: Faker::Number.number(6), rank: Faker::Lorem.word
+#   print '.'
+# end
+# puts ''
+# puts 'Users Created'
 puts 'Creating WorkUnitCodes'
 WorkUnitCode.wuc_types.each do |work_unit_code,code_key|  
   w_code = WorkUnitCode.create code: work_unit_code.downcase, description: work_unit_code.to_s.sub('_',' ')
   print '.'
   
-  ["crew_cheif", "electrical", "radio"].each do |role_name, role_key|
-    work_unit_code_value = WorkUnitCode.create code: "#{work_unit_code.downcase}_#{role_name.downcase}", description: "#{work_unit_code.to_s.sub('_',' ')} #{role_name.to_s.sub('_',' ')}", parent_id: w_code, wuc_type_cd: code_key
-    role_id = User::roles[role_name]
-    u = User.where(role_cd: role_id).first
-    unless u.blank?
-      u.work_unit_codes << work_unit_code_value
-      u.save
-    end
-  end
+  # ["crew_cheif", "electrical", "radio"].each do |role_name, role_key|
+  #   work_unit_code_value = WorkUnitCode.create code: "#{work_unit_code.downcase}_#{role_name.downcase}", description: "#{work_unit_code.to_s.sub('_',' ')} #{role_name.to_s.sub('_',' ')}", parent_id: w_code, wuc_type_cd: code_key
+  #   role_id = User::roles[role_name]
+  #   u = User.where(role_cd: role_id).first
+  #   unless u.blank?
+  #     u.work_unit_codes << work_unit_code_value
+  #     u.save
+  #   end
+  # end
 end
 puts ''
 puts 'WorkUnitCodes Created'
@@ -99,7 +373,7 @@ puts 'WorkUnitCodes Created'
 # return
 ##################################################################
 #sleep(2)
-(0..24).each do |fl_log|
+(0..1).each do |fl_log|
   puts 'Creating Pre flight Flying Log'
 flying_log = FlyingLog.new
 last_flying_log = FlyingLog.last
@@ -156,7 +430,7 @@ puts 'build_flightline_released'
 flying_log.build_capt_acceptance_certificate
 flying_log.capt_acceptance_certificate.flight_time = cur_time.strftime("%H:%M %p")
 flying_log.capt_acceptance_certificate.view_history = 1
-flying_log.capt_acceptance_certificate.mission_cd = 'mission_1'
+flying_log.capt_acceptance_certificate.mission_cd = FLYPAST
 flying_log.capt_acceptance_certificate.user = User.where(role_cd: 8).first
 flying_log.book_flight
 flying_log.save
