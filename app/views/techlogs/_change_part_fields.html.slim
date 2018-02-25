@@ -5,7 +5,7 @@
       = f.input :new_part_id, as: :hidden
       - if current_user.work_unit_codes.include? @techlog.work_unit_code and f.object.requested_by.blank?
         = f.input :requested_by_id, as: :hidden, input_html: { value: current_user.id }
-      - if current_user.role == :logistics
+      - if current_user.role == :logistics_supervisor
         = f.input :assigned_by_id, as: :hidden, input_html: { value: current_user.id }
       .row          
         .col-sm-3
@@ -27,7 +27,7 @@
             = f.object.quantity_required
             
         .col-sm-3
-          - if current_user.role == :logistics and !f.object.provided
+          - if current_user.role == :logistics_supervisor and !f.object.provided
             - if f.object.new_part.present?
               = f.input :new_part, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id", value: "#{f.object.new_part.number_serial_no} (#{f.object.new_part.quantity_left} left)"}
             - else 
@@ -40,14 +40,14 @@
             = f.object.new_part.quantity_left
             |  Left)
         .col-sm-2          
-            - if current_user.role == :logistics and !f.object.provided
+            - if current_user.role == :logistics_supervisor and !f.object.provided
               = f.input :quantity_provided  
             - elsif f.object.new_part.present?             
               label Quantity Provided
               br
               = f.object.quantity_provided
         .col-sm-1
-          - if current_user.role == :logistics and !f.object.provided
+          - if current_user.role == :logistics_supervisor and !f.object.provided
             = f.input :available, label: 'available', as: :boolean, checked_value: 1, unchecked_value: 0, class: 'part_available[]'
           - elsif @techlog.parts_provided?            
             label Available

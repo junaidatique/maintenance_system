@@ -1,3 +1,4 @@
+require 'combine_pdf'
 class TechlogsController < ApplicationController
   before_action :set_techlog, only: [:show, :edit, :update, :destroy, 
     :create_addl_log, :create_limitation_log, :pdf, :create_techlog]
@@ -9,7 +10,7 @@ class TechlogsController < ApplicationController
       @techlogs = Techlog.techloged
     elsif current_user.role == :central_tool_store 
       @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
-    elsif current_user.role == :logistics
+    elsif current_user.role == :logistics_supervisor
       @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
     else
       @techlogs = Techlog.techloged.where(:work_unit_code_id.in => current_user.work_unit_code_ids)
@@ -167,22 +168,60 @@ class TechlogsController < ApplicationController
   end
 
   def pdf
-    render  pdf: "techlog_#{@techlog.id}",
-      orientation: 'Landscape',
-      template: 'techlogs/techlog_pdf.html.slim',
-      layout: 'layouts/pdf/pdf.html.slim',
-      show_as_html: false,
-      locals: {
-        :techlog => @techlog
-      },
-      page_height: '25in',
-      page_width: '18in',
-      margin:  {
-        top: 0,                     # default 10 (mm)
-        bottom: 0,
-        left: 0,
-        right:0 
-      }
+    # change_parts_val  = @techlog.change_parts.limit(4).offset(0)      
+    # pdf_data = render(
+    #       pdf: "techlog_#{@techlog.id}",
+    #           orientation: 'Landscape',
+    #           template: 'techlogs/techlog_pdf.html.slim',
+    #           layout: 'layouts/pdf/pdf.html.slim',
+    #           show_as_html: false,
+    #           locals: {
+    #             techlog: @techlog,
+    #             change_parts_val: change_parts_val
+    #           },
+    #           page_height: '25in',
+    #           page_width: '18in',
+    #           margin:  {
+    #             top: 0,                     # default 10 (mm)
+    #             bottom: 0,
+    #             left: 0,
+    #             right:0 
+    #           }
+    #         )
+            
+    i = 0
+    num = @techlog.change_parts.count
+    merged_certificates = CombinePDF.new
+    
+    begin
+      
+      change_parts_val  = @techlog.change_parts.limit(4).offset(i)      
+      pdf_data = render_to_string(
+        pdf: "techlog_#{@techlog.id}",
+        orientation: 'Landscape',
+        template: 'techlogs/techlog_pdf.html.slim',
+        layout: 'layouts/pdf/pdf.html.slim',
+        show_as_html: false,
+        locals: {
+          techlog: @techlog,
+          change_parts_val: change_parts_val
+        },
+        page_height: '25in',
+        page_width: '18in',
+        margin:  {
+          top: 0,                     # default 10 (mm)
+          bottom: 0,
+          left: 0,
+          right:0 
+        }
+      )
+              
+      merged_certificates  << CombinePDF.parse(pdf_data)
+      i +=4  
+    end while i < num
+    send_data merged_certificates.to_pdf, :disposition => 'inline', :type => "application/pdf"
+
+    
   end
   
   private

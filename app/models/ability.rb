@@ -30,13 +30,13 @@ class Ability
     elsif user.central_tool_store?
       can :crud, Tool
       can :rud, Techlog
-    elsif user.logistics?
+    elsif user.logistics_supervisor?
       can :crud, Part
       can :rud, Techlog
-    elsif user.radio?
+    elsif user.radio_technician?
       can :read, FlyingLog
       can :crud, Techlog    
-    elsif user.electrical?
+    elsif user.electro_mac_technician?
       can :read, FlyingLog
       can :crud, Techlog
     elsif user.pilot?

@@ -1,44 +1,32 @@
+@mixin position-abs-mixin($top, $left) {
+  position: absolute;
+  top: $top;
+  left: $left;
+}
 .techlog_pdf {
+  font-size: 48px;
   .background-image {
     z-index: -1;
     position: absolute;
   }  
-  .tl-aircraft-number {
-    position: absolute;
-    top: 90px;
-    left: 50px;
-    h3 {
-      font-size: 55px;
-    }
+  .tl-aircraft-number {    
+    @include position-abs-mixin(170px, 70px);            
   }
-  .tl-location {
-    position: absolute;
-    top: 105px;
-    left: 1080px;
-    h3 {
-      font-size: 45px;
-    }
+  .tl-location_from {    
+    @include position-abs-mixin(170px, 1040px);        
   }
-  .tl-date {
-    position: absolute;
-    top: 110px;
-    left: 1680px;
-    h3 {
-      font-size: 35px;
-    }
+  .tl-location_to {    
+    @include position-abs-mixin(170px, 1300px);                
   }
-  .tl-log-time {
-    position: absolute;
-    top: 110px;
-    left: 2280px;
-    h3 {
-      font-size: 35px;
-    }
+  .tl-log_date {
+    @include position-abs-mixin(170px, 1650px);
+  }
+  .tl-log_time {
+    @include position-abs-mixin(170px, 2200px);
+    
   }
   .tl-description {
-    position: absolute;
-    top: 550px;
-    left: 60px;
+    @include position-abs-mixin(550px, 60px);    
     p {
       font-size: 45px;
       width: 1500px;
