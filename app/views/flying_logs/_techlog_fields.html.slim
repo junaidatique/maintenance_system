@@ -7,13 +7,22 @@
           = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
           = f.input :type_cd, as: :hidden, input_html: { value: 1 }
           = f.input :work_unit_code_id, as: :hidden
-          - if current_user.role == :admin or current_user.role == :engineer or current_user.role == :master_control
+          - if can? :update_flying_log, FlyingLog
             .row
               .col-sm-6
-                = f.input :work_unit_code, :url => autocomplete_codes_work_unit_codes_path, :as => :autocomplete, input_html: {id_element: "#id"}
+                - if f.object.work_unit_code.present?
+                  = f.object.work_unit_code.code
+                - else
+                  = f.input :work_unit_code, :url => autocomplete_codes_work_unit_codes_path, :as => :autocomplete, input_html: {id_element: "#id"}
           .row
             .col-sm-11
-              = f.input :description, as: :text
+              - if can? :bookin_flight, FlyingLog
+                = f.input :description, as: :text
+              - else 
+                strong
+                  | Description:
+                br
+                = f.object.description
             .col-sm-1
               = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
                 i.fa.fa-trash

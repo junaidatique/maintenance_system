@@ -12,6 +12,7 @@ class Techlog
   field :log_time, type: String
   field :log_date, type: Date
   field :number, type: Integer
+  field :serial_no, type: String
   field :location_from, type: String
   field :location_to, type: String
   field :description, type: String
@@ -152,6 +153,7 @@ class Techlog
   accepts_nested_attributes_for :change_parts
   accepts_nested_attributes_for :assigned_tools
 
+  after_create :create_serial_no
   after_create :set_condition
   after_create :set_aircraft
   after_create :set_dms_version
@@ -165,8 +167,15 @@ class Techlog
   scope :completed, -> { where(condition_cd: 1) }
   scope :incomplete, -> { where(condition_cd: 0) }
   
+  scope :pilot_created, -> { any_of({type_cd: 1}, {type_cd: 1.to_s})}
+
   def is_completed?
     return condition_cd == 1 ? true : false
+  end
+
+  def create_serial_no
+    self.serial_no = "#{Time.zone.now.strftime('%d%m%Y')}-#{aircraft.tail_number}-#{number}"
+    self.save
   end
 
   def set_aircraft
@@ -192,8 +201,10 @@ class Techlog
   def update_flying_log_end_time
     if self.flying_log.present?
       if flying_log.techlogs.incomplete.count == 0
-        flying_log.flightline_servicing.flight_end_time = Time.zone.now.strftime("%H:%M %p")
-        flying_log.flightline_servicing.save!
+        flying_log.complete_servicing
+        flying_log.flightline_servicing.flight_end_time = Time.zone.now
+        flying_log.flightline_servicing.save
+        flying_log.complete_servicing
       end
     end
   end

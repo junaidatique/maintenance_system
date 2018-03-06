@@ -6,6 +6,7 @@ class FlyingLog
   include Mongoid::Autoinc
 
   field :number, type: Integer
+  field :serial_no, type: String
   field :log_date, type: Date
   field :fuel_remaining, type: Float
   field :fuel_refill, type: Float
@@ -15,21 +16,39 @@ class FlyingLog
   field :location_from, type: String
   field :location_to, type: String
   
-  validates :location_from, presence: true
-  validates :location_to, presence: true  
+  # validates :location_from, presence: true
+  # validates :location_to, presence: true  
+  validate :check_techlogs
+
+  def check_techlogs
+    if servicing_completed?
+      if aircraft.techlogs.incomplete.count > 0
+        # errors.add(:aircraft_id, " has some pending techlogs")
+      end
+    end
+  end
+
+  scope :completed, -> { where(state: :log_completed) }
+  scope :not_completed, -> { ne(state: :log_completed) }
 
   increments :number, seed: 1000
 
   state_machine initial: :started do
     #audit_trail initial: false,  context: [:aircraft]
+
+    after_transition on: :complete_log, do: :update_aircraft_timgins
+
     event :flightline_service do
       transition started: :flightline_serviced
     end
     event :fill_fuel do
       transition flightline_serviced: :fuel_filled
     end
+    event :complete_servicing do
+      transition fuel_filled: :servicing_completed
+    end
     event :flight_release do
-      transition fuel_filled: :flight_released
+      transition servicing_completed: :flight_released
     end
     event :book_flight do
       transition flight_released: :flight_booked
@@ -70,8 +89,14 @@ class FlyingLog
   accepts_nested_attributes_for :flightline_servicing
   accepts_nested_attributes_for :techlogs, reject_if: :all_blank, allow_destroy: true
 
+  after_create :create_serial_no
   after_create :create_techlogs
   before_create :update_times
+
+  def create_serial_no
+    self.serial_no = "#{Time.zone.now.strftime('%d%m%Y')}-#{aircraft.tail_number}-#{flightline_servicing.inspection_performed.to_s.downcase}-#{number}"
+    self.save
+  end
 
   def create_techlogs
     if self.flightline_servicing.inspection_performed_cd == 0
@@ -106,6 +131,10 @@ class FlyingLog
     self.fuel_remaining  = aircraft.fuel_capacity.to_f - fuel_refill.to_f
     self.oil_remaining   = aircraft.oil_capacity.to_f - oil_serviced.to_f
     self.oil_total_qty   = aircraft.oil_capacity
+  end
+
+  def update_aircraft_timgins
+    self.aircraft.update_part_values self
   end
 
 end

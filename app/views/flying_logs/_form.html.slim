@@ -6,9 +6,8 @@
         - @flying_log.errors.full_messages.each do |error_message|
           li
             = error_message
-  == render 'show_flying_log'
-    
-  - if current_user.role == :master_control and @flying_log.fuel_filled?
+  == render 'show_flying_log'  
+  - if (can? :release_flight, FlyingLog and @flying_log.flightline_release.created_at.blank?)
     .row
       .col-md-12
         .box.box-info
@@ -23,7 +22,7 @@
                 .col-sm-6
                   = ac_f.input :flight_time, label: 'Time (Local)', readonly: true, input_html: { value: cur_time() }
                 
-  - if current_user.role == :pilot and @flying_log.flight_released?
+  - if can? :bookout_flight, FlyingLog and @flying_log.capt_acceptance_certificate.created_at.blank? 
     .row
       .col-md-12
         .box.box-info
@@ -50,7 +49,88 @@
                           th width='13%'
                             | Detail
                       tbody
-                        - @flying_log.aircraft.techlogs.where(type_cd: 1).order(number: :desc).each do |techlog|
+                        - @flying_log.aircraft.techlogs.techloged.pilot_created.order(number: :desc).each do |techlog|
+                          tr
+                            td.table-row-center
+                              = link_to techlog.number, techlog_path(techlog)
+                            td.table-row-center
+                              = display_date(techlog.log_date) 
+                            td.table-row-center
+                              = techlog.description
+                            td.table-row-center
+                              = techlog.action                            
+                                
+                            td.text-center width='20%'
+                              = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
+                                i.fa.fa-file-pdf-o                                                            
+                                
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Limitations
+          .box-body
+            .row
+              .col-md-12
+                .box.box-info
+                  .box-body
+                    table.table.table-bordered.table-striped.data-tabled
+                      thead
+                        tr
+                          th width='10%'
+                            | Number
+                          th width='10%'
+                            | Date
+                          th width='10%'
+                            | Description
+                          th width='10%'
+                            | Action Taken                          
+                          th width='13%'
+                            | Detail
+                      tbody
+                        - @flying_log.aircraft.techlogs.limited.order(number: :desc).each do |techlog|
+                          tr
+                            td.table-row-center
+                              = link_to techlog.number, techlog_path(techlog)
+                            td.table-row-center
+                              = display_date(techlog.log_date) 
+                            td.table-row-center
+                              = techlog.description
+                            td.table-row-center
+                              = techlog.action                            
+                                
+                            td.text-center width='20%'
+                              = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
+                                i.fa.fa-file-pdf-o                                                            
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Deffered
+          .box-body
+            .row
+              .col-md-12
+                .box.box-info
+                  .box-body
+                    table.table.table-bordered.table-striped.data-tabled
+                      thead
+                        tr
+                          th width='10%'
+                            | Number
+                          th width='10%'
+                            | Date
+                          th width='10%'
+                            | Description
+                          th width='10%'
+                            | Action Taken                          
+                          th width='13%'
+                            | Detail
+                      tbody
+                        - @flying_log.aircraft.techlogs.addled.order(number: :desc).each do |techlog|
                           tr
                             td.table-row-center
                               = link_to techlog.number, techlog_path(techlog)
@@ -76,6 +156,18 @@
             = f.simple_fields_for :capt_acceptance_certificate do |ac_f|
               = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }
               .row
+                .col-md-6
+                  = f.input :location_from
+                .col-md-6
+                  = f.input :location_to
+              .row
+                - if @flying_log.ac_configuration.cockpit_cd == 2
+                  .col-sm-6
+                    = ac_f.association :second_pilot, collection: User.pilots.ne(_id: current_user._id).all, label_method: :name, include_blank: false, value_method: :id, label: 'Crew', input_html: {class: 'custom-select2'}
+                .col-sm-6
+                  - if @flying_log.ac_configuration.third_seat
+                    = ac_f.input :third_seat_name
+              .row
                 .col-sm-4
                   = ac_f.input :mission, collection: enum_option_pairs(CaptAcceptanceCertificate, :mission)
                 .col-sm-4
@@ -83,7 +175,7 @@
                 .col-sm-4
                   = ac_f.input :view_history, label: 'I have reviwed Aircraft History', as: :boolean, checked_value: 1, unchecked_value: 0
                 
-  - if current_user.role == :pilot and @flying_log.flight_booked?
+  - if can? :bookin_flight, FlyingLog and @flying_log.capt_acceptance_certificate.created_at.present? 
     .row
       .col-md-12
         .box.box-info
@@ -94,13 +186,7 @@
           .box-body
             = f.simple_fields_for :sortie do |ac_f|
               = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }
-              .row
-                - if @flying_log.ac_configuration.cockpit_cd == 2
-                  .col-sm-6
-                    = ac_f.association :second_pilot, collection: User.pilots.ne(_id: current_user._id).all, label_method: :name, include_blank: false, value_method: :id, label: 'Crew', input_html: {class: 'custom-select2'}
-                .col-sm-6
-                  - if @flying_log.ac_configuration.third_seat
-                    = ac_f.input :third_seat_name
+              
               .row
                 .col-sm-12
                   h5
@@ -109,11 +195,7 @@
                 .col-sm-6
                   = ac_f.input :takeoff_time, label: 'Takeoff Time (Local)', input_html: { class: 'timepickerclass' }
                 .col-sm-6
-                  = ac_f.input :landing_time, label: 'Landing Time (Local)', input_html: { class: 'timepickerclass' }
-                
-              .row
-                .col-sm-6
-                  = ac_f.input :pilot_comment, collection: enum_option_pairs(Sortie, :pilot_comment), as: :radio_buttons 
+                  = ac_f.input :landing_time, label: 'Landing Time (Local)', input_html: { class: 'timepickerclass' }                  
               .row
                 .col-sm-12
                   h5
@@ -123,6 +205,9 @@
                   = ac_f.input :touch_go
                 .col-sm-6
                   = ac_f.input :full_stop
+              .row
+                .col-sm-6
+                  = ac_f.input :pilot_comment, collection: enum_option_pairs(Sortie, :pilot_comment), as: :radio_buttons 
                 
     .row
       .col-md-12#div_techlog_servicing
@@ -158,7 +243,7 @@
                 .col-sm-6
                   
   
-  - if (current_user.role == :master_control or current_user.role == :engineer or current_user.role == :admin) and @flying_log.pilot_commented?
+  - if can? :update_flying_log, FlyingLog
     .row
       .col-md-12
         .box.box-info
@@ -168,6 +253,24 @@
               | &nbsp; Sortie
           .box-body
             = f.simple_fields_for :sortie do |ac_f|
+              .row
+                .col-sm-12
+                  h5
+                    | Times
+              .row
+                .col-sm-6
+                  = ac_f.input :takeoff_time, label: 'Takeoff Time (Local)', input_html: { class: 'timepickerclass' }
+                .col-sm-6
+                  = ac_f.input :landing_time, label: 'Landing Time (Local)', input_html: { class: 'timepickerclass' }                  
+              .row
+                .col-sm-12
+                  h5
+                    | Landings
+              .row
+                .col-sm-6
+                  = ac_f.input :touch_go
+                .col-sm-6
+                  = ac_f.input :full_stop
               .row
                 .col-sm-6
                   = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code), as: :radio_buttons    

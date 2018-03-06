@@ -23,6 +23,7 @@
 }  
 .fl-log-number {
   @include position-abs-mixin(115px, 1430px);  
+  font-size: 28px;
 }
 .ac-clean {
   @include position-abs-mixin(285px, 128px);  

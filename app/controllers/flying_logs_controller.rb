@@ -70,9 +70,9 @@ class FlyingLogsController < ApplicationController
     @flying_log.log_date = Time.now.strftime("%Y-%m-%d")
     respond_to do |format|
       if @flying_log.save
-        puts @flying_log.flightline_service
-        puts @flying_log.inspect
-
+        @flying_log.flightline_servicing.flight_start_time = Time.zone.now
+        @flying_log.save
+        @flying_log.flightline_service
         format.html { redirect_to @flying_log, notice: 'Flying log was successfully created.' }
         format.json { render :show, status: :created, location: @flying_log }
       else
@@ -100,12 +100,11 @@ class FlyingLogsController < ApplicationController
       end
 
       if @flying_log.update(update_params)
-        if current_user.role == :master_control and @flying_log.fuel_filled?
+        if can? :release_flight, FlyingLog and @flying_log.servicing_completed? and @flying_log.flightline_release.created_at.present?
           @flying_log.flight_release
-        elsif current_user.role == :pilot and @flying_log.flight_released?
+        elsif current_user.pilot? and @flying_log.flight_released?  and @flying_log.capt_acceptance_certificate.created_at.present? 
           @flying_log.book_flight
-        elsif current_user.role == :pilot and @flying_log.flight_booked?
-          
+        elsif current_user.pilot? and @flying_log.flight_booked?          
           @flying_log.sortie.total_landings = @flying_log.sortie.touch_go.to_i + @flying_log.sortie.full_stop.to_i
           @flying_log.sortie.flight_minutes = @flying_log.sortie.calculate_flight_minutes
           @flying_log.sortie.flight_time    = @flying_log.sortie.calculate_flight_time
@@ -113,7 +112,13 @@ class FlyingLogsController < ApplicationController
           @flying_log.sortie.update_aircraft_times
           @flying_log.sortie.save!
           @flying_log.pilot_back
-        elsif (current_user.role == :master_control or current_user.role == :engineer or current_user.role == :admin) and @flying_log.pilot_commented?
+          if @flying_log.sortie.pilot_comment_cd == "SAT"
+            @flying_log.sortie.remarks = @flying_log.sortie.pilot_comment.to_s
+            @flying_log.sortie.sortie_code_cd = 1
+            @flying_log.techlog_check
+            @flying_log.complete_log
+          end
+        elsif can? :update_flying_log, FlyingLog and @flying_log.pilot_commented?
           @flying_log.techlog_check
           if @flying_log.flightline_servicing.inspection_performed_cd != 2 and @flying_log.techlogs.incomplete.count == 0
             @flying_log.complete_log
@@ -212,11 +217,11 @@ class FlyingLogsController < ApplicationController
     def flying_log_params
       unless params[:flying_log].blank?
          params.require(:flying_log).permit(:log_date, :aircraft_id, :location_from, :location_to,
-                                ac_configuration_attributes: [:clean, :smoke_pods, :third_seat, :cockpit],
-                                flightline_servicing_attributes: [:id, :inspection_performed, :flight_start_time, :flight_end_time, :user_id, :hyd, :_destroy],
-                                capt_acceptance_certificate_attributes: [:flight_time, :view_history, :user_id, :mission],
-                                sortie_attributes: [:user_id,:second_pilot_id, :third_seat_name, :takeoff_time, 
-                                  :landing_time, :sortie_code, :touch_go, :pilot_comment, :full_stop, :sortie_code], 
+                                ac_configuration_attributes: [:clean, :smoke_pods, :third_seat, :cockpit, :smoke_oil_quantity],
+                                flightline_servicing_attributes: [:id, :inspection_performed, :user_id, :hyd, :_destroy],
+                                capt_acceptance_certificate_attributes: [:flight_time,:second_pilot_id, :third_seat_name, :view_history, :user_id, :mission],
+                                sortie_attributes: [:user_id, :takeoff_time, 
+                                  :landing_time, :sortie_code, :touch_go, :pilot_comment, :full_stop], 
                                 capt_after_flight_attributes: [:flight_time, :user_id],
                                 flightline_release_attributes: [:flight_time, :user_id],
                                 techlogs_attributes: [:id, :work_unit_code_id, :user_id, :description, :type_cd, :_destroy],

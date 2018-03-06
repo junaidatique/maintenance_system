@@ -44,12 +44,12 @@ ul.sidebar-menu
       = link_to techlogs_path do
         .fa.fa-anchor
         span.side-bar-heading-text TechLogs
-  - if can? :read, Techlog
+  - if can? :manage_addl_logs, Techlog
     li class="#{params[:controller] == "addl_logs" ? 'active' : ''}"
       = link_to addl_logs_path do
         .fa.fa-exclamation-triangle
         span.side-bar-heading-text ADDL Logs
-  - if can? :read, Techlog
+  - if can? :manage_limitation_log, Techlog
     li class="#{params[:controller] == "limitation_log" ? 'active' : ''}"
       = link_to limitation_logs_path do
         .fa.fa-ban

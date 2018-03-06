@@ -1,6 +1,7 @@
 class Sortie
   include Mongoid::Document
   include SimpleEnum::Mongoid
+  include Mongoid::Timestamps
 
   as_enum :sortie_code, C1: 1, C2: 2, C3: 3, C4: 4, C5: 5
   as_enum :pilot_comment, Satisfactory: 'SAT', Un_satisfactory: 'Un Sat'
@@ -12,7 +13,7 @@ class Sortie
   field :full_stop, type: String
   field :total_landings, type: String # to be calculated
   field :remarks, type: String
-  field :third_seat_name, type: String
+  
 
   validates :takeoff_time, presence: true
   validates :landing_time, presence: true
@@ -22,7 +23,7 @@ class Sortie
 
   belongs_to :user, optional: true
   belongs_to :flying_log
-  belongs_to :second_pilot, class_name: 'User', optional: true
+  
 
   def calculate_flight_minutes
     takeoff_time = DateTime.strptime(self.takeoff_time, '%H:%M %p')
@@ -76,16 +77,16 @@ class Sortie
     total_prop_hours      = f_total.carried_over_prop_hours.to_f + (flight_minutes.to_f / 60)
 
     f_total.new_total_landings        = t_landings
-    f_total.new_total_aircraft_hours  = total_aircraft_hours.round(2)
-    f_total.new_total_engine_hours    = total_engine_hours.round(2)
-    f_total.new_total_prop_hours      = total_prop_hours.round(2)
+    f_total.new_total_aircraft_hours  = total_aircraft_hours.round(1)
+    f_total.new_total_engine_hours    = total_engine_hours.round(1)
+    f_total.new_total_prop_hours      = total_prop_hours.round(1)
 
-    f_total.corrected_total_engine_hours     = total_engine_hours.round(2)
-    f_total.corrected_total_aircraft_hours   = total_aircraft_hours.round(2)
+    f_total.corrected_total_engine_hours     = total_engine_hours.round(1)
+    f_total.corrected_total_aircraft_hours   = total_aircraft_hours.round(1)
     f_total.corrected_total_landings         = t_landings
-    f_total.corrected_total_prop_hours       = total_prop_hours.round(2)
+    f_total.corrected_total_prop_hours       = total_prop_hours.round(1)
 
-    self.flying_log.aircraft.update_part_values flying_log
+    # self.flying_log.aircraft.update_part_values flying_log
 
   end
 end

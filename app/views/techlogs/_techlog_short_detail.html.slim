@@ -6,7 +6,7 @@
           tr
             th width="25%"
               | Number
-            td = techlog.number
+            td = techlog.serial_no
             th width="25%"
               | Opened By
             td = techlog.user.name
@@ -36,9 +36,10 @@
             th width="25%"
               | Work Unit Code
             td 
-              = techlog.work_unit_code.code
-              | /
-              = techlog.work_unit_code.description
+              - if techlog.work_unit_code.present?
+                = techlog.work_unit_code.code
+                | /
+                = techlog.work_unit_code.description
             th width="25%"
               | Type
             td = techlog.type

@@ -14,7 +14,7 @@
           .row
             .col-sm-6
               = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
-              = f.association :aircraft, collection: Aircraft.active.all, label_method: :tail_number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+              = f.association :aircraft, collection: Aircraft.all, label_method: :tail_number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
               br
               br
             .col-sm-6

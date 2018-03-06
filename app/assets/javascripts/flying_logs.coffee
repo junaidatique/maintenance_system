@@ -15,6 +15,14 @@ $(document).on 'ready', ->
 
 
 
+  $('#flying_log_ac_configuration_attributes_smoke_pods').on 'ifChecked', (event) ->    
+    $(".smoke-oil-quantity").removeClass('hide')
+    return
+  
+  $('#flying_log_ac_configuration_attributes_smoke_pods').on 'ifUnchecked', (event) ->    
+    $(".smoke-oil-quantity").addClass('hide')
+    return
+  
   $('#flying_log_sortie_attributes_pilot_comment_satisfactory').on 'ifChecked', (event) ->
     $("#div_techlog_servicing").hide()
     return

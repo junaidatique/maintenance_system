@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   layout :layout_by_resource
   before_action :authenticate_user!
   after_action :user_activity
+  
 
   def after_sign_in_path_for(user)
     if user.admin?

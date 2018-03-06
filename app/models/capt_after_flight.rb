@@ -1,5 +1,6 @@
 class CaptAfterFlight
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :flight_time, type: String
 

@@ -42,7 +42,7 @@ class TechlogsController < ApplicationController
   # GET /techlogs/1/edit
   def edit
     if @techlog.is_completed?
-      redirect_to techlog_path(techlog), :flash => { :error => "You can't edit completed techlog." }
+      redirect_to techlog_path(@techlog), :flash => { :error => "You can't edit completed techlog." }
     end
     @techlog.build_work_performed if @techlog.work_performed.blank?
     @techlog.build_date_inspected if @techlog.date_inspected.blank?
@@ -116,7 +116,7 @@ class TechlogsController < ApplicationController
           @techlog.tools_returned_tools
         end
         # this one is for crew cheif
-        if @techlog.flying_log.present?
+        if @techlog.flying_log.present? #and current_user.role == :crew_cheif
           @techlog.flying_log.update_fuel
           @techlog.flying_log.fill_fuel
         end

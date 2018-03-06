@@ -6,6 +6,54 @@
           .col-sm-6
             h3.box-title
               i.fa.fa-bars
+              | &nbsp; Status
+          .col-sm-6.text-right            
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody
+                tr
+                  th width="25%"
+                    | Date Created
+                  td = display_date_time @flying_log.created_at
+                tr
+                  th width="25%"
+                    | Techlogs Created
+                  td = display_date_time @flying_log.flightline_servicing.created_at
+                tr
+                  th width="25%"
+                    | Techlogs Completed
+                  td
+                    - unless @flying_log.flightline_servicing.flight_end_time.blank?
+                      = str_date_time @flying_log.flightline_servicing.flight_end_time
+                tr
+                  th width="25%"
+                    | Flightline Released
+                  td
+                    - unless @flying_log.flightline_release.blank?
+                      = display_date_time @flying_log.flightline_release.created_at                
+                tr
+                  th width="25%"
+                    | Booked out
+                  td
+                    - unless @flying_log.capt_acceptance_certificate.blank?
+                      = display_date_time @flying_log.capt_acceptance_certificate.created_at
+                tr
+                  th width="25%"
+                    | Booked In
+                  td
+                    - unless @flying_log.sortie.blank?
+                      = display_date_time @flying_log.sortie.created_at
+                
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-sm-6
+            h3.box-title
+              i.fa.fa-bars
               | &nbsp; General
           .col-sm-6.text-right
             = link_to pdf_flying_log_path(@flying_log), class: 'btn btn-success btn-flat', target: :_blank do
@@ -18,7 +66,7 @@
                 tr
                   th width="25%"
                     | Number
-                  td = @flying_log.number
+                  td = @flying_log.serial_no
                   th width="25%"
                     | Log Date
                   td = display_date(@flying_log.log_date) 
@@ -60,14 +108,17 @@
                     | Clean
                   td = (@flying_log.ac_configuration.clean) ? 'Yes' : 'No'
                   th width="25%"
-                    | Smoke Pods
-                  td = (@flying_log.ac_configuration.smoke_pods) ? 'Yes' : 'No'
+                    | Third Seat
+                  td = (@flying_log.ac_configuration.third_seat) ? 'Yes' : 'No'                  
                 tr
                   th width="25%"
-                    | Third Seat
-                  td = (@flying_log.ac_configuration.third_seat) ? 'Yes' : 'No'
+                    | Smoke Pods
+                  td = (@flying_log.ac_configuration.smoke_pods) ? 'Yes' : 'No'
                   th
+                    | Smoke Oil Quantity (gal)
                   td
+                    - if @flying_log.ac_configuration.smoke_pods?
+                      = @flying_log.ac_configuration.smoke_oil_quantity
                 tr
                   th width="25%"
                     | Cockpit
@@ -99,18 +150,18 @@
                 tr
                   th width="25%"
                     | Flight Start Time
-                  td = @flying_log.flightline_servicing.flight_start_time
+                  td = str_date_time @flying_log.flightline_servicing.flight_start_time
                   th
                     | Flight End Time
-                  td = @flying_log.flightline_servicing.flight_end_time
+                  td = str_date_time @flying_log.flightline_servicing.flight_end_time
                 tr
                   th width="25%"
                     | Created By
                   td = @flying_log.flightline_servicing.user.name
-                  th
+                  /th
                     | HYD
-                  td = @flying_log.flightline_servicing.hyd
-- if @flying_log.fuel_filled? or @flying_log.flight_released? or @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed? or @flying_log.logs_created?
+                  /td = @flying_log.flightline_servicing.hyd
+- if @flying_log.fuel_refill.present? and @flying_log.oil_serviced.present?
   .row
     .col-md-12
       .box.box-info
@@ -154,7 +205,7 @@
                     th
                       | Total Quantity
                     td = @flying_log.oil_total_qty
-- if @flying_log.flight_released? or @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed? or @flying_log.logs_created?
+- if !@flying_log.flightline_release.blank? and @flying_log.flightline_release.created_at.present?
   .row
     .col-md-12
       .box.box-info
@@ -178,7 +229,7 @@
                     th width="25%"
                       |  Released by
                     td = @flying_log.flightline_release.user.name                  
-- if @flying_log.flight_booked? or @flying_log.pilot_commented? or @flying_log.log_completed? or @flying_log.logs_created?
+- if !@flying_log.capt_acceptance_certificate.blank? and @flying_log.capt_acceptance_certificate.created_at.present?
   .row
     .col-md-12
       .box.box-info
@@ -201,11 +252,23 @@
                     td = @flying_log.capt_acceptance_certificate.flight_time
                     th width="25%"
                       | Mission
-                    td = @flying_log.capt_acceptance_certificate.mission
+                    td = @flying_log.capt_acceptance_certificate.mission                    
+                  tr
+                    th width="25%"
+                      | Crew
+                    td 
+                      - if @flying_log.capt_acceptance_certificate.second_pilot.present?
+                        = @flying_log.capt_acceptance_certificate.second_pilot.name
+                    th width="25%"
+                      | Third Seat
+                    td
+                      - if @flying_log.ac_configuration.third_seat
+                        = @flying_log.capt_acceptance_certificate.third_seat_name
+                  tr
                     th width="25%"
                       |  Released by
                     td = @flying_log.capt_acceptance_certificate.user.name
-- if @flying_log.pilot_commented? or @flying_log.log_completed? or @flying_log.logs_created?
+- if !@flying_log.sortie.blank? and @flying_log.sortie.created_at.present?
   .row
     .col-md-12
       .box.box-info
@@ -222,14 +285,6 @@
             .col-sm-12
               table.table.table-inverse
                 tbody
-                  tr
-                    th width="25%"
-                      | Crew
-                    td 
-                      - if @flying_log.sortie.user.present?
-                        = @flying_log.sortie.user.name
-                    th width="25%"
-                    td
                   tr
                     th colspan="4"
                       h5
@@ -279,8 +334,18 @@
                         | Remarks
                   tr
                     td colspan="4"
-                      = @flying_log.techlogs.where(type_cd: 1).map{|techlog| techlog.description}.join("<br>").html_safe
-                  
+                      = @flying_log.techlogs.pilot_created.map{|techlog| techlog.description}.join("<br>").html_safe
+  - if @flying_log.techlogs.pilot_created.count > 0
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Techlogs
+          - @flying_log.techlogs.pilot_created.each do |techlog|
+            = render 'techlogs/techlog_short_detail', techlog: techlog
+
   .row
     .col-md-12
       .box.box-info

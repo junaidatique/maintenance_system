@@ -9,7 +9,7 @@
 .fl-date
   = flying_log.log_date
 .fl-log-number
-  = flying_log.number
+  = flying_log.serial_no
 - if flying_log.ac_configuration.present?
   - if flying_log.ac_configuration.clean
     .ac-clean
@@ -54,21 +54,23 @@
     - if flying_log.flightline_servicing.Preflight?
       .pre.circle
       .fl-flightline-servicing.pre.start-time
-        = flying_log.flightline_servicing.flight_start_time
+        = str_time flying_log.flightline_servicing.flight_start_time
       .fl-flightline-servicing.pre.end-time
-        = flying_log.flightline_servicing.flight_end_time
+        = str_time flying_log.flightline_servicing.flight_end_time
       .fl-flightline-servicing.pre.personal-code
         = flying_log.flightline_servicing.user.personal_code
       .fl-flightline-servicing.pre.hyd
-        = flying_log.flightline_servicing.hyd
+        /= flying_log.flightline_servicing.hyd
+        - if flying_log.ac_configuration.smoke_pods
+          = flying_log.ac_configuration.smoke_oil_quantity
       .fl-flightline-servicing.pre.signature
         = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
     - elsif flying_log.flightline_servicing.Thru_Flight?
       .fl-flightline-servicing.thru.circle
       .fl-flightline-servicing.thru.start-time
-        = flying_log.flightline_servicing.flight_start_time
+        = str_time flying_log.flightline_servicing.flight_start_time
       .fl-flightline-servicing.thru.end-time
-        = flying_log.flightline_servicing.flight_end_time
+        = str_time flying_log.flightline_servicing.flight_end_time
       .fl-flightline-servicing.thru.personal-code
         = flying_log.flightline_servicing.user.personal_code
       .fl-flightline-servicing.thru.hyd
@@ -78,9 +80,9 @@
     - elsif flying_log.flightline_servicing.Post_Flight?
       .post.circle
       .post.start-time
-        = flying_log.flightline_servicing.flight_start_time
+        = str_time flying_log.flightline_servicing.flight_start_time
       .post.end-time
-        = flying_log.flightline_servicing.flight_end_time
+        = str_time flying_log.flightline_servicing.flight_end_time
       .post.personal-code
         = flying_log.flightline_servicing.user.personal_code
       .post.hyd
@@ -165,11 +167,11 @@
     .sortie-code
       = flying_log.sortie.sortie_code
     .crew-name
-      - if flying_log.ac_configuration.cockpit_cd == 2 and flying_log.sortie.second_pilot.present?
-        = flying_log.sortie.second_pilot.name
+      - if flying_log.ac_configuration.cockpit_cd == 2 and flying_log.capt_acceptance_certificate.second_pilot.present?
+        = flying_log.capt_acceptance_certificate.second_pilot.name
         br
       - if flying_log.ac_configuration.third_seat
-        = flying_log.sortie.third_seat_name
+        = flying_log.capt_acceptance_certificate.third_seat_name
     .take-off-time
       = flying_log.sortie.takeoff_time
     .landing-time

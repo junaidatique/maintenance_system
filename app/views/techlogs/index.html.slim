@@ -27,10 +27,10 @@
               th width='13%'
                 | Actions
           tbody
-            - @techlogs.order(created_at: :desc).each do |techlog|
+            - @techlogs.incomplete.order(created_at: :desc).each do |techlog|
               tr
                 td.table-row-center
-                  = link_to techlog.number, techlog_path(techlog)
+                  = link_to techlog.serial_no, techlog_path(techlog)
                 td.table-row-center
                   = display_date(techlog.log_date) 
                 td.table-row-center

@@ -1,6 +1,7 @@
 class CaptAcceptanceCertificate
   include Mongoid::Document
   include SimpleEnum::Mongoid
+  include Mongoid::Timestamps
 
   as_enum :mission, 
     "GENERAL HANDLING": 'GH', 
@@ -11,7 +12,7 @@ class CaptAcceptanceCertificate
     "FUNCTIONAL CHECK FLIGHT": 'FCF',
     "CHECK FLIGHT": 'CHECK FLIGHT',
     "NAVIGATION": 'NAV',
-    "CIRCUIT AND LANDING": 'CCT & LDG'
+    "CIRCUIT AND LANDING": 'CCT & LDG',
     "TAXI": 'TAXI',
     "TAXI TEST": 'TAXI TEST',
     "STAFF CONTINUATION TRAINING": 'SCT',
@@ -21,7 +22,7 @@ class CaptAcceptanceCertificate
     "INSTRUCTIONAL TECHNIQUE": 'IT',
     "INSTRUCTIONAL QUALIFICATION": 'IQ',
     "INSTRUCTIONAL QUALIFICATION TEST": 'IQT',
-    "TRANSITION NIGHT" : 'TRN',
+    "TRANSITION NIGHT": 'TRN',
     "SCREENING": 'SC',
     "SCREENING -1": 'SC-1',
     "SCREENING -2": 'SC-2',
@@ -58,15 +59,18 @@ class CaptAcceptanceCertificate
     "STREAMING - 22": "ST-22",
     "STREAMING - 23": "ST-23",
     "STREAMING - 24": "ST-24",
-    "STREAMING - 25": "ST-25",
+    "STREAMING - 25": "ST-25"
 
     
 
   field :flight_time, type: String
   field :view_history, type: Mongoid::Boolean
+  field :third_seat_name, type: String
   
   validates :view_history, presence: true
 
   belongs_to :user
   belongs_to :flying_log
+  belongs_to :second_pilot, class_name: 'User', optional: true
+  
 end

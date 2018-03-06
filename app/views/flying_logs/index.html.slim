@@ -17,17 +17,21 @@
                 | Date
               th width='10%'
                 | Aircraft
+              th width='10%'
+                | Status
               th width='13%'
                 | Actions
           tbody
-            - @flying_logs.order(created_at: :desc).each do |flying_log|
+            - @flying_logs.not_completed.order(created_at: :desc).each do |flying_log|
               tr
                 td.table-row-center
-                  = link_to flying_log.number, flying_log_path(flying_log)
+                  = link_to flying_log.serial_no, flying_log_path(flying_log)
                 td.table-row-center
                   = display_date(flying_log.log_date) 
                 td.table-row-center
                   = flying_log.aircraft.tail_number
+                td.table-row-center
+                  = (flying_log.log_completed?) ? 'Completed' : 'Open'
                 
                 td.text-center width='20%'
                   = link_to pdf_flying_log_path(flying_log), class: 'btn btn-success btn-flat', target: :_blank do

@@ -2,6 +2,12 @@
   | New Flying Log
 = simple_form_for(@flying_log, html: { class: '' }) do |f|
   = f.error_notification
+  - if @flying_log.errors.full_messages.count > 0
+    .alert.alert-danger
+      ul
+        - @flying_log.errors.full_messages.each do |error_message|
+          li
+            = error_message
   .row
     .col-md-12
       .box.box-info
@@ -17,14 +23,10 @@
               = f.input :log_date, disabled: true
           .row
             .col-sm-6
-              = f.association :aircraft, collection: Aircraft.active.available.all, label_method: :tail_number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
+              = f.association :aircraft, collection: Aircraft.active.all, label_method: :tail_number, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
             .col-sm-6
               
-          .row
-            .col-sm-6
-              = f.input :location_from
-            .col-sm-6
-              = f.input :location_to
+          
               
   .row
     .col-md-12
@@ -48,6 +50,9 @@
             .row
               .col-sm-6
                 = ac_f.input :cockpit, collection: enum_option_pairs(AcConfiguration, :cockpit), as: :radio_buttons 
+            .row
+              .col-sm-6.smoke-oil-quantity.hide
+                = ac_f.input :smoke_oil_quantity, label: "Smoke Oil Quantity (gal)"
   .row
     .col-md-12
       .box.box-info
@@ -64,13 +69,7 @@
             .row
               .col-sm-6
                 = ac_f.input :flight_start_time, label: 'Start Time (Local)', readonly: true, input_html: { value: cur_time() }
-              .col-sm-6
-                = ac_f.input :hyd, label: 'HYD'
-                /= ac_f.input :flight_end_time, label: 'Completion Time (Local)', input_html: { class: 'timepickerclass' }
-            .row
-              .col-sm-6
-                
-                /= ac_f.association :user, collection: User.all, label_method: :name, value_method: :id, include_blank: false, input_html: {class: 'custom-select2'}
-              .col-sm-6
+              
+            
                 
   == render 'common/form_action_buttons', options: { form: f, index_path: flying_logs_path}
