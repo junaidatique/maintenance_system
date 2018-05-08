@@ -15,6 +15,7 @@ class FlyingLog
   field :oil_total_qty, type: Float
   field :location_from, type: String
   field :location_to, type: String
+  field :completion_time, type: String
   
   # validates :location_from, presence: true
   # validates :location_to, presence: true  
@@ -74,6 +75,7 @@ class FlyingLog
   has_one :aircraft_total_time, dependent: :destroy
   has_one :after_flight_servicing, dependent: :destroy
   has_one :flightline_servicing, dependent: :destroy
+  has_one :post_mission_report, dependent: :destroy
   has_many :techlogs, dependent: :destroy
 
   # embeds_many :notifications, as: :notifiable
@@ -87,6 +89,7 @@ class FlyingLog
   accepts_nested_attributes_for :aircraft_total_time
   accepts_nested_attributes_for :after_flight_servicing
   accepts_nested_attributes_for :flightline_servicing
+  accepts_nested_attributes_for :post_mission_report
   accepts_nested_attributes_for :techlogs, reject_if: :all_blank, allow_destroy: true
 
   after_create :create_serial_no
@@ -133,7 +136,9 @@ class FlyingLog
     self.oil_total_qty   = aircraft.oil_capacity
   end
 
-  def update_aircraft_timgins
+  def update_aircraft_timgins    
+    self.completion_time = Time.zone.now
+    self.save
     self.aircraft.update_part_values self
   end
 

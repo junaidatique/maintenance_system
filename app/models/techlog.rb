@@ -162,19 +162,19 @@ class Techlog
   
   scope :techloged, -> { where(log_state: :techloged) }
   scope :addled, -> { where(log_state: :addled) }
-  scope :limited, -> { where(log_state: :limited) }
-  
+  scope :limited, -> { where(log_state: :limited) }  
   scope :completed, -> { where(condition_cd: 1) }
-  scope :incomplete, -> { where(condition_cd: 0) }
-  
+  scope :incomplete, -> { where(condition_cd: 0) }  
   scope :pilot_created, -> { any_of({type_cd: 1}, {type_cd: 1.to_s})}
+  scope :flight_created, -> { any_of({type_cd: 0}, {type_cd: 0.to_s})}
 
   def is_completed?
     return condition_cd == 1 ? true : false
   end
 
   def create_serial_no
-    self.serial_no = "#{Time.zone.now.strftime('%d%m%Y')}-#{aircraft.tail_number}-#{number}"
+    #self.serial_no = "#{Time.zone.now.strftime('%d%m%Y')}-#{aircraft.tail_number}-#{number}"
+    self.serial_no = "#{Time.zone.now.strftime('%d%m%Y')}-#{number}"
     self.save
   end
 
@@ -200,11 +200,13 @@ class Techlog
 
   def update_flying_log_end_time
     if self.flying_log.present?
-      if flying_log.techlogs.incomplete.count == 0
+      if flying_log.techlogs.techloged.flight_created.incomplete.count == 0
         flying_log.complete_servicing
         flying_log.flightline_servicing.flight_end_time = Time.zone.now
         flying_log.flightline_servicing.save
         flying_log.complete_servicing
+      elsif flying_log.techlogs.techloged.pilot_created.incomplete.count == 0        
+        flying_log.complete_log
       end
     end
   end

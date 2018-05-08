@@ -20,7 +20,8 @@
           tr
             th width="25%"
               | Aircraft
-            td = techlog.aircraft.tail_number
+            td 
+              /= techlog.aircraft.tail_number
             th width="25%"
               | Status
             td = techlog.condition.to_s.titleize

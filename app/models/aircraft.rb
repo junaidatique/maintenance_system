@@ -40,20 +40,23 @@ class Aircraft
   accepts_nested_attributes_for :parts, :allow_destroy => true
     
   def update_part_values flying_log
-    hours = flying_log.aircraft_total_time.this_sortie_aircraft_hours
-    landings = flying_log.aircraft_total_time.this_sortie_landings
-    hours_parts = self.parts.gt(total_part_hours: 0)
-    hours_parts.each do |part|
-      part_hours = part.part_hours_completed.to_f + hours.to_f
-      part_remaining_hours = part.total_part_hours.to_f - part_hours
-      part.update({part_hours_completed: part_hours, remaining_hours: part_remaining_hours})
-    end
-    hours_parts = self.parts.gt(total_landings: 0)
-    hours_parts.each do |part|
-      part_landings = part.landings_completed.to_f + landings.to_f
-      part_remaining_landings = part.total_landings.to_f - part_landings
-      part.update({landings_completed: part_landings, landings_remaining: part_remaining_landings})
-    end
+    self.flight_hours = self.flight_hours.to_f + flying_log.aircraft_total_time.this_sortie_aircraft_hours.to_f
+    self.landings     = self.landings.to_f + flying_log.aircraft_total_time.this_sortie_landings.to_f
+    self.engine_hours = self.engine_hours.to_f + flying_log.aircraft_total_time.this_sortie_engine_hours.to_f
+    self.prop_hours   = self.prop_hours.to_f + flying_log.aircraft_total_time.this_sortie_prop_hours.to_f
+    self.save
+    # hours_parts = self.parts.gt(total_part_hours: 0)
+    # hours_parts.each do |part|
+    #   part_hours = part.part_hours_completed.to_f + hours.to_f
+    #   part_remaining_hours = part.total_part_hours.to_f - part_hours
+    #   part.update({part_hours_completed: part_hours, remaining_hours: part_remaining_hours})
+    # end
+    # hours_parts = self.parts.gt(total_landings: 0)
+    # hours_parts.each do |part|
+    #   part_landings = part.landings_completed.to_f + landings.to_f
+    #   part_remaining_landings = part.total_landings.to_f - part_landings
+    #   part.update({landings_completed: part_landings, landings_remaining: part_remaining_landings})
+    # end
 
   end
 

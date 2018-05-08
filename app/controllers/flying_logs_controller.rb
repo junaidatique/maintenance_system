@@ -60,6 +60,7 @@ class FlyingLogsController < ApplicationController
     @flying_log.build_flightline_release if @flying_log.flightline_release.blank?
     @flying_log.build_aircraft_total_time if @flying_log.aircraft_total_time.blank?
     @flying_log.build_after_flight_servicing if @flying_log.after_flight_servicing.blank?
+    @flying_log.build_post_mission_report if @flying_log.post_mission_report.blank?
     
   end
 
@@ -225,6 +226,7 @@ class FlyingLogsController < ApplicationController
                                 capt_after_flight_attributes: [:flight_time, :user_id],
                                 flightline_release_attributes: [:flight_time, :user_id],
                                 techlogs_attributes: [:id, :work_unit_code_id, :user_id, :description, :type_cd, :_destroy],
+                                post_mission_report_attributes: [:user_id, :aircraft_id, :oat, :idle_rpm, :max_rpm, :cht, :oil_temp, :oil_pressure, :map, :mag_drop_left, :mag_drop_right, :remarks, :mission_date],
                                 after_flight_servicing_attributes: [:flight_time, :user_id, :oil_refill, :through_flight]
                                 )
       end 

@@ -27,6 +27,9 @@ module ApplicationHelper
   def cur_time()
     return "#{Time.zone.now.strftime("%H:%M %p")}"
   end
+  def cur_date()
+    return "#{Time.zone.now.strftime("%d/%m/%Y")}"
+  end
   def cur_date_mongo()
     return "#{Time.zone.now.strftime("%Y-%m-%d")}"
   end

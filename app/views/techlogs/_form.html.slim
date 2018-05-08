@@ -7,7 +7,7 @@
           li
             = error_message
   == render 'techlog_basic_show'
-  - if !@techlog.flying_log.blank? and  current_user.role == :crew_cheif and @techlog.flying_log.flightline_serviced?
+  - if can? :update_fuel, Techlog
     = f.simple_fields_for :flying_log do |ac_f|
       .row
         .col-md-12

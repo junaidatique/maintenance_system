@@ -1,5 +1,5 @@
 = content_for :box_heading do
-  = @flying_log.number
+  = @flying_log.serial_no
 
 = render 'show_flying_log'
 - if current_user.role == :master_control || current_user.role == :engineer || current_user.role == :admin
@@ -50,5 +50,15 @@
                           i.fa.fa-file-pdf-o
                     
                     
+.row
+  .col-sm-4    
+    = link_to flying_logs_path, class: 'btn btn-block btn-primary btn-flat' do
+      i.fa.fa-angle-double-left
+      | &nbsp; Back
+  .col-sm-4.col-sm-offset-4    
+    - unless @flying_log.log_completed?
+      = link_to edit_flying_log_path(@flying_log), class: 'btn btn-block btn-info btn-flat'
+        i.fa.fa-pencil
+        | &nbsp; Edit
 
-= render 'common/actions_buttons', back_path: flying_logs_path, edit_path: edit_flying_log_path(@flying_log)
+/= render 'common/actions_buttons', back_path: flying_logs_path, edit_path: edit_flying_log_path(@flying_log)
