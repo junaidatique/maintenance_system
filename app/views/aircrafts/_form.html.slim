@@ -8,27 +8,31 @@
             i.fa.fa-bars
             | &nbsp; General
         .box-body
-          .row
-            .col-sm-6
-              - if can? :create, Aircraft
-                = f.input :tail_number
-              - else 
-                = f.input :tail_number, disabled: true
-            .col-sm-6
-              - if can? :create, Aircraft
+          - if can? :create, Aircraft
+            .row
+              .col-sm-6
+                  = f.input :tail_number
+              .col-sm-6
                 = f.input :serial_no, label: 'Serail #'
-              - else
-                = f.input :serial_no, disabled: true
-          .row
-            .col-sm-6
-              - if can? :create, Aircraft
+            .row
+              .col-sm-6
                 = f.input :fuel_capacity
-              - else 
-                = f.input :fuel_capacity, disabled: true
-            .col-sm-6
-              - if can? :create, Aircraft
+              .col-sm-6
                 = f.input :oil_capacity
-              - else
-                = f.input :oil_capacity, disabled: true
+            .row
+              .col-sm-6
+                = f.input :type_model
+              .col-sm-6
+                = f.input :type_series
+            .row
+              .col-sm-6
+                = f.input :flight_hours
+              .col-sm-6
+                = f.input :engine_hours
+            .row
+              .col-sm-6
+                = f.input :prop_hours
+              .col-sm-6
+                = f.input :landings
           
   == render 'common/form_action_buttons', options: { form: f, index_path: aircrafts_path}
