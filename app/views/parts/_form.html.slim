@@ -1,4 +1,4 @@
-= simple_form_for(@part, :url => import_parts_path, :method => :post, html: { multipart: true}) do |f|
+= simple_form_for(@part) do |f|
   = f.error_notification
   .row
     .col-md-12
@@ -7,19 +7,55 @@
           h3.box-title
             i.fa.fa-bars
             | &nbsp; General
-        .box-body
+        .box-body          
           .row
             .col-sm-6
-              = file_field_tag :file_excel
+              = f.association :aircraft, collection: Aircraft.all, label_method: :tail_number, value_method: :id, input_html: {class: 'custom-select2'}
+          .row
+            .col-sm-6
+                = f.input :number
+            .col-sm-6
+              = f.input :serial_no, label: 'Serail #'
+          .row
+            .col-sm-6
+                = f.input :description
+            .col-sm-6
+              = f.input :unit_of_issue
+          .row
+            .col-sm-6
+                = f.input :contract_quantity
+            .col-sm-6
+              = f.input :recieved_quantity
+          .row
+            .col-sm-6
+                = f.input :quantity, label: "Store Balance"
+            .col-sm-6
+              = f.input :dfim_balance, as: :radio_buttons
+          .row
+            .col-sm-6
+                = f.input :inspection_hours
+            .col-sm-6
+              = f.input :is_repairable, as: :radio_buttons
+          .row
+            .col-sm-6
+                = f.input :condemn
+            .col-sm-6
+              /= f.input :is_repairable, as: :radio_buttons
+          .row
+            .col-sm-6
+                = f.input :calender_life_value, label: "Calender Life"
+            .col-sm-6
+              = f.input :installed_date, input_html: {class: 'datepicker'}
+          .row
+            .col-sm-6
+                = f.input :total_hours, label: "Hourly Life"
+            .col-sm-6
+              = f.input :hours_completed
+          .row
+            .col-sm-6
+                = f.input :total_landings, label: "Landings Life"
+            .col-sm-6
+              = f.input :landings_completed
               
             
-  .row
-    .col-sm-4
-      = link_to parts_path, class: 'btn btn-block btn-primary btn-flat' do
-        i.fa.fa-angle-double-left
-        | &nbsp; Back
-    
-    .col-sm-4 class="col-sm-offset-4"
-      = button_tag :submit, id: 'create_update_user', class: 'btn btn-block btn-success btn-flat' do
-        i.fa.fa-refresh
-        | Upload Excel
+  == render 'common/form_action_buttons', options: { form: f, index_path: parts_path}

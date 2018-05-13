@@ -349,7 +349,7 @@ puts 'WorkUnitCodes Created'
 #       quantity_left: quantity, 
 #       description: Faker::Lorem.words(1 + rand(4)).join(" "), 
 #       is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
-#       total_part_hours: total_hours, total_landings: total_landings })
+#       total_hours: total_hours, total_landings: total_landings })
 #   end
 # end
 

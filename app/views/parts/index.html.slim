@@ -18,13 +18,9 @@
               th
                 | Serial #
               th
-                | Quantity
+                | Store Balance
               th
-                | Calender Life
-              th
-                | Hours Completed
-              th
-                | Landings
+                | Actions
                  
           tbody
             - @parts.each do |part|
@@ -36,18 +32,18 @@
                   = link_to part.number, part_path(part)
                 td.table-row-center
                   = part.serial_no
-                td.table-row-center
-                  = part.quantity 
-                  | /
-                  = part.quantity_left
-                td.table-row-center
-                  = display_date(part.calender_life)
-                td.table-row-center
-                  = part.part_hours_completed
-                td.table-row-center
-                  = part.landings_completed
+                td.table-row-center                  
+                  = part.quantity
+                td
+                  = link_to part_path(part), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  - if can? :update, Part
+                    = link_to edit_part_path(part), class: 'btn btn-info btn-flat ' do
+                      i.fa.fa-pencil
                 
-        .col-sm-4.col-sm-offset-4
+        .col-sm-4.col-sm-offset-2
           - if can? :create, Part
-            = link_to 'Upload Excel', new_part_path, class: 'btn btn-block btn-primary btn-flat'
+            = link_to 'Upload Excel', upload_parts_path, class: 'btn btn-block btn-primary btn-flat'
+        .col-sm-4
+            = link_to 'Create Part', new_part_path, class: 'btn btn-block btn-primary btn-flat'
         .clearfix

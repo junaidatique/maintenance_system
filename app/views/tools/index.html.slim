@@ -14,25 +14,31 @@
               th
                 | Number
               th
+                | Serial
+              th
                 | Name
               th
                 | Total Quantity
               th
-                | Quantity Available
+                | Actions
           tbody
             - @tools.each do |tool|
               tr
                 td.table-row-center
                   = tool.number
                 td.table-row-center
+                  = tool.serial_no
+                td.table-row-center
                   = tool.name
                 td.table-row-center
                   = tool.total_quantity
                 td.table-row-center
-                  = tool.quantity_in_hand
+                  - if can? :update, Tool
+                    = link_to edit_tool_path(tool), class: 'btn btn-info btn-flat ' do
+                      i.fa.fa-pencil
                 
-                
-        .col-sm-4.col-sm-offset-4
-          - if can? :create, Part
-            = link_to 'Upload Excel', new_tool_path, class: 'btn btn-block btn-primary btn-flat'
+        .row        
+          .col-sm-4.col-sm-offset-2
+            - if can? :create, Tool
+              = link_to 'Upload Excel', new_tool_path, class: 'btn btn-block btn-primary btn-flat'          
         .clearfix

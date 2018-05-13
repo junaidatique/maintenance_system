@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :parts do
     collection do
       post :import
+      get :upload
       get :autocomplete
     end
   end

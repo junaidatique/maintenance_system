@@ -25,33 +25,62 @@
                     - else 
                       | N/A
                   th width="25%"
-                    | Part #
-                  td = @part.number
-                tr
-                  th width="25%"
-                    | Part Serial #
-                  td = @part.serial_no
-                  th width="25%"
                     
                   td 
                 tr
                   th width="25%"
-                    | Part Quantity
+                    | Part #
+                  td = @part.number
+                  th width="25%"
+                    | Part Serial #
+                  td = @part.serial_no
+                tr
+                  th width="25%"
+                    | Description
+                  td = @part.description
+                  th width="25%"
+                    | Unit of issue
+                  td = @part.unit_of_issue
+                tr
+                  th width="25%"
+                    | Contract quantity
+                  td = @part.contract_quantity
+                  th width="25%"
+                    | Recieved quantity
+                  td = @part.recieved_quantity
+                tr
+                  th width="25%"
+                    | Store Balance
                   td = @part.quantity
                   th width="25%"
-                    | Quantity Left
-                  td = @part.quantity_left
+                    | DFIM balance
+                  td = @part.dfim_balance
+                tr
+                  th width="25%"
+                    | Inspection Hours
+                  td = @part.inspection_hours
+                  th width="25%"
+                    | Repairable
+                  td = @part.is_repairable
+                tr
+                  th width="25%"
+                    | Condemn
+                  td = @part.condemn
+                  th width="25%"
+                    /| Repairable
+                  td 
+                    /= @part.is_repairable
                 tr
                   th width="25%"
                     | Part Calender Life
-                  td = (@part.calender_life) 
+                  td = (@part.calender_life_value) 
                   th width="25%"
                     | Part Installed Date
                   td = display_date(@part.installed_date)
                 tr
                   th width="25%"
                     | Total Part Hours
-                  td = (@part.total_part_hours) 
+                  td = (@part.total_hours) 
                   th width="25%"
                     | Remaining Hours 
                   td = @part.remaining_hours
@@ -62,8 +91,8 @@
                   th width="25%"
                     | Remaining Landings 
                   td = @part.landings_remaining
-                
-      .row
+
+.row
   .col-md-12
     .box.box-info
       .box-header.with-border
@@ -90,18 +119,21 @@
                     | Date Time
                      
               tbody
-                - @part.part_histories.each do |part|
+                - @part.histories.each do |history|
+                  - part = JSON.parse(history.entry)
+                  /= history.to_a
                   tr
                     td.table-row-center
-                      - if part.aircraft.present?
-                        = Aircraft.find(part.aircraft).tail_number
+                      - if part['aircraft'].present?
+                        = Aircraft.find(part['aircraft']).tail_number
                     td.table-row-center
-                      = part.quantity
+                      = part['quantity']
                     td.table-row-center
-                      = part.remaining_hours
+                      = part['remaining_hours']
                     td.table-row-center
-                      = part.landings_remaining          
+                      = part['landings_remaining']                      
                     td.table-row-center
-                      = display_date part.created_at          
+                      = display_date history.created_at          
+                      
                 
-      
+= render 'common/actions_buttons', back_path: parts_path, edit_path: edit_part_path(@part)                    
