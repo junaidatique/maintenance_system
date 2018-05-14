@@ -21,8 +21,7 @@ class FlyingLog
   # validates :location_to, presence: true  
   #validate :check_techlogs
 
-  def check_techlogs
-    puts state
+  def check_techlogs    
     if flight_released?
       if aircraft.techlogs.incomplete.count > 0
         errors.add(:aircraft_id, " has some pending techlogs")
