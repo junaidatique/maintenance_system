@@ -277,6 +277,62 @@
             .col-sm-6
               h3.box-title
                 i.fa.fa-bars
+                | &nbsp; Post Mission Report
+            .col-sm-6.text-right
+              
+        .box-body
+          table.table.table-inverse
+            tbody              
+              tr
+                th
+                  | OAT (C°)
+                td = @flying_log.post_mission_report.oat
+                th
+                  | IDLE RPM
+                td = @flying_log.post_mission_report.idle_rpm
+              tr
+                th
+                  | MAX RPM
+                td = @flying_log.post_mission_report.max_rpm
+                th
+                  | CHT (F°)
+                td = @flying_log.post_mission_report.cht
+              tr
+                th
+                  | Oil Temp (F°)
+                td = @flying_log.post_mission_report.oil_temp
+                th
+                  | Oil Pressure (PSI)
+                td = @flying_log.post_mission_report.oil_pressure
+              tr
+                th
+                  | MAP (MMHg)
+                td = @flying_log.post_mission_report.map
+                th
+                  | Date
+                td = @flying_log.post_mission_report.mission_date
+              tr
+                th
+                  | MAG DROP LT
+                td = @flying_log.post_mission_report.mag_drop_left
+                th
+                  | MAG DROP RT
+                td = @flying_log.post_mission_report.mag_drop_right
+              tr
+                th colspan="4"
+                  h5
+                    | Remarks
+              tr
+                td colspan="4"
+                  = @flying_log.post_mission_report.remarks
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-6
+              h3.box-title
+                i.fa.fa-bars
                 | &nbsp; Sortie
             .col-sm-6.text-right
               

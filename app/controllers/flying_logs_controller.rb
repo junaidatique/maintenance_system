@@ -43,6 +43,10 @@ class FlyingLogsController < ApplicationController
   # GET /flying_logs/1/edit
   def edit
     # TODO update this code for WUC of crewcheif
+    if @flying_log.aircraft.techlogs.incomplete.count > 0 and @flying_log.servicing_completed?
+      redirect_to flying_log_path(@flying_log), :flash => { :error => "#{@flying_log.aircraft.tail_number} has some pending techlogs." }
+    end
+    
     if current_user.role == :crew_cheif
       inspection_performed = @flying_log.flightline_servicing.inspection_performed_cd
       wuc = WorkUnitCode.where(wuc_type_cd: inspection_performed).where(:id.in => current_user.work_unit_code_ids).first
@@ -82,8 +86,7 @@ class FlyingLogsController < ApplicationController
           @flying_log.number = last_flying_log.number + 1
         else
           @flying_log.number = 1001
-        end
-        puts @flying_log.errors.inspect
+        end        
         format.html { render :new }
         format.json { render json: @flying_log.errors, status: :unprocessable_entity }
       end
@@ -92,7 +95,7 @@ class FlyingLogsController < ApplicationController
 
   # PATCH/PUT /flying_logs/1
   # PATCH/PUT /flying_logs/1.json
-  def update
+  def update    
     respond_to do |format|      
       if current_user.role == :pilot and @flying_log.flight_booked? and flying_log_params[:sortie_attributes][:pilot_comment] == 'Satisfactory'
         update_params = flying_log_params.except(:techlogs_attributes)
@@ -102,7 +105,7 @@ class FlyingLogsController < ApplicationController
 
       if @flying_log.update(update_params)
         if can? :release_flight, FlyingLog and @flying_log.servicing_completed? and @flying_log.flightline_release.created_at.present?
-          @flying_log.flight_release
+          @flying_log.release_flight
         elsif current_user.pilot? and @flying_log.flight_released?  and @flying_log.capt_acceptance_certificate.created_at.present? 
           @flying_log.book_flight
         elsif current_user.pilot? and @flying_log.flight_booked?          
@@ -121,12 +124,10 @@ class FlyingLogsController < ApplicationController
           end
         elsif can? :update_flying_log, FlyingLog and @flying_log.pilot_commented?
           @flying_log.techlog_check
-          if @flying_log.flightline_servicing.inspection_performed_cd != 2 and @flying_log.techlogs.incomplete.count == 0
-            @flying_log.complete_log
-          end
-
-        elsif (current_user.role == :master_control or current_user.role == :admin) and @flying_log.pilot_commented?
           @flying_log.complete_log
+          # if @flying_log.flightline_servicing.inspection_performed_cd != 2 and @flying_log.techlogs.incomplete.count == 0
+            
+          # end        
         end
         
         @flying_log.save

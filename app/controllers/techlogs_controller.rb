@@ -6,7 +6,7 @@ class TechlogsController < ApplicationController
   # GET /techlogs
   # GET /techlogs.json
   def index
-    if current_user.role == :admin or current_user.role == :master_control or current_user.role == :engineer
+    if current_user.role == :admin or current_user.role == :master_control or current_user.role == :engineer or current_user.role == :chief_maintenance_officer
       @techlogs = Techlog.techloged
     elsif current_user.role == :central_tool_store 
       @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
@@ -50,7 +50,7 @@ class TechlogsController < ApplicationController
     if @techlog.dms_version.blank?
       @techlog.dms_version = System.first.settings['dms_version_number'] 
     end    
-    if current_user.work_unit_code_ids.include? @techlog.work_unit_code.id      
+    if current_user.work_unit_code_ids.present? and current_user.work_unit_code_ids.include? @techlog.work_unit_code.id      
       @techlog.is_viewed = true
       @techlog.save :validate => false
     end

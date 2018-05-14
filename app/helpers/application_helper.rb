@@ -11,7 +11,7 @@ module ApplicationHelper
   end
   def str_date_time(input_date) 
     unless input_date.blank?
-      return Date.parse(input_date).strftime("%I:%M %p - %d %B %Y")
+      return DateTime.parse(input_date).strftime("%I:%M %p - %d %B %Y")
     end
   end
   def str_date(input_date) 

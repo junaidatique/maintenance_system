@@ -200,8 +200,8 @@ class Techlog
 
   def update_flying_log_end_time
     if self.flying_log.present?
-      if flying_log.techlogs.techloged.flight_created.incomplete.count == 0
-        flying_log.complete_servicing
+      if flying_log.techlogs.techloged.flight_created.incomplete.count == 0        
+        puts '------3-3-3-3-3-3-3-3-'
         flying_log.flightline_servicing.flight_end_time = Time.zone.now
         flying_log.flightline_servicing.save
         flying_log.complete_servicing

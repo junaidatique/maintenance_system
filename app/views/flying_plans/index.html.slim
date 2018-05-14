@@ -22,7 +22,7 @@
               th width='13%'
                 | Actions
           tbody
-            - @flying_plans.each do |non_flying_day|
+            - @flying_plans.order(flying_date: :desc).each do |non_flying_day|
               tr
                 td.table-row-center
                   = display_date(non_flying_day.flying_date)
@@ -33,8 +33,10 @@
                 td
                   = non_flying_day.reason
                 td.text-center width='20%'
-                  = link_to edit_flying_plan_path(non_flying_day), class: 'btn btn-info btn-flat ' do
-                    i.fa.fa-pencil
+                  - if can? :update, FlyingPlan            
+                    = link_to edit_flying_plan_path(non_flying_day), class: 'btn btn-info btn-flat ' do
+                      i.fa.fa-pencil
         .col-sm-4.col-sm-offset-4
-          = link_to 'Create Flying Plan', new_flying_plan_path, class: 'btn btn-block btn-primary btn-flat'
+          - if can? :create, FlyingPlan            
+            = link_to 'Create Flying Plan', new_flying_plan_path, class: 'btn btn-block btn-primary btn-flat'
         .clearfix

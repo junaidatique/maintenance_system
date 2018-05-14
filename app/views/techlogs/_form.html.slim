@@ -1,5 +1,6 @@
 = simple_form_for(@techlog, html: { novalidate: true }) do |f|
   = f.error_notification
+  = f.input :work_unit_code_id, as: :hidden
   - if @techlog.errors.full_messages.count > 0
     .alert.alert-danger
       ul
@@ -27,6 +28,21 @@
               .row
                 .col-sm-6
                   = ac_f.input :oil_serviced, as: :float, label: "Serviced (Gallons) : Total Capacity #{@techlog.flying_log.aircraft.oil_capacity} (Gallons)", input_html: { max: @techlog.flying_log.aircraft.oil_capacity, required: true, min: 0 }
+  - if can? :update_work_unit_code, Techlog
+    = f.simple_fields_for :flying_log do |ac_f|
+      .row
+        .col-md-12
+          .box.box-info
+            .box-header.with-borderf
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Work unit code
+            .box-body
+              .row
+                .col-sm-6
+                  = f.input :work_unit_code, :url => autocomplete_codes_work_unit_codes_path, :as => :autocomplete, input_html: {id_element: "#techlog_work_unit_code_id", value: ""}
+                .col-sm-6
+                  
 
   .row
     .col-md-12

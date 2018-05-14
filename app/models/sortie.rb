@@ -4,6 +4,7 @@ class Sortie
   include Mongoid::Timestamps
 
   as_enum :sortie_code, C1: 1, C2: 2, C3: 3, C4: 4, C5: 5
+  as_enum :sortie_code_unsat, C2: 2, C3: 3, C4: 4, C5: 5
   as_enum :pilot_comment, Satisfactory: 'SAT', Un_satisfactory: 'Un Sat'
   field :takeoff_time, type: String
   field :landing_time, type: String

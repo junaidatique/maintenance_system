@@ -22,9 +22,10 @@ class FlyingLog
   validate :check_techlogs
 
   def check_techlogs
-    if servicing_completed?
+    puts state
+    if flight_released?
       if aircraft.techlogs.incomplete.count > 0
-        # errors.add(:aircraft_id, " has some pending techlogs")
+        errors.add(:aircraft_id, " has some pending techlogs")
       end
     end
   end
@@ -48,7 +49,7 @@ class FlyingLog
     event :complete_servicing do
       transition fuel_filled: :servicing_completed
     end
-    event :flight_release do
+    event :release_flight do
       transition servicing_completed: :flight_released
     end
     event :book_flight do
