@@ -78,6 +78,8 @@ class FlyingLogsController < ApplicationController
         @flying_log.flightline_servicing.flight_start_time = Time.zone.now
         @flying_log.save
         @flying_log.flightline_service
+        ActionCable.server.broadcast("log_channel", 
+          message: "New Techlog is created for #{@flying_log.aircraft.tail_number}")
         format.html { redirect_to @flying_log, notice: 'Flying log was successfully created.' }
         format.json { render :show, status: :created, location: @flying_log }
       else
