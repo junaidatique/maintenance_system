@@ -35,6 +35,27 @@ class Ability
       can :ru, FlyingLog
       can :crud, Techlog
       can :update_fuel, Techlog
+    elsif user.inst_fitt?
+      can :ru, FlyingLog
+      can :crud, Techlog      
+    elsif user.eng_fitt?
+      can :ru, FlyingLog
+      can :crud, Techlog      
+    elsif user.afr_fitt?
+      can :ru, FlyingLog
+      can :crud, Techlog
+    elsif user.ro_fitt?
+      can :ru, FlyingLog
+      can :crud, Techlog
+    elsif user.log_asst?
+      can :ru, FlyingLog
+      can :crud, Techlog
+    elsif user.elect_fitt?
+      can :ru, FlyingLog
+      can :crud, Techlog
+    elsif user.gen_fitt?
+      can :ru, FlyingLog
+      can :crud, Techlog
     elsif user.pilot?
       can [:read, :update], FlyingLog
       can :bookout_flight, FlyingLog
@@ -48,32 +69,7 @@ class Ability
       can :read, Part
       can :cru, Part
       can :rud, Techlog
-      # can 
-    #   can [:read, :update], Aircraft
-    #   cannot :crud, NonFlyingDay
-    #   can :crud, FlyingLog
-    #   can :crud, Techlog
-    # elsif user.engineer?
-    #   can [:read, :update], Aircraft
-    #   cannot :crud, NonFlyingDay
-    #   can :crud, FlyingLog
-    #   can :crud, Techlog
-    #   can :crud, User
-    # elsif user.crew_cheif?
-    #   can :read, FlyingLog
-    #   can :update, FlyingLog do |flying_log|
-    #     !flying_log.is_fuel_filled
-    #   end        
-    #   can :crud, Techlog
-    # elsif user.central_tool_store?
-    #   can :crud, Tool
-    #   can :rud, Techlog    
-    # elsif user.radio_technician?
-    #   can :read, FlyingLog
-    #   can :crud, Techlog    
-    # elsif user.electro_mac_technician?
-    #   can :read, FlyingLog
-    #   can :crud, Techlog
+      
     
     end
   end
