@@ -42,7 +42,6 @@
                 .col-sm-6
                   = f.input :work_unit_code, :url => autocomplete_codes_work_unit_codes_path, :as => :autocomplete, input_html: {id_element: "#techlog_work_unit_code_id", value: ""}
                 .col-sm-6
-                  
 
   .row
     .col-md-12
@@ -60,6 +59,9 @@
                 label Condition
                 br
                 = @techlog.condition.to_s.titleize
+          .row
+            .col-sm-12
+                  = f.input :verified_tools, label: 'I have verfied tools', as: :boolean, checked_value: 1, unchecked_value: 0, required: true
   - if current_user.work_unit_codes.include? @techlog.work_unit_code
     .row
       .col-md-12.action_div

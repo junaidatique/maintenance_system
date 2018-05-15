@@ -31,6 +31,7 @@ class TechlogsController < ApplicationController
   def new
     @techlog = Techlog.new
     @techlog.log_date = Time.now.strftime("%d/%m/%Y")
+    @techlog.location_from = "Al Zaeem M.B.A.A Academy"
     @techlog.build_work_performed if @techlog.work_performed.blank?
     @techlog.build_date_inspected if @techlog.date_inspected.blank?
     @techlog.build_work_duplicate if @techlog.work_duplicate.blank?
@@ -238,7 +239,7 @@ class TechlogsController < ApplicationController
                                         :nmcs_pmcs, :demand_notif, :amf_reference_no, :pdr_number, :occurrence_report,
                                         :description,
                                         :addl_period_of_deferm, :addl_due, :addl_log_time, :addl_log_date,
-                                        :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description,
+                                        :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description, :verified_tools,
                                         flying_log_attributes: [ :fuel_refill, :oil_serviced, :oil_total_qty ],
                                         change_parts_attributes: [:id, :requested_by_id, :assigned_by_id, :old_part_id, :quantity_required, :new_part_id, :quantity_provided, :available, :_destroy],
                                         assigned_tools_attributes: [:id, :requested_by_id, :tool_id, :quantity_required,

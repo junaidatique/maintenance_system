@@ -70,8 +70,24 @@ class ToolsController < ApplicationController
   # GET /tools/autocomplete_codes.json
   def autocomplete
     search_string = params[:term]
-    record = Tool.gt(quantity_in_hand: 0).where(number: /.*#{search_string}.*/i).limit(5)    
-    render :json => record.map { |tool| {id: tool._id.to_s, label: "#{tool.number} (#{tool.quantity_in_hand} left)", value: "#{tool.number} (#{tool.quantity_in_hand} left)" } }
+    record = Tool.collection.aggregate([
+      {"$match"=>{"quantity_in_hand"=>{"$gt"=>0}, "number"=>/#{search_string}.*/i}},
+      {"$group" => {
+          "_id" => "$number",
+          "name" => { "$first": '$name' },          
+
+      }},
+      {"$limit" => 5}
+    ])
+    puts record.inspect
+    # record = Tool.gt(quantity_in_hand: 0).where(number: /.*#{search_string}.*/i).limit(5)    
+    render :json => record.map { |tool| 
+      {
+        id: Tool.where(number: tool[:_id]).first.id.to_s, 
+        label: "#{tool[:_id]} (#{tool[:name]})", 
+        value: "#{tool[:_id]} (#{tool[:name]})" 
+        } 
+    }
   end
 
   private

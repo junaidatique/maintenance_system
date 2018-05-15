@@ -15,17 +15,21 @@
             - if @techlog.assigned_tools.count > 0
               table.table.table-inverse
                 thead
-                  th Requested Tool
+                  th Tool Number
+                  th Tool Name
                   th Quantity Required
-                  th Quantity Assigned
-                  th Returned
+                  / th Quantity Assigned
+                  / th Returned
                 tbody                  
                 - @techlog.assigned_tools.each do |assigned_tool|
                   tr                    
-                    td = assigned_tool.tool.number
+                    td 
+                      = assigned_tool.tool.number
+                    td 
+                      = assigned_tool.tool.name
                     td = assigned_tool.quantity_required
-                    td = assigned_tool.quantity_assigned
-                    td = assigned_tool.is_returned ? 'Yes' : 'No'
+                    / td = assigned_tool.quantity_assigned
+                    / td = assigned_tool.is_returned ? 'Yes' : 'No'
             - else
               | No tool requested.        
 - if @techlog.is_completed?

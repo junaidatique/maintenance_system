@@ -42,7 +42,7 @@ class Techlog
   field :limitation_due, type: String
   field :limitation_log_date, type: Date
   field :limitation_log_time, type: String
-
+  field :verified_tools, type: Mongoid::Boolean
   
   attr_accessor :current_user
 
@@ -55,6 +55,7 @@ class Techlog
     if condition_cd == 2 and action.blank?
       errors.add(:action, " can't be blank")
     end
+    
   end
 
   def flying_log_values
@@ -73,11 +74,17 @@ class Techlog
   end
   def verify_complete    
     if condition_cd == 1 and (tools_state == "requested" or tools_state == "provided") 
-      errors.add(:status, " there are some tools that are not returned yet. ")
+      # errors.add(:status, " there are some tools that are not returned yet. ")
     elsif condition_cd == 1 and (parts_state == "requested" or parts_state == "pending" or parts_state == "not_available")
       errors.add(:status, " Some parts are missing. ")
     elsif interm_log.present? and !interm_log.is_completed?
       errors.add(:status, " This techlog has an interm log. Please complete that log first. ")
+    end
+    if condition_cd == 1 and verified_tools.blank?
+      puts '----------------------'
+      puts verified_tools
+      puts '----------------------'
+      errors.add(:verified_tools, "Please verify that you have verified all the tools.")
     end
     
   end
@@ -200,8 +207,7 @@ class Techlog
 
   def update_flying_log_end_time
     if self.flying_log.present?
-      if flying_log.techlogs.techloged.flight_created.incomplete.count == 0        
-        puts '------3-3-3-3-3-3-3-3-'
+      if flying_log.techlogs.techloged.flight_created.incomplete.count == 0                
         flying_log.flightline_servicing.flight_end_time = Time.zone.now
         flying_log.flightline_servicing.save
         flying_log.complete_servicing
