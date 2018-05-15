@@ -80,10 +80,7 @@ class Techlog
     elsif interm_log.present? and !interm_log.is_completed?
       errors.add(:status, " This techlog has an interm log. Please complete that log first. ")
     end
-    if condition_cd == 1 and verified_tools.blank?
-      puts '----------------------'
-      puts verified_tools
-      puts '----------------------'
+    if condition_cd == 1 and verified_tools.blank?      
       errors.add(:verified_tools, "Please verify that you have verified all the tools.")
     end
     

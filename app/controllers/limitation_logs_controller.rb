@@ -1,10 +1,10 @@
 class LimitationLogsController < ApplicationController
-  before_action :set_limitation_log, only: [:show, :edit, :update, :destroy]
+  before_action :set_limitation_log, only: [:show, :edit, :update, :destroy, :pdf]
 
   # GET /limitation_logs
   # GET /limitation_logs.json
   def index
-    @limitation_logs = LimitationLog.all
+    @limitation_logs = Techlog.limited
   end
 
   # GET /limitation_logs/1
@@ -61,7 +61,26 @@ class LimitationLogsController < ApplicationController
       format.json { head :no_content }
     end
   end
-
+  def pdf    
+    pdf_data = render(
+          pdf: "techlog_#{@techlog.id}",
+              orientation: 'Landscape',
+              template: 'limitation_logs/limitation_log_pdf.html.slim',
+              layout: 'layouts/pdf/pdf.html.slim',
+              show_as_html: false,
+              locals: {
+                techlog: @techlog                
+              },
+              page_height: '25in',
+              page_width: '18in',
+              margin:  {
+                top: 0,                     # default 10 (mm)
+                bottom: 0,
+                left: 0,
+                right:0 
+              }
+            )
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_limitation_log

@@ -2,4 +2,6 @@
  *= require pdf/pdf_mixins
  *= require pdf/pdf_flying_log
  *= require pdf/pdf_techlog
+ *= require pdf/pdf_addl_log
+ *= require pdf/pdf_limitation_log
 */

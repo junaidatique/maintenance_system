@@ -1,0 +1,19 @@
+.addl_pdf 
+  .background-image
+    = wicked_pdf_image_tag('addl.jpg')  
+  .tl-aircraft-number
+    = techlog.aircraft.tail_number
+  .tl-techlog_no
+    = techlog.serial_no  
+  .tl-log_date
+    = techlog.log_date
+  .tl-log_time
+    = techlog.log_time
+  .tl-wuc
+    /= techlog.work_unit_code
+  .fl-log-number
+    /= flying_log.number
+  .tl-description
+    p
+      = techlog.description
+  

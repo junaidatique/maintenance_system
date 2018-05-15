@@ -41,6 +41,13 @@ class Ability
       can :bookin_flight, FlyingLog
       can :crud, Techlog
       can :view_logs, FlyingLog
+    elsif user.central_tool_store?
+      can :crud, Tool
+      can :rud, Techlog
+    elsif user.logistics?
+      can :read, Part
+      can :cru, Part
+      can :rud, Techlog
       # can 
     #   can [:read, :update], Aircraft
     #   cannot :crud, NonFlyingDay
@@ -60,10 +67,7 @@ class Ability
     #   can :crud, Techlog
     # elsif user.central_tool_store?
     #   can :crud, Tool
-    #   can :rud, Techlog
-    # elsif user.logistics_supervisor?
-    #   can :crud, Part
-    #   can :rud, Techlog
+    #   can :rud, Techlog    
     # elsif user.radio_technician?
     #   can :read, FlyingLog
     #   can :crud, Techlog    

@@ -92,6 +92,7 @@ class Part
             description: description, 
             unit_of_issue: unit_of_issue, 
             quantity: quantity, 
+            quantity_left: quantity_left, 
             contract_quantity: contract_quantity, 
             recieved_quantity: recieved_quantity,             
             dfim_balance: dfim_balance, 

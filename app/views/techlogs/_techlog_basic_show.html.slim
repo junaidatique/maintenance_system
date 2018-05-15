@@ -40,22 +40,21 @@
             h3.box-title
               i.fa.fa-bars
               | &nbsp; Techlog
-          .col-sm-6.text-right
-            - if current_user.role == :engineer or current_user.role == :admin
-              - if @techlog.log_techloged? and !@techlog.is_completed?
-                = link_to create_addl_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
-                  i.fa.fa-pencil
-                  | &nbsp; Transfer to ADDL
-                | &nbsp;
-                = link_to create_limitation_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
-                  i.fa.fa-pencil
-                  | &nbsp; Transfer to Limitation Log
-              - if @techlog.log_addled? or @techlog.log_limited?
-                = link_to create_techlog_techlog_path(@techlog), class: 'btn btn-info btn-flat'
-                  i.fa.fa-pencil
-                  | &nbsp; Transfer back to Techlog
-                | &nbsp;
-      = render 'techlog_short_detail', techlog: @techlog      
+          .col-sm-6.text-right            
+            - if @techlog.log_techloged? and !@techlog.is_completed? and can? :manage_addl_logs, Techlog
+              = link_to create_addl_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
+                i.fa.fa-pencil
+                | &nbsp; Transfer to ADDL
+              | &nbsp;
+              = link_to create_limitation_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
+                i.fa.fa-pencil
+                | &nbsp; Transfer to Limitation Log
+            - if @techlog.log_addled? or @techlog.log_limited? and can? :manage_addl_logs, Techlog
+              = link_to create_techlog_techlog_path(@techlog), class: 'btn btn-info btn-flat'
+                i.fa.fa-pencil
+                | &nbsp; Transfer back to Techlog
+              | &nbsp;
+      = render 'techlogs/techlog_short_detail', techlog: @techlog      
 .row
   .col-md-12
     .box.box-info

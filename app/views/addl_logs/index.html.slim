@@ -10,9 +10,7 @@
       .box-body
         table.table.table-bordered.table-striped.data-tabled
           thead
-            tr
-              th width='10%'
-                | Number
+            tr              
               th width='10%'
                 | Techlog
               th width='10%'
@@ -25,22 +23,14 @@
             - @addl_logs.each do |techlog|
               tr
                 td.table-row-center
-                  = link_to techlog.number, techlog_path(techlog)
+                  = link_to techlog.serial_no, techlog_path(techlog)
                 td.table-row-center
                   = display_date(techlog.log_date) 
                 td.table-row-center
-                  = techlog.aircraft.tail_number
-                td.table-row-center
-                  / = link_to('PDF', pdf_techlog_path(techlog, format: :pdf), target: :_blank)
+                  = techlog.aircraft.tail_number                
                 td.text-center width='20%'
+                  = link_to pdf_addl_log_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
+                    i.fa.fa-file-pdf-o
                   = link_to addl_log_path(techlog), class: 'btn btn-success btn-flat ' do
-                    i.fa.fa-eye
-                  = link_to edit_techlog_path(techlog), class: 'btn btn-info btn-flat ' do
-                    i.fa.fa-pencil
-                  
-                  
-                  /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
-                   /   i.fa.fa-trash
-        /.col-sm-4.col-sm-offset-4
-          = link_to 'Create Flying Log', new_addl_log_path, class: 'btn btn-block btn-primary btn-flat'
+                    i.fa.fa-eye                  
         .clearfix

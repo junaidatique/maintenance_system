@@ -118,32 +118,29 @@
                   .box-body
                     table.table.table-bordered.table-striped.data-tabled
                       thead
-                        tr
+                        tr              
                           th width='10%'
-                            | Number
+                            | Techlog
                           th width='10%'
                             | Date
                           th width='10%'
-                            | Description
-                          th width='10%'
-                            | Action Taken                          
+                            | Aircraft
                           th width='13%'
-                            | Detail
+                            | Actions
                       tbody
-                        - @flying_log.aircraft.techlogs.addled.order(number: :desc).each do |techlog|
+                        - @addl_logs.each do |techlog|
                           tr
                             td.table-row-center
-                              = link_to techlog.number, techlog_path(techlog)
+                              = link_to techlog.serial_no, techlog_path(techlog)
                             td.table-row-center
                               = display_date(techlog.log_date) 
                             td.table-row-center
-                              = techlog.description
-                            td.table-row-center
-                              = techlog.action                            
-                                
+                              = techlog.aircraft.tail_number                
                             td.text-center width='20%'
-                              = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
-                                i.fa.fa-file-pdf-o                                                            
+                              = link_to pdf_addl_log_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
+                                i.fa.fa-file-pdf-o
+                              = link_to addl_log_path(techlog), class: 'btn btn-success btn-flat ', target: :_blank do
+                                i.fa.fa-eye                                                            
                                 
     
     

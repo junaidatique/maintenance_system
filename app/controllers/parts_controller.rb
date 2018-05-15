@@ -77,7 +77,7 @@ class PartsController < ApplicationController
     search_string = params[:term]
     aircraft_id = params[:aircraft_id]
     search_type = params[:search_type]
-    parts = Part.gt(quantity_left: 0).where(number: /.*#{search_string}.*/i)
+    parts = Part.where(number: /.*#{search_string}.*/i)
     if aircraft_id.present? 
       if search_type == 'include'
         parts = parts.where(aircraft_id: aircraft_id)

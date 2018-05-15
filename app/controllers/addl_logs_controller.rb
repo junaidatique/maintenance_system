@@ -1,5 +1,5 @@
 class AddlLogsController < ApplicationController
-  before_action :set_addl_log, only: [:show, :edit, :update, :destroy]
+  before_action :set_addl_log, only: [:show, :edit, :update, :destroy, :pdf]
 
   # GET /addl_logs
   # GET /addl_logs.json
@@ -60,6 +60,29 @@ class AddlLogsController < ApplicationController
       format.html { redirect_to addl_logs_url, notice: 'Addl log was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def pdf
+    change_parts_val  = @techlog.change_parts.limit(4).offset(0)      
+    pdf_data = render(
+          pdf: "techlog_#{@techlog.id}",
+              orientation: 'Landscape',
+              template: 'addl_logs/addl_pdf.html.slim',
+              layout: 'layouts/pdf/pdf.html.slim',
+              show_as_html: false,
+              locals: {
+                techlog: @techlog,
+                change_parts_val: change_parts_val
+              },
+              page_height: '25in',
+              page_width: '18in',
+              margin:  {
+                top: 0,                     # default 10 (mm)
+                bottom: 0,
+                left: 0,
+                right:0 
+              }
+            )
   end
 
   private

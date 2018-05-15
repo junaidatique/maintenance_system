@@ -15,8 +15,16 @@ Rails.application.routes.draw do
     end
   end
   resources :non_flying_days
-  resources :limitation_logs
-  resources :addl_logs
+  resources :limitation_logs do 
+    member do
+      get 'pdf'
+    end
+  end
+  resources :addl_logs do 
+    member do
+      get 'pdf'
+    end
+  end
   resources :technical_orders do 
     resources :changes
   end

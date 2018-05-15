@@ -10,7 +10,7 @@ class TechlogsController < ApplicationController
       @techlogs = Techlog.techloged
     elsif current_user.role == :central_tool_store 
       @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
-    elsif current_user.role == :logistics_supervisor
+    elsif current_user.role == :logistics
       @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
     else
       @techlogs = Techlog.techloged.where(:work_unit_code_id.in => current_user.work_unit_code_ids)

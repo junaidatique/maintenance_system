@@ -17,10 +17,10 @@ class ChangePart
   after_update :update_parts_quantity
   
   def verify_quantity_provided  
-    puts self.inspect    
+    # puts self.inspect    
     if new_part.present? and !provided
       if quantity_provided > new_part.quantity_left
-        puts 'here'
+        # puts 'here'
         errors.add(:quantity_provided, "Provided quantity not available.")
       end
     end    
