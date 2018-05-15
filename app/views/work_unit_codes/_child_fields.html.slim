@@ -4,7 +4,8 @@
   .col-sm-3
     = f.input :description
   .col-sm-4
-    = f.input :wuc_type, collection: enum_option_pairs(WorkUnitCode, :wuc_type), as: :radio_buttons
+    = f.input :wuc_type_cd, as: :hidden, input_html: { value: @work_unit_code.id.to_s }
+    /= f.input :wuc_type, collection: enum_option_pairs(WorkUnitCode, :wuc_type), as: :radio_buttons
   .col-sm-2
     br
     = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do

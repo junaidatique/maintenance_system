@@ -128,7 +128,7 @@
                           th width='13%'
                             | Actions
                       tbody
-                        - @addl_logs.each do |techlog|
+                        - @flying_log.aircraft.techlogs.addled.order(number: :desc).each do |techlog|
                           tr
                             td.table-row-center
                               = link_to techlog.serial_no, techlog_path(techlog)

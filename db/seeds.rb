@@ -303,11 +303,11 @@ puts 'FlyingPlan Created'
 
 puts 'Creating WorkUnitCodes'
 WorkUnitCode.wuc_types.each do |work_unit_code,code_key|  
-  w_code = WorkUnitCode.create code: work_unit_code.downcase, description: work_unit_code.to_s.sub('_',' ')
+  #w_code = WorkUnitCode.create code: work_unit_code.downcase, description: work_unit_code.to_s.sub('_',' ')
   print '.'
   
   ["crew_cheif"].each do |role_name, role_key|
-    work_unit_code_value = WorkUnitCode.create code: "#{work_unit_code.downcase}_#{role_name.downcase}", description: "#{work_unit_code.to_s.sub('_',' ')} #{role_name.to_s.sub('_',' ')}", parent_id: w_code, wuc_type_cd: code_key
+    work_unit_code_value = WorkUnitCode.create code: "#{work_unit_code.downcase}_#{role_name.downcase}", description: "#{work_unit_code.to_s.sub('_',' ')} #{role_name.to_s.sub('_',' ')}", wuc_type_cd: code_key
     role_id = User::roles[role_name]
     u = User.where(role_cd: role_id).first
     unless u.blank?

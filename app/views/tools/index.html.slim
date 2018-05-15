@@ -19,8 +19,6 @@
                 | Name
               th
                 | Total Quantity
-              th
-                | Actions
           tbody
             - @tools.each do |tool|
               tr
@@ -32,10 +30,7 @@
                   = tool.name
                 td.table-row-center
                   = tool.total_quantity
-                td.table-row-center
-                  - if can? :update, Tool
-                    = link_to edit_tool_path(tool), class: 'btn btn-info btn-flat ' do
-                      i.fa.fa-pencil
+                
                 
         .row        
           .col-sm-4.col-sm-offset-4
