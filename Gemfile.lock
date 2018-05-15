@@ -215,6 +215,7 @@ GEM
     rb-inotify (0.9.9)
       ffi (~> 1.0)
     rcodetools (0.8.5.0)
+    redis (3.3.5)
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
@@ -341,6 +342,7 @@ DEPENDENCIES
   rails (~> 5.1.1)
   rails-jquery-autocomplete
   rcodetools
+  redis (~> 3.0)
   roo
   rubocop
   ruby-debug-ide (= 0.6.0)
