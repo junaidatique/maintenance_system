@@ -87,7 +87,7 @@ class Sortie
     f_total.corrected_total_landings         = t_landings
     f_total.corrected_total_prop_hours       = total_prop_hours.round(1)
 
-    # self.flying_log.aircraft.update_part_values flying_log
+    self.flying_log.aircraft.update_part_values flying_log
 
   end
 end

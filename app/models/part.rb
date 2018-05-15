@@ -44,7 +44,7 @@ class Part
   validates :description, presence: true
 
   after_create :update_record
-  # after_update :create_history
+  after_update :create_history
   
   def create_history
     part_history = History.new
