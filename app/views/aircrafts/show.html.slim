@@ -44,13 +44,6 @@
                   th width="25%"
                     | Prop Hours
                   td = @aircraft.prop_hours
-                tr
-                  th width="25%"
-                    | Type Model
-                  td = @aircraft.type_model
-                  th width="25%"
-                    | Type Series
-                  td = @aircraft.type_series
                 
   .row
   .col-md-12
@@ -88,9 +81,9 @@
                 td.table-row-center
                   = part.description
                 td.table-row-center
-                  = display_date(part.calender_life)
+                  /= display_date(part.calender_life)
                 td.table-row-center
-                  = part.hours_completed
+                  = part.part_hours_completed
                 td.table-row-center
                   = part.landings_completed
                 

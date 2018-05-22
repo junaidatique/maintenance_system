@@ -1,0 +1,39 @@
+= content_for :page_subtitle do
+  | DMS Version (
+  = number_with_precision(System.first.settings['dms_version_number'] , precision: 2)
+  | )
+= content_for :box_heading do
+  | DMS Version (
+  = number_with_precision(System.first.settings['dms_version_number'] , precision: 2)
+  | )
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th
+                | Change Number
+              th
+                | Change Date
+              th
+                | DMS Version
+              th
+                | File Path              
+                 
+          tbody
+            - @technical_changes.each do |technical_change|
+              tr
+                td.table-row-center
+                  = technical_change.change_number
+                td.table-row-center
+                  = technical_change.dms_version_number
+                td.table-row-center
+                  = technical_change.change_date
+                td
+                  - if technical_change.pdf_file.exists?
+                    = link_to 'Open file', technical_change.pdf_file.url, target: :_blank
+                                          
+        .clearfix

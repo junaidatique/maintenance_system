@@ -26,9 +26,22 @@ ul.sidebar-menu
         span.side-bar-heading-text Work Unit Codes
   - if can? :read, TechnicalOrder
     li class="#{params[:controller] == "technical_orders" ? 'active' : ''}"
-      = link_to technical_orders_path do 
-        .fa.fa-gear
+      a href="#" 
+        i.fa.fa-list-ul
         span.side-bar-heading-text DMS Version
+        span.pull-right-container
+          i.fa.fa-angle-left.pull-right
+      ul.treeview-menu
+        li class="#{controller_name == "technical_orders" ? 'active' : ''}"
+          = link_to history_technical_orders_path do
+            .fa.fa-tasks
+            span.side-bar-heading-text History        
+        li class="#{controller_name == "technical_orders" ? 'active' : ''}"
+          = link_to technical_orders_path do
+            .fa.fa-folder-open
+            span.side-bar-heading-text Technical Orders        
+    
+  
   - if can? :read, FlyingPlan
     li class="#{params[:controller] == "flying_plans" ? 'active' : ''}"
       = link_to flying_plans_path do 

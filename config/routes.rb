@@ -26,7 +26,11 @@ Rails.application.routes.draw do
     end
   end
   resources :technical_orders do 
+    collection do      
+      get :history      
+    end
     resources :changes
+    
   end
   resources :techlogs do 
     member do

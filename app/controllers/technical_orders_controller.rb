@@ -6,7 +6,9 @@ class TechnicalOrdersController < ApplicationController
   def index
     @technical_orders = TechnicalOrder.all
   end
-
+  def history
+    @technical_changes = Change.all.order(created_at: :desc)
+  end
   # GET /technical_orders/1
   # GET /technical_orders/1.json
   def show

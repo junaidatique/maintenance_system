@@ -110,6 +110,8 @@ class FlyingLogsController < ApplicationController
           @flying_log.release_flight
         elsif current_user.pilot? and @flying_log.flight_released?  and @flying_log.capt_acceptance_certificate.created_at.present? 
           @flying_log.book_flight
+          ActionCable.server.broadcast("log_channel", 
+          message: "#{@flying_log.aircraft.tail_number} is booked out.")
         elsif current_user.pilot? and @flying_log.flight_booked?          
           @flying_log.sortie.total_landings = @flying_log.sortie.touch_go.to_i + @flying_log.sortie.full_stop.to_i
           @flying_log.sortie.flight_minutes = @flying_log.sortie.calculate_flight_minutes
