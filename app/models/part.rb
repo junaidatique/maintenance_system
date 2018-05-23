@@ -63,8 +63,7 @@ class Part
   def self.import(file)    
     xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
     (4..xlsx.last_row).each do |i|
-      row                   = xlsx.row(i)
-      puts row.inspect
+      row                   = xlsx.row(i)      
       number                = row[1]
       description           = row[2]
       unit_of_issue         = row[3]

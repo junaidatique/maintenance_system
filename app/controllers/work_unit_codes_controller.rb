@@ -83,6 +83,15 @@ class WorkUnitCodesController < ApplicationController
     render :json => record.map { |work_unit_code| {id: work_unit_code._id.to_s, label: work_unit_code.code, value: work_unit_code.code } }
   end
 
+  def upload
+    @part = WorkUnitCode.new
+  end
+
+  def import
+    WorkUnitCode.import(params[:file_excel])
+    redirect_to work_unit_codes_path, notice: 'Work unit codes imported.'
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_work_unit_code

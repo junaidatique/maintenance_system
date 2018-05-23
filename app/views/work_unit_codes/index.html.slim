@@ -32,6 +32,10 @@
                   
                   /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
                    /   i.fa.fa-trash
-        .col-sm-4.col-sm-offset-4
-          = link_to 'Create Work Unit Code', new_work_unit_code_path, class: 'btn btn-block btn-primary btn-flat'
+        .row
+          .col-sm-4.col-sm-offset-2
+            - if can? :create, WorkUnitCode
+              = link_to 'Upload Excel', upload_work_unit_codes_path, class: 'btn btn-block btn-primary btn-flat'
+          .col-sm-4
+            = link_to 'Create Work Unit Code', new_work_unit_code_path, class: 'btn btn-block btn-primary btn-flat'
         .clearfix

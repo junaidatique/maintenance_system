@@ -44,6 +44,8 @@ Rails.application.routes.draw do
     collection do 
       get 'get_work_unit_codes'
       get :autocomplete_codes
+      post :import
+      get :upload
     end
   end
   resources :flying_logs do 
