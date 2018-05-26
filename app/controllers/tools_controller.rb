@@ -74,20 +74,25 @@ class ToolsController < ApplicationController
       {"$match"=>{"quantity_in_hand"=>{"$gt"=>0}, "number"=>/#{search_string}.*/i}},
       {"$group" => {
           "_id" => "$number",
-          "name" => { "$first": '$name' },          
-
+          "name" => { "$first": '$name' }, 
+          "count" => {"$sum":1}
       }},
       {"$limit" => 5}
-    ])
-    puts record.inspect
-    # record = Tool.gt(quantity_in_hand: 0).where(number: /.*#{search_string}.*/i).limit(5)    
+    ])    
     render :json => record.map { |tool| 
       {
         id: Tool.where(number: tool[:_id]).first.id.to_s, 
-        label: "#{tool[:_id]} (#{tool[:name]})", 
-        value: "#{tool[:_id]} (#{tool[:name]})" 
-        } 
+        label: "#{tool[:_id]} (#{tool[:name]}) (#{tool[:count]})", 
+        value: "#{tool[:_id]}", 
+      } 
     }
+  end
+
+  def serail_autocomplete
+    search_string = params[:term]
+    tool_no       = params[:tool_no]
+    record = Tool.where(number: tool_no).gt(quantity_in_hand: 0).where(serial_no: /.*#{search_string}.*/i)    
+    render :json => record.map { |tool| {id: tool._id.to_s, label: tool.serial_no, value: tool.serial_no } }
   end
 
   private

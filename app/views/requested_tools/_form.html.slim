@@ -1,0 +1,57 @@
+= simple_form_for(@requested_tool, html: { class: '' }) do |f|
+  = f.error_notification  
+  - if @requested_tool.errors.full_messages.count > 0
+    .alert.alert-danger
+      ul
+        - @requested_tool.errors.full_messages.each do |error_message|
+          li
+            = error_message
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Requsted Tool
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody                
+                  tr
+                    th width="25%"
+                      | Number
+                    td = @requested_tool.tool_no
+                    th width="25%"
+                      | Date
+                    td = display_date_time(@requested_tool.created_at)
+                  tr
+                    th width="25%"
+                      | Requested Quantity
+                    td = @requested_tool.quantity_required
+                    th width="25%"
+                      | Requested By
+                    td = @requested_tool.requested_by.name
+
+                  tr
+                    th width="25%"
+                      | Assigned
+                    td = (@requested_tool.is_assigned) ? 'Yes' : 'No'
+                    th width="25%"
+                      | Returned
+                    td = (@requested_tool.is_returned) ? 'Yes' : 'No'  
+  .row
+    .col-md-12#div_assigned_tools
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-sm-9
+              h3.box-title
+                i.fa.fa-bar-chart
+                | &nbsp;Assign Tool
+            .col-sm-3
+        .box-body
+          div.wuc            
+            = f.simple_fields_for :assigned_tools do |assigned_tool|
+              = render 'techlogs/assigned_tool_fields', :f => assigned_tool
+  == render 'common/form_action_buttons', options: { form: f, index_path: requested_tools_path}

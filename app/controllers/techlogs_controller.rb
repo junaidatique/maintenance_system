@@ -6,18 +6,14 @@ class TechlogsController < ApplicationController
   # GET /techlogs
   # GET /techlogs.json
   def index
-    if current_user.role == :admin or current_user.role == :master_control or current_user.role == :engineer or current_user.role == :chief_maintenance_officer
+    if current_user.admin? or current_user.master_control? or current_user.chief_maintenance_officer?
       @techlogs = Techlog.techloged
-    elsif current_user.role == :central_tool_store 
+    elsif current_user.central_tool_store?
       @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
-    elsif current_user.role == :logistics
+    elsif current_user.logistics?
       @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
     else
-      @techlogs = Techlog.techloged.where(:work_unit_code_id.in => current_user.work_unit_code_ids)
-    #if current_user.role == :crew_cheif or current_user.role == :radio or current_user.role == :electrical or current_user.role == :instrument
-      
-    #else
-      
+      @techlogs = Techlog.techloged.any_of({:work_unit_code_id.in => current_user.work_unit_code_ids}, {user_id: current_user.id})      
     end
     
   end
@@ -51,7 +47,7 @@ class TechlogsController < ApplicationController
     if @techlog.dms_version.blank?
       @techlog.dms_version = System.first.settings['dms_version_number'] 
     end    
-    if current_user.work_unit_code_ids.present? and current_user.work_unit_code_ids.include? @techlog.work_unit_code.id      
+    if current_user.work_unit_code_ids.present? and @techlog.work_unit_code.present? and current_user.work_unit_code_ids.include? @techlog.work_unit_code.id      
       @techlog.is_viewed = true
       @techlog.save :validate => false
     end
@@ -64,6 +60,9 @@ class TechlogsController < ApplicationController
     @techlog.log_date = Time.now.strftime("%Y-%m-%d")
     respond_to do |format|
       if @techlog.save
+        if @techlog.tools_started? and @techlog.requested_tools.count > 0
+          @techlog.tools_requested_tools
+        end
         format.html { redirect_to @techlog, notice: 'Techlog was successfully created.' }
         format.json { render :show, status: :created, location: @techlog }
       else
@@ -110,7 +109,7 @@ class TechlogsController < ApplicationController
         if @techlog.tools_started? and @techlog.assigned_tools.count > 0
           @techlog.tools_requested_tools
         end
-        if @techlog.tools_requested? and current_user.role == :central_tool_store
+        if @techlog.tools_requested? and current_user.central_tool_store?
           @techlog.tools_provided_tools
         end
         if @techlog.tools_provided? and current_user.role == :central_tool_store and @techlog.assigned_tools.where(is_returned: false).count == 0
@@ -242,8 +241,7 @@ class TechlogsController < ApplicationController
                                         :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description, :verified_tools,
                                         flying_log_attributes: [ :fuel_refill, :oil_serviced, :oil_total_qty ],
                                         change_parts_attributes: [:id, :requested_by_id, :assigned_by_id, :old_part_id, :quantity_required, :new_part_id, :quantity_provided, :available, :_destroy],
-                                        assigned_tools_attributes: [:id, :requested_by_id, :tool_id, :quantity_required,
-                                        :quantity_assigned, :is_returned, :_destroy],
+                                        requested_tools_attributes: [:id, :requested_by_id, :tool_no, :quantity_required, :_destroy],
                                         work_performed_attributes: [:work_date, :work_time, :user_id],
                                         date_inspected_attributes: [:work_date, :work_time, :user_id],
                                         work_duplicate_attributes: [:work_date, :work_time, :user_id],

@@ -53,7 +53,7 @@
         .box-body
           .row
             .col-sm-12
-              - if current_user.work_unit_codes.include? @techlog.work_unit_code
+              - if current_user.work_unit_codes.include? @techlog.work_unit_code or @techlog.user == current_user
                 = f.input :condition, collection: enum_option_pairs(Techlog, :condition), as: :radio_buttons
               - else 
                 label Condition
@@ -61,9 +61,9 @@
                 = @techlog.condition.to_s.titleize
           .row
             .col-sm-12
-              - if current_user.work_unit_codes.include? @techlog.work_unit_code
+              - if current_user.work_unit_codes.include? @techlog.work_unit_code or @techlog.user == current_user
                 = f.input :verified_tools, label: 'I have verfied tools', as: :boolean, checked_value: 1, unchecked_value: 0, required: true
-  - if current_user.work_unit_codes.include? @techlog.work_unit_code
+  - if current_user.work_unit_codes.include? @techlog.work_unit_code or @techlog.user == current_user
     .row
       .col-md-12.action_div
         .box.box-info
@@ -108,12 +108,11 @@
               
         .box-body
           div.assigned_tools            
-            = f.simple_fields_for :assigned_tools do |assigned_tool|
-              = render 'assigned_tool_fields', :f => assigned_tool
+            = f.simple_fields_for :requested_tools do |assigned_tool|
+              = render 'requested_tool_fields', :f => assigned_tool
           .row
-            .col-sm-offset-9.col-sm-3
-              - if current_user.work_unit_codes.include? @techlog.work_unit_code and !@techlog.tools_returned?
-                = link_to_add_association "+ Required Tool", f, :assigned_tools, data: {:'association-insertion-node' => ".assigned_tools", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat' 
+            .col-sm-offset-9.col-sm-3              
+              = link_to_add_association "+ Required Tool", f, :requested_tools, data: {:'association-insertion-node' => ".assigned_tools", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
   - if current_user.role == :logistics
     / https://stackoverflow.com/questions/15242170/slim-dynamic-conditional-class
     .row.addition_values class=(@techlog.parts_not_available? ? '' : 'hide')

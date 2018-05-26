@@ -1,0 +1,56 @@
+= content_for :box_heading do
+  = @requested_tool.tool_no
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-borderf
+        h3.box-title
+          i.fa.fa-bars
+          | &nbsp; Requsted Tool
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="25%"
+                    | Number
+                  td = @requested_tool.tool_no
+                  th width="25%"
+                    | Date
+                  td = display_date_time(@requested_tool.created_at)
+                tr
+                  th width="25%"
+                    | Requested Quantity
+                  td = @requested_tool.quantity_required
+                  th width="25%"
+                    | Requested By
+                  td = @requested_tool.requested_by.name
+
+                tr
+                  th width="25%"
+                    | Assigned
+                  td = (@requested_tool.is_assigned) ? 'Yes' : 'No'
+                  th width="25%"
+                    | Returned
+                  td = (@requested_tool.is_returned) ? 'Yes' : 'No'  
+.row
+  .col-md-12#div_assigned_tools
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-sm-9
+            h3.box-title
+              i.fa.fa-bar-chart
+              | &nbsp;Assign Tool
+          .col-sm-3
+      .box-body
+        div.wuc            
+          - @requested_tool.assigned_tools.each do |assigned_tool|
+            .row
+              .col-sm-2
+                | Serail #:
+              .col-sm-6
+                = assigned_tool.serial_no
+= render 'common/actions_buttons', back_path: requested_tools_path, edit_path: edit_requested_tool_path(@requested_tool)

@@ -65,6 +65,7 @@ class Ability
     elsif user.central_tool_store?
       can :crud, Tool
       can :rud, Techlog
+      can :crud, RequestedTool
     elsif user.logistics?
       can :read, Part
       can :cru, Part

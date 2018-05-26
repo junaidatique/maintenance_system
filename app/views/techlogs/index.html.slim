@@ -14,14 +14,14 @@
               th width='10%'
                 | Number
               th width='10%'
-                | Date
+                | Type
               th width='10%'
                 | Aircraft              
               th width='10%'
                 | WUC
               th width='10%'
                 | Log Status
-              - if current_user.role == :central_tool_store
+              - if current_user.central_tool_store?
                 th width='10%'
                   | Tools Status  
               th width='13%'
@@ -32,9 +32,9 @@
                 td.table-row-center
                   = link_to techlog.serial_no, techlog_path(techlog)
                 td.table-row-center
-                  = display_date(techlog.log_date) 
+                  = (techlog.type) 
                 td.table-row-center
-                  = techlog.aircraft.tail_number 
+                  = techlog.aircraft.tail_number unless techlog.aircraft.blank?
                 td.table-row-center
                   = techlog.work_unit_code.code unless techlog.work_unit_code.blank?                
                 td.table-row-center

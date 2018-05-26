@@ -4,9 +4,11 @@ Rails.application.routes.draw do
     collection do
       post :import
       get :autocomplete
+      get :serail_autocomplete
     end
   end
   resources :flying_plans
+  resources :requested_tools
   resources :parts do
     collection do
       post :import

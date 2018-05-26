@@ -6,7 +6,8 @@ class Techlog
   include Mongoid::Autoinc
   include Mongoid::Timestamps
   
-  as_enum :type, Flight: 0, Maintenance: 1, Scheduled: 2
+  as_enum :type, Flight: 0, Maintenance: 1, Scheduled: 2, Tool: 3
+  as_enum :new_type_values, Maintenance: 1, Tool: 3
   as_enum :condition, open: 0, interm: 2, completed: 1
 
   field :log_time, type: String
@@ -46,6 +47,10 @@ class Techlog
   
   attr_accessor :current_user
 
+  validates :type, presence: true
+  
+  
+
   validate :description_validation
   validate :flying_log_values
   validate :verify_complete
@@ -83,7 +88,11 @@ class Techlog
     if condition_cd == 1 and verified_tools.blank?      
       errors.add(:verified_tools, "Please verify that you have verified all the tools.")
     end
-    
+    if condition_cd == 1 and type_cd == 3
+      if self.requested_tools.where(is_returned: false).count > 0
+        errors.add(:verified_tools, "Please return all tools.")
+      end
+    end
   end
 
   increments :number, seed: 1000
@@ -146,7 +155,7 @@ class Techlog
   has_one :work_duplicate, dependent: :destroy  
   has_one :interm_log, class_name: Techlog.name, inverse_of: :parent_techlog
   has_many :change_parts, dependent: :destroy
-  has_many :assigned_tools, dependent: :destroy, inverse_of: :techlog
+  has_many :requested_tools, dependent: :destroy
 
   embeds_many :techlog_state_transitions
 
@@ -155,7 +164,7 @@ class Techlog
   accepts_nested_attributes_for :work_duplicate  
   accepts_nested_attributes_for :flying_log
   accepts_nested_attributes_for :change_parts
-  accepts_nested_attributes_for :assigned_tools
+  accepts_nested_attributes_for :requested_tools
 
   after_create :create_serial_no
   after_create :set_condition

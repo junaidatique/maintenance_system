@@ -1,0 +1,45 @@
+= content_for :page_subtitle do
+  | Requested Tools
+
+= content_for :box_heading do
+  | Requested Tools
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th width='10%'
+                | Number
+              th width='10%'
+                | Requested Quantity
+              th width='10%'
+                | Date
+              th width='10%'
+                | Requested By
+              th width='10%'
+                | Assigned              
+              th width='13%'
+                | Actions
+          tbody
+            - @requested_tools.order(created_at: :asc).each do |requested_tool|
+              tr
+                td.table-row-center
+                  = requested_tool.tool_no
+                td.table-row-center
+                  = requested_tool.quantity_required
+                td.table-row-center
+                  = display_date_time(requested_tool.created_at) 
+                td.table-row-center
+                  = requested_tool.requested_by.name
+                td.table-row-center
+                  = (requested_tool.is_assigned) ? 'Yes' : 'No'
+                td.text-center width='20%'                  
+                  = link_to requested_tool_path(requested_tool), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  = link_to edit_requested_tool_path(requested_tool), class: 'btn btn-info btn-flat ' do
+                    i.fa.fa-pencil
+                    
+        

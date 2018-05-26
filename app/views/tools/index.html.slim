@@ -18,7 +18,7 @@
               th
                 | Name
               th
-                | Total Quantity
+                | Quantity Available
           tbody
             - @tools.each do |tool|
               tr
@@ -29,7 +29,7 @@
                 td.table-row-center
                   = tool.name
                 td.table-row-center
-                  = tool.total_quantity
+                  = tool.quantity_in_hand
                 
                 
         .row        

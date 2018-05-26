@@ -1,42 +1,22 @@
 .nested-fields
   .row
     .col-md-12
-      = f.input :tool_id, as: :hidden
-      - if current_user.work_unit_codes.include? @techlog.work_unit_code and f.object.requested_by.blank?
-        = f.input :requested_by_id, as: :hidden, input_html: { value: current_user.id }
-      - if current_user.role == :central_tool_store
+      = f.input :is_assigned, as: :hidden, input_html: { value: true }
+      - if current_user.central_tool_store?
         = f.input :assigned_by_id, as: :hidden, input_html: { value: current_user.id }
-      .row
-        .col-sm-4
-          - if current_user.work_unit_codes.include? @techlog.work_unit_code and f.object.tool.blank?          
-            = f.input :tool, :url => autocomplete_tools_path, :as => :autocomplete, input_html: {id_element: "#id"}
-          - else           
-            label Tool Number
-            br
-            = f.object.tool.number 
-            |  (
-            = f.object.tool.quantity_in_hand
-            |  Left)
-        .col-sm-4
-          - if current_user.work_unit_codes.include? @techlog.work_unit_code and !f.object.is_returned
-            = f.input :quantity_required
-          - else             
-            label Quantity Used
-            br
-            = f.object.quantity_required
-        /.col-sm-3
-          - if current_user.role == :central_tool_store            
-            = f.input :quantity_assigned
-            - if @techlog.tools_provided? and f.object.quantity_assigned > 0
-              = f.input :is_returned, label: 'returned', as: :boolean, checked_value: 1, unchecked_value: 0
-          - else 
-            label Quantity Assigned
-            br
-            = f.object.quantity_assigned
-        - if current_user.work_unit_codes.include? @techlog.work_unit_code and !f.object.is_returned
-          .col-sm-1
-            br
-            = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
-              i.fa.fa-trash
+      .row        
+        .col-sm-6
+          - if current_user.central_tool_store?
+            - unless f.object.is_assigned
+              = f.input :serial_no, :url => serail_autocomplete_tools_path(tool_no: @requested_tool.tool_no), :as => :autocomplete
+            - else 
+              label 
+                | Serail #:  
+                |  
+              = f.object.serial_no
+        .col-sm-6
+          - if current_user.central_tool_store? and f.object.serial_no.present? and f.object.tool.present?
+            = f.input :is_returned, label: 'returned', as: :boolean, checked_value: 1, unchecked_value: 0
+          
       hr
         

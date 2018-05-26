@@ -10,6 +10,7 @@ class Tool
   field :quantity_in_hand, type: Integer
   field :puc, type: String
   field :total_cost, type: String
+  
 
   has_many :assigned_tools, dependent: :destroy, inverse_of: :tool
 

@@ -1,0 +1,24 @@
+.nested-fields
+  .row
+    .col-md-12      
+      = f.input :requested_by_id, as: :hidden, input_html: { value: current_user.id }              
+      .row
+        .col-sm-4
+          - if f.object.tool_no.blank?
+            = f.input :tool_no, :url => autocomplete_tools_path, :as => :autocomplete
+          - else
+            = f.object.tool_no
+        .col-sm-4
+          - if f.object.quantity_required.blank?
+            = f.input :quantity_required
+          - else
+            = f.object.quantity_required
+        .col-sm-1
+          - if f.object.requested_by_id.present? and f.object.requested_by_id == current_user.id and !f.object.is_returned? and !f.object.is_assigned?
+            = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
+              i.fa.fa-trash
+          - if f.object.is_returned?
+            | Returned
+            
+      hr
+        

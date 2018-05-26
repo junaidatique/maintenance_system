@@ -14,6 +14,11 @@ ul.sidebar-menu
       = link_to tools_path do
         .fa.fa-wrench 
         span.side-bar-heading-text Tools
+  - if can? :read, RequestedTool
+    li class="#{params[:controller] == "requested_tools" ? 'active' : ''}"
+      = link_to requested_tools_path do
+        .fa.fa-wrench 
+        span.side-bar-heading-text Requested Tools
   - if can? :read, User
     li class="#{params[:controller] == "users" ? 'active' : ''}"
       = link_to users_path do
