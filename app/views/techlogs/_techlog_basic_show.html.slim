@@ -64,7 +64,7 @@
           | &nbsp; DMS Version (
           = @techlog.dms_version
           | )
-- if @techlog.interm_log.present?  
+- if @techlog.interm_logs.present?  
   .row
     .col-md-12
       .box.box-info
@@ -72,7 +72,8 @@
           h3.box-title
             i.fa.fa-bars
             | &nbsp; Interm Log
-      = render 'techlog_short_detail', techlog: @techlog.interm_log
+        - @techlog.interm_logs.each do |interm_log|
+          = render 'techlog_short_detail', techlog: interm_log
 - if @techlog.parent_techlog.present?  
   .row
     .col-md-12

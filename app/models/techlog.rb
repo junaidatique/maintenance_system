@@ -55,12 +55,18 @@ class Techlog
   validate :flying_log_values
   validate :verify_complete
   validate :verify_interm
+  validate :maintenance_work_unit_code
+
+  def maintenance_work_unit_code    
+    if type_cd == 1 and flying_log.blank? and work_unit_code.blank?  
+      errors.add(:work_unit_code, " can't be blank")
+    end
+  end
 
   def verify_interm
     if condition_cd == 2 and action.blank?
       errors.add(:action, " can't be blank")
-    end
-    
+    end    
   end
 
   def flying_log_values
@@ -70,6 +76,7 @@ class Techlog
       end
     end
   end
+
   def description_validation
     if flying_log.blank? or (flying_log.present? and flying_log.sortie.present? and flying_log.sortie.pilot_comment == 'Un_satisfactory')
       if description.blank?
@@ -77,12 +84,11 @@ class Techlog
       end
     end
   end
+
   def verify_complete    
-    if condition_cd == 1 and (tools_state == "requested" or tools_state == "provided") 
-      # errors.add(:status, " there are some tools that are not returned yet. ")
-    elsif condition_cd == 1 and (parts_state == "requested" or parts_state == "pending" or parts_state == "not_available")
+    if condition_cd == 1 and (parts_state == "requested" or parts_state == "pending" or parts_state == "not_available")
       errors.add(:status, " Some parts are missing. ")
-    elsif interm_log.present? and !interm_log.is_completed?
+    elsif condition_cd == 1 and interm_log.present? and !interm_log.is_completed?
       errors.add(:status, " This techlog has an interm log. Please complete that log first. ")
     end
     if condition_cd == 1 and verified_tools.blank?      
@@ -92,7 +98,7 @@ class Techlog
       if self.requested_tools.where(is_returned: false).count > 0
         errors.add(:verified_tools, "Please return all tools.")
       end
-    end
+    end    
   end
 
   increments :number, seed: 1000
@@ -148,12 +154,12 @@ class Techlog
   belongs_to :flying_log, optional: true
   belongs_to :user
   belongs_to :aircraft, optional: true
-  belongs_to :parent_techlog, class_name: Techlog.name, inverse_of: :interm_log, optional: true
+  belongs_to :parent_techlog, class_name: Techlog.name, inverse_of: :interm_logs, optional: true
 
   has_one :date_inspected, dependent: :destroy
   has_one :work_performed, dependent: :destroy
   has_one :work_duplicate, dependent: :destroy  
-  has_one :interm_log, class_name: Techlog.name, inverse_of: :parent_techlog
+  has_many :interm_logs, class_name: Techlog.name, inverse_of: :parent_techlog
   has_many :change_parts, dependent: :destroy
   has_many :requested_tools, dependent: :destroy
 
@@ -178,6 +184,7 @@ class Techlog
   scope :limited, -> { where(log_state: :limited) }  
   scope :completed, -> { where(condition_cd: 1) }
   scope :incomplete, -> { where(condition_cd: 0) }  
+  scope :open, -> { any_of({condition_cd: 0}, {condition_cd: 2})}
   scope :pilot_created, -> { any_of({type_cd: 1}, {type_cd: 1.to_s})}
   scope :flight_created, -> { any_of({type_cd: 0}, {type_cd: 0.to_s})}
 
@@ -229,8 +236,13 @@ class Techlog
       temp_interm_log.parent_techlog = self
       temp_interm_log.number = Techlog.last.number + 1
       temp_interm_log.description = self.action
+      temp_interm_log.location_from = self.location_from
+      temp_interm_log.location_to = self.location_to
+      temp_interm_log.condition_cd = 0
       temp_interm_log.action = ''
-      temp_interm_log.save
+      temp_interm_log.user = self.user
+      # temp_interm_log.serial_no = "#{Time.zone.now.strftime('%d%m%Y')}-#{number}"
+      temp_interm_log.save!
     end    
   end
 end

@@ -27,7 +27,7 @@
               th width='13%'
                 | Actions
           tbody
-            - @techlogs.incomplete.order(created_at: :desc).each do |techlog|
+            - @techlogs.order(created_at: :desc).each do |techlog|
               tr
                 td.table-row-center
                   = link_to techlog.serial_no, techlog_path(techlog)

@@ -13,7 +13,7 @@ class TechlogsController < ApplicationController
     elsif current_user.logistics?
       @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
     else
-      @techlogs = Techlog.techloged.any_of({:work_unit_code_id.in => current_user.work_unit_code_ids}, {user_id: current_user.id})      
+      @techlogs = Techlog.techloged.open.any_of({:work_unit_code_id.in => current_user.work_unit_code_ids}, {user_id: current_user.id})      
     end
     
   end
@@ -41,6 +41,9 @@ class TechlogsController < ApplicationController
     if @techlog.is_completed?
       redirect_to techlog_path(@techlog), :flash => { :error => "You can't edit completed techlog." }
     end
+    if @techlog.interm_logs.incomplete.count > 0
+      redirect_to techlog_path(@techlog), :flash => { :error => "Please complete all the interm logs." }
+    end
     @techlog.build_work_performed if @techlog.work_performed.blank?
     @techlog.build_date_inspected if @techlog.date_inspected.blank?
     @techlog.build_work_duplicate if @techlog.work_duplicate.blank?
@@ -65,8 +68,7 @@ class TechlogsController < ApplicationController
         end
         format.html { redirect_to @techlog, notice: 'Techlog was successfully created.' }
         format.json { render :show, status: :created, location: @techlog }
-      else
-        puts @techlog.errors.inspect
+      else        
         format.html { render :new }
         format.json { render json: @techlog.errors, status: :unprocessable_entity }
       end
@@ -106,7 +108,7 @@ class TechlogsController < ApplicationController
         end
         
         # Tools 
-        if @techlog.tools_started? and @techlog.assigned_tools.count > 0
+        if @techlog.tools_started? and @techlog.requested_tools.count > 0
           @techlog.tools_requested_tools
         end
         if @techlog.tools_requested? and current_user.central_tool_store?
