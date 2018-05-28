@@ -346,7 +346,7 @@ puts 'WorkUnitCodes Created'
 #       serial_no: serial_no, 
 #       number_serial_no: part_number_serial_no, 
 #       quantity: quantity, 
-#       quantity_left: quantity, 
+#       quantity: quantity, 
 #       description: Faker::Lorem.words(1 + rand(4)).join(" "), 
 #       is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
 #       total_hours: total_hours, total_landings: total_landings })

@@ -19,7 +19,7 @@ class ChangePart
   def verify_quantity_provided  
     # puts self.inspect    
     if new_part.present? and !provided
-      if quantity_provided > new_part.quantity_left
+      if quantity_provided > new_part.quantity
         # puts 'here'
         errors.add(:quantity_provided, "Provided quantity not available.")
       end
@@ -29,10 +29,10 @@ class ChangePart
   def update_parts_quantity  
     if provided_changed?
       old_part.aircraft = nil
-      old_part.quantity_left = old_part.quantity_left.to_f + quantity_required.to_f
+      old_part.quantity = old_part.quantity.to_f + quantity_required.to_f
       old_part.save
       new_part.aircraft_id = techlog.aircraft_id
-      new_part.quantity_left = new_part.quantity_left.to_f - quantity_provided.to_f
+      new_part.quantity = new_part.quantity.to_f - quantity_provided.to_f
       new_part.save
     end  
     

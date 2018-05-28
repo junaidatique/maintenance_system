@@ -11,49 +11,54 @@
           .row
             .col-sm-6
               = f.association :aircraft, collection: Aircraft.all, label_method: :tail_number, value_method: :id, input_html: {class: 'custom-select2'}
+            .col-sm-6
+              = f.input :category, collection: enum_option_pairs(Part, :category)
           .row
             .col-sm-6
-                = f.input :number
+              = f.input :number
             .col-sm-6
               = f.input :serial_no, label: 'Serail #'
           .row
             .col-sm-6
-                = f.input :description
+              = f.input :description
             .col-sm-6
               = f.input :unit_of_issue
           .row
             .col-sm-6
-                = f.input :contract_quantity
+              = f.input :contract_quantity
             .col-sm-6
               = f.input :recieved_quantity
           .row
             .col-sm-6
-                = f.input :quantity, label: "Store Balance"
+              = f.input :quantity, label: "Store Balance"
             .col-sm-6
               = f.input :dfim_balance, as: :radio_buttons
           .row
             .col-sm-6
-                = f.input :inspection_hours
+              = f.input :inspection_hours, label: "INSP (HRS)"
+            .col-sm-6
+              = f.input :inspection_calender_value, label: "INSP Calender (month)"
+          .row
+            .col-sm-6
+              = f.input :trade, collection: enum_option_pairs(Part, :trade)
             .col-sm-6
               = f.input :is_repairable, as: :radio_buttons
           .row
             .col-sm-6
-                = f.input :condemn
+              = f.input :condemn
             .col-sm-6
-              /= f.input :is_repairable, as: :radio_buttons
+              = f.input :is_lifed, as: :radio_buttons
           .row
             .col-sm-6
-                = f.input :calender_life_value, label: "Calender Life"
+              = f.input :calender_life_value, label: "Calender Life (year)"
             .col-sm-6
               = f.input :installed_date, input_html: {class: 'datepicker'}
           .row
             .col-sm-6
-                = f.input :total_hours, label: "Hourly Life"
+              = f.input :total_hours, label: "Hourly Life (HRS)"
             .col-sm-6
-              = f.input :hours_completed
-          .row
-            .col-sm-6
-                = f.input :total_landings, label: "Landings Life"
+              = f.input :completed_hours, label: "Hours Completed (HRS)"
+          .row            
             .col-sm-6
               = f.input :landings_completed
               

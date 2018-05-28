@@ -86,7 +86,7 @@ class PartsController < ApplicationController
       end
     end
     record = parts.limit(5)
-    render :json => record.map { |part| {id: part._id.to_s, label: "#{part.number_serial_no} (#{part.quantity_left} left)", value: "#{part.number_serial_no} (#{part.quantity_left} left)" } }
+    render :json => record.map { |part| {id: part._id.to_s, label: "#{part.number_serial_no} (#{part.quantity} left)", value: "#{part.number_serial_no} (#{part.quantity} left)" } }
   end
 
   private
@@ -97,6 +97,6 @@ class PartsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def part_params
-      params.require(:part).permit(:aircraft_id,:number, :serial_no, :description, :unit_of_issue, :contract_quantity, :recieved_quantity, :quantity, :dfim_balance, :inspection_hours, :is_repairable, :condemn, :calender_life_value, :installed_date, :total_hours, :hours_completed)
+      params.require(:part).permit(:aircraft_id,:number, :serial_no, :description, :unit_of_issue, :contract_quantity, :recieved_quantity, :quantity, :dfim_balance, :inspection_hours, :is_repairable, :condemn, :calender_life_value, :installed_date, :total_hours, :completed_hours)
     end
 end

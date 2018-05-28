@@ -1,7 +1,17 @@
 class Part
   include Mongoid::Document
   include Mongoid::Timestamps
+  include SimpleEnum::Mongoid
 
+  as_enum :category, 
+    engine: 0, 
+    propeller: 1, 
+    left_tyre: 2, 
+    right_tyre: 3, 
+    nose_tail: 4
+    
+
+  as_enum :trade, airframe: 0, engine: 1, electic: 2, instrument: 3, radio: 4
 
   field :number, type: String
   field :description, type: String
@@ -12,12 +22,14 @@ class Part
   field :contract_quantity, type: Float, default: 0
   field :recieved_quantity, type: Float, default: 0
   field :quantity, type: Float, default: 0 # Store balance
-  field :quantity_left, type: Float, default: 0
+
   field :dfim_balance, type: Mongoid::Boolean
   field :is_repairable, type: Mongoid::Boolean
-  field :inspection_hours, type: Float, default: 0
-  field :is_inspectable, type: Mongoid::Boolean
   field :condemn, type: String
+
+  field :inspection_hours, type: Float, default: 0
+  field :inspection_calender_value, type: String  
+  field :is_inspectable, type: Mongoid::Boolean
 
   field :is_lifed, type: Mongoid::Boolean
   field :calender_life_value, type: String # calender life. either calender life or life hours
@@ -26,16 +38,14 @@ class Part
 
   field :total_hours, type: Float, default: 0 # life hours or calender life
   field :remaining_hours, type: Float, default: 0
-  field :hours_completed, type: Float, default: 0
-
-  field :total_landings, type: Integer
-  field :landings_completed, type: Integer, default: 0
-  field :landings_remaining, type: Integer, default: 0
-
+  field :completed_hours, type: Float, default: 0
   
+  field :landings_completed, type: Integer, default: 0  
 
-  belongs_to :aircraft, optional: true 
-  embeds_many :histories, as: :historyable
+
+  belongs_to :aircraft, optional: true
+  
+  # embeds_many :histories, as: :historyable
   has_many :old_parts, class_name: 'ChangePart', inverse_of: :old_parts
   has_many :new_parts, class_name: 'ChangePart', inverse_of: :new_parts  
 
@@ -47,71 +57,119 @@ class Part
   after_update :create_history
   
   def create_history
-    part_history = History.new
-    part_history.entry = self.to_json    
-    part_history.created_at = Time.now
+    # part_history = History.new
+    # part_history.entry = self.to_json    
+    # part_history.created_at = Time.now
     # part_history.save
-    self.histories << part_history
+    # self.histories << part_history
   end
 
   def update_record
-    self.remaining_hours = self.total_hours.to_f - self.hours_completed.to_f
-    self.landings_remaining = self.total_landings.to_i - self.landings_completed.to_i
+    self.remaining_hours = self.total_hours.to_f - self.completed_hours.to_f    
     self.save
   end
+
+  AIRCRAFT_TAIL_NO  = 1
+  TRADE             = 2
+  NUMBER            = 3
+  DESCRIPTION       = 4
+  UNIT              = 5
+  CONTRACT_QUANTITY = 6
+  RECIEVED_QUANTITY = 7
+  STORE_BALANCE     = 8
+  DFIM              = 9
+  REPAIR            = 10
+  CONDEMN           = 11
+  LIFED             = 12
+  INSP_HOUR         = 13
+  INSP_CALENDER     = 14
+  LIFE_CALENDER     = 15
+  LIFE_HOUR         = 16  
+  INSTALLED_DATE    = 17
+  COMPLETED_HOURS   = 18
+  LANDING_COMPLETED = 19
+  SERIAL_NO         = 20
 
   def self.import(file)    
     xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
     (4..xlsx.last_row).each do |i|
-      row                   = xlsx.row(i)      
-      number                = row[1]
-      description           = row[2]
-      unit_of_issue         = row[3]
-      contract_quantity     = row[4]
-      recieved_quantity     = row[5]
-      quantity              = row[6]
-      dfim_balance          = (row[7].present? and row[7].downcase == 'y') ? true : false
-      is_repairable         = (row[8].present? and row[8].downcase == 'y') ? true : false
-      inspection_hours      = (row[9].present?) ? row[9].downcase.gsub("hrs",'').strip.to_i : 0
-      is_inspectable        = (inspection_hours.blank?) ? false : true
-      condemn               = row[10]
-      calender_life_value   = (row[11].present?) ? row[11].downcase.gsub("year",'').strip.to_i : 0
-      total_hours           = (row[12].present?) ? row[12].downcase.gsub("hrs",'').strip.to_i : 0
-      serial_no             = row[13]
-      is_lifed = false
-      if !calender_life_value.blank? or !total_hours.blank?
-        is_lifed = true
+      row               = xlsx.row(i)      
+      aircraft          = Aircraft.where(tail_number: row[Part::AIRCRAFT_TAIL_NO]).first
+      trade             = (Part::categories.include? row[Part::TRADE]) ? row[Part::TRADE] : nil
+      number            = row[Part::NUMBER]
+      description       = row[Part::DESCRIPTION]
+      unit_of_issue     = row[Part::UNIT]
+
+      contract_quantity = row[Part::CONTRACT_QUANTITY]
+      recieved_quantity = row[Part::RECIEVED_QUANTITY]
+      quantity          = row[Part::STORE_BALANCE]
+      dfim_balance      = (row[Part::DFIM].present? and row[Part::DFIM].downcase == 'y') ? true : false
+
+      is_repairable     = (row[Part::REPAIR].present? and row[Part::REPAIR].downcase == 'y') ? true : false
+      condemn           = row[Part::CONDEMN]
+      is_lifed          = (row[Part::LIFED].present? and row[Part::LIFED].downcase == 'y') ? true : false
+
+      inspection_hours  = (row[Part::INSP_HOUR].present?)? row[Part::INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
+      inspection_calender_value = 
+        (row[Part::INSP_CALENDER].present?)? row[Part::INSP_CALENDER].downcase.gsub("month",'').strip.to_i : 0
+      is_inspectable    = (inspection_hours.present? || inspection_calender_value.present?) ? true : false
+
+      calender_life_value   = 
+        (row[Part::LIFE_CALENDER].present?) ? row[Part::LIFE_CALENDER].downcase.gsub("year",'').strip.to_i : 0
+      total_hours       = (row[Part::LIFE_HOUR].present?)? row[Part::LIFE_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
+
+      installed_date    = row[Part::INSTALLED_DATE]
+      if (installed_date.present?)
+        calender_life_date = installed_date.to_date + calender_life_value.years
       end
-      part = Part.where(number: number).first
-      part_number_serial_no = "#{number}-#{serial_no}"
+
+      completed_hours     = row[Part::COMPLETED_HOURS]
+      landings_completed  = row[Part::LANDING_COMPLETED]
+      if (total_hours.present? and completed_hours.present?)
+        remaining_hours = total_hours.to_f - completed_hours.to_f
+      end
+      serial_no           = row[Part::SERIAL_NO]
+      
+      number_serial_no = "#{number}-#{serial_no}"
+      part = Part.where(number_serial_no: number_serial_no).first      
       part_data = {            
+            aircraft: aircraft, 
+            trade: trade, 
             number: number, 
             serial_no: serial_no, 
-            number_serial_no: part_number_serial_no, 
+            number_serial_no: number_serial_no, 
             description: description, 
             unit_of_issue: unit_of_issue, 
-            quantity: quantity, 
-            quantity_left: quantity, 
+
+            quantity: quantity,            
             contract_quantity: contract_quantity, 
-            recieved_quantity: recieved_quantity,             
+            recieved_quantity: recieved_quantity,    
             dfim_balance: dfim_balance, 
+
             is_repairable: is_repairable, 
-            inspection_hours: inspection_hours, 
-            is_inspectable: is_inspectable, 
             condemn: condemn, 
             is_lifed: is_lifed, 
-            calender_life_value: calender_life_value,             
-            total_hours: total_hours,            
-          }
-      # puts part_data.inspect
-      
+
+            inspection_hours: inspection_hours, 
+            inspection_calender_value: inspection_calender_value,             
+            is_inspectable: is_inspectable, 
+                                                 
+            calender_life_value: calender_life_value,
+            calender_life_date: calender_life_date,
+            total_hours: total_hours,
+            
+            remaining_hours: remaining_hours,
+            completed_hours: completed_hours,
+            installed_date: installed_date,
+            landings_completed: landings_completed,
+
+          }            
+      puts part_data.inspect
       if part.present?
         part.update(part_data)
       else
         part = Part.create(part_data)
-      end
-      # part.create_history
-      # break; 
+      end      
     end
   end
 

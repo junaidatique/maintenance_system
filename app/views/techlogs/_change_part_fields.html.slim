@@ -16,7 +16,7 @@
             br
             = f.object.old_part.number_serial_no
             |  (
-            = f.object.old_part.quantity_left
+            = f.object.old_part.quantity
             |  Left)
         .col-sm-2
           - if current_user.work_unit_codes.include? @techlog.work_unit_code and !f.object.provided
@@ -29,7 +29,7 @@
         .col-sm-3
           - if current_user.role == :logistics and !f.object.provided
             - if f.object.new_part.present?
-              = f.input :new_part, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id", value: "#{f.object.new_part.number_serial_no} (#{f.object.new_part.quantity_left} left)"}
+              = f.input :new_part, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id", value: "#{f.object.new_part.number_serial_no} (#{f.object.new_part.quantity} left)"}
             - else 
              = f.input :new_part, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id"} 
           - elsif f.object.new_part.present?
@@ -37,7 +37,7 @@
             br
             = f.object.new_part.number_serial_no
             |  (
-            = f.object.new_part.quantity_left
+            = f.object.new_part.quantity
             |  Left)
         .col-sm-2          
             - if current_user.role == :logistics and !f.object.provided
