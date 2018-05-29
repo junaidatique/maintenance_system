@@ -19,7 +19,7 @@ class FlyingLog
   
   # validates :location_from, presence: true
   # validates :location_to, presence: true  
-  #validate :check_techlogs
+  validate :check_techlogs
 
   def check_techlogs    
     if flight_released?

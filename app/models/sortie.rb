@@ -66,6 +66,12 @@ class Sortie
   end
 
   def update_aircraft_times
+
+    self.total_landings = self.touch_go.to_i + self.full_stop.to_i
+    self.flight_minutes = self.calculate_flight_minutes
+    self.flight_time    = self.calculate_flight_time
+    self.total_landings = self.calculate_landings
+
     f_total = self.flying_log.aircraft_total_time
     f_total.this_sortie_aircraft_hours = flight_time.to_f.round(2)
     f_total.this_sortie_landings       = total_landings
@@ -87,7 +93,7 @@ class Sortie
     f_total.corrected_total_landings         = t_landings
     f_total.corrected_total_prop_hours       = total_prop_hours.round(2)
 
-    # self.flying_log.aircraft.update_part_values flying_log
+    self.flying_log.aircraft.update_part_values flying_log
 
   end
 end

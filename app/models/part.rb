@@ -8,7 +8,8 @@ class Part
     propeller: 1, 
     left_tyre: 2, 
     right_tyre: 3, 
-    nose_tail: 4
+    nose_tail: 4,
+    battery: 5
     
 
   as_enum :trade, airframe: 0, engine: 1, electic: 2, instrument: 3, radio: 4
@@ -32,7 +33,7 @@ class Part
   field :is_inspectable, type: Mongoid::Boolean
 
   field :is_lifed, type: Mongoid::Boolean
-  field :calender_life_value, type: String # calender life. either calender life or life hours
+  field :calender_life_value, type: Integer # calender life. either calender life or life hours
   field :calender_life_date, type: Date # calender life. either calender life or life hours
   field :installed_date, type: Date
 
@@ -58,33 +59,24 @@ class Part
   
   def create_history_with_flying_log flying_log
     if self.is_lifed?
-      part_history = PartHistory.where(flying_log_id: flying_log.id).first      
-      puts '-----------1'
-      puts part_history.inspect
-      puts '-----------2'
-      part_history = PartHistory.new if part_history.blank?
-      puts part_history.inspect
-      puts '----------3'
-      part_history.quantity   = self.quantity
-      part_history.hours      = flying_log.sortie.flight_time
-      part_history.landings   = flying_log.sortie.total_landings            
-      part_history.flying_log         = flying_log
-      part_history.aircraft_id        = flying_log.aircraft.id      
-      part_history.created_at         = Time.now
-      part_history.part = self
-      part_history.save!      
-      self.update_values
-      
+      part_history = PartHistory.where(flying_log_id: flying_log.id).where(part_id: self.id).first            
+      part_history = PartHistory.new if part_history.blank?      
+      part_history.quantity     = self.quantity
+      part_history.hours        = flying_log.sortie.flight_time
+      part_history.landings     = flying_log.sortie.total_landings            
+      part_history.flying_log   = flying_log
+      part_history.aircraft_id  = flying_log.aircraft.id      
+      part_history.created_at   = flying_log.created_at
+      part_history.part         = self      
+      part_history.save      
+      self.update_values      
     end    
   end
 
   def update_values
     self.completed_hours     = part_histories.sum('hours')
     self.landings_completed  = part_histories.sum('landings')
-    self.remaining_hours     = total_hours.to_f - completed_hours.to_f
-    puts '=============='
-    puts self.inspect
-    puts '=============='
+    self.remaining_hours     = total_hours.to_f - completed_hours.to_f    
     save
   end
 

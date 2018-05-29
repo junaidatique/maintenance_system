@@ -46,14 +46,15 @@ class Aircraft
     self.engine_hours = flying_log.aircraft_total_time.corrected_total_engine_hours.to_f
     self.prop_hours   = flying_log.aircraft_total_time.corrected_total_prop_hours.to_f
     self.save
-    parts = self.parts.lifed
-    parts.each do |part|      
+    lifed_parts = self.parts.lifed    
+    lifed_parts.each do |part|            
+      part.create_history_with_flying_log flying_log
+    end    
+    tyre_parts = self.parts.tyre
+    tyre_parts.each do |part|
       part.create_history_with_flying_log flying_log
     end
-    parts = self.parts.tyre
-    parts.each do |part|
-      part.create_history_with_flying_log flying_log
-    end
+    
 
   end
 

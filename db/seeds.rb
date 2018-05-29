@@ -266,31 +266,31 @@ users_list = [
     }
   ]
   
-  puts 'creating users'
-  users_list.each do |user|
-    # puts user[:sno].inspect
-    u = User.new
-    u.name = user[:name].titleize
-    u.username = user[:name].downcase.gsub(' ','_')
-    u.rank = user[:rank]
-    u.trade = user[:trade]
-    u.personal_code = user[:personal_code]
-    u.password = 'test1234'
-    u.status = 1
-    u.role_cd = User.roles[user[:trade].downcase.gsub(" ", "_")]
-    u.trade = user[:trade]
-    u.save!    
-    print '.'
-  end
-  puts ''
-  puts 'user created'
+puts 'creating users'
+users_list.each do |user|
+  # puts user[:sno].inspect
+  u = User.new
+  u.name = user[:name].titleize
+  u.username = user[:name].downcase.gsub(' ','_')
+  u.rank = user[:rank]
+  u.trade = user[:trade]
+  u.personal_code = user[:personal_code]
+  u.password = 'test1234'
+  u.status = 1
+  u.role_cd = User.roles[user[:trade].downcase.gsub(" ", "_")]
+  u.trade = user[:trade]
+  u.save!    
+  print '.'
+end
+puts ''
+puts 'user created'
 puts 'Creating FlyingPlan'
 (0..10).each do |day|
   is_flying     = 1
   aircraft_ids  = []
-  reason = ''
+  reason = ''  
   if (is_flying)
-    aircraft_ids = Aircraft.limit(1+rand(Aircraft.count)).sort_by{rand}.map{|aircraft| aircraft.id.to_s}
+    aircraft_ids = Aircraft.all.map{|aircraft| aircraft.id.to_s}
   else
     reason = Faker::Lorem.sentence(3)
   end  
@@ -318,181 +318,191 @@ WorkUnitCode.wuc_types.each do |work_unit_code,code_key|
 end
 puts ''
 puts 'WorkUnitCodes Created'
+puts 'Creating Parts'
+(0..Aircraft.count).each do |j|
+  aircraft = Aircraft.limit(1).offset(j).first
+  Part::categories.each do |category,value|
+    part_number   = "#{Faker::Number.number(8)}"
+    serial_no     = "#{Faker::Number.number(5)}"
+    quantity      = 0
 
-# (0..Aircraft.count).each do |j|
-#   aircraft = Aircraft.limit(1).offset(j).first
-#   (1..16).each do |i|
-#     calender_life = ''
-#     installed_date = (cur_time).strftime("%Y-%m-%d")
-#     total_hours = 0
-#     total_landings = 0
-#     is_lifed = false
-#     if i == 5 or i == 6 or i == 7 or i == 8
-#       is_lifed = true
-#       calender_life = (cur_time + (60*60*24*365)).strftime("%Y-%m-%d")
-#     elsif i == 9 or i == 10 or i == 11 or i == 12
-#       is_lifed = true
-#       total_hours = 400
-#     elsif i == 13 or i == 14 or i == 15 or i == 16
-#       is_lifed = true
-#       total_landings = 200
-#     end
-#     part_number = "#{Faker::Number.number(8)}"
-#     serial_no = "#{Faker::Number.number(5)}"
-#     part_number_serial_no = "#{part_number}-#{serial_no}"
-#     quantity = rand(10) + 1
-#     Part.create({
-#       aircraft: aircraft, number: part_number, 
-#       serial_no: serial_no, 
-#       number_serial_no: part_number_serial_no, 
-#       quantity: quantity, 
-#       quantity: quantity, 
-#       description: Faker::Lorem.words(1 + rand(4)).join(" "), 
-#       is_lifed: is_lifed, calender_life: calender_life, installed_date: installed_date, 
-#       total_hours: total_hours, total_landings: total_landings })
-#   end
+    inspection_hours = 10
+    inspection_calender_value = 1
+    
+    is_lifed = true
+
+    calender_life_value = 1
+    installed_date  = cur_time.strftime("%Y-%m-%d")
+    
+    total_hours = 100
+    
+    Part.create({
+      aircraft: aircraft, number: part_number, 
+      serial_no: serial_no,       
+      quantity: quantity, 
+      category: category, 
+      
+      description: Faker::Lorem.words(1 + rand(4)).join(" "), 
+      is_lifed: is_lifed, 
+      calender_life_value: calender_life_value, 
+      installed_date: installed_date, 
+      total_hours: total_hours })
+  end
+end
+
+puts 'Part Created'
+
+##################################################################
+#sleep(2)
+(0..8).each do |day|
+  date = Time.now - (8 - day).days
+  FlightlineServicing::inspection_performeds.each do |inspection,inspection_id|
+    Aircraft.all.each do |aircraft|
+      puts 'Creating Pre flight Flying Log'
+      flying_log = FlyingLog.new
+      last_flying_log = FlyingLog.last
+      if last_flying_log.present?
+        flying_log.number = last_flying_log.number + 1
+      else
+        flying_log.number = 1001
+      end
+      cur_time  = date
+
+      flying_log.log_date = date.strftime("%Y-%m-%d")
+      flying_log.aircraft = aircraft
+      flying_log.location_from = Faker::Lorem.word
+      flying_log.location_to = Faker::Lorem.word
+
+      flying_log.build_ac_configuration
+      flying_log.ac_configuration.clean = 1
+      flying_log.ac_configuration.smoke_pods = 1
+      flying_log.ac_configuration.third_seat = 1
+      flying_log.ac_configuration.cockpit_cd = 1 #+ rand(2)
+
+      flying_log.build_flightline_servicing
+      flying_log.flightline_servicing.user = User.where(role_cd: 15).first
+      flying_log.flightline_servicing.inspection_performed = inspection_id
+
+      flying_log.flightline_servicing.flight_start_time = cur_time
+      flying_log.flightline_servicing.flight_end_time   = (cur_time + (10*60)).strftime("%H:%M %p")
+      flying_log.flightline_servicing.hyd = Faker::Lorem.word
+      flying_log.created_at = date
+      flying_log.save
+      flying_log.flightline_service
+
+      puts 'Flighline serviced'
+
+      flying_log.fuel_refill = 1 + rand(flying_log.aircraft.fuel_capacity)
+      flying_log.oil_serviced = 1 + rand(flying_log.aircraft.oil_capacity)
+      flying_log.update_fuel
+      flying_log.save
+      flying_log.fill_fuel
+
+    # # ToDo
+      flying_log.techlogs.where(type_cd: 0).each do |techlog|
+        techlog.action = Faker::Lorem.sentence
+        techlog.condition_cd = 1
+        techlog.verified_tools = true
+        techlog.user = User.where(role_cd: 4).first
+        techlog.save
+      end
+      puts 'techlog finished'
+      flying_log.build_flightline_release
+      flying_log.flightline_release.flight_time = cur_time.strftime("%H:%M %p")
+      flying_log.flightline_release.user = User.where(role_cd: 1).first
+      flying_log.release_flight
+      flying_log.save
+      puts 'built_flightline_released'
+      flying_log.build_capt_acceptance_certificate
+      flying_log.capt_acceptance_certificate.flight_time = cur_time.strftime("%H:%M %p")
+      flying_log.capt_acceptance_certificate.view_history = 1
+      flying_log.capt_acceptance_certificate.mission = "FLY PAST"
+      flying_log.capt_acceptance_certificate.user = User.where(role_cd: 5).first
+      flying_log.capt_acceptance_certificate.third_seat_name = Faker::Lorem.word
+      flying_log.book_flight
+      flying_log.save
+      puts 'book out completed'
+    # #return
+      flying_log.build_sortie
+      flying_log.sortie.user = User.where(role_cd: 5).first
+      if flying_log.ac_configuration.cockpit_cd == 2
+        flying_log.sortie.second_pilot = User.where(role_cd: 5).first
+      end
+      
+      flying_log.sortie.takeoff_time = (cur_time - (10*60)).strftime("%H:%M %p")
+      flying_log.sortie.landing_time = (cur_time + (rand(10)*60)).strftime("%H:%M %p")
+      flying_log.sortie.pilot_comment = 'Satisfactory'
+      flying_log.sortie.touch_go = rand(5)
+      flying_log.sortie.full_stop = 1
+      flying_log.save!
+      puts 'Sortie saved'  
+      flying_log.sortie.update_aircraft_times
+      flying_log.save!
+      puts 'Sortie calculated'
+
+      flying_log.build_capt_after_flight
+      flying_log.capt_after_flight.flight_time = cur_time.strftime("%H:%M %p")
+      flying_log.capt_after_flight.user = User.where(role_cd: 7).first
+      flying_log.save
+
+      puts 'Post mission report'
+      flying_log.build_post_mission_report
+      flying_log.post_mission_report.mission_date   = cur_time
+      flying_log.post_mission_report.oat            = 1
+      flying_log.post_mission_report.idle_rpm       = 2
+      flying_log.post_mission_report.max_rpm        = 3
+      flying_log.post_mission_report.cht            = 4
+      flying_log.post_mission_report.oil_temp       = 5
+      flying_log.post_mission_report.oil_pressure   = 6
+      flying_log.post_mission_report.map            = 7
+      flying_log.post_mission_report.mag_drop_left  = 8
+      flying_log.post_mission_report.mag_drop_right = 9
+      flying_log.post_mission_report.remarks        = Faker::Lorem.sentence
+      flying_log.post_mission_report.user           = User.where(role_cd: 7).first
+      flying_log.post_mission_report.aircraft       = flying_log.aircraft
+      flying_log.save!
+
+      puts 'book in'
+      flying_log.pilot_back
+      if flying_log.sortie.pilot_comment_cd == "SAT"
+        flying_log.sortie.remarks = flying_log.sortie.pilot_comment.to_s
+        flying_log.sortie.sortie_code_cd = 1
+        flying_log.techlog_check
+        flying_log.complete_log
+        flying_log.save
+      end
+    # #sleep(2)
+    # # flying_log = FlyingLog.first
+    # techlog_count = (8+rand(5))
+    # puts "techlog count #{techlog_count}"
+    # puts "createing techlogs"
+    # flying_log.sortie.sortie_code = 2
+    # for i in 1..techlog_count
+    #   print '.'
+    #   Techlog.create!({type_cd: 1.to_s, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
+    #         description: Faker::Lorem.sentence, 
+    #         work_unit_code: WorkUnitCode.where(wuc_type_cd: 3).leaves.sort_by{rand}.first, 
+    #         user_id: User.where(role_cd: 7).first, 
+    #         log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
+    #         aircraft_id: flying_log.aircraft_id, flying_log_id: flying_log.id})
+    # end
+    # puts ''
+    # flying_log.save!
+    # flying_log.techlog_check
+    # flying_log.techlogs.where(type_cd: 1.to_s).each do |techlog|
+    #   techlog.action = Faker::Lorem.sentence
+    #   techlog.condition_cd = 1
+    #   techlog.save
+    # end
+    # flying_log.complete_log
+    
+    end
+  end
+end
+
+puts 'All done'
+# break;
+# a = Aircraft.first
+# a.flying_logs.each do |f|
+#   a.update_part_values f
 # end
-
-# puts 'Aircraft Created'
-# puts 'Creating Tools'
-# (0..24).each do |tool|
-#   print '.'
-#   quantity = 1 + rand(4)
-#   Tool.create({number: "#{Faker::Number.number(8)}", name: Faker::Lorem.word, total_quantity: quantity, quantity_in_hand: quantity})
-# end
-# puts ''
-# puts 'Tools Created'
-
-# # puts 'Creating Users'
-# # User.roles.each do |role_name, role_key|
-# #   User.create! username: role_name, name: role_name.to_s.sub('_',' '), 
-# #                 role: role_name, password: 'test1234', status: 1, personal_code: Faker::Number.number(6), rank: Faker::Lorem.word
-# #   print '.'
-# # end
-# # puts ''
-# # puts 'Users Created'
-
-
-# # return
-# ##################################################################
-# #sleep(2)
-# (0..1).each do |fl_log|
-#   puts 'Creating Pre flight Flying Log'
-# flying_log = FlyingLog.new
-# last_flying_log = FlyingLog.last
-# if last_flying_log.present?
-#   flying_log.number = last_flying_log.number + 1
-# else
-#   flying_log.number = 1001
-# end
-# cur_time  = Time.now
-
-# flying_log.log_date = Time.now.strftime("%Y-%m-%d")
-# flying_log.aircraft = Aircraft.active.available.first
-# flying_log.location_from = Faker::Lorem.word
-# flying_log.location_to = Faker::Lorem.word
-
-# flying_log.build_ac_configuration
-# flying_log.ac_configuration.clean = 1
-# flying_log.ac_configuration.smoke_pods = 1
-# flying_log.ac_configuration.third_seat = 1
-# flying_log.ac_configuration.cockpit_cd = 1 #+ rand(2)
-
-# flying_log.build_flightline_servicing
-# flying_log.flightline_servicing.user = User.where(role_cd: 7).first
-# flying_log.flightline_servicing.inspection_performed = 0
-
-# flying_log.flightline_servicing.flight_start_time = cur_time.strftime("%H:%M %p")
-# flying_log.flightline_servicing.flight_end_time   = (cur_time + (10*60)).strftime("%H:%M %p")
-# flying_log.flightline_servicing.hyd = Faker::Lorem.word
-
-# flying_log.save
-# flying_log.flightline_service
-
-# puts 'Flighline serviced'
-
-# flying_log.fuel_refill = 1 + rand(flying_log.aircraft.fuel_capacity)
-# flying_log.oil_serviced = 1 + rand(flying_log.aircraft.oil_capacity)
-# flying_log.update_fuel
-# flying_log.save
-# flying_log.fill_fuel
-
-# # ToDo
-# flying_log.techlogs.where(type_cd: 0).each do |techlog|
-#   techlog.action = Faker::Lorem.sentence
-#   techlog.condition_cd = 1
-#   techlog.save
-# end
-# puts 'techlog finished'
-# flying_log.build_flightline_release
-# flying_log.flightline_release.flight_time = cur_time.strftime("%H:%M %p")
-# flying_log.flightline_release.user = User.where(role_cd: 7).first
-# flying_log.flight_release
-# flying_log.save
-# puts 'build_flightline_released'
-# flying_log.build_capt_acceptance_certificate
-# flying_log.capt_acceptance_certificate.flight_time = cur_time.strftime("%H:%M %p")
-# flying_log.capt_acceptance_certificate.view_history = 1
-# flying_log.capt_acceptance_certificate.mission_cd = FLYPAST
-# flying_log.capt_acceptance_certificate.user = User.where(role_cd: 8).first
-# flying_log.book_flight
-# flying_log.save
-# puts 'book out completed'
-# #return
-# flying_log.build_sortie
-# flying_log.sortie.user = User.where(role_cd: 8).first
-# if flying_log.ac_configuration.cockpit_cd == 2
-#   flying_log.sortie.second_pilot = User.where(role_cd: 13).first
-# end
-# flying_log.sortie.third_seat_name = Faker::Lorem.word
-# flying_log.sortie.takeoff_time = (cur_time - (10*60)).strftime("%H:%M %p")
-# flying_log.sortie.landing_time = (cur_time + (10*60)).strftime("%H:%M %p")
-# flying_log.sortie.pilot_comment = 'Un_satisfactory'
-# flying_log.sortie.touch_go = rand(5)
-# flying_log.sortie.full_stop = 1 + rand(3)
-# flying_log.save!
-# puts 'Sortie saved'
-
-# flying_log.sortie.total_landings = flying_log.sortie.touch_go.to_i + flying_log.sortie.full_stop.to_i
-# flying_log.sortie.flight_minutes  = flying_log.sortie.calculate_flight_minutes
-# flying_log.sortie.flight_time     = flying_log.sortie.calculate_flight_time
-# flying_log.sortie.total_landings  = flying_log.sortie.calculate_landings
-# flying_log.sortie.update_aircraft_times
-# flying_log.sortie.save
-# puts 'Sortie calculated'
-
-# flying_log.build_capt_after_flight
-# flying_log.capt_after_flight.flight_time = cur_time.strftime("%H:%M %p")
-# flying_log.capt_after_flight.user = User.where(role_cd: 7).first
-# flying_log.save
-# puts 'book in'
-# flying_log.pilot_back
-# #sleep(2)
-# # flying_log = FlyingLog.first
-# techlog_count = (8+rand(5))
-# puts "techlog count #{techlog_count}"
-# puts "createing techlogs"
-# flying_log.sortie.sortie_code = 2
-# for i in 1..techlog_count
-#   print '.'
-#   Techlog.create!({type_cd: 1.to_s, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
-#         description: Faker::Lorem.sentence, 
-#         work_unit_code: WorkUnitCode.where(wuc_type_cd: 3).leaves.sort_by{rand}.first, 
-#         user_id: User.where(role_cd: 7).first, 
-#         log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
-#         aircraft_id: flying_log.aircraft_id, flying_log_id: flying_log.id})
-# end
-# puts ''
-# flying_log.save!
-# flying_log.techlog_check
-# flying_log.techlogs.where(type_cd: 1.to_s).each do |techlog|
-#   techlog.action = Faker::Lorem.sentence
-#   techlog.condition_cd = 1
-#   techlog.save
-# end
-# flying_log.complete_log
-# end
-
-
-# puts 'All done'
-
