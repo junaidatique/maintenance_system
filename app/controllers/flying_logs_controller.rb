@@ -112,20 +112,20 @@ class FlyingLogsController < ApplicationController
           @flying_log.book_flight
           ActionCable.server.broadcast("log_channel", 
           message: "#{@flying_log.aircraft.tail_number} is booked out.")
-        elsif current_user.pilot? and @flying_log.flight_booked?          
+        elsif current_user.pilot? and @flying_log.flight_booked?
           @flying_log.sortie.total_landings = @flying_log.sortie.touch_go.to_i + @flying_log.sortie.full_stop.to_i
           @flying_log.sortie.flight_minutes = @flying_log.sortie.calculate_flight_minutes
           @flying_log.sortie.flight_time    = @flying_log.sortie.calculate_flight_time
           @flying_log.sortie.total_landings = @flying_log.sortie.calculate_landings
           @flying_log.sortie.update_aircraft_times
           @flying_log.sortie.save!
-          @flying_log.pilot_back
-          if @flying_log.sortie.pilot_comment_cd == "SAT"
-            @flying_log.sortie.remarks = @flying_log.sortie.pilot_comment.to_s
-            @flying_log.sortie.sortie_code_cd = 1
-            @flying_log.techlog_check
-            @flying_log.complete_log
-          end
+          # @flying_log.pilot_back
+          # if @flying_log.sortie.pilot_comment_cd == "SAT"
+          #   @flying_log.sortie.remarks = @flying_log.sortie.pilot_comment.to_s
+          #   @flying_log.sortie.sortie_code_cd = 1
+          #   @flying_log.techlog_check
+          #   @flying_log.complete_log
+          # end
         elsif can? :update_flying_log, FlyingLog and @flying_log.pilot_commented?
           @flying_log.techlog_check
           @flying_log.complete_log

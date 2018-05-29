@@ -36,27 +36,23 @@ class Aircraft
   has_many :flying_logs
   has_many :techlogs
   has_many :parts
+  has_many :part_histories
 
   accepts_nested_attributes_for :parts, :allow_destroy => true
     
   def update_part_values flying_log
-    self.flight_hours = self.flight_hours.to_f + flying_log.aircraft_total_time.this_sortie_aircraft_hours.to_f
-    self.landings     = self.landings.to_f + flying_log.aircraft_total_time.this_sortie_landings.to_f
-    self.engine_hours = self.engine_hours.to_f + flying_log.aircraft_total_time.this_sortie_engine_hours.to_f
-    self.prop_hours   = self.prop_hours.to_f + flying_log.aircraft_total_time.this_sortie_prop_hours.to_f
+    self.flight_hours = flying_log.aircraft_total_time.corrected_total_aircraft_hours.to_f
+    self.landings     = flying_log.aircraft_total_time.corrected_total_landings.to_f
+    self.engine_hours = flying_log.aircraft_total_time.corrected_total_engine_hours.to_f
+    self.prop_hours   = flying_log.aircraft_total_time.corrected_total_prop_hours.to_f
     self.save
-    hours_parts = self.parts.gt(total_hours: 0)
-    hours_parts.each do |part|
-      part_hours = part.completed_hours.to_f + hours.to_f
-      part_remaining_hours = part.total_hours.to_f - part_hours
-      part.update({completed_hours: part_hours, remaining_hours: part_remaining_hours})
-      part.create_history
+    parts = self.parts.lifed
+    parts.each do |part|      
+      part.create_history_with_flying_log flying_log
     end
-    hours_parts = self.parts.gt(total_landings: 0)
-    hours_parts.each do |part|
-      part_landings = part.landings_completed.to_f + landings.to_f      
-      part.update({landings_completed: part_landings})
-      part.create_history
+    parts = self.parts.tyre
+    parts.each do |part|
+      part.create_history_with_flying_log flying_log
     end
 
   end

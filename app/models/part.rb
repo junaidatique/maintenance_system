@@ -42,30 +42,61 @@ class Part
   
   field :landings_completed, type: Integer, default: 0  
 
-
   belongs_to :aircraft, optional: true
   
-  # embeds_many :histories, as: :historyable
+  has_many :part_histories
   has_many :old_parts, class_name: 'ChangePart', inverse_of: :old_parts
   has_many :new_parts, class_name: 'ChangePart', inverse_of: :new_parts  
 
+  scope :lifed, -> { where(is_lifed: true) }  
+  scope :tyre, -> { any_of({category_cd: 2}, {category_cd: 3}, {category_cd: 4})}
 
   validates :number, presence: true
   validates :description, presence: true
 
-  after_create :update_record
-  after_update :create_history
+  after_create :update_record  
   
-  def create_history
-    # part_history = History.new
-    # part_history.entry = self.to_json    
-    # part_history.created_at = Time.now
-    # part_history.save
-    # self.histories << part_history
+  def create_history_with_flying_log flying_log
+    if self.is_lifed?
+      part_history = PartHistory.where(flying_log_id: flying_log.id).first      
+      puts '-----------1'
+      puts part_history.inspect
+      puts '-----------2'
+      part_history = PartHistory.new if part_history.blank?
+      puts part_history.inspect
+      puts '----------3'
+      part_history.quantity   = self.quantity
+      part_history.hours      = flying_log.sortie.flight_time
+      part_history.landings   = flying_log.sortie.total_landings            
+      part_history.flying_log         = flying_log
+      part_history.aircraft_id        = flying_log.aircraft.id      
+      part_history.created_at         = Time.now
+      part_history.part = self
+      part_history.save!      
+      self.update_values
+      
+    end    
   end
 
-  def update_record
-    self.remaining_hours = self.total_hours.to_f - self.completed_hours.to_f    
+  def update_values
+    self.completed_hours     = part_histories.sum('hours')
+    self.landings_completed  = part_histories.sum('landings')
+    self.remaining_hours     = total_hours.to_f - completed_hours.to_f
+    puts '=============='
+    puts self.inspect
+    puts '=============='
+    save
+  end
+
+  def update_record    
+    number_serial_no = "#{number}-#{serial_no}"
+    if (total_hours.present? and completed_hours.present?)
+      remaining_hours = total_hours.to_f - completed_hours.to_f
+    end
+    if (installed_date.present? and calender_life_value.present?)
+      calender_life_date = installed_date.to_date + calender_life_value.years
+    end
+    is_inspectable    = (inspection_hours.present? || inspection_calender_value.present?) ? true : false
     self.save
   end
 
@@ -112,22 +143,16 @@ class Part
       inspection_hours  = (row[Part::INSP_HOUR].present?)? row[Part::INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
       inspection_calender_value = 
         (row[Part::INSP_CALENDER].present?)? row[Part::INSP_CALENDER].downcase.gsub("month",'').strip.to_i : 0
-      is_inspectable    = (inspection_hours.present? || inspection_calender_value.present?) ? true : false
+      
 
       calender_life_value   = 
         (row[Part::LIFE_CALENDER].present?) ? row[Part::LIFE_CALENDER].downcase.gsub("year",'').strip.to_i : 0
-      total_hours       = (row[Part::LIFE_HOUR].present?)? row[Part::LIFE_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
+      total_hours  = (row[Part::LIFE_HOUR].present?)? row[Part::LIFE_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
 
-      installed_date    = row[Part::INSTALLED_DATE]
-      if (installed_date.present?)
-        calender_life_date = installed_date.to_date + calender_life_value.years
-      end
-
+      installed_date      = row[Part::INSTALLED_DATE]
       completed_hours     = row[Part::COMPLETED_HOURS]
       landings_completed  = row[Part::LANDING_COMPLETED]
-      if (total_hours.present? and completed_hours.present?)
-        remaining_hours = total_hours.to_f - completed_hours.to_f
-      end
+      
       serial_no           = row[Part::SERIAL_NO]
       
       number_serial_no = "#{number}-#{serial_no}"
@@ -151,20 +176,16 @@ class Part
             is_lifed: is_lifed, 
 
             inspection_hours: inspection_hours, 
-            inspection_calender_value: inspection_calender_value,             
-            is_inspectable: is_inspectable, 
-                                                 
-            calender_life_value: calender_life_value,
-            calender_life_date: calender_life_date,
+            inspection_calender_value: inspection_calender_value,
+
+            calender_life_value: calender_life_value,            
             total_hours: total_hours,
-            
-            remaining_hours: remaining_hours,
+                        
             completed_hours: completed_hours,
             installed_date: installed_date,
-            landings_completed: landings_completed,
-
+            landings_completed: landings_completed
           }            
-      puts part_data.inspect
+      
       if part.present?
         part.update(part_data)
       else

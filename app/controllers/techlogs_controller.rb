@@ -13,7 +13,16 @@ class TechlogsController < ApplicationController
     elsif current_user.logistics?
       @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
     else
-      @techlogs = Techlog.techloged.open.any_of({:work_unit_code_id.in => current_user.work_unit_code_ids}, {user_id: current_user.id})      
+      @techlogs = Techlog.techloged.where(
+        {"$and" => [
+          {
+            "$or"=>[{"work_unit_code_id"=>{"$in"=>current_user.work_unit_code_ids}}, {"user_id"=>current_user}]
+          },
+          {
+            "$or"=>[{condition_cd: 0}, {condition_cd: 2},{condition_cd: 0.to_s}, {condition_cd: 2.to_s}]
+          }
+        ]
+      })
     end
     
   end

@@ -24,8 +24,7 @@ class PartsController < ApplicationController
   # POST /parts
   # POST /parts.json
   def create
-    @part = Part.new(part_params)
-    @part.create_history
+    @part = Part.new(part_params)    
     respond_to do |format|
       if @part.save
         format.html { redirect_to @part, notice: 'Part was successfully created.' }
@@ -41,8 +40,7 @@ class PartsController < ApplicationController
   # PATCH/PUT /parts/1.json
   def update
     respond_to do |format|
-      if @part.update(part_params)
-        @part.create_history
+      if @part.update(part_params)        
         format.html { redirect_to @part, notice: 'Part was successfully updated.' }
         format.json { render :show, status: :ok, location: @part }
       else
@@ -97,6 +95,11 @@ class PartsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def part_params
-      params.require(:part).permit(:aircraft_id,:number, :serial_no, :description, :unit_of_issue, :contract_quantity, :recieved_quantity, :quantity, :dfim_balance, :inspection_hours, :is_repairable, :condemn, :calender_life_value, :installed_date, :total_hours, :completed_hours)
+      params.require(:part).permit(:aircraft_id, :category, :trade, :number, :serial_no, :description, :unit_of_issue, 
+      :contract_quantity, :recieved_quantity, :quantity, :dfim_balance, 
+      :is_repairable, :condemn, :is_lifed,
+      :inspection_hours, :inspection_calender_value, 
+      :calender_life_value, :total_hours,       
+      :completed_hours, :installed_date, :landings_completed)
     end
 end

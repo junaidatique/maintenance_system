@@ -88,8 +88,8 @@ class Techlog
   def verify_complete    
     if condition_cd == 1 and (parts_state == "requested" or parts_state == "pending" or parts_state == "not_available")
       errors.add(:status, " Some parts are missing. ")
-    elsif condition_cd == 1 and interm_log.present? and !interm_log.is_completed?
-      errors.add(:status, " This techlog has an interm log. Please complete that log first. ")
+    elsif condition_cd == 1 and interm_logs.count > 0 and !interm_logs.incomplete.count > 0
+      errors.add(:status, " This techlog has interm log(s). Please complete that log first. ")
     end
     if condition_cd == 1 and verified_tools.blank?      
       errors.add(:verified_tools, "Please verify that you have verified all the tools.")
@@ -184,7 +184,7 @@ class Techlog
   scope :limited, -> { where(log_state: :limited) }  
   scope :completed, -> { where(condition_cd: 1) }
   scope :incomplete, -> { where(condition_cd: 0) }  
-  scope :open, -> { any_of({condition_cd: 0}, {condition_cd: 2})}
+  scope :open, -> { any_of({condition_cd: 0}, {condition_cd: 2},{condition_cd: 0.to_s}, {condition_cd: 2.to_s})}
   scope :pilot_created, -> { any_of({type_cd: 1}, {type_cd: 1.to_s})}
   scope :flight_created, -> { any_of({type_cd: 0}, {type_cd: 0.to_s})}
 

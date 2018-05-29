@@ -25,8 +25,9 @@
                     - else 
                       | N/A
                   th width="25%"
-                    
+                    | Category
                   td 
+                    = @part.category
                 tr
                   th width="25%"
                     | Part #
@@ -54,29 +55,29 @@
                   td = @part.quantity
                   th width="25%"
                     | DFIM balance
-                  td = @part.dfim_balance
+                  td = @part.dfim_balance ? 'Yes' : 'No'  
                 tr
                   th width="25%"
                     | Inspection Hours
                   td = @part.inspection_hours
                   th width="25%"
                     | Repairable
-                  td = @part.is_repairable
+                  td = @part.is_repairable ? 'Yes' : 'No'  
                 tr
                   th width="25%"
                     | Condemn
                   td = @part.condemn
                   th width="25%"
-                    /| Repairable
+                    | Trade
                   td 
-                    /= @part.is_repairable
+                    = @part.trade
                 tr
                   th width="25%"
                     | Part Calender Life
                   td = (@part.calender_life_value) 
                   th width="25%"
                     | Part Installed Date
-                  td = display_date(@part.installed_date)
+                  td = display_date(@part.installed_date)                
                 tr
                   th width="25%"
                     | Total Part Hours
@@ -86,11 +87,18 @@
                   td = @part.remaining_hours
                 tr
                   th width="25%"
-                    | Total Landings
-                  td = (@part.total_landings) 
+                    | Part Calender Date
+                  td = display_date(@part.calender_life_date) 
                   th width="25%"
-                    | Remaining Landings 
-                  td = @part.landings_remaining
+                    | Part Flight hours
+                  td = @part.completed_hours
+                tr
+                  th width="25%"
+                    | Landings Completed
+                  td = (@part.landings_completed) 
+                  th width="25%"      
+                    | Is Lifed              
+                  td = (@part.is_lifed) ? 'Yes' : 'No'  
 
 .row
   .col-md-12
@@ -100,7 +108,7 @@
           .col-md-6
             h3.box-title
               i.fa.fa-bars
-              | &nbsp; History
+              | &nbsp; Part History
       .box-body
         .row
           .col-sm-12
@@ -112,28 +120,28 @@
                   th
                     | Quantity
                   th
-                    | Hours Remaining
+                    | Hours
                   th
-                    | Landing Remaining
+                    | Landings
                   th
                     | Date Time
                      
               tbody
-                - @part.histories.each do |history|
-                  - part = JSON.parse(history.entry)
+                - @part.part_histories.each do |part|
+                  
                   /= history.to_a
                   tr
                     td.table-row-center
-                      - if part['aircraft'].present?
-                        = Aircraft.find(part['aircraft']).tail_number
+                      - if part.aircraft_id.present?
+                        = part.aircraft.tail_number
                     td.table-row-center
-                      = part['quantity']
+                      = part.quantity
                     td.table-row-center
-                      = part['remaining_hours']
+                      = part.hours
                     td.table-row-center
-                      = part['landings_remaining']                      
+                      = part.landings
                     td.table-row-center
-                      = display_date history.created_at          
+                      = display_date part.created_at          
                       
                 
 = render 'common/actions_buttons', back_path: parts_path, edit_path: edit_part_path(@part)                    
