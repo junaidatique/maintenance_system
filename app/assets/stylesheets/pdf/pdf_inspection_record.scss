@@ -1,0 +1,59 @@
+@mixin position-abs-mixin($top, $left) {
+  position: absolute;
+  top: $top;
+  left: $left;
+}
+.inspection_record_pdf {
+  font-size: 48px;
+  // .trade {
+  //   @include position-abs-mixin(50px, 1000px);        
+  // }
+  .background-image {
+    z-index: -1;
+    position: absolute;
+  }
+  
+  .tl-org {    
+    @include position-abs-mixin(200px, 1200px);        
+  }
+  .tl-aircraft-number {        
+    @include position-abs-mixin(200px, 1770px);            
+  }
+  
+  
+  
+  .parts_data {
+    @include position-abs-mixin(360px, 50px);
+    font-size: 36px;
+  }
+  
+  .part_number_td{
+    width: 350px;
+    
+  }
+  .serial_td{
+    width: 250px;
+    
+  }
+  .calender_td{
+    width: 230px;    
+  }
+  .flying_log_td{
+    width: 380px;
+    font-size: 20px;
+  }
+  .hours_td{
+    width: 220px;    
+  }
+  
+  table{
+    tr {
+      height: 48px;
+      
+    }
+  }
+  
+  
+  
+    
+}

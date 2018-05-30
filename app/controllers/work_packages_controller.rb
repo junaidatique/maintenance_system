@@ -1,4 +1,5 @@
 class WorkPackagesController < ApplicationController
+  before_action :set_inspection
   before_action :set_work_package, only: [:show, :edit, :update, :destroy]
 
   # GET /work_packages
@@ -25,10 +26,10 @@ class WorkPackagesController < ApplicationController
   # POST /work_packages.json
   def create
     @work_package = WorkPackage.new(work_package_params)
-
+    @work_package.inspection = @inspection
     respond_to do |format|
       if @work_package.save
-        format.html { redirect_to @work_package, notice: 'Work package was successfully created.' }
+        format.html { redirect_to @inspection, notice: 'Work package was successfully created.' }
         format.json { render :show, status: :created, location: @work_package }
       else
         format.html { render :new }
@@ -42,7 +43,7 @@ class WorkPackagesController < ApplicationController
   def update
     respond_to do |format|
       if @work_package.update(work_package_params)
-        format.html { redirect_to @work_package, notice: 'Work package was successfully updated.' }
+        format.html { redirect_to @inspection, notice: 'Work package was successfully updated.' }
         format.json { render :show, status: :ok, location: @work_package }
       else
         format.html { render :edit }
@@ -62,6 +63,9 @@ class WorkPackagesController < ApplicationController
   end
 
   private
+    def set_inspection
+      @inspection = Inspection.find(params[:inspection_id])
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_work_package
       @work_package = WorkPackage.find(params[:id])
@@ -69,6 +73,6 @@ class WorkPackagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def work_package_params
-      params.fetch(:work_package, {})
+      params.require(:work_package).permit(:description, :work_unit_code_id)      
     end
 end

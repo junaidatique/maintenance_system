@@ -1,7 +1,17 @@
-= simple_form_for(@work_package) do |f|
-  = f.error_notification
+= simple_form_for([@inspection, @work_package], html: { class: '' }) do |f|
+  = f.input :work_unit_code_id, as: :hidden
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; General
+        .box-body
+          .row
+            .col-sm-6
+              = f.input :description
+            .col-sm-6
+              = f.input :work_unit_code, :url => autocomplete_codes_work_unit_codes_path, :as => :autocomplete, input_html: {id_element: "#work_package_work_unit_code_id", value: f.object.work_unit_code.code}
 
-  .form-inputs
-
-  .form-actions
-    = f.button :submit
+  == render 'common/form_action_buttons', options: { form: f, index_path: inspection_path(@inspection)}

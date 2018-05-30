@@ -85,15 +85,15 @@ class Part
   end
 
   def update_record    
-    number_serial_no = "#{number}-#{serial_no}"
+    self.number_serial_no = "#{number}-#{serial_no}"
     if (total_hours.present? and completed_hours.present?)
-      remaining_hours = total_hours.to_f - completed_hours.to_f
+      self.remaining_hours = total_hours.to_f - completed_hours.to_f
     end
     if (installed_date.present? and calender_life_value.present?)
-      calender_life_date = installed_date.to_date + calender_life_value.years
+      self.calender_life_date = installed_date.to_date + calender_life_value.years
     end
-    is_inspectable    = (inspection_hours.present? || inspection_calender_value.present?) ? true : false
-    if is_inspectable
+    self.is_inspectable    = (inspection_hours.present? or inspection_calender_value.present?) ? true : false
+    if self.is_inspectable?
       Inspection.create({part_id: self.id, name: "#{self.number_serial_no} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, calender_unit: 'month'},)
     end
     self.save

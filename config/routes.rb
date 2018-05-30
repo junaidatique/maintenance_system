@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   
-  resources :work_packages
-  resources :inspections
+  
+  resources :inspections do 
+    resources :work_packages
+  end
   resources :tools do
     collection do
       post :import
@@ -13,6 +15,7 @@ Rails.application.routes.draw do
     collection do      
       get :airframe      
       get :airframe_pdf      
+      get :inspection_record_pdf      
     end
   end
   resources :flying_plans

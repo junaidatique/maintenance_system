@@ -10,12 +10,7 @@
           .col-md-6
             h3.box-title
               i.fa.fa-bars
-              | &nbsp; General
-          .col-sm-6.text-right            
-            - if can? :view_781, FlyingLog
-              = link_to airframe_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank' 
-                | &nbsp; 781J
-              | &nbsp;
+              | &nbsp; General          
               
       .box-body
         .row
@@ -50,49 +45,69 @@
                   th width="25%"
                     | Prop Hours
                   td = @aircraft.prop_hours
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; 781
+      .box-body
+        .row
+          .col-sm-12
+            - if can? :view_781, FlyingLog
+              = link_to airframe_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank' 
+                | &nbsp; 781J
+              | &nbsp;
+              - Part::trades.each do |trade,value|
+                = link_to inspection_record_pdf_reports_path(aircraft: @aircraft, trade: value), class: 'btn btn-info btn-flat', target: '_blank' 
+                  = trade.titleize
+                  | &nbsp; 781D
+                | &nbsp;
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+          .row
+            .col-md-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Parts
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th
+                | Number
+              th
+                | Serial #
+              th
+                | Description
+              th
+                | Calender Life
+              th
+                | Hours Completed
+              th
+                | Landings
                 
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-border
-            .row
-              .col-md-6
-                h3.box-title
-                  i.fa.fa-bars
-                  | &nbsp; Parts
-        .box-body
-          table.table.table-bordered.table-striped.data-tabled
-            thead
+          tbody
+            - @aircraft.parts.each do |part|
               tr
-                th
-                  | Number
-                th
-                  | Serial #
-                th
-                  | Description
-                th
-                  | Calender Life
-                th
-                  | Hours Completed
-                th
-                  | Landings
-                  
-            tbody
-              - @aircraft.parts.each do |part|
-                tr
-                  td.table-row-center
-                    = part.number
-                  td.table-row-center
-                    = part.serial_no
-                  td.table-row-center
-                    = part.description
-                  td.table-row-center
-                    /= display_date(part.calender_life)
-                  td.table-row-center
-                    = part.completed_hours
-                  td.table-row-center
-                    = part.landings_completed
-                
+                td.table-row-center
+                  = part.number
+                td.table-row-center
+                  = part.serial_no
+                td.table-row-center
+                  = part.description
+                td.table-row-center
+                  /= display_date(part.calender_life)
+                td.table-row-center
+                  = part.completed_hours
+                td.table-row-center
+                  = part.landings_completed
+              
         
         .clearfix
 
