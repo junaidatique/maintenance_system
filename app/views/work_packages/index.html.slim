@@ -1,0 +1,19 @@
+h1 Listing work_packages
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @work_packages.each do |work_package|
+      tr
+        td = link_to 'Show', work_package
+        td = link_to 'Edit', edit_work_package_path(work_package)
+        td = link_to 'Destroy', work_package, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Work package', new_work_package_path

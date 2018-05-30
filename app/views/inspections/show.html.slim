@@ -1,0 +1,79 @@
+= content_for :box_heading do
+  | Inspection:&nbsp;
+  = @inspection.name
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; General
+          .col-sm-6.text-right            
+            
+              
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="25%"
+                    | Name
+                  td = @inspection.name
+                  th width="25%"
+                    | Hours Frequency
+                  td = @inspection.no_of_hours
+                tr
+                  th width="25%"
+                    | Calender Frequency
+                  td 
+                    = @inspection.calender_value
+                    |   
+                    = @inspection.calender_unit
+                  th width="25%"
+                    
+                  td
+                
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+          .row
+            .col-md-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Parts
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr                
+              th
+                | Due at Hours
+              th
+                | Due at Calender
+              th
+                | Status
+              th
+                | Hours Completed
+              
+                
+          tbody
+            - @inspection.scheduled_inspections.each do |scheduled_inspection|
+              tr
+                td.table-row-center
+                  = scheduled_inspection.hours
+                td.table-row-center
+                  = display_date scheduled_inspection.calender_life_date
+                td.table-row-center
+                  = scheduled_inspection.status
+                td.table-row-center
+                  = scheduled_inspection.completed_hours
+                
+                
+      
+        .clearfix
+
+= render 'common/actions_buttons', back_path: inspections_path, edit_path: edit_inspection_path(@inspection)

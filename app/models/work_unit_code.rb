@@ -12,6 +12,7 @@ class WorkUnitCode
 
 
   has_many :techlogs
+  has_many :work_packages
   has_and_belongs_to_many :user, class_name: User.name
 
   scope :preflight, -> { where(wuc_type_cd: 0) }

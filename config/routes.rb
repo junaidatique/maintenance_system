@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   
+  resources :work_packages
+  resources :inspections
   resources :tools do
     collection do
       post :import

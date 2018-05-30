@@ -1,0 +1,44 @@
+= content_for :page_subtitle do
+  | Inpections
+
+= content_for :box_heading do
+  | Inpections
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th width='10%'
+                | Name
+              th width='10%'
+                | Item
+              th width='10%'
+                | Hours
+              th width='10%'
+                | Calender
+              th width='13%'
+                | Actions
+          tbody
+            - @inspections.each do |inspection|
+              tr
+                td
+                  = link_to inspection.name, inspection_path(inspection)
+                td
+                  - if inspection.aircraft.present?
+                    = inspection.aircraft.tail_number
+                  - else 
+                    = inspection.part.number
+                td
+                  = inspection.no_of_hours
+                td
+                  = inspection.calender_value
+                  |   
+                  = inspection.calender_unit
+                td.text-center width='20%'
+                  = link_to inspection_path(inspection), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  
+        

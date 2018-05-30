@@ -322,36 +322,44 @@ puts 'Creating Parts'
 (0..Aircraft.count).each do |j|
   aircraft = Aircraft.limit(1).offset(j).first
   Part::categories.each do |category,value|
-    part_number   = "#{Faker::Number.number(8)}"
-    serial_no     = "#{Faker::Number.number(5)}"
-    quantity      = 0
+    Part::trades.each do |trade,value|
+      part_number   = "#{Faker::Number.number(8)}"
+      serial_no     = "#{Faker::Number.number(5)}"
+      quantity      = 0
 
-    inspection_hours = 10
-    inspection_calender_value = 1
-    
-    is_lifed = true
-
-    calender_life_value = 1
-    installed_date  = cur_time.strftime("%Y-%m-%d")
-    
-    total_hours = 100
-    
-    Part.create({
-      aircraft: aircraft, number: part_number, 
-      serial_no: serial_no,       
-      quantity: quantity, 
-      category: category, 
+      inspection_hours = 15
+      inspection_calender_value = 1
       
-      description: Faker::Lorem.words(1 + rand(4)).join(" "), 
-      is_lifed: is_lifed, 
-      calender_life_value: calender_life_value, 
-      installed_date: installed_date, 
-      total_hours: total_hours })
+      is_lifed = true
+
+      calender_life_value = 1
+      installed_date  = cur_time.strftime("%Y-%m-%d")
+      
+      total_hours = 100
+      
+      Part.create({
+        aircraft: aircraft, 
+        number: part_number, 
+        serial_no: serial_no,       
+        quantity: quantity, 
+        category: category, 
+        trade: trade, 
+        
+        inspection_hours: inspection_hours, 
+        inspection_calender_value: inspection_calender_value, 
+        
+        description: Faker::Lorem.words(1 + rand(4)).join(" "), 
+        is_lifed: is_lifed, 
+        calender_life_value: calender_life_value, 
+        installed_date: installed_date, 
+        total_hours: total_hours })
+      print '.'
+    end
   end
 end
 
 puts 'Part Created'
-
+exit
 ##################################################################
 #sleep(2)
 (0..8).each do |day|
@@ -499,8 +507,11 @@ puts 'Part Created'
     #   techlog.save
     # end
     # flying_log.complete_log    
+      # break
     end    
+    # break
   end  
+  # break
 end
 
 puts 'All done'

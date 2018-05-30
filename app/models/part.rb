@@ -46,6 +46,7 @@ class Part
   belongs_to :aircraft, optional: true
   
   has_many :part_histories
+  has_many :inspection
   has_many :old_parts, class_name: 'ChangePart', inverse_of: :old_parts
   has_many :new_parts, class_name: 'ChangePart', inverse_of: :new_parts  
 
@@ -78,6 +79,9 @@ class Part
     self.landings_completed  = part_histories.sum('landings')
     self.remaining_hours     = total_hours.to_f - completed_hours.to_f    
     save
+    inspection = self.inspection.first
+    inspection.scheduled_inspections.gt(hours: 0).update_all({completed_hours: self.completed_hours})
+    
   end
 
   def update_record    
@@ -89,6 +93,9 @@ class Part
       calender_life_date = installed_date.to_date + calender_life_value.years
     end
     is_inspectable    = (inspection_hours.present? || inspection_calender_value.present?) ? true : false
+    if is_inspectable
+      Inspection.create({part_id: self.id, name: "#{self.number_serial_no} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, calender_unit: 'month'},)
+    end
     self.save
   end
 

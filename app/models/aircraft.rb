@@ -28,8 +28,6 @@ class Aircraft
   validates :oil_capacity, presence: true
   validates_uniqueness_of :tail_number
 
-  
-  # scope :available, -> { where(:id.nin => Techlog.incomplete.distinct(:aircraft_id)) }
   scope :active, -> { where(:id.in => FlyingPlan.where(is_flying: true).where(flying_date: Time.zone.now.strftime("%Y-%m-%d")).first.aircrafts.map(&:id)) }
   
 
@@ -37,8 +35,11 @@ class Aircraft
   has_many :techlogs
   has_many :parts
   has_many :part_histories
+  has_many :inspections
 
   accepts_nested_attributes_for :parts, :allow_destroy => true
+
+  after_create :create_inspections
     
   def update_part_values flying_log
     self.flight_hours = flying_log.aircraft_total_time.corrected_total_aircraft_hours.to_f
@@ -46,6 +47,9 @@ class Aircraft
     self.engine_hours = flying_log.aircraft_total_time.corrected_total_engine_hours.to_f
     self.prop_hours   = flying_log.aircraft_total_time.corrected_total_prop_hours.to_f
     self.save
+    self.inspections.each do |inspection|
+      inspection.scheduled_inspections.gt(hours: 0).update_all({completed_hours: self.flight_hours})
+    end
     lifed_parts = self.parts.lifed    
     lifed_parts.each do |part|            
       part.create_history_with_flying_log flying_log
@@ -54,7 +58,17 @@ class Aircraft
     tyre_parts.each do |part|
       part.create_history_with_flying_log flying_log
     end
-    
+  end
+
+  def create_inspections
+    inspections = [
+      {aircraft_id: self.id, name: 'Weekly', no_of_hours: 0, calender_value: 6, calender_unit: 'day'},
+      {aircraft_id: self.id, name: '25 HRS', no_of_hours: '25'}, 
+      {aircraft_id: self.id, name: '50 HRS', no_of_hours: '50', calender_value: 6, calender_unit: 'month'},
+      {aircraft_id: self.id, name: '100 HRS', no_of_hours: '100', calender_value: 1, calender_unit: 'year'},
+      {aircraft_id: self.id, name: '400 HRS', no_of_hours: '400'},
+    ]
+    Inspection.create!(inspections)
 
   end
 

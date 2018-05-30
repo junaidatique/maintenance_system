@@ -16,10 +16,12 @@ ul.sidebar-menu
           = link_to airframe_reports_path do
             .fa.fa-tasks
             span.side-bar-heading-text 781J        
-        /li class="#{controller_name == "technical_orders" ? 'active' : ''}"
-          = link_to technical_orders_path do
-            .fa.fa-folder-open
-            span.side-bar-heading-text Technical Orders        
+        
+  - if can? :read, Inspection
+    li class="#{params[:controller] == "inspections" ? 'active' : ''}"
+      = link_to inspections_path do
+        .fa.fa-paper-plane 
+        span.side-bar-heading-text Inspections
   - if can? :read, Part
     li class="#{params[:controller] == "parts" ? 'active' : ''}"
       = link_to parts_path do

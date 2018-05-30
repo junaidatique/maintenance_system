@@ -15,6 +15,7 @@ class Ability
       can :manage, FlyingLog
       can :manage, Techlog
       can :manage, FlyingPlan
+      # can :inspections, FlyingPlan
       can :manage_addl_logs, Techlog
       cannot :update_fuel, Techlog  
       cannot :update_work_unit_code, Techlog    
