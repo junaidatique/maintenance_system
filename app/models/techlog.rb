@@ -47,17 +47,15 @@ class Techlog
   
   attr_accessor :current_user
 
-  validates :type, presence: true
+  validates :type_cd, presence: true
   
-  
-
   validate :description_validation
   validate :flying_log_values
   validate :verify_complete
   validate :verify_interm
   validate :maintenance_work_unit_code
 
-  def maintenance_work_unit_code    
+  def maintenance_work_unit_code        
     if type_cd == 1 and flying_log.blank? and work_unit_code.blank?  
       errors.add(:work_unit_code, " can't be blank")
     end
@@ -193,7 +191,6 @@ class Techlog
   end
 
   def create_serial_no
-    #self.serial_no = "#{Time.zone.now.strftime('%d%m%Y')}-#{aircraft.tail_number}-#{number}"
     self.serial_no = "#{Time.zone.now.strftime('%d%m%Y')}-#{number}"
     self.save
   end
@@ -223,9 +220,7 @@ class Techlog
       if flying_log.techlogs.techloged.flight_created.incomplete.count == 0                
         flying_log.flightline_servicing.flight_end_time = Time.zone.now
         flying_log.flightline_servicing.save
-        flying_log.complete_servicing
-      elsif flying_log.techlogs.techloged.pilot_created.incomplete.count == 0        
-        flying_log.complete_log
+        flying_log.complete_servicing      
       end
     end
   end

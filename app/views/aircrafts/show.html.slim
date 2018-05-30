@@ -11,6 +11,12 @@
             h3.box-title
               i.fa.fa-bars
               | &nbsp; General
+          .col-sm-6.text-right            
+            - if can? :view_781, FlyingLog
+              = link_to airframe_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank' 
+                | &nbsp; 781J
+              | &nbsp;
+              
       .box-body
         .row
           .col-sm-12

@@ -7,6 +7,12 @@ Rails.application.routes.draw do
       get :serail_autocomplete
     end
   end
+  resources :reports do 
+    collection do      
+      get :airframe      
+      get :airframe_pdf      
+    end
+  end
   resources :flying_plans
   resources :requested_tools
   resources :parts do

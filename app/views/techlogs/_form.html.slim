@@ -8,7 +8,7 @@
           li
             = error_message
   == render 'techlog_basic_show'
-  - if can? :update_fuel, Techlog
+  - if can? :update_fuel, Techlog and @techlog.type_cd == 0
     = f.simple_fields_for :flying_log do |ac_f|
       .row
         .col-md-12
@@ -27,7 +27,7 @@
                     | Oil
               .row
                 .col-sm-6
-                  = ac_f.input :oil_serviced, as: :float, label: "Serviced (Gallons) : Total Capacity #{@techlog.flying_log.aircraft.oil_capacity} (Gallons)", input_html: { max: @techlog.flying_log.aircraft.oil_capacity, required: true, min: 0 }
+                  = ac_f.input :oil_serviced, as: :float, label: "Serviced (Quartz) : Total Capacity #{@techlog.flying_log.aircraft.oil_capacity} (Quartz)", input_html: { max: @techlog.flying_log.aircraft.oil_capacity, required: true, min: 0 }
   - if can? :update_work_unit_code, Techlog and @techlog.work_unit_code.blank?
     = f.simple_fields_for :flying_log do |ac_f|
       .row

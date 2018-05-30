@@ -1,0 +1,33 @@
+= content_for :page_subtitle do
+  | 781J
+
+= content_for :box_heading do
+  | 781J
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-borderf
+        h3.box-title
+          i.fa.fa-bars
+          | &nbsp; Filters
+      .box-body#filters
+        = form_tag(airframe_pdf_reports_path, 
+        method: :get, target: "_blank" )  do |f|
+          .row
+            .col-sm-12
+              .form-group
+                label.control-label.string Aircraft
+                = select_tag 'aircraft', options_for_select(Aircraft.all.map{|aircraft| [aircraft.tail_number, aircraft.id]}, nil), {class: 'custom-select2', include_blank: false}
+          .row            
+            .col-sm-6
+              .form-group
+                label.control-label.string From Date
+                = text_field_tag 'from_date', nil, class: 'form-control datepicker'                
+            .col-sm-6
+              .form-group
+                label.control-label.string To Date
+                = text_field_tag 'to_date', nil, class: 'form-control datepicker'
+          .row
+            .col-sm-4.col-sm-offset-4
+              = submit_tag 'Search', class: "filter-btn btn btn-block btn-primary btn-flat"

@@ -406,13 +406,17 @@ puts 'Part Created'
         techlog.user = User.where(role_cd: 4).first
         techlog.save
       end
+      flying_log.save!
+      # sleep(1)
+      flying_log.complete_servicing      
       puts 'techlog finished'
       flying_log.build_flightline_release
       flying_log.flightline_release.flight_time = cur_time.strftime("%H:%M %p")
-      flying_log.flightline_release.user = User.where(role_cd: 1).first
-      flying_log.release_flight
-      flying_log.save
-      puts 'built_flightline_released'
+      flying_log.flightline_release.user = User.where(role_cd: 1).first      
+      flying_log.save!      
+      flying_log.release_flight!
+
+      puts 'built_flightline_released'      
       flying_log.build_capt_acceptance_certificate
       flying_log.capt_acceptance_certificate.flight_time = cur_time.strftime("%H:%M %p")
       flying_log.capt_acceptance_certificate.view_history = 1
@@ -431,7 +435,7 @@ puts 'Part Created'
       
       flying_log.sortie.takeoff_time = (cur_time - (10*60)).strftime("%H:%M %p")
       flying_log.sortie.landing_time = (cur_time + (rand(10)*60)).strftime("%H:%M %p")
-      flying_log.sortie.pilot_comment = 'Satisfactory'
+      flying_log.sortie.pilot_comment_cd = "SAT"
       flying_log.sortie.touch_go = rand(5)
       flying_log.sortie.full_stop = 1
       flying_log.save!
@@ -494,10 +498,9 @@ puts 'Part Created'
     #   techlog.condition_cd = 1
     #   techlog.save
     # end
-    # flying_log.complete_log
-    
-    end
-  end
+    # flying_log.complete_log    
+    end    
+  end  
 end
 
 puts 'All done'

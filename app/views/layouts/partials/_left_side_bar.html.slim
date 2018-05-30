@@ -4,6 +4,22 @@ ul.sidebar-menu
       = link_to aircrafts_path do
         .fa.fa-plane
         span.side-bar-heading-text Aircraft
+  - if can? :view_781, FlyingLog
+    li class="#{params[:controller] == "reports" ? 'active' : ''}"
+      a href="#" 
+        i.fa.fa-list-ul
+        span.side-bar-heading-text 781 Reports
+        span.pull-right-container
+          i.fa.fa-angle-left.pull-right
+      ul.treeview-menu
+        li class="#{controller_name == "reports" ? 'active' : ''}"
+          = link_to airframe_reports_path do
+            .fa.fa-tasks
+            span.side-bar-heading-text 781J        
+        /li class="#{controller_name == "technical_orders" ? 'active' : ''}"
+          = link_to technical_orders_path do
+            .fa.fa-folder-open
+            span.side-bar-heading-text Technical Orders        
   - if can? :read, Part
     li class="#{params[:controller] == "parts" ? 'active' : ''}"
       = link_to parts_path do

@@ -16,13 +16,14 @@ class Ability
       can :manage, Techlog
       can :manage, FlyingPlan
       can :manage_addl_logs, Techlog
-      cannot :update_fuel, Techlog
-      can :update_work_unit_code, Techlog
+      cannot :update_fuel, Techlog  
+      cannot :update_work_unit_code, Techlog    
       # Flying log work
       can :update_flying_log, FlyingLog
       can :release_flight, FlyingLog
       can :view_logs, FlyingLog
       can :update_sortie, FlyingLog
+      can :view_781, FlyingLog
       cannot :bookout_flight, FlyingLog      
     elsif user.master_control?
       # can :release_flight, FlyingLog
@@ -31,6 +32,7 @@ class Ability
       can :crud, FlyingLog
       can :crud, Techlog
       can :read, FlyingPlan
+      can :update_work_unit_code, Techlog
     elsif user.crew_cheif?
       can :ru, FlyingLog
       can :crud, Techlog

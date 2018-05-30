@@ -1,0 +1,74 @@
+.airframe_pdf 
+  .background-image
+    = wicked_pdf_image_tag('airframe.jpg', size: '2538x1298')
+  .tl-date_from
+    = params[:from_date]
+  .tl-date_to
+    = params[:to_date]
+  .tl-location
+    | QAF
+  .tl-crew_chief
+    = User.where(role_cd: 15).first.name
+  .tl-org
+    | 30 Squad
+  .tl-aircraft-number
+    = Aircraft.find(params[:aircraft]).tail_number  
+  table.previous_table
+    tr       
+      td.airframe_td
+        = flying_logs.first.aircraft_total_time.carried_over_aircraft_hours
+      td.engine_td
+        = flying_logs.first.aircraft_total_time.carried_over_engine_hours
+      td.ehr_td
+        = flying_logs.first.aircraft_total_time.carried_over_engine_hours
+      td.flying_log_td
+        /= flying_logs.first.serial_no
+      td.landings_td
+        = flying_logs.first.aircraft_total_time.carried_over_landings
+      td.touchgo_td
+        /= flying_logs.first.sortie.touch_go
+      td.t_landings_td
+        /= flying_logs.first.aircraft_total_time.carried_over_landings
+        
+  - flying_logs.each do |fl|
+    .flying_logs_data
+      table
+        tr 
+          td.flying_date_td
+            .day
+              = fl.created_at.strftime("%d")
+            .month
+              = fl.created_at.strftime("%m")
+            .year
+              = fl.created_at.strftime("%y")
+          td.airframe_td
+            = fl.aircraft_total_time.this_sortie_aircraft_hours
+          td.engine_td
+            = fl.aircraft_total_time.this_sortie_engine_hours
+          td.ehr_td
+            = fl.aircraft_total_time.this_sortie_engine_hours
+          td.flying_log_td
+            = fl.serial_no
+          td.landings_td
+            = fl.sortie.full_stop
+          td.touchgo_td
+            = fl.sortie.touch_go
+          td.t_landings_td
+            = fl.sortie.total_landings          
+        tr 
+          td.flying_date_td
+            
+          td.airframe_td
+            = fl.aircraft_total_time.corrected_total_aircraft_hours
+          td.engine_td
+            = fl.aircraft_total_time.corrected_total_engine_hours
+          td.ehr_td
+            = fl.aircraft_total_time.corrected_total_engine_hours
+          td.flying_log_td
+            /= fl.serial_no
+          td.landings_td
+            = fl.aircraft_total_time.corrected_total_landings
+          td.touchgo_td
+            /= fl.sortie.touch_go
+          td.t_landings_td
+            /= fl.aircraft_total_time.carried_over_landings          

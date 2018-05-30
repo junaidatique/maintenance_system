@@ -1,0 +1,86 @@
+@mixin position-abs-mixin($top, $left) {
+  position: absolute;
+  top: $top;
+  left: $left;
+}
+.airframe_pdf {
+  font-size: 30px;
+  .background-image {
+    z-index: -1;
+    position: absolute;
+  }
+  .tl-date_from {    
+    @include position-abs-mixin(80px, 260px);    
+  }
+  .tl-date_to {    
+    @include position-abs-mixin(80px, 600px);
+  }  
+  .tl-crew_chief {    
+    @include position-abs-mixin(80px, 800px);
+  }
+  .tl-org {    
+    @include position-abs-mixin(80px, 1200px);        
+  }
+  .tl-location {        
+    @include position-abs-mixin(80px, 1700px);                
+  }
+  .tl-aircraft-number {        
+    @include position-abs-mixin(80px, 2170px);            
+  }
+  
+  
+  
+  .previous_table {
+    @include position-abs-mixin(285px, 250px);
+  }
+  .flying_date_td{
+    width: 210px;    
+    .day{
+      width: 60px;
+      float: left;
+    }
+    .month{
+      width: 80px;
+      float: left;
+    }
+  }
+  .airframe_td{
+    width: 300px;
+    text-align: center;
+  }
+  .engine_td{
+    width: 610px;
+    text-align: center;
+  }
+  .ehr_td{
+    width: 230px;
+    text-align: center;
+  }
+  .flying_log_td{
+    width: 380px;
+    font-size: 20px;
+  }
+  .landings_td{
+    width: 220px;    
+  }
+  .touchgo_td{
+    width: 350px;    
+  }
+  .t_landings_td{
+    width: 250px;       
+  }
+  .flying_logs_data{
+    @include position-abs-mixin(335px, 40px);
+    position: relative;
+  }
+  table{
+    tr {
+      height: 52px;
+      
+    }
+  }
+  
+  
+  
+    
+}

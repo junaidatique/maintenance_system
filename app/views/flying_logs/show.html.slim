@@ -2,7 +2,7 @@
   = @flying_log.serial_no
 
 = render 'show_flying_log'
-- if current_user.role == :master_control || current_user.role == :engineer || current_user.role == :admin
+- if current_user.master_control?
   .row
     .col-md-12
       .box.box-info
@@ -36,7 +36,7 @@
                   - @flying_log.techlogs.each do |techlog|
                     tr
                       td.table-row-center
-                        = link_to techlog.number, techlog_path(techlog)
+                        = link_to techlog.serial_no, techlog_path(techlog)
                       td.table-row-center
                         = (techlog.is_viewed) ? 'Yes' : 'No'
                       td.table-row-center

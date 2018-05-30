@@ -105,7 +105,7 @@ class FlyingLogsController < ApplicationController
         update_params = flying_log_params
       end
 
-      if @flying_log.update(update_params)
+      if @flying_log.update!(update_params)
         if can? :release_flight, FlyingLog and @flying_log.servicing_completed? and @flying_log.flightline_release.created_at.present?
           @flying_log.release_flight
         elsif current_user.pilot? and @flying_log.flight_released?  and @flying_log.capt_acceptance_certificate.created_at.present? 
@@ -152,29 +152,7 @@ class FlyingLogsController < ApplicationController
 
   # GET /flying_logs/1/pdf
   # GET /flying_logs/1/pdf.json
-  def pdf
-    # techlogs  = @flying_log.techlogs.where(type_cd: 1).limit(3).offset(0)
-    # pdf_data = render(
-    #             pdf: "flying_log_#{@flying_log.id}",
-    #             orientation: 'Landscape',
-    #             template: 'flying_logs/flying_log_pdf.html.slim',
-    #             layout: 'layouts/pdf/pdf.html.slim',
-    #             show_as_html: false,
-    #             locals: {
-    #               flying_log: @flying_log,
-    #               techlogs: techlogs
-    #             },
-    #             page_height: '17in',
-    #             page_width: '13in',
-    #             margin:  {
-    #               top: 0,
-    #               bottom: 0,
-    #               left: 0,
-    #               right:0 
-    #             }
-    #           )
-            
-      
+  def pdf      
     i = 0
     num = @flying_log.techlogs.where(type_cd: 1.to_s).count
     merged_certificates = CombinePDF.new

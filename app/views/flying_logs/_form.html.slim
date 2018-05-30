@@ -49,10 +49,10 @@
                           th width='13%'
                             | Detail
                       tbody
-                        - @flying_log.aircraft.techlogs.techloged.pilot_created.order(number: :desc).each do |techlog|
+                        - @flying_log.aircraft.techlogs.techloged.completed.pilot_created.order(number: :desc).each do |techlog|
                           tr
                             td.table-row-center
-                              = link_to techlog.number, techlog_path(techlog)
+                              = link_to techlog.serial_no, techlog_path(techlog), target: :_blank
                             td.table-row-center
                               = display_date(techlog.log_date) 
                             td.table-row-center
@@ -93,7 +93,7 @@
                         - @flying_log.aircraft.techlogs.limited.order(number: :desc).each do |techlog|
                           tr
                             td.table-row-center
-                              = link_to techlog.number, techlog_path(techlog)
+                              = link_to techlog.serial_no, techlog_path(techlog)
                             td.table-row-center
                               = display_date(techlog.log_date) 
                             td.table-row-center
@@ -144,7 +144,7 @@
                                 
     
     
-  - if can? :bookout_flight, FlyingLog and @flying_log.capt_acceptance_certificate.created_at.blank? and !@flying_log.flightline_release.created_at.blank?  
+  - if can? :bookout_flight, FlyingLog and @flying_log.flight_released? and !@flying_log.flight_booked?  
     .row
       .col-md-12
         .box.box-info
@@ -175,7 +175,7 @@
                 .col-sm-4
                   = ac_f.input :view_history, label: 'I have reviwed Aircraft History', as: :boolean, checked_value: 1, unchecked_value: 0
                 
-  - if can? :bookin_flight, FlyingLog and @flying_log.capt_acceptance_certificate.created_at.present? and !@flying_log.capt_acceptance_certificate.created_at.blank? and @flying_log.sortie.created_at.blank?
+  - if can? :bookin_flight, FlyingLog and @flying_log.flight_booked? and !@flying_log.pilot_commented?
     .row
       .col-md-12
         .box.box-info
@@ -283,7 +283,52 @@
                 .col-sm-6
                   
 
-  - if can? :update_sortie, FlyingLog and !@flying_log.capt_acceptance_certificate.created_at.blank?
+  - if can? :update_sortie, FlyingLog and !@flying_log.capt_acceptance_certificate.created_at.blank?    
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-border
+            .row
+              .col-sm-6
+                h3.box-title
+                  i.fa.fa-bars
+                  | &nbsp; Techlogs
+              .col-sm-6.text-right
+                
+          .box-body
+            .row
+              .col-sm-12
+                table.table.table-bordered.table-striped.data-tabled
+                  thead
+                    tr
+                      th width='10%'
+                        | Number
+                      th width='10%'
+                        | Viewed
+                      th width='10%'
+                        | Aircraft
+                      th width='10%'
+                        | WUC
+                      th width='10%'
+                        | Completed
+                      th width='13%'
+                        | Actions
+                  tbody
+                    - @flying_log.techlogs.incomplete.each do |techlog|
+                      tr
+                        td.table-row-center
+                          = link_to techlog.serial_no, techlog_path(techlog), target: :_blank
+                        td.table-row-center
+                          = (techlog.is_viewed) ? 'Yes' : 'No'
+                        td.table-row-center
+                          = techlog.aircraft.tail_number
+                        td.table-row-center
+                          = techlog.work_unit_code.code unless techlog.work_unit_code.blank?
+                        td.table-row-center
+                          = techlog.is_completed? ? 'Yes' : 'No'
+                        td.text-center width='20%'
+                          = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
+                            i.fa.fa-file-pdf-o
     .row
       .col-md-12
         .box.box-info
@@ -315,28 +360,9 @@
                 .col-sm-6
                   = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code_unsat), as: :radio_buttons    
     
-    /.row
-      .col-md-12#div_techlog_servicing
-        .box.box-info
-          .box-header.with-border
-            .row
-              .col-sm-9
-                h3.box-title
-                  i.fa.fa-bar-chart
-                  | &nbsp; Discrepancies
-              .col-sm-3
-                
-          .box-body
-            div.techlogs
-              - i = 0
-              = f.simple_fields_for :techlogs do |techlog|                
-                - i += 1
-                = render 'techlog_fields', f: techlog, i: i
-            .row
-              .col-sm-offset-9.col-sm-3
-                = link_to_add_association "+ Add Discrepancy", f, :techlogs, data: {:'association-insertion-node' => ".techlogs", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'  
+     
             
-    - if @flying_log.flightline_servicing.inspection_performed_cd == 2
+    /- if @flying_log.flightline_servicing.inspection_performed_cd == 2
       .row
         .col-md-12
           .box.box-info
