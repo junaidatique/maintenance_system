@@ -8,7 +8,7 @@ ul.sidebar-menu
     li class="#{params[:controller] == "reports" ? 'active' : ''}"
       a href="#" 
         i.fa.fa-list-ul
-        span.side-bar-heading-text 781 Reports
+        span.side-bar-heading-text Reports
         span.pull-right-container
           i.fa.fa-angle-left.pull-right
       ul.treeview-menu
@@ -16,12 +16,29 @@ ul.sidebar-menu
           = link_to airframe_reports_path do
             .fa.fa-tasks
             span.side-bar-heading-text 781J        
+        /li class="#{controller_name == "reports" ? 'active' : ''}"
+          = link_to airframe_reports_path do
+            .fa.fa-tasks
+            span.side-bar-heading-text 781J        
         
   - if can? :read, Inspection
     li class="#{params[:controller] == "inspections" ? 'active' : ''}"
-      = link_to inspections_path do
-        .fa.fa-paper-plane 
+      a href="#" 
+        i.fa.fa-list-ul
         span.side-bar-heading-text Inspections
+        span.pull-right-container
+          i.fa.fa-angle-left.pull-right
+      ul.treeview-menu
+        li class="#{params[:controller] == "inspections" ? 'active' : ''}"
+          = link_to inspections_path do
+            .fa.fa-paper-plane 
+            span.side-bar-heading-text Inspections
+        li class="#{params[:controller] == "scheduled_inspections" ? 'active' : ''}"
+          = link_to scheduled_inspections_path do
+            .fa.fa-paper-plane 
+            span.side-bar-heading-text Scheduled Inspections
+        
+    
   - if can? :read, Part
     li class="#{params[:controller] == "parts" ? 'active' : ''}"
       = link_to parts_path do

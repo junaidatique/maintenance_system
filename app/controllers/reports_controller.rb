@@ -91,4 +91,6 @@ class ReportsController < ApplicationController
                     }
                   )
   end
+  def scheduled_inspection
+  end
 end

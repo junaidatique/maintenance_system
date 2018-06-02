@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   
-  
+  resources :scheduled_inspections
   resources :inspections do 
     resources :work_packages
   end
@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       get :airframe      
       get :airframe_pdf      
       get :inspection_record_pdf      
+      
     end
   end
   resources :flying_plans

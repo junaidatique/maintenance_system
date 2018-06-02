@@ -79,8 +79,7 @@ class Part
     self.landings_completed  = part_histories.sum('landings')
     self.remaining_hours     = total_hours.to_f - completed_hours.to_f    
     save
-    inspection = self.inspection.first
-    inspection.scheduled_inspections.gt(hours: 0).update_all({completed_hours: self.completed_hours})
+    self.inspection.first.update_scheduled_inspections self.completed_hours
     
   end
 

@@ -36,4 +36,22 @@ class Inspection
     sp.save!  
     self.scheduled_inspections << sp
   end
+
+  def update_scheduled_inspections hours
+    self.scheduled_inspections.gt(hours: 0).update_all({completed_hours: hours})   
+    pending_schedules = ScheduledInspection.collection.aggregate([
+      { 
+        "$project" => 
+        {
+          "diff" => { 
+            "$subtract" => [ "$hours", "$completed_hours" ] 
+          }          
+        }
+      },
+      {
+        "$match"=>{"diff"=>{"$lt"=>10,"$gt"=>0}}
+      }
+    ])
+    ScheduledInspection.in(id: pending_schedules.map{|sch| sch['_id']}).update_all({status_cd: 1})
+  end
 end
