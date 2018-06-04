@@ -1,7 +1,35 @@
 = simple_form_for(@inspection) do |f|
   = f.error_notification
-
-  .form-inputs
-
-  .form-actions
-    = f.button :submit
+  - if @inspection.errors.full_messages.count > 0
+    .alert.alert-danger
+      ul
+        - @inspection.errors.full_messages.each do |error_message|
+          li
+            = error_message
+  /= f.input :type_cd, as: :hidden, input_html: { value: @type_cd }
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; 
+            = (@type_cd == "0") ? "Aircraft " : "Part "            
+            | Inspection
+        .box-body
+          .row
+            .col-sm-6              
+              = f.input :name
+            .col-sm-6
+              = f.input :no_of_hours
+          .row
+            .col-sm-6
+              = f.input :calender_value
+            .col-sm-6
+              - if @type_cd == "1"
+                = f.input :part_number
+          .row
+            .col-sm-6
+              = f.input :duration, collection: enum_option_pairs(Inspection, :duration), as: :radio_buttons
+            .col-sm-6
+  == render 'common/form_action_buttons', options: { form: f, index_path: inspections_path(type_cd: @type_cd)}

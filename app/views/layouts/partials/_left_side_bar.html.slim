@@ -30,9 +30,12 @@ ul.sidebar-menu
           i.fa.fa-angle-left.pull-right
       ul.treeview-menu
         li class="#{params[:controller] == "inspections" ? 'active' : ''}"
-          = link_to inspections_path do
+          = link_to inspections_path(type_cd: 0) do
             .fa.fa-paper-plane 
-            span.side-bar-heading-text Inspections
+            span.side-bar-heading-text Aircraft Inspections
+          = link_to inspections_path(type_cd: 1) do
+            .fa.fa-paper-plane 
+            span.side-bar-heading-text Part Inspections
         li class="#{params[:controller] == "scheduled_inspections" ? 'active' : ''}"
           = link_to scheduled_inspections_path do
             .fa.fa-paper-plane 

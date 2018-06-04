@@ -4,39 +4,6 @@
 = content_for :box_heading do
   | Scheduled Inpections
 
-.row
-  .col-md-12
-    .box.box-info
-      .box-body
-        table.table.table-bordered.table-striped.data-tabled
-          thead
-            tr
-              th width='10%'
-                | Name
-              th width='10%'
-                | Item
-              th width='10%'
-                | Hours
-              th width='10%'
-                | Calender
-              th width='13%'
-                | Actions
-          tbody
-            - @scheduled_inspections.each do |scheduled_inspection|
-              tr
-                td
-                  = link_to scheduled_inspection.inspection.name, inspection_path(scheduled_inspection.inspection)
-                td
-                  - if scheduled_inspection.inspection.aircraft.present?
-                    = scheduled_inspection.inspection.aircraft.tail_number
-                  - else 
-                    = scheduled_inspection.inspection.part.number
-                td
-                  = scheduled_inspection.hours
-                td
-                  = scheduled_inspection.calender_life_date                  
-                td.text-center width='20%'
-                  /= link_to inspection_path(inspection), class: 'btn btn-success btn-flat ' do
-                    i.fa.fa-eye
+== render "scheduled_inspections/table"
                   
         

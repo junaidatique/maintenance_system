@@ -1,4 +1,4 @@
-cur_time = Time.now
+cur_time = Time.zone.now
 
 System.create! settings: {dms_version_number: 0.0}
 puts 'Creating Aircraft'
@@ -10,7 +10,10 @@ aircraft_303  = Aircraft.create! number: '304', tail_number: 'QA304', serial_no:
 aircraft_303  = Aircraft.create! number: '305', tail_number: 'QA305', serial_no: '#305', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
 aircraft_303  = Aircraft.create! number: '306', tail_number: 'QA306', serial_no: '#306', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
 aircraft_303  = Aircraft.create! number: '307', tail_number: 'QA307', serial_no: '#307', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+puts 'Aircraft '
 
+
+puts 'Creating Users'
 users_list = [
       {
       "sno": 0,
@@ -266,7 +269,7 @@ users_list = [
     }
   ]
   
-puts 'creating users'
+
 users_list.each do |user|
   # puts user[:sno].inspect
   u = User.new
@@ -284,6 +287,7 @@ users_list.each do |user|
 end
 puts ''
 puts 'user created'
+# exit
 puts 'Creating FlyingPlan'
 (0..10).each do |day|
   is_flying     = 1
@@ -294,7 +298,7 @@ puts 'Creating FlyingPlan'
   else
     reason = Faker::Lorem.sentence(3)
   end  
-  FlyingPlan.create! flying_date: (Time.now - day.days).strftime("%Y-%m-%d"), is_flying: is_flying, aircraft_ids: aircraft_ids, reason: reason
+  FlyingPlan.create! flying_date: (Time.zone.now - day.days).strftime("%Y-%m-%d"), is_flying: is_flying, aircraft_ids: aircraft_ids, reason: reason
   print '.'
 end
 puts ''
@@ -318,52 +322,102 @@ WorkUnitCode.wuc_types.each do |work_unit_code,code_key|
 end
 puts ''
 puts 'WorkUnitCodes Created'
-puts 'Creating Parts'
-(0..Aircraft.count).each do |j|
-  aircraft = Aircraft.limit(1).offset(j).first
-  Part::categories.each do |category,value|
-    Part::trades.each do |trade,value|
-      part_number   = "#{Faker::Number.number(8)}"
-      serial_no     = "#{Faker::Number.number(5)}"
-      quantity      = 0
 
-      inspection_hours = 15
-      inspection_calender_value = 1
-      
-      is_lifed = true
-
-      calender_life_value = 1
-      installed_date  = cur_time.strftime("%Y-%m-%d")
-      
-      total_hours = 100
-      
-      Part.create({
-        aircraft: aircraft, 
-        number: part_number, 
-        serial_no: serial_no,       
-        quantity: quantity, 
-        category: category, 
-        trade: trade, 
-        
-        inspection_hours: inspection_hours, 
-        inspection_calender_value: inspection_calender_value, 
-        
-        description: Faker::Lorem.words(1 + rand(4)).join(" "), 
-        is_lifed: is_lifed, 
-        calender_life_value: calender_life_value, 
-        installed_date: installed_date, 
-        total_hours: total_hours })
-      print '.'
-    end
+puts 'Creating Aircraft Inspection'
+inspections = [
+  {name: 'Weekly', no_of_hours: 0, calender_value: 7, duration_cd: 0, category_cd: 0, type_cd: 0},
+  {name: '25 HRS', no_of_hours: 25, category_cd: 1, type_cd: 0}, 
+  {name: '50 HRS', no_of_hours: 50, calender_value: 6, duration_cd: 1, category_cd: 2, type_cd: 0},
+  {name: '100 HRS', no_of_hours: 100, calender_value: 1, duration_cd: 2, category_cd: 3, type_cd: 0},
+  {name: '400 HRS', no_of_hours: 400},
+]    
+inspections.each do |insp|
+  inspection = Inspection.create(insp)
+  (0..1).each do |wrokpackage|
+    WorkPackage.create!({description: Faker::Lorem.sentence, work_unit_code_id: WorkUnitCode.last.id, inspection_id: inspection.id})
   end
 end
+puts 'Aircraft Inspection Created'
 
+def create_part aircraft, category, trade, part_number, serial_no, quantity = 0  
+  inspection_hours = 10
+  inspection_calender_value = 1
+  
+  is_lifed = true
+
+  calender_life_value = 1
+  installed_date = nil
+  if aircraft.present?
+    installed_date  = Time.zone.now.strftime("%Y-%m-%d")
+  end
+  
+  
+  total_hours = 100
+  
+  Part.create({
+    aircraft: aircraft, 
+    number: part_number, 
+    serial_no: serial_no,       
+    quantity: quantity, 
+    category: category, 
+    trade: trade, 
+    
+    inspection_hours: inspection_hours, 
+    inspection_calender_value: inspection_calender_value, 
+    
+    description: Faker::Lorem.words(1 + rand(4)).join(" "), 
+    is_lifed: is_lifed, 
+    calender_life_value: calender_life_value, 
+    installed_date: installed_date, 
+    total_hours: total_hours })
+  print '.'
+end
+
+puts 'Creating Parts'
+Part::categories.each do |category,value|
+  part_number       = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
+  (0..Aircraft.count).each do |j|
+    aircraft    = Aircraft.limit(1).offset(j).first
+    serial_no   = "#{Faker::Number.number(5)}"
+    create_part aircraft, category, nil, part_number, serial_no
+  end
+  (0..3).each do |j|  
+    serial_no   = "#{Faker::Number.number(5)}"
+    create_part nil, category, nil, part_number, serial_no
+  end  
+  print '.'
+end
+puts ''
+puts 'Categorise Part Created'
+Part::trades.each do |trade,value|  
+  (0..Aircraft.count).each do |j|
+    (0..3).each do |j|  
+      part_number = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
+      aircraft    = Aircraft.limit(1).offset(j).first
+      serial_no   = "#{Faker::Number.number(5)}"
+      create_part aircraft, nil, trade, part_number, serial_no
+    end    
+  end  
+  print '.'
+end
+puts ''
+puts 'Trade Part Created'
+
+(0..5).each do |j|
+  part_number  = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
+  create_part nil, nil, nil, part_number, nil, rand(10) + 1
+  print '.'
+end
+puts ''
+puts 'Unserialized Part Created'
+
+puts ''
 puts 'Part Created'
 exit
 ##################################################################
 #sleep(2)
 (0..8).each do |day|
-  date = Time.now - (8 - day).days
+  date = Time.zone.now - (8 - day).days
   FlightlineServicing::inspection_performeds.each do |inspection,inspection_id|
     Aircraft.all.each do |aircraft|
       puts 'Creating Pre flight Flying Log'

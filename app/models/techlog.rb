@@ -47,8 +47,48 @@ class Techlog
   
   attr_accessor :current_user
 
-  validates :type_cd, presence: true
+
+  belongs_to :scheduled_inspection, optional: true
+  belongs_to :work_unit_code, optional: true
+  belongs_to :flying_log, optional: true
+  belongs_to :user
+  belongs_to :aircraft, optional: true
+  belongs_to :parent_techlog, class_name: Techlog.name, inverse_of: :interm_logs, optional: true
+
+  has_one :date_inspected, dependent: :destroy
+  has_one :work_performed, dependent: :destroy
+  has_one :work_duplicate, dependent: :destroy  
+  has_many :interm_logs, class_name: Techlog.name, inverse_of: :parent_techlog
+  has_many :change_parts, dependent: :destroy
+  has_many :requested_tools, dependent: :destroy
+
+  embeds_many :techlog_state_transitions
+
+  accepts_nested_attributes_for :work_performed
+  accepts_nested_attributes_for :date_inspected
+  accepts_nested_attributes_for :work_duplicate  
+  accepts_nested_attributes_for :flying_log
+  accepts_nested_attributes_for :change_parts
+  accepts_nested_attributes_for :requested_tools
+
+  before_create :set_condition  
+  after_create :create_serial_no  
+  after_create :set_aircraft
+  after_create :set_dms_version
+  after_update :update_flying_log_end_time
+  after_update :create_interm_log, if: Proc.new { |t_log| t_log.condition_cd == 2 }
+  after_update :check_schedule_inspection, if: Proc.new { |t_log| t_log.condition_cd == 1 }
   
+  scope :techloged, -> { where(log_state: :techloged) }
+  scope :addled, -> { where(log_state: :addled) }
+  scope :limited, -> { where(log_state: :limited) }  
+  scope :completed, -> { where(condition_cd: 1) }
+  scope :incomplete, -> { where(condition_cd: 0) }  
+  scope :open, -> { any_of({condition_cd: 0}, {condition_cd: 2},{condition_cd: 0.to_s}, {condition_cd: 2.to_s})}
+  scope :pilot_created, -> { any_of({type_cd: 1}, {type_cd: 1.to_s})}
+  scope :flight_created, -> { any_of({type_cd: 0}, {type_cd: 0.to_s})}
+
+  validates :type_cd, presence: true  
   validate :description_validation
   validate :flying_log_values
   validate :verify_complete
@@ -86,7 +126,7 @@ class Techlog
   def verify_complete    
     if condition_cd == 1 and (parts_state == "requested" or parts_state == "pending" or parts_state == "not_available")
       errors.add(:status, " Some parts are missing. ")
-    elsif condition_cd == 1 and interm_logs.count > 0 and !interm_logs.incomplete.count > 0
+    elsif condition_cd == 1 and interm_logs.count > 0 and interm_logs.incomplete.count > 0
       errors.add(:status, " This techlog has interm log(s). Please complete that log first. ")
     end
     if condition_cd == 1 and verified_tools.blank?      
@@ -146,48 +186,10 @@ class Techlog
     event :tools_returned do
       transition provided: :returned
     end    
-  end
+  end  
 
-  belongs_to :work_unit_code, optional: true
-  belongs_to :flying_log, optional: true
-  belongs_to :user
-  belongs_to :aircraft, optional: true
-  belongs_to :parent_techlog, class_name: Techlog.name, inverse_of: :interm_logs, optional: true
-
-  has_one :date_inspected, dependent: :destroy
-  has_one :work_performed, dependent: :destroy
-  has_one :work_duplicate, dependent: :destroy  
-  has_many :interm_logs, class_name: Techlog.name, inverse_of: :parent_techlog
-  has_many :change_parts, dependent: :destroy
-  has_many :requested_tools, dependent: :destroy
-
-  embeds_many :techlog_state_transitions
-
-  accepts_nested_attributes_for :work_performed
-  accepts_nested_attributes_for :date_inspected
-  accepts_nested_attributes_for :work_duplicate  
-  accepts_nested_attributes_for :flying_log
-  accepts_nested_attributes_for :change_parts
-  accepts_nested_attributes_for :requested_tools
-
-  after_create :create_serial_no
-  after_create :set_condition
-  after_create :set_aircraft
-  after_create :set_dms_version
-  after_update :update_flying_log_end_time
-  after_update :create_interm_log, if: Proc.new { |t_log| t_log.condition_cd == 2 }
-  
-  scope :techloged, -> { where(log_state: :techloged) }
-  scope :addled, -> { where(log_state: :addled) }
-  scope :limited, -> { where(log_state: :limited) }  
-  scope :completed, -> { where(condition_cd: 1) }
-  scope :incomplete, -> { where(condition_cd: 0) }  
-  scope :open, -> { any_of({condition_cd: 0}, {condition_cd: 2},{condition_cd: 0.to_s}, {condition_cd: 2.to_s})}
-  scope :pilot_created, -> { any_of({type_cd: 1}, {type_cd: 1.to_s})}
-  scope :flight_created, -> { any_of({type_cd: 0}, {type_cd: 0.to_s})}
-
-  def is_completed?
-    return condition_cd == 1 ? true : false
+  def set_condition
+    self.condition_cd = self.condition_cd.to_i
   end
 
   def create_serial_no
@@ -206,10 +208,6 @@ class Techlog
     end
   end
 
-  def set_condition
-    self.condition_cd = 0
-    self.save
-  end
   def set_dms_version
     self.dms_version = System.first.settings['dms_version_number'] 
     self.save
@@ -226,7 +224,7 @@ class Techlog
   end
   
   def create_interm_log    
-    if interm_log.blank?
+    if interm_logs.blank? and scheduled_inspection_id.blank?
       temp_interm_log = self.clone
       temp_interm_log.parent_techlog = self
       temp_interm_log.number = Techlog.last.number + 1
@@ -235,9 +233,20 @@ class Techlog
       temp_interm_log.location_to = self.location_to
       temp_interm_log.condition_cd = 0
       temp_interm_log.action = ''
-      temp_interm_log.user = self.user
-      # temp_interm_log.serial_no = "#{Time.zone.now.strftime('%d%m%Y')}-#{number}"
+      temp_interm_log.user = self.user      
       temp_interm_log.save!
     end    
   end
+
+  def check_schedule_inspection
+    if parent_techlog.present? and parent_techlog.scheduled_inspection.present?
+      if parent_techlog.interm_logs.incomplete.count == 0
+        parent_techlog.condition_cd = 1
+        parent_techlog.verified_tools = true
+        parent_techlog.save
+        parent_techlog.scheduled_inspection.complete_inspection
+      end
+    end
+  end
+  
 end

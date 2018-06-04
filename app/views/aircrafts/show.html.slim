@@ -66,6 +66,8 @@
                   = trade.titleize
                   | &nbsp; 781D
                 | &nbsp;
+- @scheduled_inspections = @aircraft.scheduled_inspections.not_completed
+== render "scheduled_inspections/table"
 .row
   .col-md-12
     .box.box-info

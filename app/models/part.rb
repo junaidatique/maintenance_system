@@ -49,6 +49,7 @@ class Part
   has_many :inspection
   has_many :old_parts, class_name: 'ChangePart', inverse_of: :old_parts
   has_many :new_parts, class_name: 'ChangePart', inverse_of: :new_parts  
+  has_many :scheduled_inspections, as: :inspectable
 
   scope :lifed, -> { where(is_lifed: true) }  
   scope :tyre, -> { any_of({category_cd: 2}, {category_cd: 3}, {category_cd: 4})}
@@ -58,6 +59,25 @@ class Part
 
   after_create :update_record  
   
+  def update_record    
+    self.number_serial_no = "#{number}-#{serial_no}"
+    if (total_hours.present? and completed_hours.present?)
+      self.remaining_hours = total_hours.to_f - completed_hours.to_f
+    end
+    if (installed_date.present? and calender_life_value.present?)
+      self.calender_life_date = installed_date.to_date + calender_life_value.years
+    end 
+    self.is_inspectable    = (inspection_hours.present? or inspection_calender_value.present?) ? true : false
+    if self.is_inspectable?
+      part_inspection = Inspection.where(part_number: self.number).first
+      if part_inspection.blank?
+        part_inspection = Inspection.create!({type_cd: 1, name: "#{self.number} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, duration_cd: 1, part_number: self.number})
+      end
+      part_inspection.create_part_inspection self
+    end
+    self.save
+  end
+
   def create_history_with_flying_log flying_log
     if self.is_lifed?
       part_history = PartHistory.where(flying_log_id: flying_log.id).where(part_id: self.id).first            
@@ -83,20 +103,7 @@ class Part
     
   end
 
-  def update_record    
-    self.number_serial_no = "#{number}-#{serial_no}"
-    if (total_hours.present? and completed_hours.present?)
-      self.remaining_hours = total_hours.to_f - completed_hours.to_f
-    end
-    if (installed_date.present? and calender_life_value.present?)
-      self.calender_life_date = installed_date.to_date + calender_life_value.years
-    end
-    self.is_inspectable    = (inspection_hours.present? or inspection_calender_value.present?) ? true : false
-    if self.is_inspectable?
-      Inspection.create({part_id: self.id, name: "#{self.number_serial_no} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, calender_unit: 'month'},)
-    end
-    self.save
-  end
+  
 
   AIRCRAFT_TAIL_NO  = 1
   TRADE             = 2

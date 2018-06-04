@@ -35,7 +35,7 @@ class TechlogsController < ApplicationController
   # GET /techlogs/new
   def new
     @techlog = Techlog.new
-    @techlog.log_date = Time.now.strftime("%d/%m/%Y")
+    @techlog.log_date = Time.zone.now.strftime("%d/%m/%Y")
     @techlog.location_from = "Al Zaeem M.B.A.A Academy"
     @techlog.build_work_performed if @techlog.work_performed.blank?
     @techlog.build_date_inspected if @techlog.date_inspected.blank?
@@ -69,7 +69,7 @@ class TechlogsController < ApplicationController
   # POST /techlogs.json
   def create
     @techlog = Techlog.new(techlog_params)
-    @techlog.log_date = Time.now.strftime("%Y-%m-%d")
+    @techlog.log_date = Time.zone.now.strftime("%Y-%m-%d")
     respond_to do |format|
       if @techlog.save
         if @techlog.tools_started? and @techlog.requested_tools.count > 0
@@ -137,11 +137,11 @@ class TechlogsController < ApplicationController
           @techlog.save
           format.html { redirect_to @techlog, notice: 'Techlog was successfully updated.' }
         elsif @techlog.log_addled?
-          @techlog.addl_log_date = Time.now.strftime("%Y-%m-%d")
+          @techlog.addl_log_date = Time.zone.now.strftime("%Y-%m-%d")
           @techlog.save
           format.html { redirect_to addl_log_path(@techlog), notice: 'Techlog was successfully updated.' }
         elsif @techlog.log_limited?
-          @techlog.limitation_log_date = Time.now.strftime("%Y-%m-%d")
+          @techlog.limitation_log_date = Time.zone.now.strftime("%Y-%m-%d")
           @techlog.save
           format.html { redirect_to limitation_log_path(@techlog), notice: 'Techlog was successfully updated.' }
         end

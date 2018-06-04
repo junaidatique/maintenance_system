@@ -1,6 +1,98 @@
-p#notice = notice
+= content_for :box_heading do
+  | Scheduled Inspection:&nbsp;
+  = @scheduled_inspection.inspection.name
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Inspection
 
-
-= link_to 'Edit', edit_scheduled_inspection_path(@scheduled_inspection)
-'  |
-= link_to 'Back', scheduled_inspections_path
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="25%"
+                    | Name
+                  td = @scheduled_inspection.inspection.name
+                  th width="25%"
+                    | Hours Frequency
+                  td = @scheduled_inspection.inspection.no_of_hours
+                tr
+                  th width="25%"
+                    | Calender Frequency
+                  td 
+                    = @scheduled_inspection.inspection.calender_value
+                    |   
+                    = @scheduled_inspection.inspection.duration
+                  th width="25%"
+                  td
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Scheduled Inspection
+          .col-sm-6.text-right            
+            
+              
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="25%"
+                    | Item
+                  td 
+                    - if @scheduled_inspection.inspectable_type == Aircraft.name
+                      = @scheduled_inspection.inspectable.tail_number
+                    - else
+                      = @scheduled_inspection.inspectable.number
+                  th width="25%"
+                    | Hours
+                  td = @scheduled_inspection.hours
+                tr
+                  th width="25%"
+                    | Calender Due
+                  td 
+                    = display_date @scheduled_inspection.calender_life_date                      
+                  th width="25%"
+                    | Hours Due
+                  td
+                    = @scheduled_inspection.hours
+                tr
+                  th width="25%"
+                    | Current Date
+                  td 
+                    = display_date Time.zone.now
+                  th width="25%"
+                    | Completed Hours
+                  td
+                    = @scheduled_inspection.completed_hours
+                tr
+                  th width="25%"
+                    | Started At
+                  td 
+                    = display_date @scheduled_inspection.inspection_started
+                  th width="25%"
+                    | Completed Date
+                  td
+                    = display_date @scheduled_inspection.inspection_completed
+                tr
+                  th width="25%"
+                    | Status
+                  td 
+                    = @scheduled_inspection.status
+                  th width="25%"
+                    
+                  td
+= render 'common/actions_buttons', back_path: scheduled_inspections_path()

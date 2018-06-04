@@ -36,7 +36,7 @@ class FlyingLogsController < ApplicationController
     @flying_log.build_flightline_servicing
 
 
-    @flying_log.log_date = Time.now.strftime("%d/%m/%Y")
+    @flying_log.log_date = Time.zone.now.strftime("%d/%m/%Y")
     
   end
 
@@ -72,7 +72,7 @@ class FlyingLogsController < ApplicationController
   # POST /flying_logs.json
   def create
     @flying_log = FlyingLog.new(flying_log_params)
-    @flying_log.log_date = Time.now.strftime("%Y-%m-%d")
+    @flying_log.log_date = Time.zone.now.strftime("%Y-%m-%d")
     respond_to do |format|
       if @flying_log.save
         @flying_log.flightline_servicing.flight_start_time = Time.zone.now

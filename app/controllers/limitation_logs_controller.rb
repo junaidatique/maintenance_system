@@ -19,7 +19,7 @@ class LimitationLogsController < ApplicationController
 
   # GET /limitation_logs/1/edit
   def edit
-    @techlog.limitation_log_date = Time.now.strftime("%d/%m/%Y")
+    @techlog.limitation_log_date = Time.zone.now.strftime("%d/%m/%Y")
   end
 
   # POST /limitation_logs

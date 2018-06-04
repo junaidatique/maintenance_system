@@ -1,10 +1,11 @@
 class InspectionsController < ApplicationController
+  before_action :set_type
   before_action :set_inspection, only: [:show, :edit, :update, :destroy]
 
   # GET /inspections
   # GET /inspections.json
   def index
-    @inspections = Inspection.all
+    @inspections = Inspection.where(type_cd: @type_cd.to_i).all
   end
 
   # GET /inspections/1
@@ -56,19 +57,24 @@ class InspectionsController < ApplicationController
   def destroy
     @inspection.destroy
     respond_to do |format|
-      format.html { redirect_to inspections_url, notice: 'Inspection was successfully destroyed.' }
+      format.html { redirect_to inspections_url(type_cd: @type_cd), notice: 'Inspection was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    def set_type
+      if params[:type_cd].blank?
+        # redirect_to aircrafts_path()
+      end
+      @type_cd = params[:type_cd]
+    end
     def set_inspection
       @inspection = Inspection.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def inspection_params
-      params.fetch(:inspection, {})
+      params.require(:inspection).permit(:name, :no_of_hours, :calender_value, :type_cd, :part_number, :duration)
     end
 end

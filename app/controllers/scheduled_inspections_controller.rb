@@ -4,7 +4,7 @@ class ScheduledInspectionsController < ApplicationController
   # GET /scheduled_inspections
   # GET /scheduled_inspections.json
   def index
-    @scheduled_inspections = ScheduledInspection.all
+    @scheduled_inspections = ScheduledInspection.pending.all
   end
 
   # GET /scheduled_inspections/1
@@ -41,6 +41,7 @@ class ScheduledInspectionsController < ApplicationController
   # PATCH/PUT /scheduled_inspections/1.json
   def update
     respond_to do |format|
+      @scheduled_inspection.status_cd = 2
       if @scheduled_inspection.update(scheduled_inspection_params)
         format.html { redirect_to @scheduled_inspection, notice: 'Scheduled inspection was successfully updated.' }
         format.json { render :show, status: :ok, location: @scheduled_inspection }
@@ -69,6 +70,7 @@ class ScheduledInspectionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def scheduled_inspection_params
-      params.fetch(:scheduled_inspection, {})
+      # params.fetch(:scheduled_inspection, {})
+      params.require(:scheduled_inspection).permit(:started_by_id, :inspection_started)
     end
 end

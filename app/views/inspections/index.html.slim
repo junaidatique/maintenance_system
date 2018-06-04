@@ -1,8 +1,15 @@
-= content_for :page_subtitle do
-  | Inpections
+- if @type_cd == "0"
+  = content_for :page_subtitle do
+    | Aircraft Inpections
 
-= content_for :box_heading do
-  | Inpections
+  = content_for :box_heading do
+    | Aircraft Inpections
+- else 
+  = content_for :page_subtitle do
+    | Part Inpections
+
+  = content_for :box_heading do
+    | Part Inpections
 
 .row
   .col-md-12
@@ -12,9 +19,7 @@
           thead
             tr
               th width='10%'
-                | Name
-              th width='10%'
-                | Item
+                | Name              
               th width='10%'
                 | Hours
               th width='10%'
@@ -25,20 +30,21 @@
             - @inspections.each do |inspection|
               tr
                 td
-                  = link_to inspection.name, inspection_path(inspection)
-                td
-                  - if inspection.aircraft.present?
-                    = inspection.aircraft.tail_number
-                  - else 
-                    = inspection.part.number
+                  = link_to inspection.name, inspection_path(inspection)                
                 td
                   = inspection.no_of_hours
                 td
                   = inspection.calender_value
                   |   
-                  = inspection.calender_unit
+                  = inspection.duration
                 td.text-center width='20%'
                   = link_to inspection_path(inspection), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye
+                  | &nbsp;
                   
+        .row
+          .col-sm-4.col-sm-offset-4
+            /- if can? :create, Inspection and @type_cd == "0"
+              = link_to 'New Inspection', new_inspection_path(type_cd: @type_cd), class: 'btn btn-block btn-primary btn-flat'
+        .clearfix          
         

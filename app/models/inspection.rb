@@ -1,40 +1,93 @@
 class Inspection
   include Mongoid::Document
   include Mongoid::Timestamps
+  include SimpleEnum::Mongoid
 
+  as_enum :type, aircraft: 0, part: 1
+  as_enum :category, weekly: 0, "25 Hour": 1, "50 Hour": 2, "100 Hour": 3, "400 Hour":4
+  as_enum :duration, day: 0, month: 1, year: 2
+  
   field :name, type: String
   field :no_of_hours, type: Float
-  field :calender_value, type: Integer
-  field :calender_unit, type: String
+  field :calender_value, type: Integer  
+  field :part_number, type: String
 
-  has_many :work_packages
-  has_many :scheduled_inspections
+  validate :part_number_presence
 
-  belongs_to :part, optional: true
-  belongs_to :aircraft, optional: true
-
-  after_create :create_scheduled_inspection
-
-  def create_scheduled_inspection
-    sp = ScheduledInspection.new
-    if aircraft.present?      
-      sp.hours = aircraft.flight_hours + no_of_hours
-      starting_date = Time.now
-    else 
-      sp.hours = part.completed_hours + no_of_hours
-      starting_date = part.installed_date
+  def part_number_presence
+    if type_cd == 1 and part_number.blank?
+      errors.add(:part_number, " can't be blank")
     end
-    if calender_unit == 'day'
-      sp.calender_life_date = starting_date + calender_value.days
-    elsif calender_unit == 'month'
-      sp.calender_life_date = starting_date + calender_value.months
-    elsif calender_unit == 'year'
-      sp.calender_life_date = starting_date + calender_value.years
+  end
+
+  has_many :work_packages, dependent: :destroy
+  has_many :scheduled_inspections, dependent: :destroy
+ 
+  after_create :create_inspections
+
+  scope :aircraft_inspection, -> { any_of({type_cd: 0}, {type_cd: 0.to_s})}
+  scope :part_inspection, -> { any_of({type_cd: 1}, {type_cd: 1.to_s})}
+
+  def create_aircraft_inspection aircraft
+    if aircraft.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
+      sp = ScheduledInspection.new        
+      sp.hours              = aircraft.flight_hours + no_of_hours.to_f
+      sp.starting_date      = Time.zone.now        
+      sp.calender_life_date = self.get_duration sp.starting_date
+      sp.inspection         = self
+      sp.status_cd          = 0
+      sp.inspectable        = aircraft
+      sp.save!  
+      self.scheduled_inspections << sp
+    end    
+  end
+  
+  def create_part_inspection part
+    unless part.installed_date.blank?
+      if part.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
+        sp = ScheduledInspection.new
+        if part.scheduled_inspections.where(inspection_id: self.id).count == 0  
+          sp.starting_date      = part.installed_date        
+        else
+          sp.starting_date      = Time.zone.now
+        end
+        
+        sp.calender_life_date = self.get_duration sp.starting_date
+        sp.hours              = part.completed_hours + no_of_hours        
+        sp.inspection         = self
+        sp.status_cd          = 0
+        sp.inspectable        = part
+        sp.save!  
+        self.scheduled_inspections << sp
+      end
     end
-    sp.inspection = self
-    sp.status_cd = 0
-    sp.save!  
-    self.scheduled_inspections << sp
+  end
+
+  def create_inspections
+    if (type_cd.to_i == 0)
+      aircrafts = Aircraft.all
+      aircrafts.each do |aircraft| 
+        self.create_aircraft_inspection aircraft
+      end
+    elsif (type_cd.to_i == 1)
+      parts = Part.where(number: part_number)
+      parts.each do |inspection_item| 
+        
+      end
+    end    
+  end
+
+  
+
+  def get_duration starting_date
+    if self.duration_cd == 0
+      calender_life_date = starting_date + calender_value.days
+    elsif self.duration_cd == 1
+      calender_life_date = starting_date + calender_value.months
+    elsif self.duration_cd == 2
+      calender_life_date = starting_date + calender_value.years
+    end
+    calender_life_date
   end
 
   def update_scheduled_inspections hours

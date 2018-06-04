@@ -19,7 +19,7 @@ class AddlLogsController < ApplicationController
 
   # GET /addl_logs/1/edit
   def edit
-    @techlog.addl_log_date = Time.now.strftime("%d/%m/%Y")
+    @techlog.addl_log_date = Time.zone.now.strftime("%d/%m/%Y")
   end
 
   # POST /addl_logs
