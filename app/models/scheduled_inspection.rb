@@ -57,6 +57,8 @@ class ScheduledInspection
     self.save
     if inspectable_type == Aircraft.name
       self.inspection.create_aircraft_inspection Aircraft.find inspectable_id
+    else
+      self.inspection.create_part_inspection Part.find inspectable_id      
     end
   end
   

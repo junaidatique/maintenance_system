@@ -32,6 +32,7 @@ class Inspection
     if aircraft.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
       sp = ScheduledInspection.new        
       sp.hours              = aircraft.flight_hours + no_of_hours.to_f
+      sp.completed_hours    = aircraft.flight_hours
       sp.starting_date      = Time.zone.now        
       sp.calender_life_date = self.get_duration sp.starting_date
       sp.inspection         = self
@@ -50,10 +51,10 @@ class Inspection
           sp.starting_date      = part.installed_date        
         else
           sp.starting_date      = Time.zone.now
-        end
-        
+        end        
         sp.calender_life_date = self.get_duration sp.starting_date
         sp.hours              = part.completed_hours + no_of_hours        
+        sp.completed_hours    = aircraft.completed_hours
         sp.inspection         = self
         sp.status_cd          = 0
         sp.inspectable        = part

@@ -16,11 +16,9 @@ class ChangePart
   validate :verify_quantity_provided
   after_update :update_parts_quantity
   
-  def verify_quantity_provided  
-    # puts self.inspect    
+  def verify_quantity_provided      
     if new_part.present? and !provided
-      if quantity_provided > new_part.quantity and new_part.serial_no.blank?
-        # puts 'here'
+      if quantity_provided > new_part.quantity and new_part.serial_no.blank?        
         errors.add(:quantity_provided, "Provided quantity not available.")
       end
     end    
@@ -28,11 +26,15 @@ class ChangePart
   
   def update_parts_quantity  
     if provided_changed?
-      old_part.aircraft = nil
-      old_part.quantity = old_part.quantity.to_f + quantity_required.to_f
-      old_part.save
-      new_part.aircraft_id = techlog.aircraft_id
-      new_part.quantity = new_part.quantity.to_f - quantity_provided.to_f
+      if old_part.serial_no.present?
+        old_part.aircraft = nil        
+        old_part.save
+      end
+      if new_part.serial_no.present?
+        new_part.aircraft_id = techlog.aircraft_id
+      else      
+        new_part.quantity = new_part.quantity.to_f - quantity_provided.to_f
+      end
       new_part.save
     end  
     
