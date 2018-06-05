@@ -91,7 +91,7 @@ class Inspection
   end
 
   def update_scheduled_inspections hours
-    self.scheduled_inspections.gt(hours: 0).update_all({completed_hours: hours})   
+    self.scheduled_inspections.not_completed.gt(hours: 0).update_all({completed_hours: hours})   
     pending_schedules = ScheduledInspection.collection.aggregate([
       { 
         "$project" => 
@@ -105,6 +105,6 @@ class Inspection
         "$match"=>{"diff"=>{"$lt"=>10,"$gt"=>0}}
       }
     ])
-    ScheduledInspection.in(id: pending_schedules.map{|sch| sch['_id']}).update_all({status_cd: 1})
+    ScheduledInspection.in(id: pending_schedules.map{|sch| sch['_id']}).scheduled_insp.update_all({status_cd: 1})
   end
 end

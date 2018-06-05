@@ -1,5 +1,5 @@
 .background-image
-  = wicked_pdf_image_tag('flying-log.jpg', size: '2338x1654')  
+  = wicked_pdf_image_tag('flying-log.png', size: '2338x1654')  
 .aircraft-number
   = flying_log.aircraft.number
 .fl-location_from
@@ -31,6 +31,9 @@
   - if flying_log.fuel_refill.present?
     .fl-fuel-refill
       = flying_log.fuel_refill
+  - if flying_log.fuel_total.present?
+    .fl-fuel-total
+      = flying_log.fuel_total
   - if flying_log.oil_remaining.present?
     .fl-fuel-oil-remaining
       = flying_log.oil_remaining
@@ -145,6 +148,8 @@
   .pilot-acceptance-certificate
     .time-local
       = flying_log.capt_acceptance_certificate.flight_time
+    .mission
+      = flying_log.capt_acceptance_certificate.mission
     .pilot-name
       = flying_log.capt_acceptance_certificate.user.name
     .rank

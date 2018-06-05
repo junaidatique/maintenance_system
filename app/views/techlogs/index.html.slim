@@ -21,7 +21,7 @@
                 | WUC
               th width='10%'
                 | Log Status
-              - if current_user.central_tool_store?
+              - if current_user.log_asst?
                 th width='10%'
                   | Tools Status  
               th width='13%'
@@ -39,7 +39,7 @@
                   = techlog.work_unit_code.code unless techlog.work_unit_code.blank?                
                 td.table-row-center
                   = techlog.condition.to_s.titleize
-                - if current_user.role == :central_tool_store
+                - if current_user.log_asst?
                   td.table-row-center
                     = techlog.tools_state.titleize
                   
@@ -50,7 +50,7 @@
                   
                   = link_to techlog_path(techlog), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye
-                  - if !techlog.is_completed?
+                  - if techlog.condition_cd == 0
                     = link_to edit_techlog_path(techlog), class: 'btn btn-info btn-flat ' do
                       i.fa.fa-pencil
                     

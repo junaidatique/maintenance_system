@@ -21,8 +21,8 @@
             | month
           td.hours_td
             = part.inspection_hours
-          - part.inspection.first.scheduled_inspections.each do |sp|
+          - part.scheduled_inspections.limit(2).order(created_at: :desc).each do |sp|
             td 
               = sp.hours
               | /
-              = sp.calender_life_date
+              = display_date sp.calender_life_date

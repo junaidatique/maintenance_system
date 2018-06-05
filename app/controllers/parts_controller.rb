@@ -71,21 +71,51 @@ class PartsController < ApplicationController
 
   # GET /parts/autocomplete_codes
   # GET /parts/autocomplete_codes.json
-  def autocomplete
+  def autocomplete    
     search_string = params[:term]
-    aircraft_id = params[:aircraft_id]
-    search_type = params[:search_type]
-    parts = Part.where(number: /.*#{search_string}.*/i)
-    if aircraft_id.present? 
-      if search_type == 'include'
-        parts = parts.where(aircraft_id: aircraft_id)
-      else
-        parts = parts.where(:aircraft_id.ne => aircraft_id)
-      end
-    end
-    record = parts.limit(5)
-    render :json => record.map { |part| {id: part._id.to_s, label: "#{part.number_serial_no} (#{part.quantity} left)", value: "#{part.number_serial_no} (#{part.quantity} left)" } }
+    aircraft_id   = params[:aircraft_id]
+    search_type   = params[:search_type]
+    record = Part.where(number: /.*#{search_string}.*/i)
+    record = record.any_of({aircraft_id: aircraft_id}, {serial_no: nil})
+      render :json => record.map { |part| 
+        {
+          id: part.id.to_s, 
+          label: "#{part.number} #{part.description}", 
+          value: "#{part.number}", 
+        } 
+      }
   end
+  def autocomplete_serial
+    search_string = params[:term]
+    aircraft_id   = params[:aircraft_id]
+    part_number   = params[:part_number]
+    record        = Part.where(serial_no: /.*#{search_string}.*/i).where(number: part_number)
+    puts record.inspect
+    render :json => record.map { |part| 
+      {
+        id: part.id.to_s, 
+        label: "#{part.serial_no}", 
+        value: "#{part.serial_no}", 
+      } 
+    }
+  end
+    
+    
+    
+    
+    # 
+    # search_type = params[:search_type]
+    # parts = Part.where(number: /.*#{search_string}.*/i)
+    # if aircraft_id.present? 
+    #   if search_type == 'include'
+    #     parts = parts.where(aircraft_id: aircraft_id)
+    #   else
+    #     parts = parts.where(:aircraft_id.ne => aircraft_id)
+    #   end
+    # end
+    # record = parts.limit(5)
+    # render :json => record.map { |part| {id: part._id.to_s, label: "#{part.number_serial_no} (#{part.quantity} left)", value: "#{part.number_serial_no} (#{part.quantity} left)" } }
+  # end
 
   private
     # Use callbacks to share common setup or constraints between actions.

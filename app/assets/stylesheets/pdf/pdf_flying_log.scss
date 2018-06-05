@@ -77,14 +77,17 @@
 .fl-fuel-refill {
   @include position-abs-mixin(510px, 330px); 
 }
+.fl-fuel-total {
+  @include position-abs-mixin(510px, 500px); 
+}
 .fl-fuel-oil-remaining {
-  @include position-abs-mixin(510px, 570px); 
+  @include position-abs-mixin(510px, 700px); 
 }
 .fl-fuel-oil-serviced {
-  @include position-abs-mixin(510px, 780px); 
+  @include position-abs-mixin(510px, 900px); 
 }
 .fl-fuel-oil-quantity {
-  @include position-abs-mixin(510px, 1000px); 
+  @include position-abs-mixin(510px, 1100px); 
 }
 .fl-flightline-release-time {
   @include position-abs-mixin(630px, 1280px); 
@@ -214,8 +217,12 @@
   .time-local {
     @include position-abs-mixin(700px, 100px);
   }
-  .pilot-name {
+  .mission {
+    font-size: 32px;
     @include position-abs-mixin(700px, 330px);
+  }
+  .pilot-name {
+    @include position-abs-mixin(700px, 530px);
   }
   .rank {
     @include position-abs-mixin(700px, 730px);

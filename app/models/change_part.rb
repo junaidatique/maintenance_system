@@ -19,7 +19,7 @@ class ChangePart
   def verify_quantity_provided  
     # puts self.inspect    
     if new_part.present? and !provided
-      if quantity_provided > new_part.quantity
+      if quantity_provided > new_part.quantity and new_part.serial_no.blank?
         # puts 'here'
         errors.add(:quantity_provided, "Provided quantity not available.")
       end

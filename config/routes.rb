@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       post :import
       get :upload
       get :autocomplete
+      get :autocomplete_serial
     end
   end
   resources :non_flying_days

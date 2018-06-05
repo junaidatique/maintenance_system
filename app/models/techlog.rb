@@ -95,6 +95,7 @@ class Techlog
   validate :verify_interm
   validate :maintenance_work_unit_code
 
+
   def maintenance_work_unit_code        
     if type_cd == 1 and flying_log.blank? and work_unit_code.blank?  
       errors.add(:work_unit_code, " can't be blank")

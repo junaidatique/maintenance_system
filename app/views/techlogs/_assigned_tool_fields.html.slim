@@ -2,11 +2,11 @@
   .row
     .col-md-12
       = f.input :is_assigned, as: :hidden, input_html: { value: true }
-      - if current_user.central_tool_store?
+      - if current_user.log_asst?
         = f.input :assigned_by_id, as: :hidden, input_html: { value: current_user.id }
       .row        
         .col-sm-6
-          - if current_user.central_tool_store?
+          - if current_user.log_asst?
             - unless f.object.is_assigned
               = f.input :serial_no, :url => serail_autocomplete_tools_path(tool_no: @requested_tool.tool_no), :as => :autocomplete
             - else 
@@ -15,7 +15,7 @@
                 |  
               = f.object.serial_no
         .col-sm-6
-          - if current_user.central_tool_store? and f.object.serial_no.present? and f.object.tool.present?
+          - if current_user.log_asst? and f.object.serial_no.present? and f.object.tool.present?
             = f.input :is_returned, label: 'returned', as: :boolean, checked_value: 1, unchecked_value: 0
           
       hr

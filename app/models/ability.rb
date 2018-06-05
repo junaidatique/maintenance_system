@@ -49,10 +49,7 @@ class Ability
       can :crud, Techlog
     elsif user.ro_fitt?
       can :ru, FlyingLog
-      can :crud, Techlog
-    elsif user.log_asst?
-      can :ru, FlyingLog
-      can :crud, Techlog
+      can :crud, Techlog    
     elsif user.elect_fitt?
       can :ru, FlyingLog
       can :crud, Techlog
@@ -65,7 +62,7 @@ class Ability
       can :bookin_flight, FlyingLog
       can :crud, Techlog
       can :view_logs, FlyingLog
-    elsif user.central_tool_store?
+    elsif user.log_asst?
       can :crud, Tool
       can :rud, Techlog
       can :crud, RequestedTool

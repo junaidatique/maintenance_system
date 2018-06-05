@@ -10,6 +10,7 @@ class FlyingLog
   field :log_date, type: Date
   field :fuel_remaining, type: Float
   field :fuel_refill, type: Float
+  field :fuel_total, type: Float
   field :oil_remaining, type: Float
   field :oil_serviced, type: Float
   field :oil_total_qty, type: Float
@@ -120,20 +121,21 @@ class FlyingLog
 
   def update_times
     build_aircraft_total_time
-    aircraft_total_time.carried_over_engine_hours     = aircraft.engine_hours
+    aircraft_total_time.carried_over_engine_hours     = aircraft.parts.engine_part.first.completed_hours
     aircraft_total_time.carried_over_aircraft_hours   = aircraft.flight_hours
     aircraft_total_time.carried_over_landings         = aircraft.landings
-    aircraft_total_time.carried_over_prop_hours       = aircraft.prop_hours
-    aircraft_total_time.corrected_total_engine_hours     = aircraft.engine_hours
+    aircraft_total_time.carried_over_prop_hours       = aircraft.parts.propeller_part.first.completed_hours
+    aircraft_total_time.corrected_total_engine_hours     = aircraft.parts.engine_part.first.completed_hours
     aircraft_total_time.corrected_total_aircraft_hours   = aircraft.flight_hours
     aircraft_total_time.corrected_total_landings         = aircraft.landings
-    aircraft_total_time.corrected_total_prop_hours       = aircraft.prop_hours
+    aircraft_total_time.corrected_total_prop_hours       = aircraft.parts.propeller_part.first.completed_hours
   end
 
   def update_fuel
     self.fuel_remaining  = aircraft.fuel_capacity.to_f - fuel_refill.to_f
     self.oil_remaining   = aircraft.oil_capacity.to_f - oil_serviced.to_f
     self.oil_total_qty   = aircraft.oil_capacity
+    self.fuel_total      = aircraft.fuel_capacity
   end
 
   def update_aircraft_timgins    

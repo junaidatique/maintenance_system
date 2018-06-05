@@ -19,8 +19,7 @@ class User
                 log_asst: 12,
                 elect_fitt: 13,
                 gen_fitt: 14,                
-                master_control: 15,
-                central_tool_store: 16
+                master_control: 15                
                 
 
                 

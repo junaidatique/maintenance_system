@@ -29,9 +29,9 @@
         .col-sm-3
           - if current_user.role == :logistics and !f.object.provided
             - if f.object.new_part.present?
-              = f.input :new_part, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id", value: "#{f.object.new_part.number_serial_no} (#{f.object.new_part.quantity} left)"}
+              = f.input :new_part, :url => autocomplete_serial_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude, part_number: f.object.old_part.number), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id", value: "#{f.object.new_part.number_serial_no} (#{f.object.new_part.quantity} left)"}
             - else 
-             = f.input :new_part, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id"} 
+              = f.input :new_part, :url => autocomplete_serial_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude, part_number: f.object.old_part.number), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id"} 
           - elsif f.object.new_part.present?
             label Part # and Serial #
             br

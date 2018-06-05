@@ -53,6 +53,8 @@ class Part
 
   scope :lifed, -> { where(is_lifed: true) }  
   scope :tyre, -> { any_of({category_cd: 2}, {category_cd: 3}, {category_cd: 4})}
+  scope :engine_part, -> { where({category_cd: 0})}
+  scope :propeller_part, -> { where({category_cd: 1})}
 
   validates :number, presence: true
   validates :description, presence: true
@@ -99,8 +101,10 @@ class Part
     self.landings_completed  = part_histories.sum('landings')
     self.remaining_hours     = total_hours.to_f - completed_hours.to_f    
     save
-    self.inspection.first.update_scheduled_inspections self.completed_hours
-    
+    # self.scheduled_inspections.not_completed.inspection.first.update_scheduled_inspections self.completed_hours
+    self.scheduled_inspections.not_completed.each do |scheduled_inspection|
+      scheduled_inspection.inspection.update_scheduled_inspections self.completed_hours      
+    end
   end
 
   

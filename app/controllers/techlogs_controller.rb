@@ -8,7 +8,7 @@ class TechlogsController < ApplicationController
   def index
     if current_user.admin? or current_user.master_control? or current_user.chief_maintenance_officer?
       @techlogs = Techlog.techloged
-    elsif current_user.central_tool_store?
+    elsif current_user.log_asst?
       @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
     elsif current_user.logistics?
       @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
@@ -47,7 +47,7 @@ class TechlogsController < ApplicationController
 
   # GET /techlogs/1/edit
   def edit
-    if @techlog.is_completed?
+    if !@techlog.open?
       redirect_to techlog_path(@techlog), :flash => { :error => "You can't edit completed techlog." }
     end
     if @techlog.interm_logs.incomplete.count > 0
@@ -120,10 +120,10 @@ class TechlogsController < ApplicationController
         if @techlog.tools_started? and @techlog.requested_tools.count > 0
           @techlog.tools_requested_tools
         end
-        if @techlog.tools_requested? and current_user.central_tool_store?
+        if @techlog.tools_requested? and current_user.log_asst?
           @techlog.tools_provided_tools
         end
-        if @techlog.tools_provided? and current_user.role == :central_tool_store and @techlog.assigned_tools.where(is_returned: false).count == 0
+        if @techlog.tools_provided? and current_user.log_asst? and @techlog.assigned_tools.where(is_returned: false).count == 0
           @techlog.tools_returned_tools
         end
         # this one is for crew cheif
