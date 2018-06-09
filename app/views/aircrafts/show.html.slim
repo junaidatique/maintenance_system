@@ -66,6 +66,9 @@
                   = trade.titleize
                   | &nbsp; 781D
                 | &nbsp;
+              = link_to inspection_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank'                 
+                | &nbsp; 781K
+                | &nbsp;
 - @scheduled_inspections = @aircraft.scheduled_inspections.not_completed
 == render "scheduled_inspections/table"
 .row

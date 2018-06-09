@@ -6,4 +6,5 @@
  *= require pdf/pdf_limitation_log
  *= require pdf/pdf_airframe
  *= require pdf/pdf_inspection_record
+ *= require pdf/pdf_inspection
 */

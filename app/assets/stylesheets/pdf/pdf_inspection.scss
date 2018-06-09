@@ -1,0 +1,103 @@
+@mixin position-abs-mixin($top, $left) {
+  position: absolute;
+  top: $top;
+  left: $left;
+}
+.inspection_pdf {
+  font-size: 28px;
+  // .trade {
+  //   @include position-abs-mixin(50px, 1000px);        
+  // }
+  .background-image {
+    z-index: -1;
+    position: absolute;
+  }
+  
+  .tl-org {    
+    @include position-abs-mixin(150px, 1200px);        
+  }
+  .tl-aircraft-number {        
+    @include position-abs-mixin(150px, 2170px);            
+  }
+  .tl-crew_chief {
+    @include position-abs-mixin(150px, 845px);
+  }
+  .aircraft-inspection{
+    @include position-abs-mixin(340px, 175px);    
+    .td-type{
+      width: 270px;
+      text-align: center;
+    }
+    .td-freq{
+      width: 250px;
+      text-align: center;
+    }
+    .td-comple{
+      width: 450px;
+      text-align: center;
+    }
+  }
+  .engine-inspection{
+    @include position-abs-mixin(540px, 175px);    
+    .td-part_number{
+      width: 270px;
+      text-align: left;
+    }
+    .td-serial{
+      width: 250px;
+      text-align: center;
+    }
+    .td-freq{
+      width: 280px;
+      text-align: center;
+    }
+    .td-comple{
+      width: 450px;
+      text-align: center;
+    }
+  }
+  .proppeller-inspection{
+    @include position-abs-mixin(540px, 1350px);    
+    .td-part_number{
+      width: 270px;
+      text-align: left;
+    }
+    .td-serial{
+      width: 250px;
+      text-align: left;
+    }
+    .td-freq{
+      width: 280px;
+      text-align: left;
+    }
+    .td-comple{
+      width: 450px;
+      text-align: left;
+    }
+  }
+  .rest-inspection{
+    @include position-abs-mixin(970px, 175px);
+    .td-sr{
+      width: 90px;
+      text-align: center;
+      
+    }
+    .td-type{
+      width: 420px;
+      text-align: center;
+      
+    }
+    .td-freq{
+      width: 330px;
+      text-align: center;
+      // border: solid 1px;
+    }
+    .td-comple{
+      width: 450px;
+      text-align: center;
+    }
+  }
+  
+  
+  
+}

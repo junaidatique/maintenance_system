@@ -101,7 +101,7 @@
                       
                     td
                       
-  - if @scheduled_inspection.status_cd.to_i == 0 or @scheduled_inspection.status_cd.to_i == 1
+    /- if @scheduled_inspection.status_cd.to_i == 0 or @scheduled_inspection.status_cd.to_i == 1
     = f.input :started_by_id, as: :hidden, input_html: { value: current_user.id }
     = f.input :inspection_started, as: :hidden, input_html: { value: Time.zone.now }
     == render 'common/form_action_buttons', options: { form: f, index_path: inspection_path(@scheduled_inspection.inspection)}

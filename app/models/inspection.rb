@@ -4,7 +4,7 @@ class Inspection
   include SimpleEnum::Mongoid
 
   as_enum :type, aircraft: 0, part: 1
-  as_enum :category, weekly: 0, "25 Hour": 1, "50 Hour": 2, "100 Hour": 3, "400 Hour":4
+  as_enum :category, weekly: 0, "25 Hour": 1, "50 Hour": 2, "100 Hour": 3, "400 Hour": 4
   as_enum :duration, day: 0, month: 1, year: 2
   
   field :name, type: String
@@ -54,7 +54,7 @@ class Inspection
         end        
         sp.calender_life_date = self.get_duration sp.starting_date
         sp.hours              = part.completed_hours + no_of_hours        
-        sp.completed_hours    = aircraft.completed_hours
+        sp.completed_hours    = part.completed_hours
         sp.inspection         = self
         sp.status_cd          = 0
         sp.inspectable        = part

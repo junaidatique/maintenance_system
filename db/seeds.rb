@@ -329,7 +329,7 @@ inspections = [
   {name: '25 HRS', no_of_hours: 25, category_cd: 1, type_cd: 0}, 
   {name: '50 HRS', no_of_hours: 50, calender_value: 6, duration_cd: 1, category_cd: 2, type_cd: 0},
   {name: '100 HRS', no_of_hours: 100, calender_value: 1, duration_cd: 2, category_cd: 3, type_cd: 0},
-  {name: '400 HRS', no_of_hours: 400},
+  {name: '400 HRS', no_of_hours: 400, category_cd: 4, type_cd: 0},
 ]    
 inspections.each do |insp|
   inspection = Inspection.create(insp)
@@ -339,11 +339,12 @@ inspections.each do |insp|
 end
 puts 'Aircraft Inspection Created'
 
-def create_part aircraft, category, trade, part_number, serial_no, quantity = 0  
+def create_part aircraft, category, trade, part_number, serial_no, quantity = 0, description = ''
   inspection_hours = 10
   inspection_calender_value = 1
   
-  is_lifed = true
+  
+  is_lifed = !serial_no.blank?
 
   calender_life_value = 1
   installed_date = nil
@@ -365,7 +366,7 @@ def create_part aircraft, category, trade, part_number, serial_no, quantity = 0
     inspection_hours: inspection_hours, 
     inspection_calender_value: inspection_calender_value, 
     
-    description: Faker::Lorem.words(1 + rand(4)).join(" "), 
+    description: description, 
     is_lifed: is_lifed, 
     calender_life_value: calender_life_value, 
     installed_date: installed_date, 
@@ -379,11 +380,11 @@ Part::categories.each do |category,value|
   (0..Aircraft.count).each do |j|
     aircraft    = Aircraft.limit(1).offset(j).first
     serial_no   = "#{Faker::Number.number(5)}"
-    create_part aircraft, category, nil, part_number, serial_no
+    create_part aircraft, category, nil, part_number, serial_no, 1, category
   end
   (0..3).each do |j|  
     serial_no   = "#{Faker::Number.number(5)}"
-    create_part nil, category, nil, part_number, serial_no
+    create_part nil, category, nil, part_number, serial_no, 1, category
   end  
   print '.'
 end
@@ -392,10 +393,11 @@ puts 'Categorise Part Created'
 Part::trades.each do |trade,value|  
   (0..Aircraft.count).each do |j|
     (0..3).each do |j|  
+      desc = Faker::Lorem.words(1 + rand(4)).join(" ")
       part_number = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
       aircraft    = Aircraft.limit(1).offset(j).first
       serial_no   = "#{Faker::Number.number(5)}"
-      create_part aircraft, nil, trade, part_number, serial_no
+      create_part aircraft, nil, trade, part_number, serial_no, 1, desc
     end    
   end  
   print '.'
@@ -405,7 +407,8 @@ puts 'Trade Part Created'
 
 (0..5).each do |j|
   part_number  = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
-  create_part nil, nil, nil, part_number, nil, rand(10) + 1
+  desc = Faker::Lorem.words(1 + rand(4)).join(" ")
+  create_part nil, nil, nil, part_number, nil, rand(10) + 1, desc
   print '.'
 end
 puts ''
@@ -413,7 +416,7 @@ puts 'Unserialized Part Created'
 
 puts ''
 puts 'Part Created'
-exit
+# exit
 ##################################################################
 #sleep(2)
 (0..8).each do |day|

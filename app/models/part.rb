@@ -11,7 +11,6 @@ class Part
     nose_tail: 4,
     battery: 5
     
-
   as_enum :trade, airframe: 0, engine: 1, electic: 2, instrument: 3, radio: 4
 
   field :number, type: String
