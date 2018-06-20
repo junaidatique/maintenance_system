@@ -29,7 +29,12 @@ class Sortie
   def calculate_flight_minutes
     takeoff_time = DateTime.strptime(self.takeoff_time, '%H:%M %p')
     landing_time = DateTime.strptime(self.landing_time, '%H:%M %p')
-    ((landing_time - takeoff_time) * 24 * 60).to_i
+    if landing_time < takeoff_time
+      ((takeoff_time - landing_time) * 24 * 60).to_i
+    else
+      ((landing_time - takeoff_time) * 24 * 60).to_i
+    end
+    
   end
 
   def calculate_landings
@@ -65,35 +70,5 @@ class Sortie
     "#{hours}.#{mins_to_table}"
   end
 
-  def update_aircraft_times
-
-    self.total_landings = self.touch_go.to_i + self.full_stop.to_i
-    self.flight_minutes = self.calculate_flight_minutes
-    self.flight_time    = self.calculate_flight_time
-    self.total_landings = self.calculate_landings
-
-    f_total = self.flying_log.aircraft_total_time
-    f_total.this_sortie_aircraft_hours = flight_time.to_f.round(2)
-    f_total.this_sortie_landings       = total_landings
-    f_total.this_sortie_engine_hours   = flight_time.to_f.round(2)
-    f_total.this_sortie_prop_hours     = flight_time.to_f.round(2)
-
-    t_landings            = f_total.carried_over_landings.to_i + total_landings.to_i
-    total_aircraft_hours  = f_total.carried_over_aircraft_hours.to_f + flight_time.to_f.round(2)
-    total_engine_hours    = f_total.carried_over_engine_hours.to_f + flight_time.to_f.round(2)
-    total_prop_hours      = f_total.carried_over_prop_hours.to_f + flight_time.to_f.round(2)
-
-    f_total.new_total_landings        = t_landings
-    f_total.new_total_aircraft_hours  = total_aircraft_hours.round(2)
-    f_total.new_total_engine_hours    = total_engine_hours.round(2)
-    f_total.new_total_prop_hours      = total_prop_hours.round(2)
-
-    f_total.corrected_total_engine_hours     = total_engine_hours.round(2)
-    f_total.corrected_total_aircraft_hours   = total_aircraft_hours.round(2)
-    f_total.corrected_total_landings         = t_landings
-    f_total.corrected_total_prop_hours       = total_prop_hours.round(2)
-
-    self.flying_log.aircraft.update_part_values flying_log
-
-  end
+  
 end

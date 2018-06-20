@@ -1,11 +1,16 @@
 require 'combine_pdf'
-class FlyingLogsController < ApplicationController
+class FlyingLogsController < ApplicationController  
   before_action :set_flying_log, only: [:show, :edit, :update, :destroy, :pdf]
 
   # GET /flying_logs
   # GET /flying_logs.json
   def index
-    @flying_logs = FlyingLog.all
+    if current_user.admin?
+      @flying_logs = FlyingLog.all
+    else
+      @flying_logs = FlyingLog.not_completed.all
+    end
+    
   end
 
   # GET /flying_logs/1
@@ -112,9 +117,7 @@ class FlyingLogsController < ApplicationController
           @flying_log.book_flight
           ActionCable.server.broadcast("log_channel", 
           message: "#{@flying_log.aircraft.tail_number} is booked out.")
-        elsif current_user.pilot? and @flying_log.flight_booked?          
-          @flying_log.sortie.update_aircraft_times
-          @flying_log.sortie.save!
+        elsif current_user.pilot? and @flying_log.flight_booked?                    
           @flying_log.pilot_back
           if @flying_log.sortie.pilot_comment_cd == "SAT"
             @flying_log.sortie.remarks = @flying_log.sortie.pilot_comment.to_s

@@ -7,7 +7,7 @@
 .fl-location_to
   = flying_log.location_to
 .fl-date
-  = flying_log.log_date
+  = display_date flying_log.log_date
 .fl-log-number
   = flying_log.serial_no
 - if flying_log.ac_configuration.present?
@@ -156,7 +156,13 @@
       = flying_log.capt_acceptance_certificate.user.rank
     .signature
       = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
-
+  .sortie
+    .crew-name
+      - if flying_log.ac_configuration.cockpit_cd == 2 and flying_log.capt_acceptance_certificate.second_pilot.present?
+        = flying_log.capt_acceptance_certificate.second_pilot.name
+        br
+      - if flying_log.ac_configuration.third_seat
+        = flying_log.capt_acceptance_certificate.third_seat_name
 - if flying_log.after_flight_servicing.present?
   .after-flight-servicing
     .time-local
@@ -171,12 +177,7 @@
   .sortie
     .sortie-code
       = flying_log.sortie.sortie_code
-    .crew-name
-      - if flying_log.ac_configuration.cockpit_cd == 2 and flying_log.capt_acceptance_certificate.second_pilot.present?
-        = flying_log.capt_acceptance_certificate.second_pilot.name
-        br
-      - if flying_log.ac_configuration.third_seat
-        = flying_log.capt_acceptance_certificate.third_seat_name
+    
     .take-off-time
       = flying_log.sortie.takeoff_time
     .landing-time

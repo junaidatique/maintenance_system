@@ -9,13 +9,11 @@ class Ability
     alias_action :index, :read, to: :ir
     if user.admin?
       can :manage, :all
-    elsif user.chief_maintenance_officer?
-      # can :manage, :all
+    elsif user.chief_maintenance_officer?      
       can :manage, Aircraft
       can :manage, FlyingLog
       can :manage, Techlog
-      can :manage, FlyingPlan
-      # can :inspections, FlyingPlan
+      can :manage, FlyingPlan      
       can :manage_addl_logs, Techlog
       cannot :update_fuel, Techlog  
       cannot :update_work_unit_code, Techlog    
@@ -26,10 +24,7 @@ class Ability
       can :update_sortie, FlyingLog
       can :view_781, FlyingLog
       cannot :bookout_flight, FlyingLog      
-    elsif user.master_control?
-      # can :release_flight, FlyingLog
-      #can :bookout_flight, FlyingLog      
-      #can :bookin_flight, FlyingLog
+    elsif user.master_control?      
       can :crud, FlyingLog
       can :crud, Techlog
       can :read, FlyingPlan

@@ -325,11 +325,11 @@ puts 'WorkUnitCodes Created'
 
 puts 'Creating Aircraft Inspection'
 inspections = [
-  {name: 'Weekly', no_of_hours: 0, calender_value: 7, duration_cd: 0, category_cd: 0, type_cd: 0},
-  {name: '25 HRS', no_of_hours: 25, category_cd: 1, type_cd: 0}, 
-  {name: '50 HRS', no_of_hours: 50, calender_value: 6, duration_cd: 1, category_cd: 2, type_cd: 0},
-  {name: '100 HRS', no_of_hours: 100, calender_value: 1, duration_cd: 2, category_cd: 3, type_cd: 0},
-  {name: '400 HRS', no_of_hours: 400, category_cd: 4, type_cd: 0},
+  {name: 'Aircraft Weekly', no_of_hours: 0, calender_value: 7, duration_cd: 0, category_cd: 2, type_cd: 0},
+  {name: 'Aircraft 25 HRS', no_of_hours: 25, category_cd: 1, type_cd: 0, is_repeating: false}, 
+  {name: 'Aircraft 50 HRS', no_of_hours: 50, calender_value: 6, duration_cd: 1, category_cd: 2, type_cd: 0},
+  {name: 'Aircraft 100 HRS', no_of_hours: 100, calender_value: 1, duration_cd: 2, category_cd: 3, type_cd: 0},
+  {name: 'Aircraft 400 HRS', no_of_hours: 400, category_cd: 4, type_cd: 0},
 ]    
 inspections.each do |insp|
   inspection = Inspection.create(insp)
@@ -419,7 +419,7 @@ puts 'Part Created'
 # exit
 ##################################################################
 #sleep(2)
-(0..8).each do |day|
+(0..2).each do |day|
   date = Time.zone.now - (8 - day).days
   FlightlineServicing::inspection_performeds.each do |inspection,inspection_id|
     Aircraft.all.each do |aircraft|
@@ -499,7 +499,7 @@ puts 'Part Created'
       end
       
       flying_log.sortie.takeoff_time = (cur_time - (10*60)).strftime("%H:%M %p")
-      flying_log.sortie.landing_time = (cur_time + (rand(10)*60)).strftime("%H:%M %p")
+      flying_log.sortie.landing_time = (cur_time + (rand(360)*60)).strftime("%H:%M %p")
       flying_log.sortie.pilot_comment_cd = "SAT"
       flying_log.sortie.touch_go = rand(5)
       flying_log.sortie.full_stop = 1

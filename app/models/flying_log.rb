@@ -11,9 +11,11 @@ class FlyingLog
   field :fuel_remaining, type: Float
   field :fuel_refill, type: Float
   field :fuel_total, type: Float
+  
   field :oil_remaining, type: Float
   field :oil_serviced, type: Float
   field :oil_total_qty, type: Float
+  
   field :location_from, type: String
   field :location_to, type: String
   field :completion_time, type: String
@@ -32,13 +34,16 @@ class FlyingLog
 
   scope :completed, -> { where(state: :log_completed) }
   scope :not_completed, -> { ne(state: :log_completed) }
-
+  default_scope { order(id: :desc) }
+  
   increments :number, seed: 1000
 
   state_machine initial: :started do
     #audit_trail initial: false,  context: [:aircraft]
 
-    after_transition on: :complete_log, do: :update_aircraft_timgins
+    after_transition on: :complete_log, do: :update_aircraft_timgings
+    after_transition on: :pilot_back, do: :update_aircraft_times
+    after_transition on: :complete_log, do: :update_aircraft_times
 
     event :flightline_service do
       transition started: :flightline_serviced
@@ -65,6 +70,9 @@ class FlyingLog
       transition logs_created: :log_completed
     end
   end
+
+  
+
 
   belongs_to :aircraft
   
@@ -138,10 +146,42 @@ class FlyingLog
     self.fuel_total      = aircraft.fuel_capacity
   end
 
-  def update_aircraft_timgins    
+  def update_aircraft_timgings    
     self.completion_time = Time.zone.now
     self.save
     self.aircraft.update_part_values self
+  end
+
+  def update_aircraft_times
+    sortie = self.sortie
+    sortie.total_landings = sortie.touch_go.to_i + sortie.full_stop.to_i
+    sortie.flight_minutes = sortie.calculate_flight_minutes
+    sortie.flight_time    = sortie.calculate_flight_time
+    sortie.total_landings = sortie.calculate_landings
+
+    f_total = self.aircraft_total_time
+    f_total.this_sortie_aircraft_hours = sortie.flight_time.to_f.round(2)
+    f_total.this_sortie_landings       = sortie.total_landings
+    f_total.this_sortie_engine_hours   = sortie.flight_time.to_f.round(2)
+    f_total.this_sortie_prop_hours     = sortie.flight_time.to_f.round(2)
+
+    t_landings            = f_total.carried_over_landings.to_i + sortie.total_landings.to_i
+    total_aircraft_hours  = f_total.carried_over_aircraft_hours.to_f + sortie.flight_time.to_f.round(2)
+    total_engine_hours    = f_total.carried_over_engine_hours.to_f + sortie.flight_time.to_f.round(2)
+    total_prop_hours      = f_total.carried_over_prop_hours.to_f + sortie.flight_time.to_f.round(2)
+
+    f_total.new_total_landings        = t_landings
+    f_total.new_total_aircraft_hours  = total_aircraft_hours.round(2)
+    f_total.new_total_engine_hours    = total_engine_hours.round(2)
+    f_total.new_total_prop_hours      = total_prop_hours.round(2)
+
+    f_total.corrected_total_engine_hours     = total_engine_hours.round(2)
+    f_total.corrected_total_aircraft_hours   = total_aircraft_hours.round(2)
+    f_total.corrected_total_landings         = t_landings
+    f_total.corrected_total_prop_hours       = total_prop_hours.round(2)
+
+    self.aircraft.update_part_values self
+
   end
 
 end

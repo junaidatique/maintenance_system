@@ -218,8 +218,9 @@
     @include position-abs-mixin(700px, 100px);
   }
   .mission {
-    font-size: 32px;
-    @include position-abs-mixin(700px, 330px);
+    font-size: 18px;
+    width: 100px;
+    @include position-abs-mixin(700px, 310px);
   }
   .pilot-name {
     @include position-abs-mixin(700px, 530px);

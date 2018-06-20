@@ -4,13 +4,14 @@ class Inspection
   include SimpleEnum::Mongoid
 
   as_enum :type, aircraft: 0, part: 1
-  as_enum :category, weekly: 0, "25 Hour": 1, "50 Hour": 2, "100 Hour": 3, "400 Hour": 4
+  as_enum :category, aircraft_timed: 1, aircraft_calender: 2
   as_enum :duration, day: 0, month: 1, year: 2
   
   field :name, type: String
   field :no_of_hours, type: Float
   field :calender_value, type: Integer  
   field :part_number, type: String
+  field :is_repeating, type: Mongoid::Boolean, default: 1
 
   validate :part_number_presence
 

@@ -1,6 +1,3 @@
-= content_for :page_subtitle do
-  | Flying Logs
-
 = content_for :box_heading do
   | Flying Logs
 
@@ -22,7 +19,7 @@
               th width='13%'
                 | Actions
           tbody
-            - @flying_logs.not_completed.order(created_at: :desc).each do |flying_log|
+            - @flying_logs.order(created_at: :desc).each do |flying_log|
               tr
                 td.table-row-center
                   = link_to flying_log.serial_no, flying_log_path(flying_log)

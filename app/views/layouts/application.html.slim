@@ -2,7 +2,7 @@ doctype html
 html
   head
     title
-      = t :siteheading
+      = content_for?(:box_heading) ? yield(:box_heading) : 'QSMK'
     = csrf_meta_tags
     = stylesheet_link_tag    'application', media: 'all'
     = javascript_include_tag 'application'
