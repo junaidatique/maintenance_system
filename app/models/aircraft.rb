@@ -35,6 +35,7 @@ class Aircraft
   has_many :techlogs, dependent: :destroy
   has_many :parts, dependent: :destroy
   has_many :part_histories, dependent: :destroy
+  has_many :flying_histories, dependent: :destroy
   has_many :scheduled_inspections, as: :inspectable
 
   accepts_nested_attributes_for :parts, :allow_destroy => true  
@@ -58,5 +59,34 @@ class Aircraft
     end
   end
 
+  def create_engine_history type, other_aircraft = nil, part = nil
+    previous_history = self.flying_histories.last
+    history = FlyingHistory.new 
+    history.aircraft              = self
+    history.this_aircraft_hours   = 0
+    history.total_aircraft_hours  = previous_history.total_aircraft_hours
+
+    history.this_engine_hours     = 0
+    
+
+    history.this_prop_hours       = 0
+    history.total_prop_hours      = previous_history.total_prop_hours
+
+    history.total_landings  = previous_history.total_landings    
+    history.touch_go        = 0
+    history.full_stop       = 0
+    if type == 'removed'
+      history.remarks = "Engine removed and installed to #{other_aircraft}."
+      history.total_engine_hours    = 0
+    else      
+      history.total_engine_hours    = part.completed_hours if part.present? 
+      if other_aircraft.present?
+        history.remarks = "New Engine installed from #{other_aircraft}."
+      else
+        history.remarks = "New Engine installed."
+      end
+    end
+    history.save!
+  end
 
 end

@@ -63,7 +63,7 @@ class Part
   def update_record    
     self.number_serial_no = "#{number}-#{serial_no}"
     if (total_hours.present? and completed_hours.present?)
-      self.remaining_hours = total_hours.to_f - completed_hours.to_f
+      self.remaining_hours = (total_hours.to_f - completed_hours.to_f).round(2)
     end
     if (installed_date.present? and calender_life_value.present?)
       self.calender_life_date = installed_date.to_date + calender_life_value.years
@@ -98,7 +98,7 @@ class Part
   def update_values
     self.completed_hours     = part_histories.sum('hours')
     self.landings_completed  = part_histories.sum('landings')
-    self.remaining_hours     = total_hours.to_f - completed_hours.to_f    
+    self.remaining_hours     = (total_hours.to_f - completed_hours.to_f).round(2)
     save
     # self.scheduled_inspections.not_completed.inspection.first.update_scheduled_inspections self.completed_hours
     self.scheduled_inspections.not_completed.each do |scheduled_inspection|

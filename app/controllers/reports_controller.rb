@@ -8,16 +8,16 @@ class ReportsController < ApplicationController
       redirect_to airframe_reports_path(), :flash => { :error => "Invalid aircraft." }
     end
     if params[:from_date].blank? and params[:to_date].blank? 
-      @flying_logs = Aircraft.find(params[:aircraft]).flying_logs.limit(30).order(id: :asc)
+      @histories = Aircraft.find(params[:aircraft]).flying_histories.limit(30).order(id: :asc)
     else
-      @flying_logs = Aircraft.find(params[:aircraft]).flying_logs.gte(created_at: params[:from_date]).lte(created_at: params[:to_date])  
+      @histories = Aircraft.find(params[:aircraft]).flying_histories.gte(created_at: params[:from_date]).lte(created_at: params[:to_date])  
     end
     
-    num = @flying_logs.count
+    num = @histories.count
     merged_certificates = CombinePDF.new
     
     begin
-      flying_logs  = @flying_logs.limit(8).offset(i)      
+      histories  = @histories.limit(8).offset(i)      
       pdf_data = render_to_string(
                   pdf: "airframe_report",
                   orientation: 'Landscape',
@@ -25,7 +25,7 @@ class ReportsController < ApplicationController
                   layout: 'layouts/pdf/pdf.html.slim',
                   show_as_html: false,
                   locals: {
-                    flying_logs: flying_logs
+                    histories: histories
                   },
                   page_height: '17in',
                   page_width: '13in',

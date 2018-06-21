@@ -1,10 +1,22 @@
+- previous_history = FlyingHistory.lt(id: histories.first.id).first
+- if previous_history.blank?
+  - total_aircraft_hours  = 0
+  - total_engine_hours    = 0    
+  - total_landings        = 0
+  - start_date            = display_date histories.first.created_at
+- else 
+  - total_aircraft_hours  = previous_history.total_aircraft_hours
+  - total_engine_hours    = previous_history.this_engine_hours    
+  - total_landings        = previous_history.total_landings
+  - start_date            = display_date previous_history.created_at
+- end_date = display_date histories.last.created_at
 .airframe_pdf 
   .background-image
     = wicked_pdf_image_tag('airframe.jpg', size: '2538x1298')
   .tl-date_from
-    = params[:from_date]
+    = start_date
   .tl-date_to
-    = params[:to_date]
+    = end_date
   .tl-location
     | QAF
   .tl-crew_chief
@@ -13,26 +25,28 @@
     | 30 Squad
   .tl-aircraft-number
     = Aircraft.find(params[:aircraft]).tail_number  
-  table.previous_table
+  
+  table.previous_table border="0"
     tr       
       td.airframe_td
-        = flying_logs.first.aircraft_total_time.carried_over_aircraft_hours
+        = total_aircraft_hours
       td.engine_td
-        = flying_logs.first.aircraft_total_time.carried_over_engine_hours
+        = total_engine_hours
       td.ehr_td
-        = flying_logs.first.aircraft_total_time.carried_over_engine_hours
+        = total_engine_hours
       td.flying_log_td
-        /= flying_logs.first.serial_no
+        /= histories.first.serial_no
       td.landings_td
-        = flying_logs.first.aircraft_total_time.carried_over_landings
+        = total_landings
       td.touchgo_td
-        /= flying_logs.first.sortie.touch_go
+      td.epu_td
+        /= histories.first.sortie.touch_go
       td.t_landings_td
-        /= flying_logs.first.aircraft_total_time.carried_over_landings
+        /= histories.first.aircraft_total_time.carried_over_landings
         
-  - flying_logs.each do |fl|
-    .flying_logs_data
-      table
+  - histories.each do |fl|
+    .histories_data 
+      table border="0"
         tr 
           td.flying_date_td
             .day
@@ -42,33 +56,39 @@
             .year
               = fl.created_at.strftime("%y")
           td.airframe_td
-            = fl.aircraft_total_time.this_sortie_aircraft_hours
+            = fl.this_aircraft_hours
           td.engine_td
-            = fl.aircraft_total_time.this_sortie_engine_hours
+            = fl.this_engine_hours
           td.ehr_td
-            = fl.aircraft_total_time.this_sortie_engine_hours
+            = fl.this_engine_hours
           td.flying_log_td
-            = fl.serial_no
+            - if fl.flying_log.present?
+              = fl.flying_log.serial_no
           td.landings_td
-            = fl.sortie.full_stop
+            = fl.full_stop
           td.touchgo_td
-            = fl.sortie.touch_go
+            = fl.touch_go
+          td.epu_td            
           td.t_landings_td
-            = fl.sortie.total_landings          
+            = fl.full_stop.to_i + fl.touch_go.to_i
+          td.remarks
+            = fl.remarks            
         tr 
           td.flying_date_td
             
           td.airframe_td
-            = fl.aircraft_total_time.corrected_total_aircraft_hours
+            = fl.total_aircraft_hours
           td.engine_td
-            = fl.aircraft_total_time.corrected_total_engine_hours
+            = fl.total_engine_hours
           td.ehr_td
-            = fl.aircraft_total_time.corrected_total_engine_hours
+            = fl.total_engine_hours
           td.flying_log_td
             /= fl.serial_no
           td.landings_td
-            = fl.aircraft_total_time.corrected_total_landings
+            = fl.total_landings
           td.touchgo_td
             /= fl.sortie.touch_go
+          td.epu_td            
           td.t_landings_td
+          td.remarks
             /= fl.aircraft_total_time.carried_over_landings          

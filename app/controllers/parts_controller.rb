@@ -72,18 +72,36 @@ class PartsController < ApplicationController
   # GET /parts/autocomplete_codes
   # GET /parts/autocomplete_codes.json
   def autocomplete    
+    # search_string = params[:term]
+    # aircraft_id   = params[:aircraft_id]
+    # search_type   = params[:search_type]
+    # record = Part.where(number: /.*#{search_string}.*/i)
+    # record = record.any_of({aircraft_id: aircraft_id}, {serial_no: nil})
+    # render :json => record.map { |part| 
+    #   {
+    #     id: part.id.to_s, 
+    #     label: "#{part.number} #{part.description}", 
+    #     value: "#{part.number}", 
+    #   } 
+    # }
+
     search_string = params[:term]
-    aircraft_id   = params[:aircraft_id]
-    search_type   = params[:search_type]
-    record = Part.where(number: /.*#{search_string}.*/i)
-    record = record.any_of({aircraft_id: aircraft_id}, {serial_no: nil})
-      render :json => record.map { |part| 
-        {
-          id: part.id.to_s, 
-          label: "#{part.number} #{part.description}", 
-          value: "#{part.number}", 
-        } 
-      }
+    record = Part.collection.aggregate([
+      {"$match"=>{"number"=>/#{search_string}.*/i}},
+      {"$group" => {
+          "_id" => "$number",
+          "name" => { "$first": '$description' }, 
+          "count" => {"$sum":1}
+      }},
+      {"$limit" => 5}
+    ])    
+    render :json => record.map { |part| 
+      {
+        id: Part.where(number: part[:_id]).first.id.to_s, 
+        label: "#{part[:_id]} (#{part[:name]})", 
+        value: "#{part[:_id]}", 
+      } 
+    }
   end
   def autocomplete_serial
     search_string = params[:term]

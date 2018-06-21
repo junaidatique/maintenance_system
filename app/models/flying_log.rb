@@ -85,6 +85,7 @@ class FlyingLog
   has_one :after_flight_servicing, dependent: :destroy
   has_one :flightline_servicing, dependent: :destroy
   has_one :post_mission_report, dependent: :destroy
+  has_one :flying_history, dependent: :destroy
   has_many :techlogs, dependent: :destroy
 
   # embeds_many :notifications, as: :notifiable
@@ -181,7 +182,27 @@ class FlyingLog
     f_total.corrected_total_prop_hours       = total_prop_hours.round(2)
 
     self.aircraft.update_part_values self
+    self.create_history
+  end
 
+  def create_history
+    history = FlyingHistory.where(flying_log_id: self.id).first
+    history = FlyingHistory.new if history.blank?
+    history.aircraft        = aircraft
+    history.this_aircraft_hours   = aircraft_total_time.this_sortie_aircraft_hours
+    history.total_aircraft_hours  = aircraft_total_time.corrected_total_aircraft_hours
+
+    history.this_engine_hours     = aircraft_total_time.this_sortie_engine_hours
+    history.total_engine_hours    = aircraft_total_time.corrected_total_engine_hours
+
+    history.this_prop_hours       = aircraft_total_time.this_sortie_prop_hours
+    history.total_prop_hours      = aircraft_total_time.corrected_total_prop_hours
+
+    history.total_landings  = aircraft_total_time.corrected_total_landings    
+    history.touch_go        = sortie.touch_go
+    history.full_stop       = sortie.full_stop
+    history.flying_log      = self
+    history.save!
   end
 
 end

@@ -64,7 +64,8 @@
             - if @techlog.change_parts.count > 0
               table.table.table-inverse
                 thead
-                  th Old Part                    
+                  th Part Number                    
+                  th Old Part Serial
                   th Quantity Required
                   th Requested By
                   th New Part
@@ -73,12 +74,15 @@
                 tbody                  
                 - @techlog.change_parts.each do |change_part|
                   tr                    
-                    td = change_part.old_part.number_serial_no
+                    td = change_part.part_number
+                    td
+                      - if change_part.old_part.present?
+                        = change_part.old_part.serial_no
                     td = change_part.quantity_required
                     td = change_part.requested_by.name
                     td 
                       - if change_part.new_part.present?
-                        = change_part.new_part.number_serial_no
+                        = change_part.new_part.serial_no
                     td 
                       - if change_part.new_part.present?
                         = change_part.quantity_provided
@@ -86,18 +90,7 @@
                       - if change_part.new_part.present?
                         = change_part.assigned_by.name
             - else
-              | No parts are changed.        
-              tbody
-                - @techlog.change_parts.each do |part|
-                  tr
-                    th width="25%" 
-                      | Old Part 
-                    th width="25%" 
-                      = part.old_part.number
-                    th width="25%" 
-                      | New Part 
-                    th width="25%" 
-                      = part.new_part.number
+              | No parts are changed.
   /.row
     .col-md-12
       .box.box-info

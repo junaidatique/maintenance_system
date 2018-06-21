@@ -422,7 +422,8 @@ puts 'Part Created'
 (0..2).each do |day|
   date = Time.zone.now - (8 - day).days
   FlightlineServicing::inspection_performeds.each do |inspection,inspection_id|
-    Aircraft.all.each do |aircraft|
+    aircraft = Aircraft.first
+    # Aircraft.all.each do |aircraft|
       puts 'Creating Pre flight Flying Log'
       flying_log = FlyingLog.new
       last_flying_log = FlyingLog.last
@@ -505,8 +506,7 @@ puts 'Part Created'
       flying_log.sortie.full_stop = 1
       flying_log.save!
       puts 'Sortie saved'  
-      flying_log.sortie.update_aircraft_times
-      flying_log.save!
+      
       puts 'Sortie calculated'
 
       flying_log.build_capt_after_flight
@@ -565,7 +565,7 @@ puts 'Part Created'
     # end
     # flying_log.complete_log    
       # break
-    end    
+    # end    
     # break
   end  
   # break
