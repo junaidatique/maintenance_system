@@ -8,11 +8,13 @@
   .tl-aircraft-number
     = Aircraft.find(params[:aircraft]).tail_number  
   .parts_data   
-    table
+    table border="0"
       - parts.each do |part|
         tr
           td.part_number_td
             = part.number
+          td.description_td
+            = part.description
           td.serial_td
             = part.serial_no
           td.calender_td
@@ -22,7 +24,8 @@
           td.hours_td
             = part.inspection_hours
           - part.scheduled_inspections.limit(2).order(created_at: :desc).each do |sp|
-            td 
-              = sp.hours
-              | /
+            td.sch_calender_td 
               = display_date sp.calender_life_date
+            td.sch_hours_td
+              = sp.hours             
+              

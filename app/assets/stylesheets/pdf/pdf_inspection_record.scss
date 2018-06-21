@@ -4,7 +4,7 @@
   left: $left;
 }
 .inspection_record_pdf {
-  font-size: 48px;
+  font-size: 24px;
   // .trade {
   //   @include position-abs-mixin(50px, 1000px);        
   // }
@@ -23,32 +23,41 @@
   
   
   .parts_data {
-    @include position-abs-mixin(360px, 50px);
-    font-size: 36px;
+    @include position-abs-mixin(345px, 65px);    
   }
   
   .part_number_td{
-    width: 350px;
-    
+    width: 170px;    
+  }
+  .description_td{
+    width: 180px;
+    font-size: 20px;
+    height: 40px;
   }
   .serial_td{
-    width: 250px;
+    width: 166px;
     
   }
   .calender_td{
-    width: 210px;    
-  }
-  .flying_log_td{
-    width: 370px;
-    font-size: 20px;
-  }
+    width: 170px;    
+    text-align: center;
+  }  
   .hours_td{
-    width: 220px;    
+    width: 180px;   
+    text-align: center; 
+  }
+  .sch_calender_td{
+    width: 150px;    
+    text-align: center;
+  }  
+  .sch_hours_td{
+    width: 150px;   
+    text-align: center; 
   }
   
   table{
     tr {
-      height: 48px;
+      height: 47px;
       
     }
   }
