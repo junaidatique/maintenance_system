@@ -48,10 +48,16 @@ class Part
   has_many :inspection
   has_many :old_parts, class_name: 'ChangePart', inverse_of: :old_parts
   has_many :new_parts, class_name: 'ChangePart', inverse_of: :new_parts  
+  has_many :left_tyre_histories, class_name: 'LandingHistory', inverse_of: :left_tyre  
+  has_many :right_tyre_histories, class_name: 'LandingHistory', inverse_of: :right_tyre  
+  has_many :nose_tail_histories, class_name: 'LandingHistory', inverse_of: :nose_tail  
   has_many :scheduled_inspections, as: :inspectable
 
   scope :lifed, -> { where(is_lifed: true) }  
   scope :tyre, -> { any_of({category_cd: 2}, {category_cd: 3}, {category_cd: 4})}
+  scope :left_tyre, -> { any_of({category_cd: 2})}
+  scope :right_tyre, -> { any_of({category_cd: 3})}
+  scope :nose_tail, -> { any_of({category_cd: 4})}
   scope :engine_part, -> { where({category_cd: 0})}
   scope :propeller_part, -> { where({category_cd: 1})}
 
@@ -82,15 +88,18 @@ class Part
   def create_history_with_flying_log flying_log
     if self.is_lifed?
       part_history = PartHistory.where(flying_log_id: flying_log.id).where(part_id: self.id).first            
-      part_history = PartHistory.new if part_history.blank?      
+      if part_history.blank?      
+        part_history = PartHistory.new         
+      end
+      
       part_history.quantity     = self.quantity
       part_history.hours        = flying_log.sortie.flight_time
-      part_history.landings     = flying_log.sortie.total_landings            
+      part_history.landings     = flying_log.sortie.total_landings
       part_history.flying_log   = flying_log
-      part_history.aircraft_id  = flying_log.aircraft.id      
+      part_history.aircraft_id  = flying_log.aircraft.id
       part_history.created_at   = flying_log.created_at
       part_history.part         = self      
-      part_history.save      
+      part_history.save        
       self.update_values      
     end    
   end

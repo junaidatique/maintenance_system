@@ -116,5 +116,30 @@ class ReportsController < ApplicationController
                     }
                   )
   end
+  def tyre_record_pdf
+    i = 0
+    if params[:aircraft].blank? or Aircraft.find(params[:aircraft]).blank?
+      redirect_to aircrafts_path(), :flash => { :error => "Invalid aircraft." }
+    end
+    
+    pdf_data = render(
+                    pdf: "tyre_record",
+                    orientation: 'Landscape',
+                    template: 'reports/tyre_record_pdf.html.slim',
+                    layout: 'layouts/pdf/pdf.html.slim',
+                    show_as_html: false,
+                    locals: {
+                      aircraft: Aircraft.find(params[:aircraft])
+                    },
+                    page_height: '17in',
+                    page_width: '13in',
+                    margin:  {
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right:0 
+                    }
+                  )
+  end
   
 end

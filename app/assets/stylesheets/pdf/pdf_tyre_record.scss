@@ -1,0 +1,43 @@
+@mixin position-abs-mixin($top, $left) {
+  position: absolute;
+  top: $top;
+  left: $left;
+}
+.tyre_record_pdf {
+  font-size: 28px;  
+  .background-image {
+    z-index: -1;
+    position: absolute;
+  }
+  
+  .tl-org {
+    font-size: 36px;  
+    @include position-abs-mixin(150px, 300px);        
+  }
+  .tl-aircraft-number { 
+    font-size: 36px;         
+    @include position-abs-mixin(150px, 2070px);            
+  }
+
+  .typres_data {
+    @include position-abs-mixin(460px, 35px);    
+  }
+  
+  table{
+    tr {
+      height: 47px;      
+    }
+    td{
+      width: 250px;
+      text-align: center;
+      &.date{
+        width: 180px;
+        text-align: center;
+      }      
+    }        
+  }
+  
+  
+  
+    
+}

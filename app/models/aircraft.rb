@@ -36,6 +36,7 @@ class Aircraft
   has_many :parts, dependent: :destroy
   has_many :part_histories, dependent: :destroy
   has_many :flying_histories, dependent: :destroy
+  has_many :landing_histories, dependent: :destroy
   has_many :scheduled_inspections, as: :inspectable
 
   accepts_nested_attributes_for :parts, :allow_destroy => true  
@@ -56,7 +57,7 @@ class Aircraft
     tyre_parts = self.parts.tyre
     tyre_parts.each do |part|
       part.create_history_with_flying_log flying_log
-    end
+    end    
   end
 
   def create_engine_history type, other_aircraft = nil, part = nil

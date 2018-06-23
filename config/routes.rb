@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       get :airframe_pdf      
       get :inspection_record_pdf      
       get :inspection_pdf      
+      get :tyre_record_pdf      
       
     end
   end

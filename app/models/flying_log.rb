@@ -23,6 +23,16 @@ class FlyingLog
   # validates :location_from, presence: true
   # validates :location_to, presence: true  
   validate :check_techlogs
+  validate :check_parts
+
+  def check_parts
+    if aircraft.parts.engine_part.count == 0
+      errors.add(:aircraft_id, " has no engine.")
+    end
+    if aircraft.parts.propeller_part.count == 0
+      errors.add(:aircraft_id, " has no propeller.")
+    end
+  end
 
   def check_techlogs    
     if flight_released?
@@ -150,7 +160,7 @@ class FlyingLog
   def update_aircraft_timgings    
     self.completion_time = Time.zone.now
     self.save
-    self.aircraft.update_part_values self
+    # self.aircraft.update_part_values self
   end
 
   def update_aircraft_times

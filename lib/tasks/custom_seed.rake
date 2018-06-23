@@ -1,0 +1,9 @@
+namespace :db do
+  namespace :seed do
+    task :flying_log => :environment do
+      filename = Dir[File.join(Rails.root, 'db', 'seeds', "flying_log.seeds.rb")][0]
+      puts "Seeding #{filename}..."
+      load(filename) if File.exist?(filename)
+    end
+  end
+end
