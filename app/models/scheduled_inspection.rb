@@ -3,7 +3,7 @@ class ScheduledInspection
   include Mongoid::Timestamps
   include SimpleEnum::Mongoid
   
-  as_enum :status, Scheduled: 0, Pending: 1, "In progress": 2, Completed: 3
+  as_enum :status, Scheduled: 0, Pending: 1, "In progress": 2, Completed: 3, Due: 4
 
   field :hours, type: Float, default: 0
   field :completed_hours, type: Float, default: 0
@@ -20,13 +20,15 @@ class ScheduledInspection
 
   scope :scheduled_insp, -> { where(status_cd: 0)}
   scope :not_completed, -> { ne(status_cd: 3)}
+  scope :completed, -> { where(status_cd: 3)}
+  scope :due, -> { where(status_cd: 4)}
   scope :pending, -> { where(status_cd: 1)}
+  scope :pending_n_due, -> { any_of({status_cd: 1}, {status_cd: 4})}
   
   after_update :start_work_package
 
-  def start_work_package
-    
-    if (status_cd_was == 0 or status_cd_was == 1) and status_cd == 2      
+  def start_work_package    
+    if (status_cd_was == 0 or status_cd_was == 1 or status_cd_was == 4) and status_cd == 2      
       if inspectable_type == Aircraft.name
         inspectable_name = inspectable.tail_number
         aircraft_id = inspectable.id
@@ -54,12 +56,30 @@ class ScheduledInspection
   end
   def complete_inspection
     self.status_cd = 3
+    self.inspection_completed = Time.zone.now
     self.save
     if inspectable_type == Aircraft.name
-      self.inspection.create_aircraft_inspection Aircraft.find inspectable_id
+      if self.inspection.is_repeating
+        self.inspection.create_aircraft_inspection Aircraft.find inspectable_id
+      end
     else
-      self.inspection.create_part_inspection Part.find inspectable_id      
+      if self.inspection.is_repeating
+        self.inspection.create_part_inspection Part.find inspectable_id      
+      end
     end
+  end
+
+  def update_scheduled_inspections completed_hours
+    self.completed_hours = completed_hours
+    if hours > 0
+      if (self.hours - self.completed_hours) <= 0
+        self.status = 4
+      elsif (self.hours - self.completed_hours) < 10
+        self.status = 1
+      end
+    end
+    
+    self.save
   end
   
 end

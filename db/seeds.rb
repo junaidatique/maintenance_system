@@ -2,15 +2,15 @@ cur_time = Time.zone.now
 
 System.create! settings: {dms_version_number: 0.0}
 puts 'Creating Aircraft'
-aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_303  = Aircraft.create! number: '304', tail_number: 'QA304', serial_no: '#304', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_303  = Aircraft.create! number: '305', tail_number: 'QA305', serial_no: '#305', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_303  = Aircraft.create! number: '306', tail_number: 'QA306', serial_no: '#306', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_303  = Aircraft.create! number: '307', tail_number: 'QA307', serial_no: '#307', fuel_capacity: '50', oil_capacity: '50', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-puts 'Aircraft '
+aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_303  = Aircraft.create! number: '304', tail_number: 'QA304', serial_no: '#304', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_303  = Aircraft.create! number: '305', tail_number: 'QA305', serial_no: '#305', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_303  = Aircraft.create! number: '306', tail_number: 'QA306', serial_no: '#306', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_303  = Aircraft.create! number: '307', tail_number: 'QA307', serial_no: '#307', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+puts 'Aircraft Created'
 
 
 puts 'Creating Users'
@@ -270,18 +270,17 @@ users_list = [
   ]
   
 
-users_list.each do |user|
-  # puts user[:sno].inspect
-  u = User.new
-  u.name = user[:name].titleize
-  u.username = user[:name].downcase.gsub(' ','_')
-  u.rank = user[:rank]
-  u.trade = user[:trade]
+users_list.each do |user|  
+  u           = User.new
+  u.name      = user[:name].titleize
+  u.username  = user[:name].downcase.gsub(' ','_')
+  u.rank      = user[:rank]
+  u.trade     = user[:trade]
   u.personal_code = user[:personal_code]
-  u.password = 'test1234'
-  u.status = 1
-  u.role_cd = User.roles[user[:trade].downcase.gsub(" ", "_")]
-  u.trade = user[:trade]
+  u.password  = 'test1234'
+  u.status    = 1
+  u.role_cd   = User.roles[user[:trade].downcase.gsub(" ", "_")]
+  u.trade     = user[:trade]
   u.save!    
   print '.'
 end
@@ -324,23 +323,132 @@ puts ''
 puts 'WorkUnitCodes Created'
 
 puts 'Creating Aircraft Inspection'
-inspections = [
-  {name: 'Aircraft Weekly', no_of_hours: 0, calender_value: 7, duration_cd: 0, category_cd: 2, type_cd: 0},
-  {name: 'Aircraft 25 HRS', no_of_hours: 25, category_cd: 1, type_cd: 0, is_repeating: false}, 
-  {name: 'Aircraft 50 HRS', no_of_hours: 50, calender_value: 6, duration_cd: 1, category_cd: 2, type_cd: 0},
-  {name: 'Aircraft 100 HRS', no_of_hours: 100, calender_value: 1, duration_cd: 2, category_cd: 3, type_cd: 0},
-  {name: 'Aircraft 400 HRS', no_of_hours: 400, category_cd: 4, type_cd: 0},
+
+aircraft_inspections = [  
+  {
+    type_cd: 0,
+    category_cd: 1,    
+    name: 'Aircraft 25 HRS', 
+    no_of_hours: 25,    
+    is_repeating: false 
+  },
+  {
+    type_cd: 0,
+    category_cd: 1,    
+    duration_cd: 1,
+    name: 'Aircraft 50 HRS', 
+    no_of_hours: 50,
+    calender_value: 6,
+    is_repeating: true 
+  },  
+  {
+    type_cd: 0,
+    category_cd: 1,    
+    duration_cd: 2,
+    name: 'Aircraft 100 HRS', 
+    no_of_hours: 100,
+    calender_value: 1,
+    is_repeating: true 
+  },    
+  {
+    type_cd: 0,
+    category_cd: 1,    
+    name: 'Aircraft 400 HRS',
+    no_of_hours: 400,    
+    is_repeating: true 
+  },    
+  {
+    type_cd: 0,
+    category_cd: 2,
+    duration_cd: 0,
+    name: 'Aircraft Weekly', 
+    no_of_hours: 0, 
+    calender_value: 7,
+    is_repeating: true 
+  },
+  {
+    type_cd: 0,
+    category_cd: 2,
+    duration_cd: 1,
+    name: 'Aircraft Battery CT Due', 
+    no_of_hours: 0, 
+    calender_value: 3,
+    is_repeating: true 
+  },
+  {
+    type_cd: 0,
+    category_cd: 2,
+    duration_cd: 1,
+    name: 'Aircraft Engine oil INSP Due', 
+    no_of_hours: 25, 
+    calender_value: 4,
+    is_repeating: true 
+  },
+  {
+    type_cd: 0,
+    category_cd: 2,
+    duration_cd: 1,
+    name: 'Aircraft Fire Bottle INSP Due', 
+    no_of_hours: 0, 
+    calender_value: 1,
+    is_repeating: true 
+  },
+  {
+    type_cd: 0,
+    category_cd: 2,
+    duration_cd: 1,
+    name: 'Aircraft Compus Swing INSP Due', 
+    no_of_hours: 0, 
+    calender_value: 2,
+    is_repeating: true 
+  },
 ]    
-inspections.each do |insp|
+aircraft_inspections.each do |insp|
   inspection = Inspection.create(insp)
-  (0..1).each do |wrokpackage|
+  (0..0).each do |wrokpackage|
     WorkPackage.create!({description: Faker::Lorem.sentence, work_unit_code_id: WorkUnitCode.last.id, inspection_id: inspection.id})
   end
 end
 puts 'Aircraft Inspection Created'
 
+part_inspections = [
+  {
+    type_cd: 1,    
+    name: 'Engine 10 hour', 
+    no_of_hours: 10,    
+    is_repeating: false,
+    part_number: 'N-9570'
+  },
+  {
+    type_cd: 1,    
+    name: 'Engine 25 hour', 
+    no_of_hours: 25,    
+    is_repeating: false,
+    part_number: 'N-9570'
+  },
+  {
+    type_cd: 1,    
+    name: 'Prop 10 hour', 
+    no_of_hours: 10,    
+    is_repeating: false,
+    part_number: 'HC-C2YK-1BF I/L C2K00180'
+  },
+  {
+    type_cd: 1,    
+    name: 'Prop 100 hour', 
+    no_of_hours: 100,    
+    is_repeating: true,
+    part_number: 'HC-C2YK-1BF I/L C2K00180'
+  }
+]
+part_inspections.each do |insp|
+  inspection = Inspection.create(insp)
+  (0..0).each do |wrokpackage|
+    WorkPackage.create!({description: Faker::Lorem.sentence, work_unit_code_id: WorkUnitCode.last.id, inspection_id: inspection.id})
+  end
+end
 def create_part aircraft, category, trade, part_number, serial_no, quantity = 0, description = ''
-  inspection_hours = 10
+  inspection_hours = 100
   inspection_calender_value = 1
   
   
@@ -351,7 +459,6 @@ def create_part aircraft, category, trade, part_number, serial_no, quantity = 0,
   if aircraft.present?
     installed_date  = Time.zone.now.strftime("%Y-%m-%d")
   end
-  
   
   total_hours = 100
   
@@ -374,12 +481,22 @@ def create_part aircraft, category, trade, part_number, serial_no, quantity = 0,
   print '.'
 end
 
+
+
 puts 'Creating Parts'
 Part::categories.each do |category,value|
-  part_number       = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
-  (0..Aircraft.count).each do |j|
+  if value == 0
+    part_number = 'N-9570'
+  elsif value == 1
+    part_number = 'HC-C2YK-1BF I/L C2K00180'
+  else
+    part_number = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
+  end
+  
+  (0..Aircraft.count - 1).each do |j|
     aircraft    = Aircraft.limit(1).offset(j).first
-    serial_no   = "#{Faker::Number.number(5)}"
+    # serial_no   = "#{Faker::Number.number(5)}"
+    serial_no   = aircraft.tail_number
     create_part aircraft, category, nil, part_number, serial_no, 1, category
   end
   (0..3).each do |j|  

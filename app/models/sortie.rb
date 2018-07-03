@@ -29,12 +29,11 @@ class Sortie
   def calculate_flight_minutes
     takeoff_time = DateTime.strptime(self.takeoff_time, '%H:%M %p')
     landing_time = DateTime.strptime(self.landing_time, '%H:%M %p')
-    if landing_time < takeoff_time
-      ((takeoff_time - landing_time) * 24 * 60).to_i
-    else
-      ((landing_time - takeoff_time) * 24 * 60).to_i
+    # ((DateTime.strptime((landing_time.to_i + 86400).to_s,'%s') - takeoff_time) * 24 * 60).to_i
+    if landing_time < takeoff_time      
+      landing_time = (DateTime.strptime((landing_time.to_i + 86400).to_s,'%s'))
     end
-    
+    ((landing_time - takeoff_time) * 24 * 60).to_i    
   end
 
   def calculate_landings

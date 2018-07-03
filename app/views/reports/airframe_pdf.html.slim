@@ -1,15 +1,15 @@
-- previous_history = FlyingHistory.lt(id: histories.first.id).first
+- previous_history = FlyingHistory.lt(id: histories.first.id).first if histories.first.present?
 - if previous_history.blank?
   - total_aircraft_hours  = 0
   - total_engine_hours    = 0    
   - total_landings        = 0
-  - start_date            = display_date histories.first.created_at
+  - start_date            = display_date histories.first.created_at  if histories.first.present?
 - else 
   - total_aircraft_hours  = previous_history.total_aircraft_hours
   - total_engine_hours    = previous_history.this_engine_hours    
   - total_landings        = previous_history.total_landings
   - start_date            = display_date previous_history.created_at
-- end_date = display_date histories.last.created_at
+- end_date = display_date histories.last.created_at  if histories.last.present?
 .airframe_pdf 
   .background-image
     = wicked_pdf_image_tag('airframe.jpg', size: '2538x1298')

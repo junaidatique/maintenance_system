@@ -2,6 +2,8 @@
 puts "working"
 puts ENV['MIN']
 cur_time = Time.zone.now
+# puts (cur_time + (ENV['MIN'].to_i) * 60).strftime("%H:%M %p")
+# exit
 date = Time.zone.now - (ENV['DAYS'].to_i).days
 aircraft = Aircraft.first
 puts 'Creating Pre flight Flying Log'
@@ -33,7 +35,7 @@ flying_log.flightline_servicing.flight_start_time = cur_time
 flying_log.flightline_servicing.flight_end_time   = (cur_time + (10*60)).strftime("%H:%M %p")
 flying_log.flightline_servicing.hyd = Faker::Lorem.word
 flying_log.created_at = date
-flying_log.save
+flying_log.save!
 flying_log.flightline_service
 
 puts 'Flighline serviced'

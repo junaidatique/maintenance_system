@@ -59,7 +59,7 @@ class Inspection
         sp.inspection         = self
         sp.status_cd          = 0
         sp.inspectable        = part
-        sp.save!  
+        sp.save!
         self.scheduled_inspections << sp
       end
     end
@@ -92,21 +92,37 @@ class Inspection
     calender_life_date
   end
 
-  def update_scheduled_inspections hours
-    self.scheduled_inspections.not_completed.gt(hours: 0).update_all({completed_hours: hours})   
-    pending_schedules = ScheduledInspection.collection.aggregate([
-      { 
-        "$project" => 
-        {
-          "diff" => { 
-            "$subtract" => [ "$hours", "$completed_hours" ] 
-          }          
-        }
-      },
-      {
-        "$match"=>{"diff"=>{"$lt"=>10,"$gt"=>0}}
-      }
-    ])
-    ScheduledInspection.in(id: pending_schedules.map{|sch| sch['_id']}).scheduled_insp.update_all({status_cd: 1})
-  end
+  # def update_scheduled_inspections aircraft_id, hours
+  #   self.scheduled_inspections.not_completed.where(inspectable_id: aircraft_id).gt(hours: 0).update_all({completed_hours: hours})   
+  #   self.scheduled_inspections.not_completed.where(inspectable_id: Aircraft.find(aircraft_id).parts.map{|p|} p.id).gt(hours: 0).update_all({completed_hours: hours})   
+  #   pending_schedules = ScheduledInspection.collection.aggregate([
+  #     { 
+  #       "$project" => 
+  #       {
+  #         "diff" => { 
+  #           "$subtract" => [ "$hours", "$completed_hours" ] 
+  #         }          
+  #       }
+  #     },
+  #     {
+  #       "$match"=>{"diff"=>{"$lt"=>10,"$gt"=>0}}
+  #     }
+  #   ])
+  #   ScheduledInspection.in(id: pending_schedules.map{|sch| sch['_id']}).scheduled_insp.update_all({status_cd: 1})
+  #   due_schedules = ScheduledInspection.collection.aggregate([
+  #     { 
+  #       "$project" => 
+  #       {
+  #         "diff" => { 
+  #           "$subtract" => [ "$hours", "$completed_hours" ] 
+  #         },
+  #         "hours" => 1,
+  #       }
+  #     },
+  #     {
+  #       "$match"=>{"diff"=>{"$lte"=>0}, "hours" => {"$gt" => 0} }
+  #     }
+  #   ])
+  #   ScheduledInspection.in(id: due_schedules.map{|sch| sch['_id']}).not_completed.update_all({status_cd: 4})
+  # end
 end

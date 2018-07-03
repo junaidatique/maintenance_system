@@ -35,13 +35,13 @@ ul.sidebar-menu
             span.side-bar-heading-text Aircraft Inspections
           = link_to inspections_path(type_cd: 1) do
             .fa.fa-paper-plane 
-            span.side-bar-heading-text Part Inspections
-        li class="#{params[:controller] == "scheduled_inspections" ? 'active' : ''}"
-          = link_to scheduled_inspections_path do
-            .fa.fa-paper-plane 
-            span.side-bar-heading-text Scheduled Inspections
+            span.side-bar-heading-text Part Inspections        
         
-    
+  - if can? :read, Inspection
+    li class="#{params[:controller] == "scheduled_inspections" ? 'active' : ''}"
+      = link_to scheduled_inspections_path do
+        .fa.fa-paper-plane 
+        span.side-bar-heading-text Scheduled Inspections  
   - if can? :read, Part
     li class="#{params[:controller] == "parts" ? 'active' : ''}"
       = link_to parts_path do

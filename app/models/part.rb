@@ -44,8 +44,7 @@ class Part
 
   belongs_to :aircraft, optional: true
   
-  has_many :part_histories
-  has_many :inspection
+  has_many :part_histories  
   has_many :old_parts, class_name: 'ChangePart', inverse_of: :old_parts
   has_many :new_parts, class_name: 'ChangePart', inverse_of: :new_parts  
   has_many :left_tyre_histories, class_name: 'LandingHistory', inverse_of: :left_tyre  
@@ -75,15 +74,19 @@ class Part
       self.calender_life_date = installed_date.to_date + calender_life_value.years
     end 
     self.is_inspectable    = (inspection_hours.present? or inspection_calender_value.present?) ? true : false
-    if self.is_inspectable?
-      part_inspection = Inspection.where(part_number: self.number).first
-      if part_inspection.blank?
-        part_inspection = Inspection.create!({type_cd: 1, name: "#{self.number} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, duration_cd: 1, part_number: self.number})
+    if self.is_inspectable?      
+      if Inspection.where(part_number: self.number).count == 0
+        Inspection.create!({type_cd: 1, name: "#{self.description} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, duration_cd: 1, part_number: self.number})
       end
-      part_inspection.create_part_inspection self
+      part_inspections = Inspection.where(part_number: self.number)
+      part_inspections.each do |part_inspection| 
+        part_inspection.create_part_inspection self
+      end
     end
     self.save
   end
+
+
 
   def create_history_with_flying_log flying_log
     if self.is_lifed?
@@ -111,7 +114,7 @@ class Part
     save
     # self.scheduled_inspections.not_completed.inspection.first.update_scheduled_inspections self.completed_hours
     self.scheduled_inspections.not_completed.each do |scheduled_inspection|
-      scheduled_inspection.inspection.update_scheduled_inspections self.completed_hours      
+      scheduled_inspection.update_scheduled_inspections self.completed_hours      
     end
   end
 

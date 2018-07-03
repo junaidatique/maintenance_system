@@ -24,13 +24,23 @@ class FlyingLog
   # validates :location_to, presence: true  
   validate :check_techlogs
   validate :check_parts
+  validate :check_scheduled_inspections
+
+  def check_scheduled_inspections    
+    if started? and aircraft.scheduled_inspections.due.count > 0
+      errors.add(:aircraft_id, "has due inspections.")
+    end
+    if started? and aircraft.parts.map{|part| part if part.scheduled_inspections.due.count > 0}.reject(&:blank?).count > 0
+      errors.add(:aircraft_id, "has some parts with due inspections.")
+    end
+  end
 
   def check_parts
     if aircraft.parts.engine_part.count == 0
-      errors.add(:aircraft_id, " has no engine.")
+      errors.add(:aircraft_id, "has no engine.")
     end
     if aircraft.parts.propeller_part.count == 0
-      errors.add(:aircraft_id, " has no propeller.")
+      errors.add(:aircraft_id, "has no propeller.")
     end
   end
 

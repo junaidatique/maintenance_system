@@ -48,7 +48,7 @@ class Aircraft
     self.prop_hours   = flying_log.aircraft_total_time.corrected_total_prop_hours.to_f
     self.save
     self.scheduled_inspections.not_completed.each do |scheduled_inspection|
-      scheduled_inspection.inspection.update_scheduled_inspections self.flight_hours      
+      scheduled_inspection.update_scheduled_inspections self.flight_hours      
     end
     lifed_parts = self.parts.lifed    
     lifed_parts.each do |part|            

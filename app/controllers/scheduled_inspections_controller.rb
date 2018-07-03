@@ -4,7 +4,7 @@ class ScheduledInspectionsController < ApplicationController
   # GET /scheduled_inspections
   # GET /scheduled_inspections.json
   def index
-    @scheduled_inspections = ScheduledInspection.pending.all
+    @scheduled_inspections = ScheduledInspection.pending_n_due.all
   end
 
   # GET /scheduled_inspections/1
