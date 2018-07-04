@@ -27,6 +27,7 @@ class FlyingLog
   validate :check_scheduled_inspections
 
   def check_scheduled_inspections    
+    aircraft.check_inspections
     if started? and aircraft.scheduled_inspections.due.count > 0
       errors.add(:aircraft_id, "has due inspections.")
     end

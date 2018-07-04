@@ -1,6 +1,7 @@
 = content_for :box_heading do
-  | Upload Part Excel
-= simple_form_for(@part, :url => import_parts_path, :method => :post, html: { multipart: true}) do |f|
+  | Upload Part Excel for  
+  = @aircraft.tail_number
+= simple_form_for(@aircraft, :url => import_aircraft_path, :method => :post, html: { multipart: true}) do |f|
   = f.error_notification
   .row
     .col-md-12

@@ -82,12 +82,15 @@ class Inspection
   
 
   def get_duration starting_date
-    if self.duration_cd == 0
-      calender_life_date = starting_date + calender_value.days
-    elsif self.duration_cd == 1
-      calender_life_date = starting_date + calender_value.months
-    elsif self.duration_cd == 2
-      calender_life_date = starting_date + calender_value.years
+    calender_life_date = nil
+    if calender_value.present?
+      if self.duration_cd == 0
+        calender_life_date = starting_date + calender_value.days
+      elsif self.duration_cd == 1
+        calender_life_date = starting_date + calender_value.months
+      elsif self.duration_cd == 2
+        calender_life_date = starting_date + calender_value.years
+      end
     end
     calender_life_date
   end

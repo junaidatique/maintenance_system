@@ -1,6 +1,6 @@
 class AircraftsController < ApplicationController
   load_and_authorize_resource
-  before_action :set_aircraft, only: [:show, :edit, :update, :destroy]
+  before_action :set_aircraft, only: [:show, :edit, :update, :destroy, :import, :upload]
   
 
   # GET /aircrafts
@@ -72,6 +72,15 @@ class AircraftsController < ApplicationController
     respond_to do |format|
       format.json { render json: { items: aircrafts.map { |a| { id: a.id.to_s, tail_number: a.tail_number } }, total_count: aircrafts.length, incomplete_results: false } }
     end
+  end
+
+  def upload
+    
+  end
+
+  def import    
+    @aircraft.import(params[:file_excel])    
+    redirect_to @aircraft, notice: 'Parts imported.'
   end
 
 

@@ -24,6 +24,7 @@ class ScheduledInspection
   scope :due, -> { where(status_cd: 4)}
   scope :pending, -> { where(status_cd: 1)}
   scope :pending_n_due, -> { any_of({status_cd: 1}, {status_cd: 4})}
+  scope :calender_based, -> { ne(calender_life_date: nil)}
   
   after_update :start_work_package
 
@@ -81,5 +82,16 @@ class ScheduledInspection
     
     self.save
   end
-  
+  def mark_pending
+    if calender_life_date < (Time.zone.now + 30.days)
+      self.status_cd = 1
+      self.save
+    end
+  end
+  def mark_due
+    if calender_life_date < (Time.zone.now)
+      self.status_cd = 4
+      self.save
+    end
+  end
 end

@@ -89,5 +89,91 @@ class Aircraft
     end
     history.save!
   end
+  def import file
+    xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
+    (5..xlsx.last_row).each do |i|
+      row               = xlsx.row(i)      
+      aircraft = self
+      number = row[Part::AIRCRAFT_PART_NUMBER]
+      description = row[Part::AIRCRAFT_PART_DESCRIPTION]
+      is_lifed = true
+      inspection_hours = (row[Part::AIRCRAFT_PART_INSP_HOUR].present?) ? row[Part::AIRCRAFT_PART_INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
+      inspection_calender_value = nil
+      if row[Part::AIRCRAFT_PART_INSP_CALENDER].present?
+        if row[Part::AIRCRAFT_PART_INSP_CALENDER].downcase.count('y') > 0
+          inspection_calender_value = row[Part::AIRCRAFT_PART_INSP_CALENDER].downcase.gsub("year",'').strip.to_i
+          inspection_duration = 2
+        else
+          inspection_calender_value = row[Part::AIRCRAFT_PART_INSP_CALENDER].downcase.gsub("month",'').strip.to_i
+          inspection_duration = 1
+        end
+      end
+      calender_life_value   = nil
+      calender_life_value   = 
+        (row[Part::AIRCRAFT_PART_LIFE_CALENDER].present?) ? row[Part::AIRCRAFT_PART_LIFE_CALENDER].downcase.gsub("year",'').strip.to_i : 0
+      total_hours  = (row[Part::AIRCRAFT_PART_LIFE_HOUR].present?) ? row[Part::AIRCRAFT_PART_LIFE_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
 
+      if row[Part::AIRCRAFT_PART_INSTALLED_DATE].is_a? Date
+        puts row[Part::AIRCRAFT_PART_INSTALLED_DATE].to_s.inspect
+        installed_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_INSTALLED_DATE].to_s, '%Y-%m-%d')
+        
+      end      
+      
+      completed_hours     = self.flight_hours
+      landings_completed  = self.landings
+
+      serial_no           = row[Part::AIRCRAFT_PART_SERIAL_NO]
+      trade               = row[Part::AIRCRAFT_PART_TRADE].downcase
+      number_serial_no = "#{number}-#{serial_no}"
+      if serial_no.present?
+        part = Part.where(number_serial_no: number_serial_no).first
+      else
+        part = Part.where(number: number).where(aircraft: aircraft).first
+      end
+      
+      part_data = {            
+            aircraft_id: self.id, 
+            trade: trade, 
+            number: number, 
+            serial_no: serial_no, 
+            number_serial_no: number_serial_no, 
+            description: description,                         
+            is_lifed: is_lifed, 
+
+            inspection_duration: inspection_duration, 
+            inspection_hours: inspection_hours, 
+            inspection_calender_value: inspection_calender_value,
+
+            calender_life_value: calender_life_value,
+            total_hours: total_hours,
+                        
+            completed_hours: completed_hours,
+            installed_date: installed_date,
+            landings_completed: landings_completed
+          }            
+      
+      if part.present?
+        part.update(part_data)
+      else
+        part = Part.create(part_data)
+      end      
+    end
+  end
+
+  def check_inspections
+    scheduled_inspections.calender_based.scheduled_insp.each do |scheduled_inspection|
+      scheduled_inspection.mark_pending
+    end
+    scheduled_inspections.calender_based.pending.each do |scheduled_inspection|
+      scheduled_inspection.mark_due
+    end
+    parts.each do |part|
+      part.scheduled_inspections.calender_based.scheduled_insp.each do |scheduled_inspection|
+        scheduled_inspection.mark_pending
+      end
+      part.scheduled_inspections.calender_based.pending.each do |scheduled_inspection|
+        scheduled_inspection.mark_due
+      end
+    end
+  end
 end

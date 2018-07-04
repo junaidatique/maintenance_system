@@ -4,7 +4,7 @@ ul.sidebar-menu
       = link_to aircrafts_path do
         .fa.fa-plane
         span.side-bar-heading-text Aircraft
-  - if can? :view_781, FlyingLog
+  /- if can? :view_781, FlyingLog
     li class="#{params[:controller] == "reports" ? 'active' : ''}"
       a href="#" 
         i.fa.fa-list-ul

@@ -481,7 +481,7 @@ def create_part aircraft, category, trade, part_number, serial_no, quantity = 0,
   print '.'
 end
 
-
+exit
 
 puts 'Creating Parts'
 Part::categories.each do |category,value|

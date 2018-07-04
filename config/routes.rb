@@ -73,7 +73,11 @@ Rails.application.routes.draw do
   root 'flying_logs#index'
   resources :aircrafts  do 
     collection do 
-      get 'get_aircrafts'
+      get 'get_aircrafts'      
+    end
+    member do 
+      post :import
+      get :upload
     end
   end
   

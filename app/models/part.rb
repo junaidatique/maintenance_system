@@ -11,7 +11,7 @@ class Part
     nose_tail: 4,
     battery: 5
     
-  as_enum :trade, airframe: 0, engine: 1, electic: 2, instrument: 3, radio: 4
+  as_enum :trade, airframe: 0, engine: 1, electric: 2, instrument: 3, radio: 4
 
   field :number, type: String
   field :description, type: String
@@ -27,6 +27,7 @@ class Part
   field :is_repairable, type: Mongoid::Boolean
   field :condemn, type: String
 
+  field :inspection_duration, type: Integer
   field :inspection_hours, type: Float, default: 0
   field :inspection_calender_value, type: String  
   field :is_inspectable, type: Mongoid::Boolean
@@ -70,13 +71,14 @@ class Part
     if (total_hours.present? and completed_hours.present?)
       self.remaining_hours = (total_hours.to_f - completed_hours.to_f).round(2)
     end
-    if (installed_date.present? and calender_life_value.present?)
+    self.calender_life_date = nil
+    if (installed_date.present? and calender_life_value.present? and calender_life_value > 0)
       self.calender_life_date = installed_date.to_date + calender_life_value.years
     end 
-    self.is_inspectable    = (inspection_hours.present? or inspection_calender_value.present?) ? true : false
+    self.is_inspectable    = ((inspection_hours.present? and inspection_hours > 0) or inspection_calender_value.present?) ? true : false
     if self.is_inspectable?      
       if Inspection.where(part_number: self.number).count == 0
-        Inspection.create!({type_cd: 1, name: "#{self.description} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, duration_cd: 1, part_number: self.number})
+        Inspection.create!({type_cd: 1, name: "#{self.description} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, duration_cd: self.inspection_duration, part_number: self.number})
       end
       part_inspections = Inspection.where(part_number: self.number)
       part_inspections.each do |part_inspection| 
@@ -99,7 +101,7 @@ class Part
       part_history.hours        = flying_log.sortie.flight_time
       part_history.landings     = flying_log.sortie.total_landings
       part_history.flying_log   = flying_log
-      part_history.aircraft_id  = flying_log.aircraft.id
+      part_history.AIRCRAFT_PART_id  = flying_log.aircraft.id
       part_history.created_at   = flying_log.created_at
       part_history.part         = self      
       part_history.save        
@@ -120,7 +122,7 @@ class Part
 
   
 
-  AIRCRAFT_TAIL_NO  = 1
+  AIRCRAFT_PART_TAIL_NO  = 1
   TRADE             = 2
   NUMBER            = 3
   DESCRIPTION       = 4
@@ -141,11 +143,22 @@ class Part
   LANDING_COMPLETED = 19
   SERIAL_NO         = 20
 
+  AIRCRAFT_PART_NUMBER        = 1
+  AIRCRAFT_PART_DESCRIPTION   = 2 
+  AIRCRAFT_PART_SERIAL_NO     = 3
+  AIRCRAFT_PART_LIFE_CALENDER = 4
+  AIRCRAFT_PART_LIFE_HOUR     = 5
+  AIRCRAFT_PART_INSP_CALENDER = 6
+  AIRCRAFT_PART_INSP_HOUR     = 7
+  AIRCRAFT_PART_INSTALLED_DATE= 8
+  AIRCRAFT_PART_TRADE         = 10
+  
+
   def self.import(file)    
     xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
     (4..xlsx.last_row).each do |i|
       row               = xlsx.row(i)      
-      aircraft          = Aircraft.where(tail_number: row[Part::AIRCRAFT_TAIL_NO]).first
+      aircraft          = Aircraft.where(tail_number: row[Part::AIRCRAFT_PART_TAIL_NO]).first
       trade             = (Part::categories.include? row[Part::TRADE]) ? row[Part::TRADE] : nil
       number            = row[Part::NUMBER]
       description       = row[Part::DESCRIPTION]
@@ -160,10 +173,19 @@ class Part
       condemn           = row[Part::CONDEMN]
       is_lifed          = (row[Part::LIFED].present? and row[Part::LIFED].downcase == 'y') ? true : false
 
-      inspection_hours  = (row[Part::INSP_HOUR].present?)? row[Part::INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
-      inspection_calender_value = 
-        (row[Part::INSP_CALENDER].present?)? row[Part::INSP_CALENDER].downcase.gsub("month",'').strip.to_i : 0
+      inspection_hours  = (row[Part::INSP_HOUR].present?)? row[Part::INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : 0      
       
+      inspection_calender_value = nil
+      if row[Part::INSP_CALENDER].present?
+        if row[Part::INSP_CALENDER].downcase.count('y') > 0
+          inspection_calender_value = row[Part::INSP_CALENDER].downcase.gsub("year",'').strip.to_i
+          inspection_duration = 2
+        else
+          inspection_calender_value = row[Part::INSP_CALENDER].downcase.gsub("month",'').strip.to_i
+          inspection_duration = 1
+        end
+      end
+
 
       calender_life_value   = 
         (row[Part::LIFE_CALENDER].present?) ? row[Part::LIFE_CALENDER].downcase.gsub("year",'').strip.to_i : 0
@@ -195,6 +217,7 @@ class Part
             condemn: condemn, 
             is_lifed: is_lifed, 
 
+            inspection_duration: inspection_duration, 
             inspection_hours: inspection_hours, 
             inspection_calender_value: inspection_calender_value,
 

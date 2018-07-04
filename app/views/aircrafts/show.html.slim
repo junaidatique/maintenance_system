@@ -83,20 +83,32 @@
               h3.box-title
                 i.fa.fa-bars
                 | &nbsp; Parts
+            .col-md-6.text-right
+              = link_to upload_aircraft_path(aircraft: @aircraft), class: 'btn btn-info btn-flat'                 
+                | &nbsp; Upload Parts
+                | &nbsp;
       .box-body
         table.table.table-bordered.table-striped.data-tabled
           thead
             tr
               th
+                | Trade
+              th
                 | Number
               th
                 | Serial #
               th
-                | Description
+                | Noun
               th
-                | Calender Life
+                | Ins Date
               th
-                | Hours Completed
+                | Cal Value 
+              th
+                | Cal Date
+              th
+                | Life Hrs
+              th
+                | Hours
               th
                 | Landings
                 
@@ -104,13 +116,23 @@
             - @aircraft.parts.each do |part|
               tr
                 td.table-row-center
+                  = part.trade
+                td.table-row-center
                   = part.number
                 td.table-row-center
                   = part.serial_no
                 td.table-row-center
                   = part.description
                 td.table-row-center
-                  /= display_date(part.calender_life)
+                  = display_date(part.installed_date)
+                td.table-row-center
+                  - if part.calender_life_value > 0
+                    = (part.calender_life_value)
+                    |  years
+                td.table-row-center
+                  = display_date(part.calender_life_date)
+                td.table-row-center
+                  = part.total_hours
                 td.table-row-center
                   = part.completed_hours
                 td.table-row-center
