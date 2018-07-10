@@ -42,6 +42,7 @@ class Inspection
       
       sp.starting_date      = Time.zone.now        
       sp.calender_life_date = self.get_duration sp.starting_date
+      sp.is_repeating       = self.is_repeating
       sp.inspection         = self
       sp.status_cd          = 0
       sp.inspectable        = aircraft
@@ -63,6 +64,7 @@ class Inspection
         sp.hours              = part.completed_hours + no_of_hours        
         sp.completed_hours    = part.completed_hours
         sp.inspection         = self
+        sp.is_repeating       = self.is_repeating
         sp.status_cd          = 0
         sp.inspectable        = part
         sp.save!

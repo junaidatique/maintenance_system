@@ -126,7 +126,7 @@
                 td.table-row-center
                   = display_date(part.installed_date)
                 td.table-row-center
-                  - if part.calender_life_value > 0
+                  - if part.calender_life_value.present? and part.calender_life_value > 0
                     = (part.calender_life_value)
                     |  years
                 td.table-row-center
@@ -140,5 +140,5 @@
               
         
         .clearfix
-
-= render 'common/actions_buttons', back_path: aircrafts_path, edit_path: edit_aircraft_path(@aircraft)
+- if can? :update, Aircraft
+  = render 'common/actions_buttons', back_path: aircrafts_path, edit_path: edit_aircraft_path(@aircraft)

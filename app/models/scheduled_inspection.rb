@@ -11,6 +11,7 @@ class ScheduledInspection
   field :starting_date, type: Date
   field :inspection_started, type: Date
   field :inspection_completed, type: Date
+  field :is_repeating, type: Mongoid::Boolean
   
   belongs_to :inspection  
   belongs_to :started_by, :class_name => "User", optional: true

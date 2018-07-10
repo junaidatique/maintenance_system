@@ -18,14 +18,20 @@
           td.serial_td
             = part.serial_no
           td.calender_td
-            = part.inspection_calender_value
-            |  
-            | month
+            - if part.inspection_calender_value.present?
+              = part.inspection_calender_value
+              |  
+              - if part.inspection_duration == 2
+                | year
+              - else
+                | month
           td.hours_td
-            = part.inspection_hours
-          - part.scheduled_inspections.limit(2).order(created_at: :desc).each do |sp|
-            td.sch_calender_td 
-              = display_date sp.calender_life_date
-            td.sch_hours_td
-              = sp.hours             
+            - if part.inspection_hours > 0
+              = part.inspection_hours          
+          - part.scheduled_inspections.limit(4).order(created_at: :desc).each do |sp|
+            - if sp.inspection.is_repeating
+              td.sch_calender_td 
+                = display_date sp.calender_life_date
+              td.sch_hours_td
+                = sp.hours             
               

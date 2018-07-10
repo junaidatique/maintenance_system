@@ -41,26 +41,6 @@ class ReportsController < ApplicationController
       i +=8
     end while i < num
     send_data merged_certificates.to_pdf, :disposition => 'inline', :type => "application/pdf"
-
-    # ------------------------
-    # pdf_data = render(
-    #                 pdf: "airframe_report",
-    #                 orientation: 'Landscape',
-    #                 template: 'reports/airframe_pdf.html.slim',
-    #                 layout: 'layouts/pdf/pdf.html.slim',
-    #                 show_as_html: false,
-    #                 locals: {
-    #                   flying_logs: @flying_logs
-    #                 },
-    #                 page_height: '17in',
-    #                 page_width: '13in',
-    #                 margin:  {
-    #                   top: 0,
-    #                   bottom: 0,
-    #                   left: 0,
-    #                   right:0 
-    #                 }
-    #               )
   end
   def inspection_record_pdf
     i = 0
@@ -70,19 +50,22 @@ class ReportsController < ApplicationController
     if params[:trade].blank?
       redirect_to aircrafts_path(), :flash => { :error => "Invalid trade." }
     end
-    @parts = Aircraft.find(params[:aircraft]).parts.where(is_inspectable: true).where(trade_cd: params[:trade].to_i)
-    puts @parts.count.inspect
-    pdf_data = render(
+    @all_parts = Aircraft.find(params[:aircraft]).parts.where(is_inspectable: true).where(trade_cd: params[:trade].to_i)
+    num = @all_parts.count
+    merged_certificates = CombinePDF.new
+    begin
+      parts  = @all_parts.limit(8).offset(i)      
+      pdf_data = render_to_string(
                     pdf: "inspection_record_report",
                     orientation: 'Landscape',
                     template: 'reports/inspection_record_pdf.html.slim',
                     layout: 'layouts/pdf/pdf.html.slim',
                     show_as_html: false,
                     locals: {
-                      parts: @parts
+                      parts: parts
                     },
                     page_height: '17in',
-                    page_width: '13in',
+                    page_width: '9in',
                     margin:  {
                       top: 0,
                       bottom: 0,
@@ -90,6 +73,12 @@ class ReportsController < ApplicationController
                       right:0 
                     }
                   )
+      merged_certificates  << CombinePDF.parse(pdf_data)
+      i +=8
+    end while i < num
+    send_data merged_certificates.to_pdf, :disposition => 'inline', :type => "application/pdf"
+    
+
   end
   def inspection_pdf
     i = 0

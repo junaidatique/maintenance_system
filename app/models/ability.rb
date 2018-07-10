@@ -25,48 +25,57 @@ class Ability
       can :view_781, FlyingLog
       cannot :bookout_flight, FlyingLog      
     elsif user.master_control?      
+      can :read, Aircraft
       can :crud, FlyingLog
       can :crud, Techlog
       can :read, FlyingPlan
       can :update_work_unit_code, Techlog
     elsif user.crew_cheif?
+      can :read, Aircraft
       can :ru, FlyingLog
       can :crud, Techlog
       can :update_fuel, Techlog
     elsif user.inst_fitt?
+      can :read, Aircraft
       can :ru, FlyingLog
       can :crud, Techlog      
     elsif user.eng_fitt?
+      can :read, Aircraft
       can :ru, FlyingLog
       can :crud, Techlog      
     elsif user.afr_fitt?
+      can :read, Aircraft
       can :ru, FlyingLog
       can :crud, Techlog
     elsif user.ro_fitt?
+      can :read, Aircraft
       can :ru, FlyingLog
       can :crud, Techlog    
     elsif user.elect_fitt?
+      can :read, Aircraft
       can :ru, FlyingLog
       can :crud, Techlog
     elsif user.gen_fitt?
+      can :read, Aircraft
       can :ru, FlyingLog
       can :crud, Techlog
     elsif user.pilot?
+      can :read, Aircraft
       can [:read, :update], FlyingLog
       can :bookout_flight, FlyingLog
       can :bookin_flight, FlyingLog
       can :crud, Techlog
       can :view_logs, FlyingLog
     elsif user.log_asst?
+      can :read, Aircraft
       can :crud, Tool
       can :rud, Techlog
       can :crud, RequestedTool
     elsif user.logistics?
+      can :read, Aircraft
       can :read, Part
       can :cru, Part
       can :rud, Techlog
-      
-    
     end
   end
 end
