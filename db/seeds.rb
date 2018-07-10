@@ -2,7 +2,7 @@ cur_time = Time.zone.now
 
 System.create! settings: {dms_version_number: 0.0}
 puts 'Creating Aircraft'
-aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '42', oil_capacity: '8', flight_hours: 170.4, engine_hours: 170.4, landings: 302, prop_hours: 170.4
 aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
 aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
 aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
@@ -287,21 +287,21 @@ end
 puts ''
 puts 'user created'
 # exit
-puts 'Creating FlyingPlan'
-(0..10).each do |day|
-  is_flying     = 1
-  aircraft_ids  = []
-  reason = ''  
-  if (is_flying)
-    aircraft_ids = Aircraft.all.map{|aircraft| aircraft.id.to_s}
-  else
-    reason = Faker::Lorem.sentence(3)
-  end  
-  FlyingPlan.create! flying_date: (Time.zone.now - day.days).strftime("%Y-%m-%d"), is_flying: is_flying, aircraft_ids: aircraft_ids, reason: reason
-  print '.'
-end
-puts ''
-puts 'FlyingPlan Created'
+# puts 'Creating FlyingPlan'
+# (0..10).each do |day|
+#   is_flying     = 1
+#   aircraft_ids  = []
+#   reason = ''  
+#   if (is_flying)
+#     aircraft_ids = Aircraft.all.map{|aircraft| aircraft.id.to_s}
+#   else
+#     reason = Faker::Lorem.sentence(3)
+#   end  
+#   FlyingPlan.create! flying_date: (Time.zone.now - day.days).strftime("%Y-%m-%d"), is_flying: is_flying, aircraft_ids: aircraft_ids, reason: reason
+#   print '.'
+# end
+# puts ''
+# puts 'FlyingPlan Created'
 
 
 puts 'Creating WorkUnitCodes'
@@ -443,9 +443,9 @@ part_inspections = [
 ]
 part_inspections.each do |insp|
   inspection = Inspection.create(insp)
-  (0..0).each do |wrokpackage|
-    WorkPackage.create!({description: Faker::Lorem.sentence, work_unit_code_id: WorkUnitCode.last.id, inspection_id: inspection.id})
-  end
+  # (0..0).each do |wrokpackage|
+  #   WorkPackage.create!({description: Faker::Lorem.sentence, work_unit_code_id: WorkUnitCode.last.id, inspection_id: inspection.id})
+  # end
 end
 def create_part aircraft, category, trade, part_number, serial_no, quantity = 0, description = ''
   inspection_hours = 100

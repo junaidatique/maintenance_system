@@ -51,7 +51,7 @@
         table.table.table-bordered.table-striped.data-tabled
           thead
             tr                
-              th
+              th width="70%"
                 | Description
               th
                 | Work unit code
@@ -68,10 +68,14 @@
                   = work_package.work_unit_code.code  
                 td 
                   = link_to edit_inspection_work_package_path(@inspection, work_package), class: 'btn btn-info btn-flat ' do
-                      i.fa.fa-pencil
+                    i.fa.fa-pencil
+                  = link_to inspection_work_package_path(@inspection, work_package), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
+                    i.fa.fa-trash
                   
         .row
-          .col-sm-4.col-sm-offset-4            
+          .col-sm-4.col-sm-offset-2
+            = link_to 'Upload Work Package', upload_inspection_work_packages_path(@inspection), class: 'btn btn-block btn-primary btn-flat' 
+          .col-sm-4
             = link_to 'Create Work Package Entry', new_inspection_work_package_path(@inspection), class: 'btn btn-block btn-primary btn-flat'
         .clearfix
 

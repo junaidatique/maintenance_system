@@ -83,6 +83,9 @@ class AircraftsController < ApplicationController
     redirect_to @aircraft, notice: 'Parts imported.'
   end
 
+  def summary
+    
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

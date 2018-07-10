@@ -93,11 +93,11 @@ class Aircraft
     xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
     (5..xlsx.last_row).each do |i|
       row               = xlsx.row(i)      
-      aircraft = self
-      number = row[Part::AIRCRAFT_PART_NUMBER]
-      description = row[Part::AIRCRAFT_PART_DESCRIPTION]
-      is_lifed = true
-      inspection_hours = (row[Part::AIRCRAFT_PART_INSP_HOUR].present?) ? row[Part::AIRCRAFT_PART_INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
+      aircraft          = self
+      number            = row[Part::AIRCRAFT_PART_NUMBER].to_s.gsub("\n", '')
+      description       = row[Part::AIRCRAFT_PART_DESCRIPTION]
+      is_lifed          = true
+      inspection_hours  = (row[Part::AIRCRAFT_PART_INSP_HOUR].present?) ? row[Part::AIRCRAFT_PART_INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
       inspection_calender_value = nil
       if row[Part::AIRCRAFT_PART_INSP_CALENDER].present?
         if row[Part::AIRCRAFT_PART_INSP_CALENDER].downcase.count('y') > 0
@@ -113,10 +113,8 @@ class Aircraft
         (row[Part::AIRCRAFT_PART_LIFE_CALENDER].present?) ? row[Part::AIRCRAFT_PART_LIFE_CALENDER].downcase.gsub("year",'').strip.to_i : 0
       total_hours  = (row[Part::AIRCRAFT_PART_LIFE_HOUR].present?) ? row[Part::AIRCRAFT_PART_LIFE_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
 
-      if row[Part::AIRCRAFT_PART_INSTALLED_DATE].is_a? Date
-        puts row[Part::AIRCRAFT_PART_INSTALLED_DATE].to_s.inspect
+      if row[Part::AIRCRAFT_PART_INSTALLED_DATE].is_a? Date        
         installed_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_INSTALLED_DATE].to_s, '%Y-%m-%d')
-        
       end      
       
       completed_hours     = self.flight_hours

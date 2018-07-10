@@ -57,9 +57,18 @@ class WorkPackagesController < ApplicationController
   def destroy
     @work_package.destroy
     respond_to do |format|
-      format.html { redirect_to work_packages_url, notice: 'Work package was successfully destroyed.' }
+      format.html { redirect_to @inspection, notice: 'Work package was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def upload
+    
+  end
+
+  def import
+    WorkPackage.import(@inspection, params[:file_excel])
+    redirect_to @inspection, notice: 'Work Package imported.'
   end
 
   private

@@ -48,94 +48,96 @@
   .engine-inspection
     table border="0"
       - part = aircraft.parts.where(category_cd: 0).first      
-      tr
-        td.td-part_number
-          = part.number
-        td.td-serial
-          = part.serial_no
-        td.td-freq
-          = part.total_hours
-        td.td-comple 
-          /= part.total_hours
-        td.td-change
-          = part.total_hours
-      tr
-        td.td-part_number
-          = part.number
-        td.td-serial
-          = part.serial_no
-        td.td-freq
-          = part.calender_life_value 
-          | &nbsp; years
-        td.td-comple 
-          |   
-        td.td-change
-          = display_date part.calender_life_date
-      - part.scheduled_inspections.each do |scheduled_inspection|
+      - if part.present?
         tr
           td.td-part_number
             = part.number
           td.td-serial
             = part.serial_no
           td.td-freq
-            = scheduled_inspection.hours             
+            = part.total_hours
           td.td-comple 
-            - if scheduled_inspection.status_cd == 3
-              = scheduled_inspection.completed_hours
+            /= part.total_hours
           td.td-change
-            /= display_date part.calender_life_date
+            = part.total_hours
+        tr
+          td.td-part_number
+            = part.number
+          td.td-serial
+            = part.serial_no
+          td.td-freq
+            = part.calender_life_value 
+            | &nbsp; years
+          td.td-comple 
+            |   
+          td.td-change
+            = display_date part.calender_life_date
+        - part.scheduled_inspections.each do |scheduled_inspection|
+          tr
+            td.td-part_number
+              = part.number
+            td.td-serial
+              = part.serial_no
+            td.td-freq
+              = scheduled_inspection.inspection.no_of_hours
+            td.td-comple 
+              - if scheduled_inspection.status_cd == 3
+                = scheduled_inspection.completed_hours
+            td.td-change
+              /= display_date part.calender_life_date
   .proppeller-inspection
     table border="0"     
       - part = aircraft.parts.where(category_cd: 1).first      
-      tr
-        td.td-part_number
-          = part.number
-        td.td-serial
-          = part.serial_no
-        td.td-freq
-          = part.total_hours
-        td.td-comple 
-          |   
-        td.td-change
-          = part.total_hours
-      tr
-        td.td-part_number
-          = part.number
-        td.td-serial
-          = part.serial_no
-        td.td-freq
-          = part.calender_life_value 
-          | &nbsp; years
-        td.td-comple 
-          |   
-        td.td-change
-          = display_date part.calender_life_date
-      - part.scheduled_inspections.where(hours: 10).each do |scheduled_inspection|
+      - if part.present?
         tr
           td.td-part_number
             = part.number
           td.td-serial
             = part.serial_no
           td.td-freq
-            = scheduled_inspection.hours             
+            = part.total_hours
           td.td-comple 
-            - if scheduled_inspection.status_cd == 3
-              = scheduled_inspection.completed_hours
+            |   
           td.td-change
-            /= display_date part.calender_life_date  
-      - part.scheduled_inspections.ne(hours: 10).order(created_at: :desc).limit(2).reverse.each do |scheduled_inspection|
+            = part.total_hours
         tr
           td.td-part_number
             = part.number
           td.td-serial
             = part.serial_no
           td.td-freq
-            = scheduled_inspection.inspection.no_of_hours
+            = part.calender_life_value 
+            | &nbsp; years
           td.td-comple 
-            - if scheduled_inspection.status_cd == 3
-              = scheduled_inspection.completed_hours
+            |   
           td.td-change
-            /= display_date part.calender_life_date  
+            = display_date part.calender_life_date
+        - part.scheduled_inspections.where(hours: 10).each do |scheduled_inspection|
+          tr
+            td.td-part_number
+              = part.number
+            td.td-serial
+              = part.serial_no
+            td.td-freq
+              = scheduled_inspection.inspection.no_of_hours
+            td.td-comple 
+              - if scheduled_inspection.status_cd == 3
+                = scheduled_inspection.completed_hours
+            td.td-change
+              /= display_date part.calender_life_date  
+        - part.scheduled_inspections.ne(hours: 10).order(created_at: :desc).limit(2).reverse.each do |scheduled_inspection|
+          tr
+            td.td-part_number
+              = part.number
+            td.td-serial
+              = part.serial_no
+            td.td-freq
+              = scheduled_inspection.inspection.no_of_hours
+            td.td-comple 
+              - if scheduled_inspection.status_cd == 3
+                = scheduled_inspection.completed_hours
+            td.td-change
+              /= display_date part.calender_life_date  
   .rest-inspection
     table border="0"     
       - inspections = Inspection.where(category_cd: 2).where(type_cd: 0)
@@ -150,12 +152,14 @@
               = inspection.duration
               
           td.td-comple
-            = inspection.no_of_hours
+            - if inspection.no_of_hours > 0
+              = inspection.no_of_hours
           - scheduled_inspections = inspection.scheduled_inspections.where(inspectable_id: aircraft.id).order(created_at: :desc).limit(3)
           - scheduled_inspections.reverse.each do |scheduled_inspection|            
             td.td-comple
               - if scheduled_inspection.calender_life_date.present?
                 = display_date scheduled_inspection.calender_life_date
             td.td-comple
-              = scheduled_inspection.hours              
+              - if inspection.no_of_hours > 0
+                = scheduled_inspection.hours              
             

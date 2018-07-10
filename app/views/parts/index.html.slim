@@ -13,6 +13,8 @@
               th
                 | Number
               th
+                | Noun
+              th
                 | Serial #
               th
                 | Store Balance
@@ -27,6 +29,8 @@
                     = part.aircraft.tail_number
                 td.table-row-center
                   = link_to part.number, part_path(part)
+                td.table-row-center
+                  = link_to part.description, part_path(part)
                 td.table-row-center
                   = part.serial_no
                 td.table-row-center                  

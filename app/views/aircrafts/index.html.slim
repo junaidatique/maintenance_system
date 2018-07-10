@@ -1,6 +1,6 @@
 = content_for :box_heading do
   | Aircraft
-
+- todays_flying_plan = FlyingPlan.where(flying_date: Time.zone.now.strftime("%d/%m/%Y")).first
 .row
   .col-md-12
     .box.box-info
@@ -12,6 +12,8 @@
                 | Number
               th width='10%'
                 | Serial #
+              th 
+                | Status
               th width='13%'
                 | Actions
           tbody
@@ -21,6 +23,15 @@
                   = link_to aircraft.tail_number, aircraft_path(aircraft)
                 td.table-row-center
                   = aircraft.serial_no
+                td
+                  - if todays_flying_plan.present? and todays_flying_plan.aircraft_ids.include? aircraft.id
+                    - last_flying_log = aircraft.flying_logs.where(log_date: Time.zone.now.strftime("%d/%m/%Y")).last
+                    - if last_flying_log.present?
+                      - last_flying_log.state
+                    - else 
+                      | No Flying Log created.
+                  - else
+                    | Not Flying Today.
                 td.text-center width='20%'
                   = link_to aircraft_path(aircraft), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye

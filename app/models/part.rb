@@ -64,7 +64,17 @@ class Part
   validates :number, presence: true
   validates :description, presence: true
 
-  after_create :update_record  
+  before_create :set_category  
+  after_create :update_record
+  after_update :check_inspections
+  
+  def set_category    
+    if number == 'N-9570' 
+      self.category_cd = 0
+    elsif number == 'HC-C2YK-1BF I/L C2K00180'
+      self.category_cd = 1
+    end
+  end
   
   def update_record    
     self.number_serial_no = "#{number}-#{serial_no}"
@@ -75,7 +85,14 @@ class Part
     if (installed_date.present? and calender_life_value.present? and calender_life_value > 0)
       self.calender_life_date = installed_date.to_date + calender_life_value.years
     end 
-    self.is_inspectable    = ((inspection_hours.present? and inspection_hours > 0) or inspection_calender_value.present?) ? true : false
+    self.is_inspectable    = ((inspection_hours.present? and inspection_hours > 0) or inspection_calender_value.present?) ? true : false    
+    if category_cd == 0 or category_cd == 1
+      self.is_inspectable = true
+    end
+    self.save
+  end
+
+  def check_inspections    
     if self.is_inspectable?      
       if Inspection.where(part_number: self.number).count == 0
         Inspection.create!({type_cd: 1, name: "#{self.description} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, duration_cd: self.inspection_duration, part_number: self.number})
@@ -85,10 +102,7 @@ class Part
         part_inspection.create_part_inspection self
       end
     end
-    self.save
   end
-
-
 
   def create_history_with_flying_log flying_log
     if self.is_lifed?

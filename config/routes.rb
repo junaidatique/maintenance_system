@@ -2,7 +2,12 @@ Rails.application.routes.draw do
   
   resources :scheduled_inspections
   resources :inspections do 
-    resources :work_packages
+    resources :work_packages do
+      collection do
+        post :import
+        get :upload        
+      end
+    end
   end
   resources :tools do
     collection do
@@ -74,6 +79,7 @@ Rails.application.routes.draw do
   resources :aircrafts  do 
     collection do 
       get 'get_aircrafts'      
+      get 'summary'      
     end
     member do 
       post :import

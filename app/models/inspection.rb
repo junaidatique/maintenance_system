@@ -31,9 +31,15 @@ class Inspection
 
   def create_aircraft_inspection aircraft
     if aircraft.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
-      sp = ScheduledInspection.new        
-      sp.hours              = aircraft.flight_hours + no_of_hours.to_f
-      sp.completed_hours    = aircraft.flight_hours
+      sp = ScheduledInspection.new
+      if aircraft.scheduled_inspections.where(inspection_id: self.id).completed.count > 0
+        sp.hours              = aircraft.flight_hours + no_of_hours.to_f
+        sp.completed_hours    = aircraft.flight_hours
+      else
+        sp.hours              = no_of_hours.to_f
+        sp.completed_hours    = 0
+      end
+      
       sp.starting_date      = Time.zone.now        
       sp.calender_life_date = self.get_duration sp.starting_date
       sp.inspection         = self
