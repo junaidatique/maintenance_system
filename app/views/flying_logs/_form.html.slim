@@ -283,7 +283,7 @@
                 .col-sm-6
                   
 
-  - if can? :update_sortie, FlyingLog and !@flying_log.capt_acceptance_certificate.created_at.blank?    
+  - if can? :update_work_unit_code, FlyingLog and !@flying_log.capt_acceptance_certificate.created_at.blank?    
     .row
       .col-md-12
         .box.box-info
@@ -329,6 +329,7 @@
                         td.text-center width='20%'
                           = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
                             i.fa.fa-file-pdf-o
+  - if can? :update_sortie, FlyingLog and !@flying_log.capt_acceptance_certificate.created_at.blank?      
     .row
       .col-md-12
         .box.box-info
@@ -338,20 +339,20 @@
               | &nbsp; Sortie
           .box-body
             = f.simple_fields_for :sortie do |ac_f|
-              .row
+              /.row
                 .col-sm-12
                   h5
                     | Times
-              .row
+              /.row
                 .col-sm-6
                   = ac_f.input :takeoff_time, label: 'Takeoff Time (Local)', input_html: { class: 'timepickerclass' }
                 .col-sm-6
                   = ac_f.input :landing_time, label: 'Landing Time (Local)', input_html: { class: 'timepickerclass' }                  
-              .row
+              /.row
                 .col-sm-12
                   h5
                     | Landings
-              .row
+              /.row
                 .col-sm-6
                   = ac_f.input :touch_go
                 .col-sm-6

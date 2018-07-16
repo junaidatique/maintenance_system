@@ -159,19 +159,13 @@ class Aircraft
   end
 
   def check_inspections
-    scheduled_inspections.calender_based.scheduled_insp.each do |scheduled_inspection|
-      scheduled_inspection.mark_pending
-    end
-    scheduled_inspections.calender_based.pending.each do |scheduled_inspection|
-      scheduled_inspection.mark_due
+    scheduled_inspections.scheduled_insp.each do |scheduled_inspection|
+      scheduled_inspection.update_scheduled_inspections self.flight_hours
     end
     parts.each do |part|
-      part.scheduled_inspections.calender_based.scheduled_insp.each do |scheduled_inspection|
-        scheduled_inspection.mark_pending
+      part.scheduled_inspections.scheduled_insp.each do |scheduled_inspection|
+        scheduled_inspection.update_scheduled_inspections part.completed_hours  
       end
-      part.scheduled_inspections.calender_based.pending.each do |scheduled_inspection|
-        scheduled_inspection.mark_due
-      end
-    end
+    end    
   end
 end

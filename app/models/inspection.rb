@@ -3,6 +3,7 @@ class Inspection
   include Mongoid::Timestamps
   include SimpleEnum::Mongoid
 
+  as_enum :kind, to_replace: 0, to_inspect: 1
   as_enum :type, aircraft: 0, part: 1
   as_enum :category, aircraft_timed: 1, aircraft_calender: 2
   as_enum :duration, day: 0, month: 1, year: 2
@@ -28,16 +29,31 @@ class Inspection
 
   scope :aircraft_inspection, -> { any_of({type_cd: 0}, {type_cd: 0.to_s})}
   scope :part_inspection, -> { any_of({type_cd: 1}, {type_cd: 1.to_s})}
+  
+  scope :to_be_replaced, -> { any_of({kind_cd: 0}, {kind_cd: 0.to_s})}
+  scope :to_be_inspected, -> { any_of({kind_cd: 1}, {kind_cd: 1.to_s})}
 
   def create_aircraft_inspection aircraft
     if aircraft.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
       sp = ScheduledInspection.new
-      if aircraft.scheduled_inspections.where(inspection_id: self.id).completed.count > 0
-        sp.hours              = aircraft.flight_hours + no_of_hours.to_f
-        sp.completed_hours    = aircraft.flight_hours
+      if aircraft.scheduled_inspections.where(inspection_id: self.id).completed.count > 0        
+        sp.hours = 0
+        if no_of_hours > 0
+          sp.hours              = aircraft.flight_hours + no_of_hours.to_f
+          sp.completed_hours    = aircraft.flight_hours
+        end
       else
-        sp.hours              = no_of_hours.to_f
-        sp.completed_hours    = 0
+        if !is_repeating and aircraft.flight_hours > no_of_hours and no_of_hours > 0
+          return
+        end
+        h = 0
+        if no_of_hours > 0 and (aircraft.flight_hours < no_of_hours or category_cd == 1)
+          begin
+            h              = h + no_of_hours.to_f
+          end while aircraft.flight_hours > h
+        end
+        sp.hours              = h
+        sp.completed_hours    = aircraft.flight_hours
       end
       
       sp.starting_date      = Time.zone.now        
@@ -48,6 +64,7 @@ class Inspection
       sp.inspectable        = aircraft
       sp.save!  
       self.scheduled_inspections << sp
+      sp.update_scheduled_inspections sp.completed_hours
     end    
   end
   
@@ -55,20 +72,58 @@ class Inspection
     unless part.installed_date.blank?
       if part.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
         sp = ScheduledInspection.new
-        if part.scheduled_inspections.where(inspection_id: self.id).count == 0  
+        if part.scheduled_inspections.where(inspection_id: self.id).count == 0           
+          if self.no_of_hours > 0 and !self.is_repeating and part.completed_hours > self.no_of_hours            
+            return;          
+          end           
           sp.starting_date      = part.installed_date        
+          h = 0
+          if no_of_hours > 0
+            begin
+              h              = h + no_of_hours.to_f                      
+            end while part.completed_hours > h
+          end
+          sp.hours              = h
         else
           sp.starting_date      = Time.zone.now
+          sp.hours              = 0
+          if no_of_hours > 0
+            sp.hours              = part.completed_hours + no_of_hours        
+          end
         end        
-        sp.calender_life_date = self.get_duration sp.starting_date
-        sp.hours              = part.completed_hours + no_of_hours        
+        sp.calender_life_date = self.get_duration sp.starting_date        
         sp.completed_hours    = part.completed_hours
         sp.inspection         = self
         sp.is_repeating       = self.is_repeating
         sp.status_cd          = 0
+        sp.trade_cd           = part.trade_cd
+        sp.kind_cd            = self.kind_cd
         sp.inspectable        = part
         sp.save!
         self.scheduled_inspections << sp
+        sp.update_scheduled_inspections part.completed_hours
+      end
+    end    
+  end
+
+  def create_part_repalcement part    
+    if (part.installed_date.present? and part.calender_life_value > 0) or part.total_hours > 0
+      if part.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
+        sp = ScheduledInspection.new
+        sp.starting_date      = part.installed_date
+        sp.calender_life_date = nil
+        sp.calender_life_date = part.installed_date + calender_value.years if calender_value.present? and calender_value > 0
+        sp.hours              = no_of_hours        
+        sp.completed_hours    = part.completed_hours
+        sp.inspection         = self
+        sp.is_repeating       = self.is_repeating
+        sp.status_cd          = 0
+        sp.trade_cd           = part.trade_cd
+        sp.kind_cd            = self.kind_cd
+        sp.inspectable        = part
+        sp.save!
+        self.scheduled_inspections << sp
+        sp.update_scheduled_inspections part.completed_hours
       end
     end
   end
@@ -80,11 +135,11 @@ class Inspection
         self.create_aircraft_inspection aircraft
       end
     elsif (type_cd.to_i == 1)
-      parts = Part.where(number: part_number)
-      parts.each do |inspection_item| 
-        
-      end
+      # parts = Part.where(number: part_number)
+      # parts.each do |inspection_item|         
+      # end
     end    
+    WorkPackage.create!({description: 'Test', work_unit_code_id: WorkUnitCode.last.id, inspection_id: self.id})
   end
 
   

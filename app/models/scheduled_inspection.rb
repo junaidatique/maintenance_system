@@ -12,6 +12,8 @@ class ScheduledInspection
   field :inspection_started, type: Date
   field :inspection_completed, type: Date
   field :is_repeating, type: Mongoid::Boolean
+  field :trade_cd, type: Integer
+  field :kind_cd, type: Integer
   
   belongs_to :inspection  
   belongs_to :started_by, :class_name => "User", optional: true
@@ -21,6 +23,7 @@ class ScheduledInspection
 
   scope :scheduled_insp, -> { where(status_cd: 0)}
   scope :not_completed, -> { ne(status_cd: 3)}
+  scope :in_progress, -> { where(status_cd: 2)}
   scope :completed, -> { where(status_cd: 3)}
   scope :due, -> { where(status_cd: 4)}
   scope :pending, -> { where(status_cd: 1)}
@@ -73,26 +76,22 @@ class ScheduledInspection
 
   def update_scheduled_inspections completed_hours
     self.completed_hours = completed_hours
-    if hours > 0
+    if hours > 0 and self.completed_hours.present?
       if (self.hours - self.completed_hours) <= 0
         self.status = 4
       elsif (self.hours - self.completed_hours) < 10
         self.status = 1
       end
     end
-    
+    if calender_life_date.present?
+      if calender_life_date < (Time.zone.now + 30.days)
+        self.status_cd = 1 if self.status_cd != 4
+      end
+      if calender_life_date < (Time.zone.now)
+        self.status_cd = 4    
+      end
+    end    
     self.save
   end
-  def mark_pending
-    if calender_life_date < (Time.zone.now + 30.days)
-      self.status_cd = 1
-      self.save
-    end
-  end
-  def mark_due
-    if calender_life_date < (Time.zone.now)
-      self.status_cd = 4
-      self.save
-    end
-  end
+  
 end

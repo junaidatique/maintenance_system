@@ -31,8 +31,14 @@ class FlyingLog
     if started? and aircraft.scheduled_inspections.due.count > 0
       errors.add(:aircraft_id, "has due inspections.")
     end
+    if started? and aircraft.scheduled_inspections.in_progress.count > 0
+      errors.add(:aircraft_id, "has in progress inspections.")
+    end
     if started? and aircraft.parts.map{|part| part if part.scheduled_inspections.due.count > 0}.reject(&:blank?).count > 0
       errors.add(:aircraft_id, "has some parts with due inspections.")
+    end
+    if started? and aircraft.parts.map{|part| part if part.scheduled_inspections.in_progress.count > 0}.reject(&:blank?).count > 0
+      errors.add(:aircraft_id, "has some parts with in progress inspections.")
     end
   end
 
@@ -42,6 +48,15 @@ class FlyingLog
     end
     if aircraft.parts.propeller_part.count == 0
       errors.add(:aircraft_id, "has no propeller.")
+    end
+    if aircraft.parts.left_tyre.count == 0
+      errors.add(:aircraft_id, "has no left tyre.")
+    end
+    if aircraft.parts.right_tyre.count == 0
+      errors.add(:aircraft_id, "has no left tyre.")
+    end
+    if aircraft.parts.nose_tail.count == 0
+      errors.add(:aircraft_id, "has no left tyre.")
     end
   end
 
@@ -170,8 +185,7 @@ class FlyingLog
 
   def update_aircraft_timgings    
     self.completion_time = Time.zone.now
-    self.save
-    # self.aircraft.update_part_values self
+    self.save    
   end
 
   def update_aircraft_times
@@ -223,6 +237,7 @@ class FlyingLog
     history.touch_go        = sortie.touch_go
     history.full_stop       = sortie.full_stop
     history.flying_log      = self
+    history.created_at      = self.created_at
     history.save!
   end
 

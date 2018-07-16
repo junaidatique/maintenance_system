@@ -49,8 +49,8 @@
                 td.table-row-center
                   = link_to scheduled_inspection_path(scheduled_inspection), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye
-                  /- if scheduled_inspection.status_cd == 1
-                  = link_to edit_scheduled_inspection_path(scheduled_inspection), class: 'btn btn-info btn-flat ' do
+                  - if scheduled_inspection.kind_cd != 0
+                    = link_to edit_scheduled_inspection_path(scheduled_inspection), class: 'btn btn-info btn-flat ' do
                       i.fa.fa-pencil
                 
 

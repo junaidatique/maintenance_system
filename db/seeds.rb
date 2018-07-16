@@ -326,6 +326,7 @@ puts 'Creating Aircraft Inspection'
 
 aircraft_inspections = [  
   {
+    kind_cd: 1,
     type_cd: 0,
     category_cd: 1,    
     name: 'Aircraft 25 HRS', 
@@ -333,6 +334,7 @@ aircraft_inspections = [
     is_repeating: false 
   },
   {
+    kind_cd: 1,
     type_cd: 0,
     category_cd: 1,    
     duration_cd: 1,
@@ -342,6 +344,7 @@ aircraft_inspections = [
     is_repeating: true 
   },  
   {
+    kind_cd: 1,
     type_cd: 0,
     category_cd: 1,    
     duration_cd: 2,
@@ -351,6 +354,7 @@ aircraft_inspections = [
     is_repeating: true 
   },    
   {
+    kind_cd: 1,
     type_cd: 0,
     category_cd: 1,    
     name: 'Aircraft 400 HRS',
@@ -358,6 +362,7 @@ aircraft_inspections = [
     is_repeating: true 
   },    
   {
+    kind_cd: 1,
     type_cd: 0,
     category_cd: 2,
     duration_cd: 0,
@@ -367,6 +372,7 @@ aircraft_inspections = [
     is_repeating: true 
   },
   {
+    kind_cd: 1,
     type_cd: 0,
     category_cd: 2,
     duration_cd: 1,
@@ -376,6 +382,7 @@ aircraft_inspections = [
     is_repeating: true 
   },
   {
+    kind_cd: 1,
     type_cd: 0,
     category_cd: 2,
     duration_cd: 1,
@@ -385,6 +392,7 @@ aircraft_inspections = [
     is_repeating: true 
   },
   {
+    kind_cd: 1,
     type_cd: 0,
     category_cd: 2,
     duration_cd: 1,
@@ -394,6 +402,7 @@ aircraft_inspections = [
     is_repeating: true 
   },
   {
+    kind_cd: 1,
     type_cd: 0,
     category_cd: 2,
     duration_cd: 1,
@@ -405,39 +414,35 @@ aircraft_inspections = [
 ]    
 aircraft_inspections.each do |insp|
   inspection = Inspection.create(insp)
-  (0..0).each do |wrokpackage|
-    WorkPackage.create!({description: Faker::Lorem.sentence, work_unit_code_id: WorkUnitCode.last.id, inspection_id: inspection.id})
-  end
+  # (0..0).each do |wrokpackage|
+  #   WorkPackage.create!({description: Faker::Lorem.sentence, work_unit_code_id: WorkUnitCode.last.id, inspection_id: inspection.id})
+  # end
 end
 puts 'Aircraft Inspection Created'
 
 part_inspections = [
   {
     type_cd: 1,    
+    kind_cd: 1,
     name: 'Engine 10 hour', 
     no_of_hours: 10,    
     is_repeating: false,
-    part_number: 'N-9570'
+    part_number: 'ENPL-RT10227'
   },
   {
-    type_cd: 1,    
+    type_cd: 1,
+    kind_cd: 1,    
     name: 'Engine 25 hour', 
     no_of_hours: 25,    
     is_repeating: false,
-    part_number: 'N-9570'
+    part_number: 'ENPL-RT10227'
   },
   {
-    type_cd: 1,    
+    type_cd: 1,
+    kind_cd: 1,    
     name: 'Prop 10 hour', 
     no_of_hours: 10,    
     is_repeating: false,
-    part_number: 'HC-C2YK-1BF I/L C2K00180'
-  },
-  {
-    type_cd: 1,    
-    name: 'Prop 100 hour', 
-    no_of_hours: 100,    
-    is_repeating: true,
     part_number: 'HC-C2YK-1BF I/L C2K00180'
   }
 ]
@@ -486,7 +491,7 @@ exit
 puts 'Creating Parts'
 Part::categories.each do |category,value|
   if value == 0
-    part_number = 'N-9570'
+    part_number = 'ENPL-RT10227'
   elsif value == 1
     part_number = 'HC-C2YK-1BF I/L C2K00180'
   else

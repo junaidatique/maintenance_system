@@ -69,7 +69,7 @@ class Part
   after_update :check_inspections
   
   def set_category    
-    if number == 'N-9570' 
+    if number == 'ENPL-RT10227' 
       self.category_cd = 0
     elsif number == 'HC-C2YK-1BF I/L C2K00180'
       self.category_cd = 1
@@ -90,16 +90,36 @@ class Part
       self.is_inspectable = true
     end
     self.save
+
+    part_history = PartHistory.new         
+    part_history.quantity     = self.quantity
+    part_history.hours        = self.completed_hours
+    part_history.landings     = self.landings_completed
+    part_history.flying_log   = nil
+    part_history.aircraft_id  = self.aircraft.id if aircraft.present?
+    part_history.created_at   = Time.zone.now
+    part_history.part         = self      
+    part_history.save
+    
   end
 
   def check_inspections    
     if self.is_inspectable?      
-      if Inspection.where(part_number: self.number).count == 0
-        Inspection.create!({type_cd: 1, name: "#{self.description} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, duration_cd: self.inspection_duration, part_number: self.number})
+      if Inspection.to_be_inspected.where(part_number: self.number).count == 0 and ((inspection_hours.present? and inspection_hours > 0) or inspection_calender_value.present?)
+        Inspection.create!({kind_cd: 1, type_cd: 1, name: "#{self.description} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, duration_cd: self.inspection_duration, part_number: self.number})
       end
-      part_inspections = Inspection.where(part_number: self.number)
+      part_inspections = Inspection.to_be_inspected.where(part_number: self.number)
       part_inspections.each do |part_inspection| 
         part_inspection.create_part_inspection self
+      end
+    end
+    if self.is_lifed? and ((self.installed_date.present? and self.calender_life_value > 0) or self.total_hours > 0)
+      if Inspection.to_be_replaced.where(part_number: self.number).count == 0
+        Inspection.create!({kind_cd: 0, type_cd: 1, name: "#{self.description} Replacement", no_of_hours: total_hours, calender_value: calender_life_value, duration_cd: 2, part_number: self.number})
+      end
+      part_inspections = Inspection.to_be_replaced.where(part_number: self.number)
+      part_inspections.each do |part_inspection| 
+        part_inspection.create_part_repalcement self
       end
     end
   end
@@ -115,7 +135,7 @@ class Part
       part_history.hours        = flying_log.sortie.flight_time
       part_history.landings     = flying_log.sortie.total_landings
       part_history.flying_log   = flying_log
-      part_history.AIRCRAFT_PART_id  = flying_log.aircraft.id
+      part_history.aircraft_id  = flying_log.aircraft.id
       part_history.created_at   = flying_log.created_at
       part_history.part         = self      
       part_history.save        

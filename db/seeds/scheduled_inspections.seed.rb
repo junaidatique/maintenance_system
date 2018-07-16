@@ -1,6 +1,6 @@
 
-#rake db:seed:scheduled_inspections
-scheduled_inspections = ScheduledInspection.pending_n_due.all
+#rails db:seed:scheduled_inspections
+scheduled_inspections = ScheduledInspection.due.all
 scheduled_inspections.each do |scheduled_inspection|
   scheduled_inspection.started_by_id = User.where(role_cd: 1).first.id
   scheduled_inspection.inspection_started = Time.zone.now

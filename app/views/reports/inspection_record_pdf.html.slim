@@ -9,29 +9,39 @@
     = Aircraft.find(params[:aircraft]).tail_number  
   .parts_data   
     table border="0"
-      - parts.each do |part|
+      - scheduled_inspections.each do |sp|
         tr
           td.part_number_td
-            = part.number
+            = sp.inspectable.number
           td.description_td
-            = part.description
+            = sp.inspection.name
           td.serial_td
-            = part.serial_no
+            = sp.inspectable.serial_no
           td.calender_td
-            - if part.inspection_calender_value.present?
-              = part.inspection_calender_value
-              |  
-              - if part.inspection_duration == 2
-                | year
-              - else
-                | month
+            - if sp.inspection.kind_cd == 0
+              - if sp.inspectable.calender_life_value > 0
+                = sp.inspectable.calender_life_value
+                |                  
+                | year                
+            - else
+              - if sp.inspectable.inspection_calender_value.present?
+                = sp.inspectable.inspection_calender_value
+                |  
+                - if sp.inspectable.inspection_duration == 2
+                  | year
+                - else
+                  | month
           td.hours_td
-            - if part.inspection_hours > 0
-              = part.inspection_hours          
-          - part.scheduled_inspections.limit(4).order(created_at: :desc).each do |sp|
-            - if sp.inspection.is_repeating
-              td.sch_calender_td 
-                = display_date sp.calender_life_date
-              td.sch_hours_td
+            - if sp.inspection.kind_cd == 0
+              - if sp.inspectable.total_hours > 0
+                = sp.inspectable.total_hours          
+            - else
+              - if sp.inspectable.inspection_hours > 0
+                = sp.inspectable.inspection_hours          
+          - sp.inspectable.scheduled_inspections.limit(4).order(created_at: :desc).where(kind_cd: sp.inspection.kind_cd).reverse.each do |sp|            
+            td.sch_calender_td 
+              = display_date sp.calender_life_date
+            td.sch_hours_td
+              - if sp.hours > 0
                 = sp.hours             
               

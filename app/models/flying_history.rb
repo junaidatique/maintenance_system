@@ -62,7 +62,11 @@ class FlyingHistory
           end
           if last_hist.nose_tail.id == aircraft.parts.nose_tail.first.id
             nose_tail_total_landings  = last_hist.nose_tail_total_landings
-          end                                
+          end
+        else
+          left_tyre_total_landings  = aircraft.parts.left_tyre.first.landings_completed
+          right_tyre_total_landings  = aircraft.parts.right_tyre.first.landings_completed
+          nose_tail_total_landings  = aircraft.parts.nose_tail.first.landings_completed
         end
         hist      = LandingHistory.new
         hist.aircraft = aircraft
@@ -82,7 +86,7 @@ class FlyingHistory
       hist.left_tyre_total_landings   = left_tyre_total_landings + landings
       hist.right_tyre_total_landings  = right_tyre_total_landings + landings
       hist.nose_tail_total_landings   = nose_tail_total_landings + landings
-      hist.save
+      hist.save!
     end
     
   end

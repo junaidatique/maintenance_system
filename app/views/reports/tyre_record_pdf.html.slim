@@ -9,7 +9,7 @@
     = aircraft.tail_number  
   .typres_data   
     table border="0"
-      - aircraft.landing_histories.lte(created_at: Time.zone.now).gte(created_at: (Time.zone.now - 5.days)).order(created_at: :asc).each do |landing_history|
+      - aircraft.landing_histories.lte(created_at: Time.zone.now).gte(created_at: (Time.zone.now - 10.days)).order(created_at: :asc).each do |landing_history|
         tr
           td.date
             = display_date landing_history.created_at

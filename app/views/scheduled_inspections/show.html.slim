@@ -95,4 +95,6 @@
                   th width="25%"
                     
                   td
+- @inspection = @scheduled_inspection.inspection
+== render "work_packages/table"
 = render 'common/actions_buttons', back_path: scheduled_inspections_path()

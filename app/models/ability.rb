@@ -24,11 +24,13 @@ class Ability
       can :update_sortie, FlyingLog
       can :view_781, FlyingLog
       cannot :bookout_flight, FlyingLog      
+      cannot :update_work_unit_code, FlyingLog
     elsif user.master_control?      
       can :read, Aircraft
       can :crud, FlyingLog
       can :crud, Techlog
       can :read, FlyingPlan
+      can :update_work_unit_code, FlyingLog
       can :update_work_unit_code, Techlog
     elsif user.crew_cheif?
       can :read, Aircraft

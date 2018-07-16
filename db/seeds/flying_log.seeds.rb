@@ -1,9 +1,5 @@
-# rake db:seed:flying_log MIN=30 DAYS=0 INS=0
-puts "working"
-puts ENV['MIN']
+# rails db:seed:flying_log MIN=30 DAYS=0 INS=0
 cur_time = Time.zone.now
-# puts (cur_time + (ENV['MIN'].to_i) * 60).strftime("%H:%M %p")
-# exit
 date = Time.zone.now - (ENV['DAYS'].to_i).days
 aircraft = Aircraft.first
 puts 'Creating Pre flight Flying Log'

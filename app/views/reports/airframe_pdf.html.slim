@@ -1,14 +1,10 @@
 - previous_history = FlyingHistory.lt(id: histories.first.id).first if histories.first.present?
-- if previous_history.blank?
-  - total_aircraft_hours  = 0
-  - total_engine_hours    = 0    
-  - total_landings        = 0
-  - start_date            = display_date histories.first.created_at  if histories.first.present?
-- else 
-  - total_aircraft_hours  = previous_history.total_aircraft_hours
-  - total_engine_hours    = previous_history.this_engine_hours    
-  - total_landings        = previous_history.total_landings
-  - start_date            = display_date previous_history.created_at
+- aircraft         = Aircraft.find(params[:aircraft])
+- total_aircraft_hours  = histories.first.total_aircraft_hours - histories.first.this_aircraft_hours
+- total_engine_hours    = histories.first.total_engine_hours - histories.first.this_engine_hours   
+- total_landings        = histories.first.total_landings - (histories.first.full_stop + histories.first.touch_go) 
+- start_date            = display_date histories.first.created_at  if histories.first.present?
+
 - end_date = display_date histories.last.created_at  if histories.last.present?
 .airframe_pdf 
   .background-image
@@ -24,7 +20,7 @@
   .tl-org
     | 30 Squad
   .tl-aircraft-number
-    = Aircraft.find(params[:aircraft]).tail_number  
+    = aircraft.tail_number  
   
   table.previous_table border="0"
     tr       
