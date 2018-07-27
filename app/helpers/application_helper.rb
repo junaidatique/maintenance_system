@@ -1,7 +1,7 @@
 module ApplicationHelper
   def display_date(input_date)
     unless input_date.blank?
-      return input_date.strftime("%d %B %Y")
+      return input_date.strftime("%d-%m-%Y")
     end
   end
   def display_date_time(input_date)

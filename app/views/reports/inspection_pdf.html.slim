@@ -141,7 +141,7 @@
               /= display_date part.calender_life_date  
   .rest-inspection
     table border="0"     
-      - inspections = Inspection.where(category_cd: 2).where(type_cd: 0)
+      - inspections = Inspection.where(category_cd: 2).where(type_cd: 0)      
       - inspections.each do |inspection|        
         tr          
           td.td-type
@@ -150,8 +150,7 @@
             - if inspection.calender_value.present?
               = inspection.calender_value
               |  
-              = inspection.duration
-              
+              = inspection.duration              
           td.td-comple
             - if inspection.no_of_hours > 0
               = inspection.no_of_hours
@@ -163,4 +162,25 @@
             td.td-comple
               - if inspection.no_of_hours > 0 and scheduled_inspection.hours > 0
                 = scheduled_inspection.hours
-            
+      - part = aircraft.parts.battery.first       
+      - if part.present?
+        - scheduled_inspection = part.scheduled_inspections.not_completed.last
+        tr          
+          td.td-type
+            = scheduled_inspection.inspection.name
+          td.td-comple
+            - if scheduled_inspection.inspection.calender_value.present?
+              = scheduled_inspection.inspection.calender_value
+              |  
+              = scheduled_inspection.inspection.duration              
+          td.td-comple
+            - if scheduled_inspection.inspection.no_of_hours > 0
+              = scheduled_inspection.inspection.no_of_hours
+          - scheduled_inspections = scheduled_inspection.inspection.scheduled_inspections.order(created_at: :desc).limit(3)
+          - scheduled_inspections.reverse.each do |scheduled_inspection|            
+            td.td-comple
+              - if scheduled_inspection.calender_life_date.present?
+                = display_date scheduled_inspection.calender_life_date
+            td.td-comple
+              - if scheduled_inspection.inspection.no_of_hours > 0 and scheduled_inspection.hours > 0
+                = scheduled_inspection.hours

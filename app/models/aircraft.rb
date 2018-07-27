@@ -115,9 +115,11 @@ class Aircraft
 
       if row[Part::AIRCRAFT_PART_INSTALLED_DATE].is_a? Date        
         installed_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_INSTALLED_DATE].to_s, '%Y-%m-%d')
-      end      
+      end
+
+      install_hour        = row[Part::AIRCRAFT_PART_INSTALL_HOUR].to_f
       
-      completed_hours     = self.flight_hours
+      completed_hours     = self.flight_hours.to_f - install_hour
       landings_completed  = self.landings
 
       serial_no           = row[Part::AIRCRAFT_PART_SERIAL_NO]

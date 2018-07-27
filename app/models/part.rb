@@ -62,6 +62,7 @@ class Part
   scope :nose_tail, -> { any_of({category_cd: 4})}
   scope :engine_part, -> { where({category_cd: 0})}
   scope :propeller_part, -> { where({category_cd: 1})}
+  scope :battery, -> { where({category_cd: 5})}
 
   validates :number, presence: true
   validates :description, presence: true
@@ -75,6 +76,14 @@ class Part
       self.category_cd = 0
     elsif number == 'HC-C2YK-1BF I/L C2K00180'
       self.category_cd = 1
+    elsif description == 'MAIN WHEEL LT'
+      self.category_cd = 2
+    elsif description == 'MAIN WHEEL RT'
+      self.category_cd = 3
+    elsif description == 'NOSE WHEEL'
+      self.category_cd = 4
+    elsif number == '6127279-067'
+      self.category_cd = 5
     end
   end
   
@@ -191,6 +200,7 @@ class Part
   AIRCRAFT_PART_INSP_HOUR     = 7
   AIRCRAFT_PART_INSTALLED_DATE= 8
   AIRCRAFT_PART_TRADE         = 10
+  AIRCRAFT_PART_INSTALL_HOUR  = 9
   
 
   def self.import(file)    

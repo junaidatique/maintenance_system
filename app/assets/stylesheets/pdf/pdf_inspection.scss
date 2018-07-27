@@ -91,9 +91,11 @@
     }
   }
   .rest-inspection{
-    @include position-abs-mixin(900px, 55px);   
+    @include position-abs-mixin(890px, 55px);   
     td {
+      max-height: 19px;
       height: 19px;
+      // border: solid 1px;
       &.td-type{
         width: 630px;
         text-align: left;        

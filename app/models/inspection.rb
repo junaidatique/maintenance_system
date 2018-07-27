@@ -13,6 +13,7 @@ class Inspection
   field :calender_value, type: Integer  
   field :part_number, type: String
   field :is_repeating, type: Mongoid::Boolean, default: 1
+  
 
   validate :part_number_presence
 
@@ -23,9 +24,7 @@ class Inspection
   end
 
   has_many :work_packages, dependent: :destroy
-  has_many :scheduled_inspections, dependent: :destroy
- 
-  after_create :create_inspections
+  has_many :scheduled_inspections, dependent: :destroy  
 
   scope :aircraft_inspection, -> { any_of({type_cd: 0}, {type_cd: 0.to_s})}
   scope :part_inspection, -> { any_of({type_cd: 1}, {type_cd: 1.to_s})}
@@ -33,30 +32,31 @@ class Inspection
   scope :to_be_replaced, -> { any_of({kind_cd: 0}, {kind_cd: 0.to_s})}
   scope :to_be_inspected, -> { any_of({kind_cd: 1}, {kind_cd: 1.to_s})}
 
-  def create_aircraft_inspection aircraft
+  def create_aircraft_inspection aircraft, last_inspection_date = nil, last_inspection_hours = nil
+    # if there is no incomplete inspction 
     if aircraft.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
       sp = ScheduledInspection.new
+      # if this is the first ever inspection
       if aircraft.scheduled_inspections.where(inspection_id: self.id).completed.count > 0        
         sp.hours = 0
         if no_of_hours > 0
           sp.hours              = aircraft.flight_hours + no_of_hours.to_f
           sp.completed_hours    = aircraft.flight_hours
         end
-      else
+      else # if inspection already created
+        # don't create not repeating 
         if !is_repeating and aircraft.flight_hours > no_of_hours and no_of_hours > 0
           return
-        end
-        h = 0
-        if no_of_hours > 0 and (aircraft.flight_hours < no_of_hours or category_cd == 1)
-          begin
-            h              = h + no_of_hours.to_f
-          end while aircraft.flight_hours > h
-        end
-        sp.hours              = h
+        end        
+        sp.hours              = last_inspection_hours.to_f + no_of_hours.to_f
         sp.completed_hours    = aircraft.flight_hours
       end
+      if last_inspection_date.present?
+        sp.starting_date      = last_inspection_date
+      else
+        sp.starting_date      = Time.zone.now
+      end
       
-      sp.starting_date      = Time.zone.now        
       sp.calender_life_date = self.get_duration sp.starting_date
       sp.is_repeating       = self.is_repeating
       sp.inspection         = self
@@ -128,19 +128,7 @@ class Inspection
     end
   end
 
-  def create_inspections
-    if (type_cd.to_i == 0)
-      aircrafts = Aircraft.all
-      aircrafts.each do |aircraft| 
-        self.create_aircraft_inspection aircraft
-      end
-    elsif (type_cd.to_i == 1)
-      # parts = Part.where(number: part_number)
-      # parts.each do |inspection_item|         
-      # end
-    end    
-    WorkPackage.create!({description: 'Test', work_unit_code_id: WorkUnitCode.last.id, inspection_id: self.id})
-  end
+  
 
   
 

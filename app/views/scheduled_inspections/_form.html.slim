@@ -63,8 +63,8 @@
                       - else
                         = @scheduled_inspection.inspectable.number
                     th width="25%"
-                      | Hours
-                    td = @scheduled_inspection.hours
+                      | Hours Frequency
+                    td = @scheduled_inspection.inspection.no_of_hours
                   tr
                     th width="25%"
                       | Calender Due

@@ -33,10 +33,7 @@ class ScheduledInspection
   after_update :start_work_package
 
   def start_work_package    
-    if (status_cd_was == 0 or status_cd_was == 1 or status_cd_was == 4) and status_cd == 2   
-      puts '---------------------'
-      puts inspectable.inspect   
-      puts '---------------------'
+    if (status_cd_was == 0 or status_cd_was == 1 or status_cd_was == 4) and status_cd == 2         
       if inspectable_type == Aircraft.name
         inspectable_name = inspectable.tail_number
         aircraft_id = inspectable.id
