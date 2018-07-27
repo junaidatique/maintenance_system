@@ -6,6 +6,7 @@ class ChangePart
   field :quantity_provided, type: Float, default: 0
   field :available, type: Mongoid::Boolean, default: 1
   field :provided, type: Mongoid::Boolean, default: 0
+  field :is_servicable, type: Mongoid::Boolean, default: 1
 
   belongs_to :requested_by, :class_name => "User"
   belongs_to :assigned_by, :class_name => "User", optional: true
@@ -16,17 +17,9 @@ class ChangePart
 
   validate :verify_part_number
   validate :verify_quantity_provided
-  after_create :change_old_part
+  after_update :change_old_part
   after_update :update_parts_quantity
   
-
-  def change_old_part
-    part = Part.where(number: part_number).where(aircraft: self.techlog.aircraft).first
-    unless part.blank?
-      self.old_part = part
-      self.save
-    end
-  end
 
   def verify_part_number
     if Part.where(number: part_number).count == 0
@@ -41,13 +34,31 @@ class ChangePart
       end
     end    
   end  
+
+  def change_old_part
+    part = Part.where(number: part_number).where(aircraft: self.techlog.aircraft).first
+    if part.present? and self.old_part.blank?
+      self.old_part = part
+      self.save            
+    end
+    if part.present?
+      part.is_servicable = self.is_servicable     
+      part.save
+    end
+  end
+
+  
   
   def update_parts_quantity      
     if new_part.present? and provided_changed?
       if old_part.present? and old_part.serial_no.present?        
         old_part.aircraft = nil        
+        old_part.quantity = 1           
         old_part.save
       end
+      if new_part.is_lifed? and new_part.installed_date.blank?
+        new_part.installed_date = Time.zone.now
+      end        
       if new_part.serial_no.present?        
         if new_part.category_cd == 0          
           if new_part.aircraft.present?
@@ -58,6 +69,7 @@ class ChangePart
           end
         end        
         new_part.aircraft_id = techlog.aircraft_id
+        new_part.quantity = 0
       else      
         new_part.quantity = new_part.quantity.to_f - quantity_provided.to_f
       end

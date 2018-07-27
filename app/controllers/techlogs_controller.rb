@@ -53,6 +53,16 @@ class TechlogsController < ApplicationController
     if @techlog.interm_logs.incomplete.count > 0
       redirect_to techlog_path(@techlog), :flash => { :error => "Please complete all the interm logs." }
     end
+    if @techlog.aircraft.present?
+      @aircraft_parts = Part.collection.aggregate([
+        {"$match"=>{"aircraft_id"=> @techlog.aircraft.id}},
+        {"$group" => {
+            "_id" => "$number",
+            "name" => { "$first": '$description' },           
+        }}      
+      ])
+    end
+
     @techlog.build_work_performed if @techlog.work_performed.blank?
     @techlog.build_date_inspected if @techlog.date_inspected.blank?
     @techlog.build_work_duplicate if @techlog.work_duplicate.blank?
@@ -251,7 +261,7 @@ class TechlogsController < ApplicationController
                                         :addl_period_of_deferm, :addl_due, :addl_log_time, :addl_log_date,
                                         :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description, :verified_tools,
                                         flying_log_attributes: [ :fuel_refill, :oil_serviced, :oil_total_qty ],
-                                        change_parts_attributes: [:id, :requested_by_id, :assigned_by_id, :part_number, :quantity_required, :new_part_id, :quantity_provided, :available, :_destroy],
+                                        change_parts_attributes: [:id, :requested_by_id, :assigned_by_id, :part_number, :quantity_required, :new_part_id, :quantity_provided, :available, :is_servicable, :_destroy],
                                         requested_tools_attributes: [:id, :requested_by_id, :tool_no, :quantity_required, :_destroy],
                                         work_performed_attributes: [:work_date, :work_time, :user_id],
                                         date_inspected_attributes: [:work_date, :work_time, :user_id],

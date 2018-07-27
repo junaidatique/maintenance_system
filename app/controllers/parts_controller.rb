@@ -148,6 +148,7 @@ class PartsController < ApplicationController
       :is_repairable, :condemn, :is_lifed,
       :inspection_hours, :inspection_calender_value, 
       :calender_life_value, :total_hours,       
-      :completed_hours, :installed_date, :landings_completed)
+      :completed_hours, :installed_date, :landings_completed,
+      :is_servicable)
     end
 end

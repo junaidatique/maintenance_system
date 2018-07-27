@@ -33,13 +33,16 @@ class ScheduledInspection
   after_update :start_work_package
 
   def start_work_package    
-    if (status_cd_was == 0 or status_cd_was == 1 or status_cd_was == 4) and status_cd == 2      
+    if (status_cd_was == 0 or status_cd_was == 1 or status_cd_was == 4) and status_cd == 2   
+      puts '---------------------'
+      puts inspectable.inspect   
+      puts '---------------------'
       if inspectable_type == Aircraft.name
         inspectable_name = inspectable.tail_number
         aircraft_id = inspectable.id
       else
-        inspectable_name = inspectable.number
-        aircraft_id = nil
+        inspectable_name = inspectable.number        
+        aircraft_id = inspectable.aircraft_id
       end
       parent_log = Techlog.create!({type_cd: 2, condition_cd: 2, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
         description: "#{self.inspection.name} for #{inspectable_name}", 

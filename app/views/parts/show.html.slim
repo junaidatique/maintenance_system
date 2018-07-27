@@ -99,7 +99,15 @@
                   th width="25%"      
                     | Is Lifed              
                   td = (@part.is_lifed) ? 'Yes' : 'No'  
-
+                tr
+                  th width="25%"
+                    | Inspectable
+                  td = (@part.is_inspectable) ? 'Yes' : 'No'  
+                  th width="25%"      
+                    | Servicable
+                  td = (@part.is_servicable) ? 'Yes' : 'No'  
+- @scheduled_inspections = @part.scheduled_inspections.not_completed
+== render "scheduled_inspections/table"
 .row
   .col-md-12
     .box.box-info

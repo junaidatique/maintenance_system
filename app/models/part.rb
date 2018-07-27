@@ -32,6 +32,8 @@ class Part
   field :inspection_calender_value, type: String  
   field :is_inspectable, type: Mongoid::Boolean
 
+  field :is_servicable, type: Mongoid::Boolean, default: true
+
   field :is_lifed, type: Mongoid::Boolean
   field :calender_life_value, type: Integer # calender life. either calender life or life hours
   field :calender_life_date, type: Date # calender life. either calender life or life hours
@@ -83,8 +85,11 @@ class Part
     end
     self.calender_life_date = nil
     if (installed_date.present? and calender_life_value.present? and calender_life_value > 0)
-      self.calender_life_date = installed_date.to_date + calender_life_value.years
-    end 
+      self.calender_life_date = installed_date.to_date + calender_life_value.years      
+    end
+    if calender_life_value.present? and total_hours.present? and calender_life_value > 0 or total_hours > 0
+      self.is_lifed = true
+    end
     self.is_inspectable    = ((inspection_hours.present? and inspection_hours > 0) or inspection_calender_value.present?) ? true : false    
     if category_cd == 0 or category_cd == 1
       self.is_inspectable = true

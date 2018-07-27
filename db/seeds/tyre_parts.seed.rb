@@ -1,3 +1,4 @@
+# rails db:seed:create_tyre_parts
 aircraft = Aircraft.first
 tyres = [  
   {

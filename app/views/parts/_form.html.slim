@@ -61,6 +61,8 @@
           .row            
             .col-sm-6
               = f.input :landings_completed
+            .col-sm-6
+              = f.input :is_servicable, as: :radio_buttons
               
             
   == render 'common/form_action_buttons', options: { form: f, index_path: parts_path}

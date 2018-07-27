@@ -1,10 +1,15 @@
 - previous_history = FlyingHistory.lt(id: histories.first.id).first if histories.first.present?
 - aircraft         = Aircraft.find(params[:aircraft])
-- total_aircraft_hours  = histories.first.total_aircraft_hours - histories.first.this_aircraft_hours
-- total_engine_hours    = histories.first.total_engine_hours - histories.first.this_engine_hours   
-- total_landings        = histories.first.total_landings - (histories.first.full_stop + histories.first.touch_go) 
-- start_date            = display_date histories.first.created_at  if histories.first.present?
-
+- if histories.first.present?
+  - total_aircraft_hours  = histories.first.total_aircraft_hours - histories.first.this_aircraft_hours
+  - total_engine_hours    = histories.first.total_engine_hours - histories.first.this_engine_hours   
+  - total_landings        = histories.first.total_landings - (histories.first.full_stop + histories.first.touch_go) 
+  - start_date            = display_date histories.first.created_at  if histories.first.present?
+- else 
+  - total_aircraft_hours  = aircraft.flight_hours
+  - total_engine_hours    = aircraft.engine_hours
+  - total_landings        = aircraft.landings
+  - start_date            = display_date Time.zone.now
 - end_date = display_date histories.last.created_at  if histories.last.present?
 .airframe_pdf 
   .background-image

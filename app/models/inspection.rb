@@ -73,12 +73,12 @@ class Inspection
       if part.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
         sp = ScheduledInspection.new
         if part.scheduled_inspections.where(inspection_id: self.id).count == 0           
-          if self.no_of_hours > 0 and !self.is_repeating and part.completed_hours > self.no_of_hours            
+          if self.no_of_hours > 0 and !self.is_repeating and part.completed_hours.present? and part.completed_hours > self.no_of_hours            
             return;          
           end           
           sp.starting_date      = part.installed_date        
           h = 0
-          if no_of_hours > 0
+          if part.completed_hours.present? and no_of_hours > 0
             begin
               h              = h + no_of_hours.to_f                      
             end while part.completed_hours > h
@@ -112,7 +112,7 @@ class Inspection
         sp = ScheduledInspection.new
         sp.starting_date      = part.installed_date
         sp.calender_life_date = nil
-        sp.calender_life_date = part.installed_date + calender_value.years if calender_value.present? and calender_value > 0
+        sp.calender_life_date = part.installed_date + calender_value.years if calender_value.present? and calender_value > 0 and part.installed_date.present?
         sp.hours              = no_of_hours        
         sp.completed_hours    = part.completed_hours
         sp.inspection         = self

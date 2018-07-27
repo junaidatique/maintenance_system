@@ -15,6 +15,8 @@
               th
                 | Noun
               th
+                | Serviceable
+              th
                 | Serial #
               th
                 | Store Balance
@@ -31,6 +33,8 @@
                   = link_to part.number, part_path(part)
                 td.table-row-center
                   = link_to part.description, part_path(part)
+                td.table-row-center
+                  = part.is_servicable ? 'Yes' : 'No'
                 td.table-row-center
                   = part.serial_no
                 td.table-row-center                  

@@ -9,27 +9,51 @@
     = aircraft.tail_number  
   .typres_data   
     table border="0"
-      - aircraft.landing_histories.lte(created_at: Time.zone.now).gte(created_at: (Time.zone.now - 10.days)).order(created_at: :asc).each do |landing_history|
+      - aircraft_landing_histories = aircraft.landing_histories.lte(created_at: Time.zone.now).gte(created_at: (Time.zone.now - 10.days))
+      - if aircraft_landing_histories.count == 0
         tr
-          td.date
-            = display_date landing_history.created_at
-          td
-            = landing_history.left_tyre.serial_no
-          td
-            = landing_history.left_tyre_landings
-          td
-            = landing_history.left_tyre_total_landings
-          td
-            = landing_history.right_tyre.serial_no
-          td
-            = landing_history.right_tyre_landings
-          td
-            = landing_history.right_tyre_total_landings
-          td
-            = landing_history.nose_tail.serial_no
-          td
-            = landing_history.nose_tail_landings
-          td
-            = landing_history.nose_tail_total_landings
+            td.date
+              | Previous
+            td
+              = aircraft.parts.left_tyre.first.serial_no
+            td
+              /= landing_history.left_tyre_landings
+            td
+              = aircraft.parts.left_tyre.first.landings_completed
+            td
+              = aircraft.parts.right_tyre.first.serial_no              
+            td
+              /= landing_history.right_tyre_landings
+            td
+              = aircraft.parts.right_tyre.first.landings_completed
+            td
+              = aircraft.parts.nose_tail.first.serial_no              
+            td
+              /= landing_history.nose_tail_landings
+            td
+              = aircraft.parts.nose_tail.first.landings_completed
+      - else
+        - aircraft.landing_histories.lte(created_at: Time.zone.now).gte(created_at: (Time.zone.now - 10.days)).order(created_at: :asc).each do |landing_history|
+          tr
+            td.date
+              = display_date landing_history.created_at
+            td
+              = landing_history.left_tyre.serial_no
+            td
+              = landing_history.left_tyre_landings
+            td
+              = landing_history.left_tyre_total_landings
+            td
+              = landing_history.right_tyre.serial_no
+            td
+              = landing_history.right_tyre_landings
+            td
+              = landing_history.right_tyre_total_landings
+            td
+              = landing_history.nose_tail.serial_no
+            td
+              = landing_history.nose_tail_landings
+            td
+              = landing_history.nose_tail_total_landings
             
               
