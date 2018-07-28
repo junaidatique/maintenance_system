@@ -12,6 +12,7 @@ class Part
     battery: 5
     
   as_enum :trade, airframe: 0, engine: 1, electric: 2, instrument: 3, radio: 4
+  as_enum :track_from, installation_date: 0, manufacturing_date: 1
 
   field :number, type: String
   field :description, type: String
@@ -38,6 +39,7 @@ class Part
   field :calender_life_value, type: Integer # calender life. either calender life or life hours
   field :calender_life_date, type: Date # calender life. either calender life or life hours
   field :installed_date, type: Date
+  field :manufacturing_date, type: Date
 
   field :total_hours, type: Float, default: 0 # life hours or calender life
   field :remaining_hours, type: Float, default: 0
@@ -93,9 +95,16 @@ class Part
       self.remaining_hours = (total_hours.to_f - completed_hours.to_f).round(2)
     end
     self.calender_life_date = nil
-    if (installed_date.present? and calender_life_value.present? and calender_life_value > 0)
-      self.calender_life_date = installed_date.to_date + calender_life_value.years      
+    if track_from_cd == 0
+      if (installed_date.present? and calender_life_value.present? and calender_life_value > 0)
+        self.calender_life_date = installed_date.to_date + calender_life_value.years      
+      end
+    elsif track_from_cd == 1
+      if (manufacturing_date.present? and calender_life_value.present? and calender_life_value > 0)
+        self.calender_life_date = manufacturing_date.to_date + calender_life_value.years      
+      end
     end
+    
     if calender_life_value.present? and total_hours.present? and calender_life_value > 0 or total_hours > 0
       self.is_lifed = true
     end
@@ -199,10 +208,10 @@ class Part
   AIRCRAFT_PART_INSP_CALENDER = 6
   AIRCRAFT_PART_INSP_HOUR     = 7
   AIRCRAFT_PART_INSTALLED_DATE= 8
-  AIRCRAFT_PART_TRADE         = 10
-  AIRCRAFT_PART_INSTALL_HOUR  = 9
+  AIRCRAFT_PART_MANU_DATE     = 9
+  AIRCRAFT_PART_INSTALL_HOUR  = 10
+  AIRCRAFT_PART_TRADE         = 11
   
-
   def self.import(file)    
     xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
     (4..xlsx.last_row).each do |i|

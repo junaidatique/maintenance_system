@@ -126,7 +126,7 @@
                 = scheduled_inspection.completed_hours
             td.td-change
               /= display_date part.calender_life_date  
-        - part.scheduled_inspections.where(is_repeating: true).order(created_at: :desc).limit(2).reverse.each do |scheduled_inspection|
+        - part.scheduled_inspections.where(is_repeating: true).order(created_at: :desc).not_completed.reverse.each do |scheduled_inspection|
           tr
             td.td-part_number
               = part.number

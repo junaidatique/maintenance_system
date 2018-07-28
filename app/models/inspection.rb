@@ -77,6 +77,10 @@ class Inspection
             return;          
           end           
           sp.starting_date      = part.installed_date        
+          sp.calender_life_date = self.get_duration sp.starting_date        
+          if sp.calender_life_date.present? and sp.calender_life_date < Time.zone.now
+            sp.calender_life_date = self.get_duration sp.calender_life_date
+          end
           h = 0
           if part.completed_hours.present? and no_of_hours > 0
             begin
@@ -86,12 +90,13 @@ class Inspection
           sp.hours              = h
         else
           sp.starting_date      = Time.zone.now
+          sp.calender_life_date = self.get_duration sp.starting_date        
           sp.hours              = 0
           if no_of_hours > 0
             sp.hours              = part.completed_hours + no_of_hours        
           end
         end        
-        sp.calender_life_date = self.get_duration sp.starting_date        
+        
         sp.completed_hours    = part.completed_hours
         sp.inspection         = self
         sp.is_repeating       = self.is_repeating
@@ -103,6 +108,8 @@ class Inspection
         self.scheduled_inspections << sp
         sp.update_scheduled_inspections part.completed_hours
       end
+    else
+      
     end    
   end
 
@@ -110,9 +117,13 @@ class Inspection
     if (part.installed_date.present? and part.calender_life_value > 0) or part.total_hours > 0
       if part.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
         sp = ScheduledInspection.new
-        sp.starting_date      = part.installed_date
+        if part.track_from_cd == 0
+          sp.starting_date      = part.installed_date
+        else
+          sp.starting_date      = part.manufacturing_date
+        end
         sp.calender_life_date = nil
-        sp.calender_life_date = part.installed_date + calender_value.years if calender_value.present? and calender_value > 0 and part.installed_date.present?
+        sp.calender_life_date = sp.starting_date + calender_value.years if calender_value.present? and calender_value > 0 and sp.starting_date.present?
         sp.hours              = no_of_hours        
         sp.completed_hours    = part.completed_hours
         sp.inspection         = self

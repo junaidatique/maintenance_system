@@ -116,10 +116,17 @@ class Aircraft
       if row[Part::AIRCRAFT_PART_INSTALLED_DATE].is_a? Date        
         installed_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_INSTALLED_DATE].to_s, '%Y-%m-%d')
       end
-
+      if row[Part::AIRCRAFT_PART_MANU_DATE].is_a? Date        
+        manufacturing_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_MANU_DATE].to_s, '%Y-%m-%d')
+      end
+      if manufacturing_date.present?
+        track_from_cd = 1
+      else
+        track_from_cd = 0
+      end
       install_hour        = row[Part::AIRCRAFT_PART_INSTALL_HOUR].to_f
       
-      completed_hours     = self.flight_hours.to_f - install_hour
+      completed_hours     = (self.flight_hours.to_f - install_hour.to_f).round(2)
       landings_completed  = self.landings
 
       serial_no           = row[Part::AIRCRAFT_PART_SERIAL_NO]
@@ -134,6 +141,7 @@ class Aircraft
       part_data = {            
             aircraft_id: self.id, 
             trade: trade, 
+            track_from_cd: track_from_cd, 
             number: number, 
             serial_no: serial_no, 
             number_serial_no: number_serial_no, 
@@ -149,6 +157,7 @@ class Aircraft
                         
             completed_hours: completed_hours,
             installed_date: installed_date,
+            manufacturing_date: manufacturing_date,
             landings_completed: landings_completed
           }            
       

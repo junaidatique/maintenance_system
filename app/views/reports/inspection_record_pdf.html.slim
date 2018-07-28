@@ -1,12 +1,18 @@
 .inspection_record_pdf 
   .background-image
     = wicked_pdf_image_tag('inspection_record.jpg', size: '2538x1298')  
-  
-  
+  .tl-trade
+    = trade.titleize
   .tl-org
-    | SMK
+    | QSMK
   .tl-aircraft-number
     = Aircraft.find(params[:aircraft]).tail_number  
+  .tl-page_no
+    | Page  
+    = page_no
+    |  of 
+    = (total.to_f / 8).ceil
+    / = Aircraft.find(params[:aircraft]).tail_number  
   .parts_data   
     table border="0"
       - scheduled_inspections.each do |sp|

@@ -2,14 +2,14 @@ cur_time = Time.zone.now
 
 System.create! settings: {dms_version_number: 0.0}
 puts 'Creating Aircraft'
-aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '42', oil_capacity: '8', flight_hours: 192.7, engine_hours: 192.7, landings: 350, prop_hours: 192.7
-aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_303  = Aircraft.create! number: '304', tail_number: 'QA304', serial_no: '#304', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_303  = Aircraft.create! number: '305', tail_number: 'QA305', serial_no: '#305', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_303  = Aircraft.create! number: '306', tail_number: 'QA306', serial_no: '#306', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
-aircraft_303  = Aircraft.create! number: '307', tail_number: 'QA307', serial_no: '#307', fuel_capacity: '42', oil_capacity: '8', flight_hours: 0, engine_hours: 0, landings: 0, prop_hours: 0
+aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '42', oil_capacity: '8', flight_hours: 194.2, engine_hours: 194.2, landings: 358, prop_hours: 194.2
+aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '42', oil_capacity: '8', flight_hours: 173.1, engine_hours: 173.1, landings: 306, prop_hours: 173.1
+aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '42', oil_capacity: '8', flight_hours: 165.6, engine_hours: 165.6, landings: 261, prop_hours: 165.6
+aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '42', oil_capacity: '8', flight_hours: 185.2, engine_hours: 185.2, landings: 328, prop_hours: 185.2
+aircraft_304  = Aircraft.create! number: '304', tail_number: 'QA304', serial_no: '#304', fuel_capacity: '42', oil_capacity: '8', flight_hours: 100.6, engine_hours: 100.6, landings: 138, prop_hours: 100.6
+aircraft_305  = Aircraft.create! number: '305', tail_number: 'QA305', serial_no: '#305', fuel_capacity: '42', oil_capacity: '8', flight_hours: 111.5, engine_hours: 111.5, landings: 142, prop_hours: 111.5
+aircraft_306  = Aircraft.create! number: '306', tail_number: 'QA306', serial_no: '#306', fuel_capacity: '42', oil_capacity: '8', flight_hours: 47.7, engine_hours: 6.7, landings: 57, prop_hours: 6.7
+aircraft_307  = Aircraft.create! number: '307', tail_number: 'QA307', serial_no: '#307', fuel_capacity: '42', oil_capacity: '8', flight_hours: 77.8, engine_hours: 77.8, landings: 94, prop_hours: 77.8
 puts 'Aircraft Created'
 
 
@@ -330,10 +330,7 @@ aircraft_inspections = [
     category_cd: 1,    
     name: 'Aircraft 25 HRS', 
     no_of_hours: 25,    
-    is_repeating: false,
-    last_conducted_dates: {
-      300 => DateTime.strptime('2018-03-27', '%Y-%m-%d')
-    }
+    is_repeating: false    
   },
   {
     kind_cd: 1,
@@ -345,10 +342,24 @@ aircraft_inspections = [
     calender_value: 6,
     is_repeating: true,
     last_conducted_dates: {
-      300 => DateTime.strptime('2018-03-27', '%Y-%m-%d')
+      300 => DateTime.strptime('2018-03-27', '%Y-%m-%d'),
+      301 => DateTime.strptime('2018-04-12', '%Y-%m-%d'),
+      302 => DateTime.strptime('2018-05-13', '%Y-%m-%d'),
+      303 => DateTime.strptime('2018-04-23', '%Y-%m-%d'),
+      304 => DateTime.strptime('2018-07-24', '%Y-%m-%d'),
+      305 => DateTime.strptime('2018-06-12', '%Y-%m-%d'),
+      306 => DateTime.strptime('2018-05-31', '%Y-%m-%d'),
+      307 => DateTime.strptime('2018-04-18', '%Y-%m-%d'),
     },
     last_conducted_hours: {
-      300 => 150.1
+      300 => 150.1,
+      301 => 145.0,
+      302 => 146.2,
+      303 => 147.5,
+      304 => 100.1,
+      305 => 100.2,
+      306 => 41.0,
+      307 => 49.9,
     }
   },  
   {
@@ -361,10 +372,22 @@ aircraft_inspections = [
     calender_value: 1,
     is_repeating: true ,
     last_conducted_dates: {
-      300 => DateTime.strptime('2017-11-27', '%Y-%m-%d')
+      300 => DateTime.strptime('2017-11-27', '%Y-%m-%d'),
+      301 => DateTime.strptime('2017-12-10', '%Y-%m-%d'),
+      302 => DateTime.strptime('2018-1-14', '%Y-%m-%d'),
+      303 => DateTime.strptime('2017-12-12', '%Y-%m-%d'),
+      304 => DateTime.strptime('2018-07-24', '%Y-%m-%d'),
+      305 => DateTime.strptime('2018-06-12', '%Y-%m-%d'),
+      306 => DateTime.strptime('2017-11-17', '%Y-%m-%d'),
+      307 => DateTime.strptime('2017-11-17', '%Y-%m-%d'),
     },
     last_conducted_hours: {
-      300 => 100.2
+      300 => 100.2,
+      301 => 103.4,
+      302 => 102.7,
+      303 => 98.2,
+      304 => 100.1,
+      305 => 100.2,
     }
   },    
   {
@@ -385,7 +408,14 @@ aircraft_inspections = [
     calender_value: 7,
     is_repeating: true,
     last_conducted_dates: {
-      300 => DateTime.strptime('2018-07-26', '%Y-%m-%d')
+      300 => DateTime.strptime('2018-07-26', '%Y-%m-%d'),
+      301 => DateTime.strptime('2018-07-24', '%Y-%m-%d'),
+      302 => DateTime.strptime('2018-07-24', '%Y-%m-%d'),
+      303 => DateTime.strptime('2018-07-26', '%Y-%m-%d'),
+      304 => DateTime.strptime('2018-07-26', '%Y-%m-%d'),
+      305 => DateTime.strptime('2018-07-25', '%Y-%m-%d'),
+      306 => DateTime.strptime('2018-07-26', '%Y-%m-%d'),
+      307 => DateTime.strptime('2018-07-26', '%Y-%m-%d'),
     },
   },
   # {
@@ -411,7 +441,14 @@ aircraft_inspections = [
     calender_value: 4,
     is_repeating: true,
     last_conducted_dates: {
-      300 => DateTime.strptime('2018-07-26', '%Y-%m-%d')
+      300 => DateTime.strptime('2018-07-26', '%Y-%m-%d'),
+      301 => DateTime.strptime('2018-04-12', '%Y-%m-%d'),
+      302 => DateTime.strptime('2018-05-13', '%Y-%m-%d'),
+      303 => DateTime.strptime('2018-04-23', '%Y-%m-%d'),
+      304 => DateTime.strptime('2018-07-18', '%Y-%m-%d'),
+      305 => DateTime.strptime('2018-06-11', '%Y-%m-%d'),
+      306 => DateTime.strptime('2018-05-28', '%Y-%m-%d'),
+      307 => DateTime.strptime('2018-04-18', '%Y-%m-%d'),
     }
   },
   {
@@ -424,7 +461,14 @@ aircraft_inspections = [
     calender_value: 1,
     is_repeating: true,
     last_conducted_dates: {
-      300 => DateTime.strptime('2018-05-02', '%Y-%m-%d')
+      300 => DateTime.strptime('2018-05-02', '%Y-%m-%d'),
+      301 => DateTime.strptime('2018-05-27', '%Y-%m-%d'),
+      302 => DateTime.strptime('2018-06-27', '%Y-%m-%d'),
+      303 => DateTime.strptime('2018-06-08', '%Y-%m-%d'),
+      304 => DateTime.strptime('2017-10-03', '%Y-%m-%d'),
+      305 => DateTime.strptime('2017-10-12', '%Y-%m-%d'),
+      306 => DateTime.strptime('2017-10-24', '%Y-%m-%d'),
+      307 => DateTime.strptime('2017-11-03', '%Y-%m-%d'),
     } 
   },
   {
@@ -437,7 +481,14 @@ aircraft_inspections = [
     calender_value: 1,
     is_repeating: true,
     last_conducted_dates: {
-      300 => DateTime.strptime('2018-06-30', '%Y-%m-%d')
+      300 => DateTime.strptime('2018-06-30', '%Y-%m-%d'),
+      301 => DateTime.strptime('2018-06-30', '%Y-%m-%d'),
+      302 => DateTime.strptime('2018-06-30', '%Y-%m-%d'),
+      303 => DateTime.strptime('2018-06-30', '%Y-%m-%d'),
+      304 => DateTime.strptime('2018-07-30', '%Y-%m-%d'),
+      305 => DateTime.strptime('2018-06-30', '%Y-%m-%d'),
+      306 => DateTime.strptime('2018-06-30', '%Y-%m-%d'),
+      307 => DateTime.strptime('2018-06-30', '%Y-%m-%d'),
     }
   }
 ]   
@@ -455,36 +506,16 @@ aircraft_inspections.each do |insp|
       last_conducted = last_conducted_dates[aircraft.number]
     end
     
-    last_inspection_hour = 0
-    # if inspection.no_of_hours > 0 and last_inspection_hour < inspection.no_of_hours and (aircraft.flight_hours < inspection.no_of_hours or inspection.category_cd == 1)
-    #   while aircraft.flight_hours > last_inspection_hour
-    #     last_inspection_hour = last_inspection_hour + inspection.no_of_hours.to_f        
-    #   end 
-    # end
+    last_inspection_hour = 0    
     if last_conducted_hours.present?
       last_inspection_hour = last_conducted_hours[aircraft.number]    
     end
     
     inspection.create_aircraft_inspection aircraft, last_conducted, last_inspection_hour    
-  end
-  # if last_conducted_dates.present?
-  #   last_conducted_dates.each do |aircraft_number,last_conducted|    
-  #     aircraft = Aircraft.where(number: aircraft_number).first
-  #     
-  #   end
-  # end
-
-  # 
-  # aircrafts = Aircraft.all
-  # aircrafts.each do |aircraft| 
-  #   
-  # end
-  # (0..0).each do |wrokpackage|
-  #   WorkPackage.create!({description: Faker::Lorem.sentence, work_unit_code_id: WorkUnitCode.last.id, inspection_id: inspection.id})
-  # end
+  end  
 end
 puts 'Aircraft Inspection Created'
-exit
+
 part_inspections = [
   {
     type_cd: 1,    
@@ -505,18 +536,32 @@ part_inspections = [
   {
     type_cd: 1,
     kind_cd: 1,    
+    name: 'Engine 1000 hour', 
+    no_of_hours: 1000,    
+    is_repeating: false,
+    part_number: 'ENPL-RT10227'
+  },
+  {
+    type_cd: 1,
+    kind_cd: 1,    
     name: 'Prop 10 hour', 
     no_of_hours: 10,    
     is_repeating: false,
     part_number: 'HC-C2YK-1BF I/L C2K00180'
+  },
+  {
+    type_cd: 1,
+    kind_cd: 1,    
+    name: 'Prop 10 hour', 
+    no_of_hours: 100,    
+    is_repeating: true,
+    part_number: 'HC-C2YK-1BF I/L C2K00180'
   }
 ]
 part_inspections.each do |insp|
-  inspection = Inspection.create(insp)
-  # (0..0).each do |wrokpackage|
-  #   WorkPackage.create!({description: Faker::Lorem.sentence, work_unit_code_id: WorkUnitCode.last.id, inspection_id: inspection.id})
-  # end
+  inspection = Inspection.create(insp)  
 end
+exit
 def create_part aircraft, category, trade, part_number, serial_no, quantity = 0, description = ''
   inspection_hours = 100
   inspection_calender_value = 1
@@ -551,7 +596,7 @@ def create_part aircraft, category, trade, part_number, serial_no, quantity = 0,
   print '.'
 end
 
-exit
+
 
 puts 'Creating Parts'
 Part::categories.each do |category,value|

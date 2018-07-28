@@ -12,12 +12,22 @@
     z-index: -1;
     position: absolute;
   }
-  
+  .tl-trade {
+    @include position-abs-mixin(10px, 1000px);     
+    width: 500px;
+    height: 100px;
+    background: #ffffff;   
+    font-size: 48px;
+    text-align: center;
+  }
   .tl-org {    
     @include position-abs-mixin(200px, 1200px);        
   }
   .tl-aircraft-number {        
     @include position-abs-mixin(200px, 1770px);            
+  }
+  .tl-page_no {        
+    @include position-abs-mixin(200px, 2270px);            
   }
   
   

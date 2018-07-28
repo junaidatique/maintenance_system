@@ -62,7 +62,7 @@
                 | &nbsp; 781J
               | &nbsp;
               - Part::trades.each do |trade,value|
-                = link_to inspection_record_pdf_reports_path(aircraft: @aircraft, trade: value), class: 'btn btn-info btn-flat', target: '_blank' 
+                = link_to inspection_record_pdf_reports_path(aircraft: @aircraft, trade: trade), class: 'btn btn-info btn-flat', target: '_blank' 
                   = trade.titleize
                   | &nbsp; 781D
                 | &nbsp;

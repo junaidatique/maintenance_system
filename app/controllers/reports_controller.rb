@@ -51,9 +51,10 @@ class ReportsController < ApplicationController
       redirect_to aircrafts_path(), :flash => { :error => "Invalid trade." }
     end
     # @all_parts = Aircraft.find(params[:aircraft]).parts.where(is_inspectable: true).where(trade_cd: params[:trade].to_i)
-    scheduled_inspections = ScheduledInspection.in(inspectable_id: Aircraft.find(params[:aircraft]).parts.map(&:id)).not_completed.where(trade_cd: params[:trade]).where(is_repeating: true)
+    scheduled_inspections = ScheduledInspection.in(inspectable_id: Aircraft.find(params[:aircraft]).parts.map(&:id)).not_completed.where(trade_cd: Part::trades[params[:trade]]).where(is_repeating: true)
     num = scheduled_inspections.count
     merged_certificates = CombinePDF.new
+    page_no = 1
     begin
       sps  = scheduled_inspections.limit(8).offset(i)      
       pdf_data = render_to_string(
@@ -63,7 +64,10 @@ class ReportsController < ApplicationController
                     layout: 'layouts/pdf/pdf.html.slim',
                     show_as_html: false,
                     locals: {
-                      scheduled_inspections: sps
+                      scheduled_inspections: sps,
+                      page_no: page_no,
+                      total: num,
+                      trade: params[:trade]
                     },
                     page_height: '17in',
                     page_width: '9in',
@@ -76,6 +80,7 @@ class ReportsController < ApplicationController
                   )
       merged_certificates  << CombinePDF.parse(pdf_data)
       i +=8
+      page_no +=1
     end while i < num
     send_data merged_certificates.to_pdf, :disposition => 'inline', :type => "application/pdf"
     

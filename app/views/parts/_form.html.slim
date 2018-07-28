@@ -20,6 +20,11 @@
               = f.input :serial_no, label: 'Serail #'
           .row
             .col-sm-6
+              = f.input :track_from, collection: enum_option_pairs(Part, :track_from), as: :radio_buttons
+            .col-sm-6
+              /= f.input :serial_no, label: 'Serail #'
+          .row
+            .col-sm-6
               = f.input :description
             .col-sm-6
               = f.input :unit_of_issue
