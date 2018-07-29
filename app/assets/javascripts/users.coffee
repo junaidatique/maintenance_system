@@ -8,5 +8,5 @@ $(document).ready ->
   formatwucSelection = (wuc) ->
     wuc.code or wuc.text
 
-  window.select2_multisearch '.wuc-select2', '/work_unit_codes/get_work_unit_codes', formatwuc, formatwucSelection
+  window.select2_multisearch '.wuc-select2', '/autherization_codes/get_codes', formatwuc, formatwucSelection
   

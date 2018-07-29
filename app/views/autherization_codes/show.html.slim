@@ -1,0 +1,29 @@
+= content_for :box_heading do
+  = @autherization_code.code
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; General
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr
+                  th width="50%"
+                    | Code
+                  td = @autherization_code.code
+                tr
+                  th width="50%"
+                    | Description
+                  td = @autherization_code.inspection_type
+                tr
+                  th width="50%"
+                    | Trade
+                  td = @autherization_code.autherized_trade

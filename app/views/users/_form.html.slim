@@ -30,8 +30,8 @@
           .row
             .col-sm-6
               .form-group
-                = f.label :work_unit_codes
-                = f.collection_select :work_unit_code_ids, f.object.work_unit_codes, :id, :code, {}, {:selected => "daf", multiple: true, class: 'wuc-select2'}
+                = f.label :autherization_codes
+                = f.collection_select :autherization_code_ids, f.object.autherization_codes, :id, :autherization_code_format, {}, {:selected => "daf", multiple: true, class: 'wuc-select2'}
             .col-sm-6
               .form-group
                 = f.label :profile_picture

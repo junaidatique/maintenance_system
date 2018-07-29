@@ -1,5 +1,13 @@
 Rails.application.routes.draw do
   
+  resources :autherization_codes do 
+    collection do 
+      get 'get_codes'
+      get :autocomplete_codes
+      post :import
+      get :upload
+    end
+  end
   resources :scheduled_inspections
   resources :inspections do 
     resources :work_packages do

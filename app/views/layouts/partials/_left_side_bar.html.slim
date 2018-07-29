@@ -67,6 +67,11 @@ ul.sidebar-menu
       = link_to work_unit_codes_path do 
         .fa.fa-chain
         span.side-bar-heading-text Work Unit Codes
+  - if can? :read, AutherizationCode
+    li class="#{params[:controller] == "autherization_codes" ? 'active' : ''}"
+      = link_to autherization_codes_path do 
+        .fa.fa-chain
+        span.side-bar-heading-text Autherization Codes
   - if can? :read, TechnicalOrder
     li class="#{params[:controller] == "technical_orders" ? 'active' : ''}"
       a href="#" 

@@ -43,8 +43,8 @@
                   td = @user.status ? 'Active' : 'Inactive'
                 tr
                   th width="50%"
-                    | Work Unit Codes
-                  td = @user.work_unit_codes.pluck(:code).join(', ')
+                    | Autherized Codes
+                  td = @user.autherization_codes.map{|ac| ac.autherization_code_format}.join("<br>").html_safe
                 tr 
                   th width="50%"
                     | Profile Picture

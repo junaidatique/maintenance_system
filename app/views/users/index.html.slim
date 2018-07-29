@@ -17,6 +17,8 @@
               th width='10%'
                 | Role
               th width='10%'
+                | Personal Code
+              th width='10%'
                 | Online
               th width='13%'
                 | Actions
@@ -31,6 +33,8 @@
                   = user.rank
                 td.table-row-center
                   = te user, :role
+                td.table-row-center
+                  = user.personal_code
                 td.table-row-center
                   = user.online? ? 'Yes' : 'No'
                 td.text-center width='20%'

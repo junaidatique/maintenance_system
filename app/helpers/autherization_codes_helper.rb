@@ -1,0 +1,2 @@
+module AutherizationCodesHelper
+end

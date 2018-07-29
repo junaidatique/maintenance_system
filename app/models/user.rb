@@ -59,7 +59,7 @@ class User
   accepts_nested_attributes_for :profile_picture
   accepts_nested_attributes_for :signature
   
-  has_and_belongs_to_many :work_unit_codes
+  has_and_belongs_to_many :autherization_codes
   has_many :requested_tools
   validates :username, presence: true, uniqueness: true  
   scope :online, -> { gt(updated_at: 10.minutes.ago) }
