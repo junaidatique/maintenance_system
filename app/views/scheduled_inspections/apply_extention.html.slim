@@ -1,4 +1,6 @@
-= simple_form_for(@scheduled_inspection) do |f|  
+= content_for :box_heading do
+  | Apply for Extention
+= simple_form_for(@scheduled_inspection, :url => save_extention_scheduled_inspection_path) do |f|  
   = f.error_notification
   - if @scheduled_inspection.errors.full_messages.count > 0
     .alert.alert-danger
@@ -15,12 +17,6 @@
               h3.box-title
                 i.fa.fa-bars
                 | &nbsp; Inspection
-            .col-md-6.text-right
-              - if can? :apply_extention, Inspection and @scheduled_inspection.condition_cd == 0
-                = link_to apply_extention_scheduled_inspection_path(@scheduled_inspection), class: 'btn btn-info btn-flat'
-                  i.fa.fa-pencil
-                  | &nbsp; Apply for Extention
-                | &nbsp;
 
         .box-body
           .row
@@ -106,19 +102,43 @@
                     th width="25%"
                       
                     td
-  - @inspection = @scheduled_inspection.inspection
-  == render "work_packages/table"                    
-  /- if @scheduled_inspection.status_cd.to_i == 0 or @scheduled_inspection.status_cd.to_i == 1
-  = f.input :started_by_id, as: :hidden, input_html: { value: current_user.id }
-  = f.input :inspection_started, as: :hidden, input_html: { value: Time.zone.now }
+  
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-md-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Scheduled Inspection
+            .col-sm-6.text-right    
+
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp;             
+            | Expection Time
+        .box-body
+          .row
+            .col-sm-6              
+              = f.input :extention_hours, collection: 0..10, include_blank: false       
+            .col-sm-6              
+              = f.input :extention_days, collection: 0..30, include_blank: false       
+              = f.input :started_by_id, as: :hidden, input_html: { value: current_user.id }
+  
   .row
     .col-sm-4
-      = link_to inspection_path(@scheduled_inspection.inspection), class: 'btn btn-block btn-primary btn-flat' do
+      = link_to inspection_path(@scheduled_inspection), class: 'btn btn-block btn-primary btn-flat' do
         i.fa.fa-angle-double-left
         | &nbsp; Back
-    - if @scheduled_inspection.status_cd == 1 or @scheduled_inspection.status_cd == 4
-      .col-sm-4 class="col-sm-offset-4"
-        = f.button :submit, id: 'create_update_user', class: 'btn btn-block btn-success btn-flat' do
-          i.fa.fa-refresh        
-          | Start Scheduled Inspection
+    /- if @scheduled_inspection.condition_cd != 1 and @scheduled_inspection.status_cd != 2
+    .col-sm-4 class="col-sm-offset-4"
+      = f.button :submit, id: 'create_update_user', class: 'btn btn-block btn-success btn-flat' do
+        i.fa.fa-refresh        
+        | &nbsp; Apply for Extention
         
+  /== render 'common/form_action_buttons', options: { form: f, index_path: inspection_path(@scheduled_inspection.inspection)}

@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
   
-  resources :scheduled_inspections
+  resources :scheduled_inspections do 
+    member do 
+      get :apply_extention
+      patch :save_extention
+      get :cancel_extention
+    end    
+  end
   resources :inspections do 
     resources :work_packages do
       collection do

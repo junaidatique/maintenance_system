@@ -28,20 +28,32 @@
               .row
                 .col-sm-6
                   = ac_f.input :oil_serviced, as: :float, label: "Serviced (Quartz) : Total Capacity #{@techlog.flying_log.aircraft.oil_capacity} (Quartz)", input_html: { max: @techlog.flying_log.aircraft.oil_capacity, required: true, min: 0 }
-  - if can? :update_work_unit_code, Techlog and @techlog.work_unit_code.blank?
-    = f.simple_fields_for :flying_log do |ac_f|
-      .row
-        .col-md-12
-          .box.box-info
-            .box-header.with-borderf
-              h3.box-title
-                i.fa.fa-bars
-                | &nbsp; Work unit code
-            .box-body
-              .row
-                .col-sm-6
-                  = f.input :work_unit_code, :url => autocomplete_codes_work_unit_codes_path, :as => :autocomplete, input_html: {id_element: "#techlog_work_unit_code_id", value: ""}
-                .col-sm-6
+  - if can? :update_work_unit_code, Techlog and @techlog.work_unit_code.blank?    
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Work unit code
+          .box-body
+            .row
+              .col-sm-6
+                = f.input :work_unit_code, :url => autocomplete_codes_work_unit_codes_path, :as => :autocomplete, input_html: {id_element: "#techlog_work_unit_code_id", value: ""}
+              .col-sm-6
+  - if @techlog.is_extention_applied?
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Work unit code
+          .box-body
+            .row
+              .col-sm-6
+                = f.input :is_extention_granted, as: :radio_buttons
+              .col-sm-6
 
   .row
     .col-md-12

@@ -30,6 +30,8 @@ class Techlog
   field :user_generated, type: Mongoid::Boolean, default: 0
 
   field :is_viewed, type: Mongoid::Boolean, default: 0
+  field :is_extention_applied, type: Mongoid::Boolean, default: 0
+  field :is_extention_granted, type: Mongoid::Boolean, default: 0
 
   # ADDL
   field :addl_period_of_deferm, type: String
