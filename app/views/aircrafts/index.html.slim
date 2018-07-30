@@ -25,7 +25,7 @@
                   = aircraft.serial_no
                 td
                   - if todays_flying_plan.present? and todays_flying_plan.aircraft_ids.include? aircraft.id
-                    - last_flying_log = aircraft.flying_logs.where(log_date: Time.zone.now.strftime("%d/%m/%Y")).last
+                    - last_flying_log = aircraft.flying_logs.last
                     - if last_flying_log.present?
                       - last_flying_log.state
                     - else 

@@ -65,7 +65,7 @@ class AutherizationCodesController < ApplicationController
   # GET /autherization_codes/get_autherization_codes.json
   def get_codes
     search_string = params[:q]
-    auth_codes = AutherizationCode.where(code: /.*#{search_string}.*/i).limit(30)
+    auth_codes = AutherizationCode.where(code: /.*#{search_string}.*/i)
     respond_to do |format|
       format.json { render json: { items: auth_codes.map { |ac| { id: ac.id.to_s, code: ac.autherization_code_format } }, total_count: auth_codes.length, incomplete_results: false } }
     end
@@ -75,9 +75,9 @@ class AutherizationCodesController < ApplicationController
   # GET /autherization_codes/autocomplete_codes.json
   def autocomplete_codes
     search_string = params[:term]
-    record = AutherizationCode.where(code: /.*#{search_string}.*/i).leaves.limit(5)
+    record = AutherizationCode.where(inspection_type: /.*#{search_string}.*/i)
     
-    render :json => record.map { |autherization_code| {id: autherization_code._id.to_s, label: autherization_code.code, value: autherization_code.code } }
+    render :json => record.map { |autherization_code| {id: autherization_code._id.to_s, label: autherization_code.autherization_code_format, value: autherization_code.autherization_code_format } }
   end
 
   def upload

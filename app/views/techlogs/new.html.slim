@@ -8,7 +8,7 @@
         - @techlog.errors.full_messages.each do |error_message|
           li
             = error_message
-  = f.input :work_unit_code_id, as: :hidden
+  = f.input :autherization_code_id, as: :hidden
   .row
     .col-md-12
       .box.box-info
@@ -38,7 +38,7 @@
               = f.input :log_time, label: 'Start Time (Local)', readonly: true, input_html: { value: cur_time() }
           .row
             .col-sm-6
-              = f.input :work_unit_code, :url => autocomplete_codes_work_unit_codes_path, :as => :autocomplete, input_html: {id_element: "#techlog_work_unit_code_id"}
+              = f.input :autherization_code, :url => autocomplete_codes_autherization_codes_path, :as => :autocomplete, input_html: {id_element: "#techlog_autherization_code_id"}
             .col-sm-6
               = f.input :type, collection: enum_option_pairs(Techlog, :new_type_values), as: :radio_buttons 
               / = f.input :type, as: :radio, input_html: { value: 'Maintenance' }

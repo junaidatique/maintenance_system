@@ -3,13 +3,13 @@
     .col-md-12
       / = f.input :old_part_id, as: :hidden
       /= f.input :new_part_id, as: :hidden
-      - if current_user.work_unit_codes.include? @techlog.work_unit_code and f.object.requested_by.blank?
+      - if current_user.autherization_codes.include? @techlog.autherization_code and f.object.requested_by.blank?
         = f.input :requested_by_id, as: :hidden, input_html: { value: current_user.id }
       - if current_user.role == :logistics
         = f.input :assigned_by_id, as: :hidden, input_html: { value: current_user.id }
       .row          
         .col-sm-2
-          - if current_user.work_unit_codes.include? @techlog.work_unit_code and f.object.part_number.blank?
+          - if current_user.autherization_codes.include? @techlog.autherization_code and f.object.part_number.blank?
             /= f.input :part_number, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :include), :as => :autocomplete, input_html: {id_element: "#id"}
             = f.input :part_number, collection: @aircraft_parts.map{ |l| ["#{l['_id']} - #{l['name']}", l['_id']] }
           - else
@@ -18,14 +18,14 @@
             = f.object.part_number            
             
         .col-sm-2
-          - if current_user.work_unit_codes.include? @techlog.work_unit_code and !f.object.provided
+          - if current_user.autherization_codes.include? @techlog.autherization_code and !f.object.provided
             = f.input :quantity_required  
           - else             
             label Quantity Requested
             br
             = f.object.quantity_required
         .col-sm-2
-          - if current_user.work_unit_codes.include? @techlog.work_unit_code and !f.object.provided
+          - if current_user.autherization_codes.include? @techlog.autherization_code and !f.object.provided
             = f.input :is_servicable, as: :radio_buttons
           - else             
             label Serviceable
@@ -63,7 +63,7 @@
             br
             = (f.object.available) ? 'Yes' : 'No'
         .col-sm-1
-          - if current_user.work_unit_codes.include? @techlog.work_unit_code and !f.object.provided
+          - if current_user.autherization_codes.include? @techlog.autherization_code and !f.object.provided
             br
             = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do
               i.fa.fa-trash

@@ -45,8 +45,11 @@
               | Type
             td = techlog.type
           tr
-            th width="25%" colspan="4"
+            th width="25%" colspan="2"
               | Description
+            th width="25%"
+              | Autherization Code
+            td = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
           tr
             td colspan="4"
               = techlog.description

@@ -6,12 +6,9 @@ class User
   as_enum :role, 
                 admin: 0,
                 chief_maintenance_officer: 1,
-                squadron_engineering_officer: 2,
-                flightline_supervisor: 3,
-                crew_cheif: 4,
+                squadron_engineering_officer: 2,                                
                 pilot: 5,
-                logistics: 6,
-                engg: 7,
+                logistics: 6,                
                 inst_fitt: 8,
                 eng_fitt: 9,
                 afr_fitt: 10,
@@ -19,7 +16,9 @@ class User
                 log_asst: 12,
                 elect_fitt: 13,
                 gen_fitt: 14,                
-                master_control: 15                
+                master_control: 15,
+                qci: 16
+
                 
 
                 

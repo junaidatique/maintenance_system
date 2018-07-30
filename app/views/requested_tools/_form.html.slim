@@ -23,8 +23,8 @@
                       | Number
                     td = @requested_tool.tool_no
                     th width="25%"
-                      | Date
-                    td = display_date_time(@requested_tool.created_at)
+                      | Name
+                    td = Tool.where(number: @requested_tool.tool_no).first.name
                   tr
                     th width="25%"
                       | Requested Quantity

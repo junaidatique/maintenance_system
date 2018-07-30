@@ -17,6 +17,11 @@ class AutherizationCode
   validates :autherized_trade, presence: true
   validates :inspection_type, presence: true
 
+
+  scope :preflight, -> { where(type_cd: 0) }
+  scope :thru_Flight, -> { where(type_cd: 1) }
+  scope :post_Flight, -> { where(type_cd: 2) }
+
   def self.import(file)    
     xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
     (2..xlsx.last_row).each do |i|
@@ -44,7 +49,7 @@ class AutherizationCode
     end
   end
   def autherization_code_format
-    "#{code} - #{autherized_trade} - #{type}"
+    inspection_type
   end
 
 end

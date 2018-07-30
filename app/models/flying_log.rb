@@ -53,10 +53,10 @@ class FlyingLog
       errors.add(:aircraft_id, "has no left tyre.")
     end
     if aircraft.parts.right_tyre.count == 0
-      errors.add(:aircraft_id, "has no left tyre.")
+      errors.add(:aircraft_id, "has no right tyre.")
     end
     if aircraft.parts.nose_tail.count == 0
-      errors.add(:aircraft_id, "has no left tyre.")
+      errors.add(:aircraft_id, "has no nose tail.")
     end
   end
 
@@ -148,17 +148,12 @@ class FlyingLog
   end
 
   def create_techlogs
-    if self.flightline_servicing.inspection_performed_cd == 0
-      wucs = WorkUnitCode.preflight
-    elsif self.flightline_servicing.inspection_performed_cd == 1
-      wucs = WorkUnitCode.thru_flight
-    elsif self.flightline_servicing.inspection_performed_cd == 2
-      wucs = WorkUnitCode.post_flight
-    end
+    autherization_codes = AutherizationCode.where(type_cd: self.flightline_servicing.inspection_performed_cd)
+    
     f = self
-    wucs.each do |work|
+    autherization_codes.each do |autherization_code|
       Techlog.create({type_cd: 0, condition_cd: 0, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
-        description: f.flightline_servicing.inspection_performed, work_unit_code: work.id, 
+        description: autherization_code.inspection_type, autherization_code: autherization_code.id, 
         user_id: f.flightline_servicing.user_id, log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
         aircraft_id: f.aircraft_id, flying_log_id: f.id, dms_version: System.first.settings['dms_version_number'] })
     end

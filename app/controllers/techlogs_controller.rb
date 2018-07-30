@@ -2,27 +2,18 @@ require 'combine_pdf'
 class TechlogsController < ApplicationController
   before_action :set_techlog, only: [:show, :edit, :update, :destroy, 
     :create_addl_log, :create_limitation_log, :pdf, :create_techlog]
-
+  before_action :set_parts, only: [:edit, :update]
   # GET /techlogs
   # GET /techlogs.json
   def index
-    if current_user.admin? or current_user.master_control? or current_user.chief_maintenance_officer?
+    if current_user.admin? or current_user.chief_maintenance_officer?
       @techlogs = Techlog.techloged
-    elsif current_user.log_asst?
-      @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
+    # elsif current_user.gen_fitt?
+    #   @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
     elsif current_user.logistics?
       @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
     else
-      @techlogs = Techlog.techloged.where(
-        {"$and" => [
-          {
-            "$or"=>[{"work_unit_code_id"=>{"$in"=>current_user.work_unit_code_ids}}, {"user_id"=>current_user}]
-          },
-          {
-            "$or"=>[{condition_cd: 0}, {condition_cd: 2},{condition_cd: 0.to_s}, {condition_cd: 2.to_s}]
-          }
-        ]
-      })
+      @techlogs = Techlog.techloged.ne(condition_cd: 1)
     end
     
   end
@@ -53,26 +44,18 @@ class TechlogsController < ApplicationController
     if @techlog.interm_logs.incomplete.count > 0
       redirect_to techlog_path(@techlog), :flash => { :error => "Please complete all the interm logs." }
     end
-    if @techlog.aircraft.present?
-      @aircraft_parts = Part.collection.aggregate([
-        {"$match"=>{"aircraft_id"=> @techlog.aircraft.id}},
-        {"$group" => {
-            "_id" => "$number",
-            "name" => { "$first": '$description' },           
-        }}      
-      ])
-    end
+    
 
     @techlog.build_work_performed if @techlog.work_performed.blank?
     @techlog.build_date_inspected if @techlog.date_inspected.blank?
     @techlog.build_work_duplicate if @techlog.work_duplicate.blank?
     if @techlog.dms_version.blank?
       @techlog.dms_version = System.first.settings['dms_version_number'] 
-    end    
-    if current_user.work_unit_code_ids.present? and @techlog.work_unit_code.present? and current_user.work_unit_code_ids.include? @techlog.work_unit_code.id      
+    end 
+    if @techlog.autherization_code.present? and current_user.autherization_code_ids.include? @techlog.autherization_code.id
       @techlog.is_viewed = true
       @techlog.save :validate => false
-    end
+    end    
   end
 
   # POST /techlogs
@@ -130,10 +113,10 @@ class TechlogsController < ApplicationController
         if @techlog.tools_started? and @techlog.requested_tools.count > 0
           @techlog.tools_requested_tools
         end
-        if @techlog.tools_requested? and current_user.log_asst?
+        if @techlog.tools_requested? and current_user.gen_fitt?
           @techlog.tools_provided_tools
         end
-        if @techlog.tools_provided? and current_user.log_asst? and @techlog.assigned_tools.where(is_returned: false).count == 0
+        if @techlog.tools_provided? and current_user.gen_fitt? and @techlog.assigned_tools.where(is_returned: false).count == 0
           @techlog.tools_returned_tools
         end
         # this one is for crew cheif
@@ -246,6 +229,17 @@ class TechlogsController < ApplicationController
   end
   
   private
+    def set_parts
+      if @techlog.aircraft.present?
+        @aircraft_parts = Part.collection.aggregate([
+          {"$match"=>{"aircraft_id"=> @techlog.aircraft.id}},
+          {"$group" => {
+              "_id" => "$number",
+              "name" => { "$first": '$description' },           
+          }}      
+        ])
+      end
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_techlog
       @techlog = Techlog.find(params[:id])
@@ -254,7 +248,7 @@ class TechlogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def techlog_params
-      params.require(:techlog).permit(:user_id,:work_unit_code_id, :aircraft_id, :location_id, :log_date, :log_time,
+      params.require(:techlog).permit(:user_id,:work_unit_code_id, :autherization_code_id, :updated_by, :aircraft_id, :location_id, :log_date, :log_time,
                                         :type, :condition, :action, :additional_detail_form, 
                                         :nmcs_pmcs, :demand_notif, :amf_reference_no, :pdr_number, :occurrence_report,
                                         :description,
