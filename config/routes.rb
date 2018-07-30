@@ -88,6 +88,7 @@ Rails.application.routes.draw do
     collection do 
       get 'get_aircrafts'      
       get 'summary'      
+      get 'report'      
     end
     member do 
       post :import

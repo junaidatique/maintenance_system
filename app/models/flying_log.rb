@@ -22,23 +22,18 @@ class FlyingLog
   
   # validates :location_from, presence: true
   # validates :location_to, presence: true  
+
+  
   validate :check_techlogs
   validate :check_parts
   validate :check_scheduled_inspections
 
-  def check_scheduled_inspections    
-    aircraft.check_inspections
-    if started? and aircraft.scheduled_inspections.due.count > 0
-      errors.add(:aircraft_id, "has due inspections.")
-    end
-    if started? and aircraft.scheduled_inspections.in_progress.count > 0
-      errors.add(:aircraft_id, "has in progress inspections.")
-    end
-    if started? and aircraft.parts.map{|part| part if part.scheduled_inspections.due.count > 0}.reject(&:blank?).count > 0
-      errors.add(:aircraft_id, "has some parts with due inspections.")
-    end
-    if started? and aircraft.parts.map{|part| part if part.scheduled_inspections.in_progress.count > 0}.reject(&:blank?).count > 0
-      errors.add(:aircraft_id, "has some parts with in progress inspections.")
+  
+  def check_techlogs    
+    if flight_released?
+      if aircraft.techlogs.incomplete.count > 0
+        errors.add(:aircraft_id, " has some pending techlogs")
+      end
     end
   end
 
@@ -60,13 +55,25 @@ class FlyingLog
     end
   end
 
-  def check_techlogs    
-    if flight_released?
-      if aircraft.techlogs.incomplete.count > 0
-        errors.add(:aircraft_id, " has some pending techlogs")
-      end
+  def check_scheduled_inspections    
+    aircraft.check_inspections
+    if started? and aircraft.scheduled_inspections.due.count > 0
+      errors.add(:aircraft_id, "has due inspections.")
+    end
+    if started? and aircraft.scheduled_inspections.in_progress.count > 0
+      errors.add(:aircraft_id, "has in progress inspections.")
+    end
+    if started? and aircraft.parts.map{|part| part if part.scheduled_inspections.due.count > 0}.reject(&:blank?).count > 0
+      errors.add(:aircraft_id, "has some parts with due inspections.")
+    end
+    if started? and aircraft.parts.map{|part| part if part.scheduled_inspections.in_progress.count > 0}.reject(&:blank?).count > 0
+      errors.add(:aircraft_id, "has some parts with in progress inspections.")
     end
   end
+
+  
+
+  
 
   scope :completed, -> { where(state: :log_completed) }
   scope :not_completed, -> { ne(state: :log_completed) }

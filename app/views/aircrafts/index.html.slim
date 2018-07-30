@@ -27,7 +27,7 @@
                   - if todays_flying_plan.present? and todays_flying_plan.aircraft_ids.include? aircraft.id
                     - last_flying_log = aircraft.flying_logs.last
                     - if last_flying_log.present?
-                      - last_flying_log.state
+                      = last_flying_log.state.gsub('_', ' ').titleize
                     - else 
                       | No Flying Log created.
                   - else
@@ -39,6 +39,7 @@
                     = link_to edit_aircraft_path(aircraft), class: 'btn btn-info btn-flat ' do
                       i.fa.fa-pencil
         .col-sm-4.col-sm-offset-4
-          /- if can? :create, Aircraft
-            = link_to 'New Aircraft', new_aircraft_path, class: 'btn btn-block btn-primary btn-flat'
+          - if can? :create, Aircraft
+            /= link_to 'New Aircraft', new_aircraft_path, class: 'btn btn-block btn-primary btn-flat'
+            = link_to 'Generate Aircraft Report', new_aircraft_path, class: 'btn btn-block btn-primary btn-flat'
         .clearfix
