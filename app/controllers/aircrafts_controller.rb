@@ -87,6 +87,12 @@ class AircraftsController < ApplicationController
     
   end
   def report
+    respond_to do |format|
+      format.html
+      format.xlsx {
+        response.headers['Content-Disposition'] = 'attachment; filename="materials.xlsx"'
+      }
+    end
     
   end
 

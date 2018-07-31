@@ -85,4 +85,7 @@ gem 'state_machines-mongoid'
 gem 'rails-jquery-autocomplete'
 gem 'combine_pdf'
 gem 'roo'
+gem 'rubyzip', '= 1.0.0'
+gem 'axlsx', '= 2.0.1'
+gem 'axlsx_rails'
 
