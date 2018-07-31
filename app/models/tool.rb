@@ -19,13 +19,11 @@ class Tool
     header = xlsx.row(1)    
     (3..xlsx.last_row).each do |i|
       row         = xlsx.row(i)
-      number      = row[2]      
-      name        = row[3]
-      unit_of_measurement  = row[4]
-      puc         = row[5]
-      total_cost  = row[6]
-      quantity    = row[7]
-      serial_no   = row[8]      
+      number      = row[0]      
+      name        = row[1]
+      unit_of_measurement  = row[2]      
+      quantity    = row[3]
+      serial_no   = row[4]      
       tool        = Tool.where(serial_no: serial_no)
       if tool.present?
         tool.update({
@@ -33,9 +31,7 @@ class Tool
           total_quantity: quantity, 
           name: name, 
           quantity_in_hand: quantity, 
-          unit_of_measurement: unit_of_measurement,
-          puc: puc,
-          total_cost: total_cost,
+          unit_of_measurement: unit_of_measurement,          
           serial_no: serial_no 
         })
       else
@@ -44,9 +40,7 @@ class Tool
           total_quantity: quantity, 
           name: name, 
           quantity_in_hand: quantity, 
-          unit_of_measurement: unit_of_measurement,
-          puc: puc,
-          total_cost: total_cost,
+          unit_of_measurement: unit_of_measurement,                    
           serial_no: serial_no
         })
       end
