@@ -75,7 +75,7 @@ class ScheduledInspection
       self.inspection.work_packages.each do |work_package|        
         log = Techlog.create!({type_cd: 2, condition_cd: 0, 
           log_time: "#{Time.zone.now.strftime("%H:%M %p")}",
-          description: work_package.description, work_unit_code: work_package.work_unit_code.id, 
+          description: work_package.description, autherization_code: work_package.autherization_code.id, 
           user_id: self.started_by_id, log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
           aircraft_id: aircraft_id, dms_version: System.first.settings['dms_version_number'],
           parent_techlog_id: parent_log.id

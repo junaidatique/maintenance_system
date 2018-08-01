@@ -1,5 +1,5 @@
 = simple_form_for([@inspection, @work_package], html: { class: '' }) do |f|
-  = f.input :work_unit_code_id, as: :hidden
+  = f.input :autherization_code_id, as: :hidden
   .row
     .col-md-12
       .box.box-info
@@ -12,10 +12,10 @@
             .col-sm-6
               = f.input :description
             .col-sm-6
-              - if f.object.work_unit_code.present?
-                = f.input :work_unit_code, :url => autocomplete_codes_work_unit_codes_path, :as => :autocomplete, input_html: {id_element: "#work_package_work_unit_code_id", value: f.object.work_unit_code.code }
+              - if f.object.autherization_code.present?
+                = f.input :autherization_code, :url => autocomplete_codes_autherization_codes_path, :as => :autocomplete, input_html: {id_element: "#work_package_autherization_code_id", value: f.object.autherization_code.code }
               - else 
-                = f.input :work_unit_code, :url => autocomplete_codes_work_unit_codes_path, :as => :autocomplete, input_html: {id_element: "#work_package_work_unit_code_id"}
+                = f.input :autherization_code, :url => autocomplete_codes_autherization_codes_path, :as => :autocomplete, input_html: {id_element: "#work_package_autherization_code_id"}
               
 
   == render 'common/form_action_buttons', options: { form: f, index_path: inspection_path(@inspection)}

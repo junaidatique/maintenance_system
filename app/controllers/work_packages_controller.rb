@@ -82,6 +82,6 @@ class WorkPackagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def work_package_params
-      params.require(:work_package).permit(:description, :work_unit_code_id)      
+      params.require(:work_package).permit(:description, :autherization_code_id)      
     end
 end
