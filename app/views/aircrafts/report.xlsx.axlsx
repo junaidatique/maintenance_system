@@ -1,6 +1,6 @@
 wb = xlsx_package.workbook
-Aircrafts.all.each do |aircraft|
+Aircraft.all.each do |aircraft|
   wb.add_worksheet(name: aircraft.tail_number) do |sheet|
-    
+        sheet.add_row [aircraft.tail_number]
   end
 end

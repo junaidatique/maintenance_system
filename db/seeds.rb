@@ -562,93 +562,93 @@ part_inspections.each do |insp|
   inspection = Inspection.create(insp)  
 end
 exit
-def create_part aircraft, category, trade, part_number, serial_no, quantity = 0, description = ''
-  inspection_hours = 100
-  inspection_calender_value = 1
+# def create_part aircraft, category, trade, part_number, serial_no, quantity = 0, description = ''
+#   inspection_hours = 100
+#   inspection_calender_value = 1
   
   
-  is_lifed = !serial_no.blank?
+#   is_lifed = !serial_no.blank?
 
-  calender_life_value = 1
-  installed_date = nil
-  if aircraft.present?
-    installed_date  = Time.zone.now.strftime("%Y-%m-%d")
-  end
+#   calender_life_value = 1
+#   installed_date = nil
+#   if aircraft.present?
+#     installed_date  = Time.zone.now.strftime("%Y-%m-%d")
+#   end
   
-  total_hours = 100
+#   total_hours = 100
   
-  Part.create({
-    aircraft: aircraft, 
-    number: part_number, 
-    serial_no: serial_no,       
-    quantity: quantity, 
-    category: category, 
-    trade: trade, 
+#   Part.create({
+#     aircraft: aircraft, 
+#     number: part_number, 
+#     serial_no: serial_no,       
+#     quantity: quantity, 
+#     category: category, 
+#     trade: trade, 
     
-    inspection_hours: inspection_hours, 
-    inspection_calender_value: inspection_calender_value, 
+#     inspection_hours: inspection_hours, 
+#     inspection_calender_value: inspection_calender_value, 
     
-    description: description, 
-    is_lifed: is_lifed, 
-    calender_life_value: calender_life_value, 
-    installed_date: installed_date, 
-    total_hours: total_hours })
-  print '.'
-end
+#     description: description, 
+#     is_lifed: is_lifed, 
+#     calender_life_value: calender_life_value, 
+#     installed_date: installed_date, 
+#     total_hours: total_hours })
+#   print '.'
+# end
 
 
 
-puts 'Creating Parts'
-Part::categories.each do |category,value|
-  if value == 0
-    part_number = 'ENPL-RT10227'
-  elsif value == 1
-    part_number = 'HC-C2YK-1BF I/L C2K00180'
-  else
-    part_number = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
-  end
+# puts 'Creating Parts'
+# Part::categories.each do |category,value|
+#   if value == 0
+#     part_number = 'ENPL-RT10227'
+#   elsif value == 1
+#     part_number = 'HC-C2YK-1BF I/L C2K00180'
+#   else
+#     part_number = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
+#   end
   
-  (0..Aircraft.count - 1).each do |j|
-    aircraft    = Aircraft.limit(1).offset(j).first
-    # serial_no   = "#{Faker::Number.number(5)}"
-    serial_no   = aircraft.tail_number
-    create_part aircraft, category, nil, part_number, serial_no, 1, category
-  end
-  (0..3).each do |j|  
-    serial_no   = "#{Faker::Number.number(5)}"
-    create_part nil, category, nil, part_number, serial_no, 1, category
-  end  
-  print '.'
-end
-puts ''
-puts 'Categorise Part Created'
-Part::trades.each do |trade,value|  
-  (0..Aircraft.count).each do |j|
-    (0..3).each do |j|  
-      desc = Faker::Lorem.words(1 + rand(4)).join(" ")
-      part_number = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
-      aircraft    = Aircraft.limit(1).offset(j).first
-      serial_no   = "#{Faker::Number.number(5)}"
-      create_part aircraft, nil, trade, part_number, serial_no, 1, desc
-    end    
-  end  
-  print '.'
-end
-puts ''
-puts 'Trade Part Created'
+#   (0..Aircraft.count - 1).each do |j|
+#     aircraft    = Aircraft.limit(1).offset(j).first
+#     # serial_no   = "#{Faker::Number.number(5)}"
+#     serial_no   = aircraft.tail_number
+#     create_part aircraft, category, nil, part_number, serial_no, 1, category
+#   end
+#   (0..3).each do |j|  
+#     serial_no   = "#{Faker::Number.number(5)}"
+#     create_part nil, category, nil, part_number, serial_no, 1, category
+#   end  
+#   print '.'
+# end
+# puts ''
+# puts 'Categorise Part Created'
+# Part::trades.each do |trade,value|  
+#   (0..Aircraft.count).each do |j|
+#     (0..3).each do |j|  
+#       desc = Faker::Lorem.words(1 + rand(4)).join(" ")
+#       part_number = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
+#       aircraft    = Aircraft.limit(1).offset(j).first
+#       serial_no   = "#{Faker::Number.number(5)}"
+#       create_part aircraft, nil, trade, part_number, serial_no, 1, desc
+#     end    
+#   end  
+#   print '.'
+# end
+# puts ''
+# puts 'Trade Part Created'
 
-(0..5).each do |j|
-  part_number  = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
-  desc = Faker::Lorem.words(1 + rand(4)).join(" ")
-  create_part nil, nil, nil, part_number, nil, rand(10) + 1, desc
-  print '.'
-end
-puts ''
-puts 'Unserialized Part Created'
+# (0..5).each do |j|
+#   part_number  = "#{Faker::Number.number(8)}-#{Faker::Number.number(4)}"  
+#   desc = Faker::Lorem.words(1 + rand(4)).join(" ")
+#   create_part nil, nil, nil, part_number, nil, rand(10) + 1, desc
+#   print '.'
+# end
+# puts ''
+# puts 'Unserialized Part Created'
 
-puts ''
-puts 'Part Created'
-exit
+# puts ''
+# puts 'Part Created'
+# exit
 ##################################################################
 #sleep(2)
 (0..2).each do |day|

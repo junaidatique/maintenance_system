@@ -1,7 +1,7 @@
-# rails db:seed:flying_log MIN=30 DAYS=0 INS=0
+# rails db:seed:flying_log MIN=30 DAYS=0 INS=0 OFF=0
 cur_time = Time.zone.now
 date = Time.zone.now - (ENV['DAYS'].to_i).days
-aircraft = Aircraft.first
+aircraft = Aircraft.offset(ENV['OFF'].to_i).limit(1).first
 puts 'Creating Pre flight Flying Log'
 flying_log = FlyingLog.new
 last_flying_log = FlyingLog.last

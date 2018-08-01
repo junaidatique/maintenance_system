@@ -57,7 +57,7 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'jquery-rails'
-gem 'mongoid', git: 'https://github.com/mongodb/mongoid.git'
+gem "mongoid", "~> 6.1"
 gem 'devise'
 gem 'simple_enum', '~> 2.3.0' , require: 'simple_enum/mongoid'
 gem 'slim-rails'
@@ -85,7 +85,10 @@ gem 'state_machines-mongoid'
 gem 'rails-jquery-autocomplete'
 gem 'combine_pdf'
 gem 'roo'
-gem 'rubyzip', '= 1.0.0'
-gem 'axlsx', '= 2.0.1'
-gem 'axlsx_rails'
+# gem 'rubyzip' , '= 1.0.0'
+# gem 'axlsx', '= 2.0.1'
+# gem 'axlsx_rails'
 
+gem 'rubyzip'
+gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+gem 'axlsx_rails'

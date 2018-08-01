@@ -13,6 +13,7 @@ class LandingHistory
   belongs_to :right_tyre, class_name: 'Part', inverse_of: :right_tyre_histories
   belongs_to :nose_tail, class_name: 'Part', inverse_of: :nose_tail_histories
   belongs_to :aircraft
+  belongs_to :flying_log
   
   def self.create_record time, aircraft_id, landings
     
