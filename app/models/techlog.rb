@@ -52,8 +52,9 @@ class Techlog
 
   belongs_to :scheduled_inspection, optional: true
   belongs_to :work_unit_code, optional: true
+  belongs_to :autherization_code, optional: true
   belongs_to :flying_log, optional: true
-  belongs_to :user
+  belongs_to :user  
   belongs_to :aircraft, optional: true
   belongs_to :parent_techlog, class_name: Techlog.name, inverse_of: :interm_logs, optional: true
 
@@ -100,7 +101,7 @@ class Techlog
 
   def maintenance_work_unit_code        
     if type_cd == 1 and flying_log.blank? and work_unit_code.blank?  
-      errors.add(:work_unit_code, " can't be blank")
+      errors.add(:autherization_code, " can't be blank")
     end
   end
 
@@ -127,6 +128,7 @@ class Techlog
   end
 
   def verify_complete    
+    
     if condition_cd == 1 and (parts_state == "requested" or parts_state == "pending" or parts_state == "not_available")
       errors.add(:status, " Some parts are missing. ")
     elsif condition_cd == 1 and interm_logs.count > 0 and interm_logs.incomplete.count > 0

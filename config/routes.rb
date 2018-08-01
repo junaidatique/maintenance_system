@@ -7,6 +7,15 @@ Rails.application.routes.draw do
       get :cancel_extention
     end    
   end
+  resources :autherization_codes do 
+    collection do 
+      get 'get_codes'
+      get :autocomplete_codes
+      post :import
+      get :upload
+    end
+  end
+  # resources :scheduled_inspections
   resources :inspections do 
     resources :work_packages do
       collection do
@@ -86,6 +95,7 @@ Rails.application.routes.draw do
     collection do 
       get 'get_aircrafts'      
       get 'summary'      
+      get 'report'      
     end
     member do 
       post :import

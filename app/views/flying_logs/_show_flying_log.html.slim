@@ -257,7 +257,7 @@
                     th width="25%"
                       | Crew
                     td 
-                      - if @flying_log.capt_acceptance_certificate.second_pilot.present?
+                      - if @flying_log.ac_configuration.cockpit_cd == 2
                         = @flying_log.capt_acceptance_certificate.second_pilot.name
                     th width="25%"
                       | Third Seat

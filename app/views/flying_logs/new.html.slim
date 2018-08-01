@@ -49,7 +49,7 @@
                 = ac_f.input :third_seat, as: :boolean, checked_value: 1, unchecked_value: 0
             .row
               .col-sm-6
-                = ac_f.input :cockpit, collection: enum_option_pairs(AcConfiguration, :cockpit), as: :radio_buttons 
+                /= ac_f.input :cockpit, collection: enum_option_pairs(AcConfiguration, :cockpit), as: :radio_buttons 
             .row
               .col-sm-6.smoke-oil-quantity.hide
                 = ac_f.input :smoke_oil_quantity, label: "Smoke Oil Quantity (gal)"

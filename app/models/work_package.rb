@@ -5,7 +5,7 @@ class WorkPackage
   field :description, type: String
 
   belongs_to :inspection
-  belongs_to :work_unit_code
+  belongs_to :autherization_code
 
   def self.import inspection, file
     xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
@@ -15,11 +15,15 @@ class WorkPackage
 
       next if description.blank? or row[2].blank?
 
-      work_unit_code    = WorkUnitCode.where(code: row[2]).first
-      if work_unit_code.blank?
-        work_unit_code  = WorkUnitCode.create({code: row[2], description: row[2], wuc_type_cd: 3})
+      autherization_code    = AutherizationCode.where(code: row[2]).first
+      if autherization_code.blank?
+        WorkPackage.create({
+          inspection: inspection, 
+          description: description, 
+          autherization_code: autherization_code
+        })
       end
-      WorkPackage.create({inspection: inspection, description: description, work_unit_code: work_unit_code})
+      
       # break;
     end
   end

@@ -153,13 +153,17 @@
               i.fa.fa-bars
               | &nbsp; Pilot Acceptance Certificate
           .box-body
+            = f.simple_fields_for :ac_configuration do |ac_f|
+              .row
+                .col-md-4
+                  = ac_f.input :cockpit, collection: enum_option_pairs(AcConfiguration, :cockpit), as: :radio_buttons 
             = f.simple_fields_for :capt_acceptance_certificate do |ac_f|
               = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }
               .row
                 .col-md-6
                   = f.input :location_from
                 .col-md-6
-                  = f.input :location_to
+                  = f.input :location_to                
               .row
                 - if @flying_log.ac_configuration.cockpit_cd == 2
                   .col-sm-6
@@ -168,13 +172,16 @@
                   - if @flying_log.ac_configuration.third_seat
                     = ac_f.input :third_seat_name
               .row
-                .col-sm-4
+                .col-sm-6
                   = ac_f.input :mission, collection: enum_option_pairs(CaptAcceptanceCertificate, :mission)
-                .col-sm-4
+                .col-sm-6
                   = ac_f.input :flight_time, label: 'Time (Local)', readonly: true, input_html: { value: cur_time() }
-                .col-sm-4
+              .row
+                .col-sm-6
                   = ac_f.input :view_history, label: 'I have reviwed Aircraft History', as: :boolean, checked_value: 1, unchecked_value: 0
-                
+                .col-sm-6
+                  = ac_f.input :view_deffered_log, label: 'I have reviwed Aircraft Deffered Log', as: :boolean, checked_value: 1, unchecked_value: 0
+            
   - if can? :bookin_flight, FlyingLog and @flying_log.flight_booked? and !@flying_log.pilot_commented?
     .row
       .col-md-12

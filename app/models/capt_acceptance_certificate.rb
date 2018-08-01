@@ -65,9 +65,11 @@ class CaptAcceptanceCertificate
 
   field :flight_time, type: String
   field :view_history, type: Mongoid::Boolean
+  field :view_deffered_log, type: Mongoid::Boolean
   field :third_seat_name, type: String
   
   validates :view_history, presence: true
+  validates :view_deffered_log, presence: true
 
   belongs_to :user
   belongs_to :flying_log

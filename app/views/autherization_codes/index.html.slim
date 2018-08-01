@@ -1,0 +1,46 @@
+= content_for :box_heading do
+  | Autherization Codes
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th width='40%'
+                | Code
+              th width='40%'
+                | Inspection Type
+              th width='40%'
+                | Trade              
+              th width='40%'
+                | Type              
+              th width='13%'
+                | Actions
+          tbody
+            - @autherization_codes.each do |autherization_code|
+              tr
+                td.table-row-center
+                  = link_to autherization_code.code, autherization_code_path(autherization_code)
+                td.table-row-center
+                  = autherization_code.inspection_type
+                td.table-row-center
+                  = autherization_code.autherized_trade
+                td.table-row-center
+                  = autherization_code.type
+                td.text-center width='20%'
+                  = link_to autherization_code_path(autherization_code), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  /= link_to edit_autherization_code_path(autherization_code), class: 'btn btn-info btn-flat ' do
+                    i.fa.fa-pencil
+                  
+                  /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
+                   /   i.fa.fa-trash
+        .row
+          .col-sm-4.col-sm-offset-2
+            - if can? :create, WorkUnitCode
+              = link_to 'Upload Excel', upload_autherization_codes_path, class: 'btn btn-block btn-primary btn-flat'
+          .col-sm-4
+            /= link_to 'Create Work Unit Code', new_autherization_code_path, class: 'btn btn-block btn-primary btn-flat'
+        .clearfix

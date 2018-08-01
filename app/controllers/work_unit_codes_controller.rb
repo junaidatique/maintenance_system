@@ -78,7 +78,7 @@ class WorkUnitCodesController < ApplicationController
   # GET /work_unit_codes/autocomplete_codes.json
   def autocomplete_codes
     search_string = params[:term]
-    record = WorkUnitCode.where(wuc_type_cd: 3).where(code: /.*#{search_string}.*/i).leaves.limit(5)
+    record = WorkUnitCode.where(code: /.*#{search_string}.*/i).limit(5)
     
     render :json => record.map { |work_unit_code| {id: work_unit_code._id.to_s, label: work_unit_code.code, value: work_unit_code.code } }
   end

@@ -9,7 +9,7 @@ class Ability
     alias_action :index, :read, to: :ir
     if user.admin?
       can :manage, :all
-    elsif user.chief_maintenance_officer?      
+    elsif user.chief_maintenance_officer? or user.squadron_engineering_officer?
       can :manage, Aircraft
       can :manage, FlyingLog
       can :manage, Techlog
@@ -24,34 +24,42 @@ class Ability
       can :view_781, FlyingLog
       cannot :bookout_flight, FlyingLog      
       cannot :update_work_unit_code, FlyingLog
+      can :autocomplete, FlyingPlan      
     elsif user.master_control?      
       can :read, Aircraft
+      can :get_aircrafts, Aircraft
       can :crud, FlyingLog
       can :crud, Techlog
       can :read, FlyingPlan
       can :update_work_unit_code, FlyingLog
       can :update_work_unit_code, Techlog
-    elsif user.crew_cheif?
-      can :read, Aircraft
-      can :ru, FlyingLog
-      can :crud, Techlog
-      can :update_fuel, Techlog
+      can :update_autherization_code, Techlog
+      can :manage, FlyingPlan      
+      can :autocomplete, FlyingPlan 
+      can :update_sortie, FlyingLog
+      can :autocomplete_codes, AutherizationCode
+      can :update_flying_log, FlyingLog
     elsif user.inst_fitt?
       can :read, Aircraft
       can :ru, FlyingLog
-      can :crud, Techlog      
+      can :crud, Techlog
+      can :autocomplete, FlyingPlan            
     elsif user.eng_fitt?
       can :read, Aircraft
       can :ru, FlyingLog
-      can :crud, Techlog      
+      can :crud, Techlog    
+      can :update_fuel, Techlog  
+      can :autocomplete, FlyingPlan      
     elsif user.afr_fitt?
       can :read, Aircraft
       can :ru, FlyingLog
       can :crud, Techlog
+      can :autocomplete, FlyingPlan      
     elsif user.ro_fitt?
       can :read, Aircraft
       can :ru, FlyingLog
-      can :crud, Techlog    
+      can :crud, Techlog
+      can :autocomplete, FlyingPlan          
     elsif user.elect_fitt?
       can :read, Aircraft
       can :ru, FlyingLog
@@ -60,6 +68,8 @@ class Ability
       can :read, Aircraft
       can :ru, FlyingLog
       can :crud, Techlog
+      can :crud, Tool
+      can :crud, RequestedTool
     elsif user.pilot?
       can :read, Aircraft
       can [:read, :update], FlyingLog
@@ -69,8 +79,8 @@ class Ability
       can :view_logs, FlyingLog
     elsif user.log_asst?
       can :read, Aircraft
-      can :crud, Tool
       can :rud, Techlog
+      can :crud, Tool
       can :crud, RequestedTool
     elsif user.logistics?
       can :read, Aircraft

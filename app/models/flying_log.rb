@@ -22,9 +22,38 @@ class FlyingLog
   
   # validates :location_from, presence: true
   # validates :location_to, presence: true  
+
+  
   validate :check_techlogs
   validate :check_parts
   validate :check_scheduled_inspections
+
+  
+  def check_techlogs    
+    if flight_released?
+      if aircraft.techlogs.incomplete.count > 0
+        errors.add(:aircraft_id, " has some pending techlogs")
+      end
+    end
+  end
+
+  def check_parts
+    if aircraft.parts.engine_part.count == 0
+      errors.add(:aircraft_id, "has no engine.")
+    end
+    if aircraft.parts.propeller_part.count == 0
+      errors.add(:aircraft_id, "has no propeller.")
+    end
+    if aircraft.parts.left_tyre.count == 0
+      errors.add(:aircraft_id, "has no left tyre.")
+    end
+    if aircraft.parts.right_tyre.count == 0
+      errors.add(:aircraft_id, "has no right tyre.")
+    end
+    if aircraft.parts.nose_tail.count == 0
+      errors.add(:aircraft_id, "has no nose tail.")
+    end
+  end
 
   def check_scheduled_inspections    
     aircraft.check_inspections
@@ -42,31 +71,9 @@ class FlyingLog
     end
   end
 
-  def check_parts
-    if aircraft.parts.engine_part.count == 0
-      errors.add(:aircraft_id, "has no engine.")
-    end
-    if aircraft.parts.propeller_part.count == 0
-      errors.add(:aircraft_id, "has no propeller.")
-    end
-    if aircraft.parts.left_tyre.count == 0
-      errors.add(:aircraft_id, "has no left tyre.")
-    end
-    if aircraft.parts.right_tyre.count == 0
-      errors.add(:aircraft_id, "has no left tyre.")
-    end
-    if aircraft.parts.nose_tail.count == 0
-      errors.add(:aircraft_id, "has no left tyre.")
-    end
-  end
+  
 
-  def check_techlogs    
-    if flight_released?
-      if aircraft.techlogs.incomplete.count > 0
-        errors.add(:aircraft_id, " has some pending techlogs")
-      end
-    end
-  end
+  
 
   scope :completed, -> { where(state: :log_completed) }
   scope :not_completed, -> { ne(state: :log_completed) }
@@ -148,17 +155,12 @@ class FlyingLog
   end
 
   def create_techlogs
-    if self.flightline_servicing.inspection_performed_cd == 0
-      wucs = WorkUnitCode.preflight
-    elsif self.flightline_servicing.inspection_performed_cd == 1
-      wucs = WorkUnitCode.thru_flight
-    elsif self.flightline_servicing.inspection_performed_cd == 2
-      wucs = WorkUnitCode.post_flight
-    end
+    autherization_codes = AutherizationCode.where(type_cd: self.flightline_servicing.inspection_performed_cd)
+    
     f = self
-    wucs.each do |work|
+    autherization_codes.each do |autherization_code|
       Techlog.create({type_cd: 0, condition_cd: 0, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
-        description: f.flightline_servicing.inspection_performed, work_unit_code: work.id, 
+        description: autherization_code.inspection_type, autherization_code: autherization_code.id, 
         user_id: f.flightline_servicing.user_id, log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
         aircraft_id: f.aircraft_id, flying_log_id: f.id, dms_version: System.first.settings['dms_version_number'] })
     end

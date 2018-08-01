@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(user)
     if user.admin?
       aircrafts_path    
-    elsif user.log_asst?
+    elsif user.gen_fitt?
       tools_path    
     elsif user.logistics?
       parts_path

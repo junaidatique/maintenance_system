@@ -71,7 +71,7 @@ class ToolsController < ApplicationController
   def autocomplete
     search_string = params[:term]
     record = Tool.collection.aggregate([
-      {"$match"=>{"quantity_in_hand"=>{"$gt"=>0}, "number"=>/#{search_string}.*/i}},
+      {"$match"=>{"quantity_in_hand"=>{"$gt"=>0}, "name"=>/#{search_string}.*/i}},
       {"$group" => {
           "_id" => "$number",
           "name" => { "$first": '$name' }, 

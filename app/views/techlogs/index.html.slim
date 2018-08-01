@@ -15,10 +15,12 @@
               th width='10%'
                 | Aircraft              
               th width='10%'
-                | WUC
+                | Description
+              th width='10%'
+                | Autherization Code
               th width='10%'
                 | Log Status
-              - if current_user.log_asst?
+              - if current_user.gen_fitt?
                 th width='10%'
                   | Tools Status  
               th width='13%'
@@ -33,10 +35,12 @@
                 td.table-row-center
                   = techlog.aircraft.tail_number unless techlog.aircraft.blank?
                 td.table-row-center
-                  = techlog.work_unit_code.code unless techlog.work_unit_code.blank?                
+                  = techlog.description
+                td.table-row-center
+                  = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
                 td.table-row-center
                   = techlog.condition.to_s.titleize
-                - if current_user.log_asst?
+                - if current_user.gen_fitt?
                   td.table-row-center
                     = techlog.tools_state.titleize
                   
