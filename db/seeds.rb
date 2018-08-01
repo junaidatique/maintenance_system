@@ -2,13 +2,13 @@ cur_time = Time.zone.now
 
 System.create! settings: {dms_version_number: 0.0}
 puts 'Creating Aircraft'
-aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '42', oil_capacity: '8', flight_hours: 194.2, engine_hours: 194.2, landings: 358, prop_hours: 194.2
-aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '42', oil_capacity: '8', flight_hours: 174.1, engine_hours: 174.1, landings: 308, prop_hours: 174.1
+aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '42', oil_capacity: '8', flight_hours: 195.4, engine_hours: 195.4, landings: 362, prop_hours: 195.5
+aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '42', oil_capacity: '8', flight_hours: 174.7, engine_hours: 174.7, landings: 309, prop_hours: 174.7
 aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '42', oil_capacity: '8', flight_hours: 165.6, engine_hours: 165.6, landings: 261, prop_hours: 165.6
-aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '42', oil_capacity: '8', flight_hours: 187.2, engine_hours: 187.2, landings: 330, prop_hours: 187.2
-aircraft_304  = Aircraft.create! number: '304', tail_number: 'QA304', serial_no: '#304', fuel_capacity: '42', oil_capacity: '8', flight_hours: 102.7, engine_hours: 102.7, landings: 140, prop_hours: 102.7
-aircraft_305  = Aircraft.create! number: '305', tail_number: 'QA305', serial_no: '#305', fuel_capacity: '42', oil_capacity: '8', flight_hours: 112.5, engine_hours: 112.5, landings: 143, prop_hours: 112.5
-aircraft_306  = Aircraft.create! number: '306', tail_number: 'QA306', serial_no: '#306', fuel_capacity: '42', oil_capacity: '8', flight_hours: 49.6, engine_hours: 8.6, landings: 59, prop_hours: 8.6
+aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '42', oil_capacity: '8', flight_hours: 188.3, engine_hours: 188.3, landings: 331, prop_hours: 188.3
+aircraft_304  = Aircraft.create! number: '304', tail_number: 'QA304', serial_no: '#304', fuel_capacity: '42', oil_capacity: '8', flight_hours: 103.7, engine_hours: 103.7, landings: 141, prop_hours: 103.7
+aircraft_305  = Aircraft.create! number: '305', tail_number: 'QA305', serial_no: '#305', fuel_capacity: '42', oil_capacity: '8', flight_hours: 113.5, engine_hours: 113.5, landings: 144, prop_hours: 113.5
+aircraft_306  = Aircraft.create! number: '306', tail_number: 'QA306', serial_no: '#306', fuel_capacity: '42', oil_capacity: '8', flight_hours: 40.8, engine_hours: 9.8, landings: 60, prop_hours: 9.8
 aircraft_307  = Aircraft.create! number: '307', tail_number: 'QA307', serial_no: '#307', fuel_capacity: '42', oil_capacity: '8', flight_hours: 77.8, engine_hours: 77.8, landings: 94, prop_hours: 77.8
 puts 'Aircraft Created'
 
