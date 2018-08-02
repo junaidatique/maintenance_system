@@ -14,6 +14,7 @@ class Ability
       can :manage, FlyingLog
       can :manage, Techlog
       can :manage, FlyingPlan      
+      can :manage, User      
       can :manage_addl_logs, Techlog
       cannot :update_fuel, Techlog  
       cannot :update_work_unit_code, Techlog      
@@ -24,6 +25,7 @@ class Ability
       can :view_781, FlyingLog
       cannot :bookout_flight, FlyingLog      
       cannot :update_work_unit_code, FlyingLog
+      cannot :bookin_flight, FlyingLog
       can :autocomplete, FlyingPlan   
       can :cancel, FlyingLog   
     elsif user.master_control?      

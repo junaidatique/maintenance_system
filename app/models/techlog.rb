@@ -8,7 +8,7 @@ class Techlog
   
   as_enum :type, Flight: 0, Maintenance: 1, Scheduled: 2, Tool: 3
   as_enum :new_type_values, Maintenance: 1, Tool: 3
-  as_enum :condition, open: 0, interm: 2, completed: 1, cancelled: 3
+  as_enum :condition, open: 0, interm: 2, completed: 1
 
   field :log_time, type: String
   field :log_date, type: Date
@@ -100,7 +100,7 @@ class Techlog
 
 
   def maintenance_work_unit_code        
-    if type_cd == 1 and flying_log.blank? and work_unit_code.blank?  
+    if type_cd == 1 and flying_log.blank? and autherization_code.blank?  
       errors.add(:autherization_code, " can't be blank")
     end
   end
@@ -223,7 +223,10 @@ class Techlog
       if flying_log.techlogs.techloged.flight_created.incomplete.count == 0                
         flying_log.flightline_servicing.flight_end_time = Time.zone.now
         flying_log.flightline_servicing.save
-        flying_log.complete_servicing      
+        flying_log.complete_servicing  
+        if flying_log.flightline_servicing.inspection_performed_cd == 2
+          flying_log.complete_post_flight
+        end    
       end
     end
   end

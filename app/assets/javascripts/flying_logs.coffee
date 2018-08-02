@@ -34,10 +34,14 @@ $(document).on 'ready', ->
     $(".smoke-oil-quantity").addClass('hide')
     return
   
-  $('#flying_log_sortie_attributes_pilot_comment_satisfactory').on 'ifChecked', (event) ->
-    $("#div_techlog_servicing").hide()
+  $('#flying_log_sortie_attributes_pilot_comment_satisfactory').on 'ifChecked', (event) ->    
+    $("#div_techlog_servicing").addClass('hide')
     return
 
   $('#flying_log_sortie_attributes_pilot_comment_un_satisfactory').on 'ifChecked', (event) ->
-    $("#div_techlog_servicing").show()
+    $("#div_techlog_servicing").removeClass('hide')
+    return
+
+  $('#flying_log_sortie_attributes_pilot_comment_mission_cancelled').on 'ifChecked', (event) ->
+    $("#div_techlog_servicing").addClass('hide')
     return

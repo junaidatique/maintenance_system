@@ -120,7 +120,7 @@ class TechlogsController < ApplicationController
           @techlog.tools_returned_tools
         end
         # this one is for crew cheif
-        if @techlog.flying_log.present? #and current_user.role == :crew_cheif
+        if @techlog.flying_log.present?
           @techlog.flying_log.update_fuel
           @techlog.flying_log.fill_fuel
         end

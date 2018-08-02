@@ -7,7 +7,7 @@
           li
             = error_message
   == render 'show_flying_log'  
-  - if (can? :release_flight, FlyingLog and @flying_log.flightline_release.created_at.blank?)
+  - if (can? :release_flight, FlyingLog and @flying_log.servicing_completed? and @flying_log.flightline_release.created_at.blank?)
     .row
       .col-md-12
         .box.box-info
@@ -144,7 +144,7 @@
                                 
     
     
-  - if can? :bookout_flight, FlyingLog and @flying_log.flight_released? and !@flying_log.flight_booked?  
+  - if can? :bookout_flight, FlyingLog and @flying_log.flight_released?
     .row
       .col-md-12
         .box.box-info
@@ -187,7 +187,7 @@
                   = ac_f.input :view_deffered_log, label: 'I have reviwed Aircraft Deffered Log', as: :boolean, checked_value: 1, unchecked_value: 0
               
             
-  - if can? :bookin_flight, FlyingLog and @flying_log.flight_booked? and !@flying_log.pilot_commented?
+  - if can? :bookin_flight, FlyingLog and @flying_log.flight_booked?
     .row
       .col-md-12
         .box.box-info
@@ -219,10 +219,12 @@
                   = ac_f.input :full_stop
               .row
                 .col-sm-6
-                  = ac_f.input :pilot_comment, collection: enum_option_pairs(Sortie, :pilot_comment), as: :radio_buttons 
+                  = ac_f.input :pilot_comment, collection: enum_option_pairs(Sortie, :pilot_comment), as: :radio_buttons
+                .col-sm-6
+                  = ac_f.input :mission_cancelled, label: 'Mission Cancelled', as: :boolean, checked_value: 1, unchecked_value: 0 
                 
     .row
-      .col-md-12#div_techlog_servicing
+      .col-md-12.hide#div_techlog_servicing
         .box.box-info
           .box-header.with-border
             .row
@@ -278,7 +280,7 @@
               .row
                 .col-sm-12
                   = ac_f.input :remarks, as: :text
-        
+  - if can? :bookin_flight, FlyingLog and @flying_log.pilot_commented?
     .row
       .col-md-12
         .box.box-info
@@ -295,7 +297,7 @@
                 .col-sm-6
                   
 
-  - if can? :update_work_unit_code, FlyingLog and !@flying_log.capt_acceptance_certificate.created_at.blank?    
+  - if can? :update_work_unit_code, FlyingLog and @flying_log.pilot_confirmed?
     .row
       .col-md-12
         .box.box-info

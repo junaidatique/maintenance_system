@@ -27,11 +27,12 @@ class FlyingLog
   validate :check_flying_logs
   validate :check_techlogs
   validate :check_parts
-  validate :check_scheduled_inspections
+  validate :check_scheduled_inspections  
 
+  
   def check_flying_logs
-    if aircraft.flying_logs.not_completed.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
-    errors.add(:aircraft_id, " flying log already created.")
+    if aircraft.flying_logs.not_completed.not_cancelled.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
+      errors.add(:aircraft_id, " flying log already created.")
     end
   end
   def check_techlogs    
@@ -82,7 +83,7 @@ class FlyingLog
 
   scope :completed, -> { where(state: :log_completed) }
   scope :not_completed, -> { ne(state: :log_completed) }
-  scope :not_cancelled, -> { ne(state: :cancel_flight) }
+  scope :not_cancelled, -> { ne(state: :flight_cancelled) }
   default_scope { order(id: :desc) }
   
   increments :number, seed: 1000
@@ -93,8 +94,7 @@ class FlyingLog
     after_transition on: :complete_log, do: :update_aircraft_timgings
     after_transition on: :pilot_back, do: :update_aircraft_times
     after_transition on: :complete_log, do: :update_aircraft_times
-    after_transition on: :cancel_flight, do: :cancel_techlogs
-
+    
     event :flightline_service do
       transition started: :flightline_serviced
     end
@@ -103,6 +103,9 @@ class FlyingLog
     end
     event :complete_servicing do
       transition fuel_filled: :servicing_completed
+    end
+    event :complete_post_flight do
+      transition servicing_completed: :log_completed
     end
     event :release_flight do
       transition servicing_completed: :flight_released
@@ -115,6 +118,15 @@ class FlyingLog
     end
     event :pilot_back do
       transition flight_booked: :pilot_commented
+    end
+    event :update_timing do
+      transition pilot_commented: :flight_booked
+    end
+    event :pilot_confirmation do
+      transition pilot_commented: :pilot_confirmed
+    end
+    event :back_to_release do 
+      transition flight_booked: :flight_released
     end
     event :techlog_check do
       transition pilot_commented: :logs_created
@@ -139,7 +151,7 @@ class FlyingLog
   has_many :techlogs, dependent: :destroy
 
   # embeds_many :notifications, as: :notifiable
-  embeds_many :flying_log_state_transitions
+  # embeds_many :flying_log_state_transitions
 
   accepts_nested_attributes_for :ac_configuration
   accepts_nested_attributes_for :capt_acceptance_certificate
@@ -162,8 +174,7 @@ class FlyingLog
   end
 
   def create_techlogs
-    autherization_codes = AutherizationCode.where(type_cd: self.flightline_servicing.inspection_performed_cd)
-    
+    autherization_codes = AutherizationCode.where(type_cd: self.flightline_servicing.inspection_performed_cd)    
     f = self
     autherization_codes.each do |autherization_code|
       Techlog.create({type_cd: 0, condition_cd: 0, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
@@ -227,13 +238,6 @@ class FlyingLog
 
     self.aircraft.update_part_values self
     self.create_history
-  end
-
-  def cancel_techlogs
-    techlogs.each do |techlog|
-      techlog.condition_cd = 3
-      tecchlog.save
-    end
   end
 
   def create_history

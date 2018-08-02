@@ -62,7 +62,7 @@ users_list = [
       "rank": "Maj",
       "name": "SHAMSI",
       "personal_code": "12555",
-      "trade": "ENGG"
+      "trade": "chief_maintenance_officer"
     },
     {
       "sno": 7,
@@ -408,14 +408,14 @@ aircraft_inspections = [
     calender_value: 7,
     is_repeating: true,
     last_conducted_dates: {
-      300 => DateTime.strptime('2018-07-26', '%Y-%m-%d'),
-      301 => DateTime.strptime('2018-07-29', '%Y-%m-%d'),
-      302 => DateTime.strptime('2018-07-29', '%Y-%m-%d'),
-      303 => DateTime.strptime('2018-07-26', '%Y-%m-%d'),
-      304 => DateTime.strptime('2018-07-26', '%Y-%m-%d'),
-      305 => DateTime.strptime('2018-07-25', '%Y-%m-%d'),
-      306 => DateTime.strptime('2018-07-26', '%Y-%m-%d'),
-      307 => DateTime.strptime('2018-07-26', '%Y-%m-%d'),
+      300 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
+      301 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
+      302 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
+      303 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
+      304 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
+      305 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
+      306 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
+      307 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
     },
   },
   # {
@@ -673,11 +673,13 @@ exit
     # puts ''
     # flying_log.save!
     # flying_log.techlog_check
-    # flying_log.techlogs.where(type_cd: 1.to_s).each do |techlog|
-    #   techlog.action = Faker::Lorem.sentence
-    #   techlog.condition_cd = 1
-    #   techlog.save
-    # end
+    f.fill_fuel
+    f.techlogs.where(type_cd: 0).each do |techlog|
+      techlog.action = Faker::Lorem.sentence
+      techlog.verified_tools = 1
+      techlog.condition_cd = 1
+      techlog.save!
+    end
     # flying_log.complete_log    
       # break
     # end    

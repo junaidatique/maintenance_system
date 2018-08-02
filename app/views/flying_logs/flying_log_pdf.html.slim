@@ -143,7 +143,7 @@
     .rank
       = flying_log.capt_after_flight.user.rank
     .signature
-      = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
+      /= wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
 - if flying_log.capt_acceptance_certificate.present?
   .pilot-acceptance-certificate
     .time-local
@@ -155,7 +155,7 @@
     .rank
       = flying_log.capt_acceptance_certificate.user.rank
     .signature
-      = wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
+      /= wicked_pdf_image_tag(flying_log.flightline_servicing.user.signature.attachment)
   .sortie
     .crew-name
       - if flying_log.ac_configuration.cockpit_cd == 2 and flying_log.capt_acceptance_certificate.second_pilot.present?
@@ -170,7 +170,7 @@
     .personal-code
       = flying_log.after_flight_servicing.user.personal_code
     .signature
-      = wicked_pdf_image_tag(flying_log.after_flight_servicing.user.signature.attachment)
+      /= wicked_pdf_image_tag(flying_log.after_flight_servicing.user.signature.attachment)
     .oil-refill
       = flying_log.after_flight_servicing.oil_refill
 - if flying_log.sortie.present?

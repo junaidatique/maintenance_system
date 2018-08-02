@@ -1,6 +1,6 @@
 require 'combine_pdf'
 class FlyingLogsController < ApplicationController  
-  before_action :set_flying_log, only: [:show, :edit, :update, :destroy, :pdf, :cancel]
+  before_action :set_flying_log, only: [:show, :edit, :update, :destroy, :pdf, :cancel, :update_timing]
 
   # GET /flying_logs
   # GET /flying_logs.json
@@ -106,27 +106,48 @@ class FlyingLogsController < ApplicationController
   # PATCH/PUT /flying_logs/1.json
   def update    
     respond_to do |format|      
-      if current_user.role == :pilot and @flying_log.flight_booked? and flying_log_params[:sortie_attributes][:pilot_comment] == 'Satisfactory'
-        update_params = flying_log_params.except(:techlogs_attributes)
-      else
-        update_params = flying_log_params
-      end
+      # if current_user.pilot? and @flying_log.flight_booked? and flying_log_params[:sortie_attributes][:pilot_comment] == 'Satisfactory'
+      #   update_params = flying_log_params.except(:techlogs_attributes)
+      # else
+      #   update_params = flying_log_params
+      # end
 
-      if @flying_log.update!(update_params)
+      if @flying_log.update!(flying_log_params)
         if can? :release_flight, FlyingLog and @flying_log.servicing_completed? and @flying_log.flightline_release.created_at.present?
           @flying_log.release_flight
-        elsif current_user.pilot? and @flying_log.flight_released?  and @flying_log.capt_acceptance_certificate.created_at.present? 
+        elsif current_user.pilot? and @flying_log.flight_released?
+          if @flying_log.sortie.present?
+            @flying_log.sortie.mission_cancelled    = false 
+            @flying_log.sortie.remarks              = '' 
+            @flying_log.post_mission_report.remarks = '' 
+            @flying_log.save
+          end
+          
           @flying_log.book_flight
           ActionCable.server.broadcast("log_channel", 
           message: "#{@flying_log.aircraft.tail_number} is booked out.")
-        elsif current_user.pilot? and @flying_log.flight_booked?                    
-          @flying_log.pilot_back
+        elsif current_user.pilot? and @flying_log.flight_booked? 
+          if @flying_log.sortie.mission_cancelled?
+            @flying_log.sortie.remarks = @flying_log.post_mission_report.remarks
+            @flying_log.back_to_release
+          else            
+            if @flying_log.sortie.pilot_comment_cd == "SAT"
+              @flying_log.sortie.remarks = @flying_log.sortie.pilot_comment.to_s
+              @flying_log.sortie.sortie_code_cd = 1
+            end
+            @flying_log.pilot_back
+          end
+        elsif current_user.pilot? and @flying_log.pilot_commented? and !@flying_log.sortie.mission_cancelled?
           if @flying_log.sortie.pilot_comment_cd == "SAT"
             @flying_log.sortie.remarks = @flying_log.sortie.pilot_comment.to_s
             @flying_log.sortie.sortie_code_cd = 1
             @flying_log.techlog_check
+            @flying_log.techlogs.pilot_created.each do  |techlog|
+              techlog.destroy
+            end
             @flying_log.complete_log
           end
+      
         elsif can? :update_flying_log, FlyingLog and @flying_log.pilot_commented?
           @flying_log.techlog_check
           @flying_log.complete_log
@@ -193,7 +214,12 @@ class FlyingLogsController < ApplicationController
   end
 
   def cancel
+    @flying_log.cancel_flight
     redirect_to @flying_log
+  end
+  def update_timing
+    @flying_log.update_timing
+    redirect_to edit_flying_log_path @flying_log
   end
 
   private
@@ -210,7 +236,7 @@ class FlyingLogsController < ApplicationController
                                 flightline_servicing_attributes: [:id, :inspection_performed, :user_id, :hyd, :_destroy],
                                 capt_acceptance_certificate_attributes: [:flight_time,:second_pilot_id, :third_seat_name, :view_history, :view_deffered_log, :user_id, :mission],
                                 sortie_attributes: [:user_id, :takeoff_time, 
-                                  :landing_time, :sortie_code, :touch_go, :pilot_comment, :full_stop], 
+                                  :landing_time, :sortie_code, :touch_go, :pilot_comment, :full_stop, :mission_cancelled], 
                                 capt_after_flight_attributes: [:flight_time, :user_id],
                                 flightline_release_attributes: [:flight_time, :user_id],
                                 techlogs_attributes: [:id, :work_unit_code_id, :user_id, :description, :type_cd, :_destroy],

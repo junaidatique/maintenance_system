@@ -18,14 +18,14 @@ class PostMissionReport
   belongs_to :flying_log
   belongs_to :aircraft
 
-  validates :oat, presence: :true
-  validates :idle_rpm, presence: :true
-  validates :max_rpm, presence: :true
-  validates :cht, presence: :true
-  validates :oil_temp, presence: :true
-  validates :oil_pressure, presence: :true
-  validates :map, presence: :true
-  validates :mag_drop_left, presence: :true
-  validates :mag_drop_right, presence: :true
+  # validates :oat, presence: :true
+  # validates :idle_rpm, presence: :true
+  # validates :max_rpm, presence: :true
+  # validates :cht, presence: :true
+  # validates :oil_temp, presence: :true
+  # validates :oil_pressure, presence: :true
+  # validates :map, presence: :true
+  # validates :mag_drop_left, presence: :true
+  # validates :mag_drop_right, presence: :true
   
 end

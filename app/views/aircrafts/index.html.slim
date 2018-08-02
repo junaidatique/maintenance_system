@@ -25,7 +25,7 @@
                   = aircraft.serial_no
                 td
                   - if todays_flying_plan.present? and todays_flying_plan.aircraft_ids.include? aircraft.id
-                    - last_flying_log = aircraft.flying_logs.last
+                    - last_flying_log = aircraft.flying_logs.first
                     - if last_flying_log.present?
                       = last_flying_log.state.gsub('_', ' ').titleize
                     - else 

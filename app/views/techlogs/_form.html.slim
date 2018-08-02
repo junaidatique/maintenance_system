@@ -120,7 +120,7 @@
               = link_to_add_association "+ Required Tool", f, :requested_tools, data: {:'association-insertion-node' => ".assigned_tools", :'association-insertion-method' => 'append'}, class: 'btn btn-block btn-primary btn-flat'
   - if current_user.role == :logistics
     / https://stackoverflow.com/questions/15242170/slim-dynamic-conditional-class
-    .row.addition_values class=(@techlog.parts_not_available? ? '' : 'hide')
+    /.row.addition_values class=(@techlog.parts_not_available? ? '' : 'hide')
       .col-md-12
         .box.box-info
           .box-header.with-borderf

@@ -28,7 +28,12 @@
                 td.table-row-center
                   = flying_log.aircraft.tail_number
                 td.table-row-center
-                  = (flying_log.log_completed?) ? 'Completed' : 'Open'
+                  - if (flying_log.log_completed?)
+                    | Completed
+                  - elsif flying_log.flight_cancelled?
+                    | Cancelled
+                  - else 
+                    | Open
                 
                 td.text-center width='20%'
                   = link_to pdf_flying_log_path(flying_log), class: 'btn btn-success btn-flat', target: :_blank do

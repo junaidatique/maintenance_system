@@ -14,22 +14,24 @@ class Sortie
   field :full_stop, type: String
   field :total_landings, type: Integer, default: 0   # to be calculated
   field :remarks, type: String
-  
-
-  validates :takeoff_time, presence: true
-  validates :landing_time, presence: true
-  validates :touch_go, presence: true
-  validates :full_stop, presence: true
-  validates :pilot_comment, presence: true
-
+  field :mission_cancelled, type: Mongoid::Boolean, default: 0
+    
   belongs_to :user, optional: true
   belongs_to :flying_log
   
+  def mission?
+    !mission_cancelled?
+  end
+
+  
 
   def calculate_flight_minutes
-    takeoff_time = DateTime.strptime(self.takeoff_time, '%H:%M %p')
-    landing_time = DateTime.strptime(self.landing_time, '%H:%M %p')
+    takeoff_time = DateTime.strptime(self.takeoff_time, '%H:%M %p') if self.takeoff_time.present?
+    landing_time = DateTime.strptime(self.landing_time, '%H:%M %p') if self.takeoff_time.present?
     # ((DateTime.strptime((landing_time.to_i + 86400).to_s,'%s') - takeoff_time) * 24 * 60).to_i
+    if takeoff_time.blank? or landing_time.blank?
+      return 0
+    end
     if landing_time < takeoff_time      
       landing_time = (DateTime.strptime((landing_time.to_i + 86400).to_s,'%s'))
     end
