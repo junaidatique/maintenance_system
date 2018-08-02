@@ -30,7 +30,7 @@ class FlyingLog
   validate :check_scheduled_inspections
 
   def check_flying_logs
-    if aircraft.flying_logs.not_completed.map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
+    if aircraft.flying_logs.not_completed.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
     errors.add(:aircraft_id, " flying log already created.")
     end
   end

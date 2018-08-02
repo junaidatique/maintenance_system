@@ -15,7 +15,8 @@ $(document).on 'ready', ->
 
 
   
-  $('#flying_log_ac_configuration_attributes_cockpit_single').on 'ifChecked', (event) ->    
+  $('#flying_log_ac_configuration_attributes_cockpit_single').on 'ifChecked', (event) -> 
+    console.log 'here'   
     $(".flying_log_capt_acceptance_certificate_second_pilot").addClass('hide');
     return
   

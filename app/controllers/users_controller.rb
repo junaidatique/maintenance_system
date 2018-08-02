@@ -74,10 +74,10 @@ class UsersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:username, :name, :password, :rank, :personal_code, :role, :status, 
-        profile_picture_attributes: [:attachment], signature_attributes: [:attachment], work_unit_code_ids: [])
+        profile_picture_attributes: [:attachment], signature_attributes: [:attachment], autherization_code_ids: [])
     end
     def user_update_params
       params.require(:user).permit(:username, :name, :rank, :personal_code, :role, :status, 
-        profile_picture_attributes: [:attachment], signature_attributes: [:attachment], work_unit_code_ids: [])
+        profile_picture_attributes: [:attachment], signature_attributes: [:attachment], autherization_code_ids: [])
     end
 end

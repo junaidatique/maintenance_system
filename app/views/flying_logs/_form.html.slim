@@ -160,17 +160,21 @@
             = f.simple_fields_for :capt_acceptance_certificate do |ac_f|
               = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }
               .row
+                /- if @flying_log.ac_configuration.cockpit_cd == 2
+                .col-sm-6
+                  = ac_f.association :second_pilot, collection: User.pilots.ne(_id: current_user._id).all, label_method: :name, include_blank: false, value_method: :id, label: 'Crew', input_html: {class: 'custom-select2'}
+                  br
+                  br                  
+                .col-sm-6
+                  - if @flying_log.ac_configuration.third_seat
+                    = ac_f.input :third_seat_name
+
+              .row
                 .col-md-6
                   = f.input :location_from
                 .col-md-6
                   = f.input :location_to                
-              .row
-                - if @flying_log.ac_configuration.cockpit_cd == 2
-                  .col-sm-6
-                    = ac_f.association :second_pilot, collection: User.pilots.ne(_id: current_user._id).all, label_method: :name, include_blank: false, value_method: :id, label: 'Crew', input_html: {class: 'custom-select2'}
-                .col-sm-6
-                  - if @flying_log.ac_configuration.third_seat
-                    = ac_f.input :third_seat_name
+              
               .row
                 .col-sm-6
                   = ac_f.input :mission, collection: enum_option_pairs(CaptAcceptanceCertificate, :mission)
@@ -181,6 +185,7 @@
                   = ac_f.input :view_history, label: 'I have reviwed Aircraft History', as: :boolean, checked_value: 1, unchecked_value: 0
                 .col-sm-6
                   = ac_f.input :view_deffered_log, label: 'I have reviwed Aircraft Deffered Log', as: :boolean, checked_value: 1, unchecked_value: 0
+              
             
   - if can? :bookin_flight, FlyingLog and @flying_log.flight_booked? and !@flying_log.pilot_commented?
     .row
