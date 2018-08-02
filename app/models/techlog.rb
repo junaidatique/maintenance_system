@@ -8,7 +8,7 @@ class Techlog
   
   as_enum :type, Flight: 0, Maintenance: 1, Scheduled: 2, Tool: 3
   as_enum :new_type_values, Maintenance: 1, Tool: 3
-  as_enum :condition, open: 0, interm: 2, completed: 1
+  as_enum :condition, open: 0, interm: 2, completed: 1, cancelled: 3
 
   field :log_time, type: String
   field :log_date, type: Date

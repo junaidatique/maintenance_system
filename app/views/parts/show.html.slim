@@ -84,7 +84,7 @@
                   td = (@part.total_hours) 
                   th width="25%"
                     | Remaining Hours 
-                  td = @part.remaining_hours
+                  td = @part.remaining_hours if @part.remaining_hours > 0
                 tr
                   th width="25%"
                     | Part Calender Date

@@ -24,7 +24,8 @@ class Ability
       can :view_781, FlyingLog
       cannot :bookout_flight, FlyingLog      
       cannot :update_work_unit_code, FlyingLog
-      can :autocomplete, FlyingPlan      
+      can :autocomplete, FlyingPlan   
+      can :cancel, FlyingLog   
     elsif user.master_control?      
       can :read, Aircraft
       can :get_aircrafts, Aircraft
@@ -39,6 +40,8 @@ class Ability
       can :update_sortie, FlyingLog
       can :autocomplete_codes, AutherizationCode
       can :update_flying_log, FlyingLog
+      can :manage, Inspection
+      can :cancel, FlyingLog
     elsif user.inst_fitt?
       can :read, Aircraft
       can :ru, FlyingLog

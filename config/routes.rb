@@ -88,6 +88,7 @@ Rails.application.routes.draw do
   resources :flying_logs do 
     member do
       get 'pdf'
+      get 'cancel'
     end
   end
   root 'flying_logs#index'

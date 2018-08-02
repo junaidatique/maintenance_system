@@ -1,6 +1,6 @@
 require 'combine_pdf'
 class FlyingLogsController < ApplicationController  
-  before_action :set_flying_log, only: [:show, :edit, :update, :destroy, :pdf]
+  before_action :set_flying_log, only: [:show, :edit, :update, :destroy, :pdf, :cancel]
 
   # GET /flying_logs
   # GET /flying_logs.json
@@ -8,7 +8,7 @@ class FlyingLogsController < ApplicationController
     if current_user.admin?
       @flying_logs = FlyingLog.all
     else
-      @flying_logs = FlyingLog.not_completed.all
+      @flying_logs = FlyingLog.not_completed.not_cancelled.all
     end
     
   end
@@ -47,21 +47,23 @@ class FlyingLogsController < ApplicationController
 
   # GET /flying_logs/1/edit
   def edit
-    # TODO update this code for WUC of crewcheif
+    if @flying_log.flight_cancelled?
+      redirect_to flying_log_path(@flying_log), :flash => { :error => "This Flying Log is cancelled." }
+    end
     if @flying_log.aircraft.techlogs.incomplete.count > 0 and @flying_log.servicing_completed?
       redirect_to flying_log_path(@flying_log), :flash => { :error => "#{@flying_log.aircraft.tail_number} has some pending techlogs." }
     end
     
-    if current_user.role == :crew_cheif
-      inspection_performed = @flying_log.flightline_servicing.inspection_performed_cd
-      wuc = WorkUnitCode.where(wuc_type_cd: inspection_performed).where(:id.in => current_user.work_unit_code_ids).first
-      techlog = Techlog.where(flying_log: @flying_log, work_unit_code: wuc).first
-      if !techlog.is_completed
-        redirect_to techlog_path(techlog), :flash => { :error => "Please fill this techlog first." }
-      end
-    elsif Techlog.where(flying_log: @flying_log).incomplete.count > 0 and !@flying_log.logs_created?
-      # redirect_to flying_log_path(@flying_log), :flash => { :error => "Techlog for this Flying log are still not completed." }
-    end
+    # if current_user.role == :crew_cheif
+    #   inspection_performed = @flying_log.flightline_servicing.inspection_performed_cd
+    #   wuc = WorkUnitCode.where(wuc_type_cd: inspection_performed).where(:id.in => current_user.work_unit_code_ids).first
+    #   techlog = Techlog.where(flying_log: @flying_log, work_unit_code: wuc).first
+    #   if !techlog.is_completed
+    #     redirect_to techlog_path(techlog), :flash => { :error => "Please fill this techlog first." }
+    #   end
+    # elsif Techlog.where(flying_log: @flying_log).incomplete.count > 0 and !@flying_log.logs_created?
+    #   # redirect_to flying_log_path(@flying_log), :flash => { :error => "Techlog for this Flying log are still not completed." }
+    # end
     
     @flying_log.build_capt_acceptance_certificate if @flying_log.capt_acceptance_certificate.blank?
     @flying_log.build_sortie if @flying_log.sortie.blank?
@@ -190,6 +192,10 @@ class FlyingLogsController < ApplicationController
 
   end
 
+  def cancel
+    redirect_to @flying_log
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_flying_log
@@ -202,7 +208,7 @@ class FlyingLogsController < ApplicationController
          params.require(:flying_log).permit(:log_date, :aircraft_id, :location_from, :location_to,
                                 ac_configuration_attributes: [:clean, :smoke_pods, :third_seat, :cockpit, :smoke_oil_quantity],
                                 flightline_servicing_attributes: [:id, :inspection_performed, :user_id, :hyd, :_destroy],
-                                capt_acceptance_certificate_attributes: [:flight_time,:second_pilot_id, :third_seat_name, :view_history, :user_id, :mission],
+                                capt_acceptance_certificate_attributes: [:flight_time,:second_pilot_id, :third_seat_name, :view_history, :view_deffered_log, :user_id, :mission],
                                 sortie_attributes: [:user_id, :takeoff_time, 
                                   :landing_time, :sortie_code, :touch_go, :pilot_comment, :full_stop], 
                                 capt_after_flight_attributes: [:flight_time, :user_id],

@@ -24,15 +24,20 @@ class FlyingLog
   # validates :location_to, presence: true  
 
   
+  validate :check_flying_logs
   validate :check_techlogs
   validate :check_parts
   validate :check_scheduled_inspections
 
-  
+  def check_flying_logs
+    if aircraft.flying_logs.not_completed.map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
+    errors.add(:aircraft_id, " flying log already created.")
+    end
+  end
   def check_techlogs    
     if flight_released?
       if aircraft.techlogs.incomplete.count > 0
-        errors.add(:aircraft_id, " has some pending techlogs")
+        errors.add(:aircraft_id, " has some pending techlogs.")
       end
     end
   end
@@ -77,6 +82,7 @@ class FlyingLog
 
   scope :completed, -> { where(state: :log_completed) }
   scope :not_completed, -> { ne(state: :log_completed) }
+  scope :not_cancelled, -> { ne(state: :cancel_flight) }
   default_scope { order(id: :desc) }
   
   increments :number, seed: 1000
@@ -87,6 +93,7 @@ class FlyingLog
     after_transition on: :complete_log, do: :update_aircraft_timgings
     after_transition on: :pilot_back, do: :update_aircraft_times
     after_transition on: :complete_log, do: :update_aircraft_times
+    after_transition on: :cancel_flight, do: :cancel_techlogs
 
     event :flightline_service do
       transition started: :flightline_serviced
@@ -99,6 +106,9 @@ class FlyingLog
     end
     event :release_flight do
       transition servicing_completed: :flight_released
+    end
+    event :cancel_flight do 
+      transition flight_released: :flight_cancelled
     end
     event :book_flight do
       transition flight_released: :flight_booked
@@ -113,9 +123,6 @@ class FlyingLog
       transition logs_created: :log_completed
     end
   end
-
-  
-
 
   belongs_to :aircraft
   
@@ -220,6 +227,13 @@ class FlyingLog
 
     self.aircraft.update_part_values self
     self.create_history
+  end
+
+  def cancel_techlogs
+    techlogs.each do |techlog|
+      techlog.condition_cd = 3
+      tecchlog.save
+    end
   end
 
   def create_history
