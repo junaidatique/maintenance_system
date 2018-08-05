@@ -19,11 +19,7 @@ class FlyingLog
   field :location_from, type: String
   field :location_to, type: String
   field :completion_time, type: String
-  
-  # validates :location_from, presence: true
-  # validates :location_to, presence: true  
-
-  
+    
   validate :check_flying_logs
   validate :check_techlogs
   validate :check_parts
@@ -31,7 +27,8 @@ class FlyingLog
 
   
   def check_flying_logs
-    if aircraft.flying_logs.not_completed.not_cancelled.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
+    
+    if started? and aircraft.flying_logs.not_completed.not_cancelled.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
       errors.add(:aircraft_id, " flying log already created.")
     end
   end
@@ -61,8 +58,7 @@ class FlyingLog
     end
   end
 
-  def check_scheduled_inspections    
-    aircraft.check_inspections
+  def check_scheduled_inspections        
     if started? and aircraft.scheduled_inspections.due.count > 0
       errors.add(:aircraft_id, "has due inspections.")
     end

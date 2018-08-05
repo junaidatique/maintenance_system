@@ -59,7 +59,7 @@
             = link_to pdf_flying_log_path(@flying_log), class: 'btn btn-success btn-flat', target: :_blank do
               | View QSMK Flying Log
             |  
-            - if can? :cancel, FlyingLog
+            - if can? :cancel, FlyingLog and @flying_log.flight_released?
               = link_to cancel_flying_log_path(@flying_log), class: 'btn btn-success btn-flat' do
                 | Cancel Flying Log
             - if can? :bookin_flight, FlyingLog and @flying_log.pilot_commented?
