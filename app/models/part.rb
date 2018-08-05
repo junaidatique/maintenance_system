@@ -48,6 +48,10 @@ class Part
   field :landings_completed, type: Integer, default: 0  
 
   belongs_to :aircraft, optional: true
+
+  has_many :fl_left_tyre, class_name: 'FlyingLog', inverse_of: :left_tyre
+  has_many :fl_right_tyre, class_name: 'FlyingLog', inverse_of: :right_tyre  
+  has_many :fl_nose_tail, class_name: 'FlyingLog', inverse_of: :nose_tail
   
   has_many :part_histories  
   has_many :old_parts, class_name: 'ChangePart', inverse_of: :old_parts
@@ -160,6 +164,8 @@ class Part
       part_history.flying_log   = flying_log
       part_history.aircraft_id  = flying_log.aircraft.id
       part_history.created_at   = flying_log.created_at
+      part_history.total_hours    = part_histories.sum('hours')
+      part_history.total_landings = part_histories.sum('landings')
       part_history.part         = self      
       part_history.save        
       self.update_values      

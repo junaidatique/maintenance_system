@@ -8,7 +8,7 @@ class FlyingLogsController < ApplicationController
     if current_user.admin?
       @flying_logs = FlyingLog.all
     else
-      @flying_logs = FlyingLog.not_cancelled.not_completed.all
+      @flying_logs = FlyingLog.not_cancelled_not_completed.all
     end
     
   end

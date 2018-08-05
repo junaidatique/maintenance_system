@@ -44,6 +44,7 @@ class Ability
       can :autocomplete_codes, AutherizationCode      
       can :manage, Inspection
       can :cancel, FlyingLog
+      can :view_flight_techlogs, FlyingLog
     elsif user.inst_fitt?
       can :read, Aircraft
       can :ru, FlyingLog

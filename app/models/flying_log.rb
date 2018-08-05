@@ -28,7 +28,7 @@ class FlyingLog
   
   def check_flying_logs
     
-    if started? and aircraft.flying_logs.not_completed.not_cancelled.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
+    if started? and aircraft.flying_logs.not_cancelled_not_completed.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
       errors.add(:aircraft_id, " flying log already created.")
     end
   end
@@ -78,8 +78,8 @@ class FlyingLog
   
 
   scope :completed, -> { where(state: :log_completed) }
-  scope :not_completed, -> { ne(state: :log_completed) }
-  scope :not_cancelled, -> { ne(state: :flight_cancelled) }
+  scope :not_completed, -> { ne(state: :log_completed) }  
+  scope :not_cancelled_not_completed, -> { where("state"=>{"$nin"=>["log_completed","flight_cancelled"] } )}
   default_scope { order(id: :desc) }
   
   increments :number, seed: 1000
@@ -87,7 +87,7 @@ class FlyingLog
   state_machine initial: :started do
     #audit_trail initial: false,  context: [:aircraft]
 
-    after_transition on: :complete_log, do: :update_aircraft_timgings
+    after_transition on: :complete_log, do: :update_aircraft_timings
     after_transition on: :pilot_back, do: :update_aircraft_times
     after_transition on: :complete_log, do: :update_aircraft_times
     
@@ -133,7 +133,10 @@ class FlyingLog
   end
 
   belongs_to :aircraft
-  
+  belongs_to :left_tyre, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
+  belongs_to :right_tyre, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
+  belongs_to :nose_tail, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
+
   has_one :ac_configuration, dependent: :destroy
   has_one :capt_acceptance_certificate, dependent: :destroy
   has_one :sortie, dependent: :destroy
@@ -145,6 +148,9 @@ class FlyingLog
   has_one :post_mission_report, dependent: :destroy
   has_one :flying_history, dependent: :destroy
   has_many :techlogs, dependent: :destroy
+
+
+  
 
   # embeds_many :notifications, as: :notifiable
   # embeds_many :flying_log_state_transitions
@@ -199,7 +205,7 @@ class FlyingLog
     self.fuel_total      = aircraft.fuel_capacity
   end
 
-  def update_aircraft_timgings    
+  def update_aircraft_timings    
     self.completion_time = Time.zone.now
     self.save    
   end
@@ -231,6 +237,13 @@ class FlyingLog
     f_total.corrected_total_aircraft_hours   = total_aircraft_hours.round(2)
     f_total.corrected_total_landings         = t_landings
     f_total.corrected_total_prop_hours       = total_prop_hours.round(2)
+
+
+    self.left_tyre = aircraft.parts.left_tyre.first
+    self.right_tyre = aircraft.parts.right_tyre.first
+    self.nose_tail = aircraft.parts.nose_tail.first
+
+    self.save
 
     self.aircraft.update_part_values self
     self.create_history

@@ -4,7 +4,9 @@ class PartHistory
   
   field :quantity, type: Float, default: 0
   field :hours, type: Float, default: 0
+  field :total_hours, type: Float, default: 0
   field :landings, type: Integer, default: 0  
+  field :total_landings, type: Integer, default: 0  
 
   belongs_to :part
   belongs_to :flying_log, optional: true
