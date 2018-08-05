@@ -125,7 +125,7 @@ class FlyingLog
       transition flight_booked: :flight_released
     end
     event :techlog_check do
-      transition pilot_commented: :logs_created
+      transition pilot_confirmed: :logs_created
     end
     event :complete_log do
       transition logs_created: :log_completed

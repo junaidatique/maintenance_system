@@ -57,7 +57,7 @@
       .box-body
         .row
           .col-sm-12
-            - if can? :view_781, FlyingLog
+            - if can? :view_781, Aircraft
               = link_to airframe_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank' 
                 | &nbsp; 781J
               | &nbsp;

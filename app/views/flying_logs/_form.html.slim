@@ -45,6 +45,8 @@
                           th width='10%'
                             | Description
                           th width='10%'
+                            | Autherization Code
+                          th width='10%'
                             | Action Taken                          
                           th width='13%'
                             | Detail
@@ -57,6 +59,8 @@
                               = display_date(techlog.log_date) 
                             td.table-row-center
                               = techlog.description
+                            td.table-row-center
+                              = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
                             td.table-row-center
                               = techlog.action                            
                                 
@@ -86,6 +90,8 @@
                           th width='10%'
                             | Description
                           th width='10%'
+                            | Autherization Code
+                          th width='10%'
                             | Action Taken                          
                           th width='13%'
                             | Detail
@@ -98,6 +104,8 @@
                               = display_date(techlog.log_date) 
                             td.table-row-center
                               = techlog.description
+                            td.table-row-center
+                              = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
                             td.table-row-center
                               = techlog.action                            
                                 
@@ -125,6 +133,10 @@
                             | Date
                           th width='10%'
                             | Aircraft
+                          th width='10%'
+                            | Description
+                          th width='10%'
+                            | Autherization Code
                           th width='13%'
                             | Actions
                       tbody
@@ -136,6 +148,10 @@
                               = display_date(techlog.log_date) 
                             td.table-row-center
                               = techlog.aircraft.tail_number                
+                            td.table-row-center
+                              = techlog.description
+                            td.table-row-center
+                              = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
                             td.text-center width='20%'
                               = link_to pdf_addl_log_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
                                 i.fa.fa-file-pdf-o
@@ -322,7 +338,9 @@
                       th width='10%'
                         | Aircraft
                       th width='10%'
-                        | WUC
+                        | Description
+                      th width='10%'
+                        | Autherization Code
                       th width='10%'
                         | Completed
                       th width='13%'
@@ -337,13 +355,15 @@
                         td.table-row-center
                           = techlog.aircraft.tail_number
                         td.table-row-center
-                          = techlog.work_unit_code.code unless techlog.work_unit_code.blank?
+                          = techlog.description
+                        td.table-row-center
+                          = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
                         td.table-row-center
                           = techlog.is_completed? ? 'Yes' : 'No'
                         td.text-center width='20%'
                           = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
                             i.fa.fa-file-pdf-o
-  - if can? :update_sortie, FlyingLog and !@flying_log.capt_acceptance_certificate.created_at.blank?      
+  - if can? :update_sortie, FlyingLog and @flying_log.pilot_confirmed?      
     .row
       .col-md-12
         .box.box-info
@@ -352,25 +372,7 @@
               i.fa.fa-bars
               | &nbsp; Sortie
           .box-body
-            = f.simple_fields_for :sortie do |ac_f|
-              /.row
-                .col-sm-12
-                  h5
-                    | Times
-              /.row
-                .col-sm-6
-                  = ac_f.input :takeoff_time, label: 'Takeoff Time (Local)', input_html: { class: 'timepickerclass' }
-                .col-sm-6
-                  = ac_f.input :landing_time, label: 'Landing Time (Local)', input_html: { class: 'timepickerclass' }                  
-              /.row
-                .col-sm-12
-                  h5
-                    | Landings
-              /.row
-                .col-sm-6
-                  = ac_f.input :touch_go
-                .col-sm-6
-                  = ac_f.input :full_stop
+            = f.simple_fields_for :sortie do |ac_f|              
               .row
                 .col-sm-6
                   = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code_unsat), as: :radio_buttons    
