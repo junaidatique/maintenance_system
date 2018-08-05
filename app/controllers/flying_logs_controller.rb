@@ -137,7 +137,7 @@ class FlyingLogsController < ApplicationController
             end
             @flying_log.pilot_back
           end
-        elsif current_user.pilot? and @flying_log.pilot_commented? and !@flying_log.sortie.mission_cancelled?
+        elsif current_user.pilot? and (@flying_log.pilot_commented? or @flying_log.pilot_confirmed?) and !@flying_log.sortie.mission_cancelled?
           if @flying_log.sortie.pilot_comment_cd == "SAT"
             @flying_log.sortie.remarks = @flying_log.sortie.pilot_comment.to_s
             @flying_log.sortie.sortie_code_cd = 1
