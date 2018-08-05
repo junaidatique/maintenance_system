@@ -8,7 +8,7 @@ class FlyingLogsController < ApplicationController
     if current_user.admin?
       @flying_logs = FlyingLog.all
     else
-      @flying_logs = FlyingLog.not_completed.not_cancelled.all
+      @flying_logs = FlyingLog.not_cancelled.not_completed.all
     end
     
   end
@@ -137,7 +137,8 @@ class FlyingLogsController < ApplicationController
             end
             @flying_log.pilot_back
           end
-        elsif current_user.pilot? and @flying_log.pilot_commented? and !@flying_log.sortie.mission_cancelled?
+        elsif current_user.pilot? and @flying_log.pilot_commented? #and !@flying_log.sortie.mission_cancelled?
+          @flying_log.pilot_confirmation
           if @flying_log.sortie.pilot_comment_cd == "SAT"
             @flying_log.sortie.remarks = @flying_log.sortie.pilot_comment.to_s
             @flying_log.sortie.sortie_code_cd = 1
@@ -146,9 +147,8 @@ class FlyingLogsController < ApplicationController
               techlog.destroy
             end
             @flying_log.complete_log
-          end
-      
-        elsif can? :update_flying_log, FlyingLog and @flying_log.pilot_commented?
+          end      
+        elsif can? :update_sortie, FlyingLog and @flying_log.pilot_confirmed?
           @flying_log.techlog_check
           @flying_log.complete_log
           # if @flying_log.flightline_servicing.inspection_performed_cd != 2 and @flying_log.techlogs.incomplete.count == 0

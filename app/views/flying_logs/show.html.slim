@@ -2,7 +2,7 @@
   = @flying_log.serial_no
 
 = render 'show_flying_log'
-- if current_user.master_control?
+- if can? :view_flight_techlogs, FlyingLog
   .row
     .col-md-12
       .box.box-info
@@ -27,7 +27,9 @@
                     th width='10%'
                       | Aircraft
                     th width='10%'
-                      | WUC
+                      | Description
+                    th width='10%'
+                      | Autherization Code
                     th width='10%'
                       | Completed
                     th width='13%'
@@ -42,9 +44,11 @@
                       td.table-row-center
                         = techlog.aircraft.tail_number
                       td.table-row-center
-                        = techlog.work_unit_code.code unless techlog.work_unit_code.blank?
+                        = techlog.description
                       td.table-row-center
-                        = techlog.is_completed? ? 'Yes' : 'No'
+                        = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
+                      td.table-row-center
+                        = techlog.condition.to_s.titleize
                       td.text-center width='20%'
                         = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
                           i.fa.fa-file-pdf-o
