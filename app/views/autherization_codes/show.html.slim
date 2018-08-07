@@ -27,3 +27,4 @@
                   th width="50%"
                     | Trade
                   td = @autherization_code.autherized_trade
+= render 'common/actions_buttons', back_path: autherization_codes_path, edit_path: edit_autherization_code_path(@autherization_code)

@@ -1,7 +1,19 @@
-= simple_form_for(@autherization_code) do |f|
+= simple_form_for(@autherization_code, html: { class: '' }) do |f|
   = f.error_notification
-
-  .form-inputs
-
-  .form-actions
-    = f.button :submit
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; General
+        .box-body
+          .row
+            .col-sm-6
+              = f.input :code
+            .col-sm-6
+              = f.input :inspection_type
+          .row
+            .col-sm-6
+              = f.input :autherized_trade, collection: enum_option_pairs(AutherizationCode, :autherized_trade)
+  == render 'common/form_action_buttons', options: { form: f, index_path: autherization_codes_path}

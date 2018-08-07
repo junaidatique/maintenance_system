@@ -31,6 +31,7 @@ class Ability
       can :cancel, FlyingLog   
       can :view_781, Aircraft # view 781 forms on aircraft detail page
       can :view_flight_techlogs, FlyingLog
+      can :manage, AutherizationCode
     elsif user.master_control?      
       can :read, Aircraft
       can :get_aircrafts, Aircraft
