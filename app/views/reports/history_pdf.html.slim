@@ -1,0 +1,38 @@
+.history_pdf 
+  .tl-trade
+    | History Sheet -- Aircraft 
+    = aircraft.tail_number
+  table.table.table-bordered.table-striped width="99%" border="0" cellspacing="0"
+    thead
+      tr
+        th width='10%'
+          | Pilot                          
+        th width='10%'
+          | Date
+        th width='40%'
+          | Defect        
+        th width='40%'
+          | Corrected Action                                  
+    tbody                        
+      - aircraft.flying_logs.completed.order(number: :desc).each do |flying_log|
+        - if flying_log.techlogs.pilot_created.count > 0
+          - flying_log.techlogs.pilot_created.each do |techlog|
+            tr
+              td.table-row-center
+                = techlog.user.name
+              td.table-row-center
+                = display_date(techlog.log_date) 
+              td
+                = techlog.description              
+              td
+                = techlog.action                                                            
+        - else
+          tr
+            td.table-row-center
+              = flying_log.capt_acceptance_certificate.user.name                            
+            td.table-row-center
+              = display_date(flying_log.log_date) 
+            td
+              = flying_log.sortie.pilot_comment_cd            
+            td.table-row-center                                                                              
+  

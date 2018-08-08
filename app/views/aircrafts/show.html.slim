@@ -71,7 +71,10 @@
               | &nbsp;
               = link_to tyre_record_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank'                 
                 | &nbsp; Tyre Landing Record
-                | &nbsp;
+              | &nbsp;
+              = link_to history_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank'                 
+                | &nbsp; History
+              | &nbsp;
 - @scheduled_inspections = @aircraft.scheduled_inspections.not_completed
 == render "scheduled_inspections/table"
 .row

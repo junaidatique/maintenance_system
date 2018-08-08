@@ -38,6 +38,7 @@ Rails.application.routes.draw do
       get :inspection_record_pdf      
       get :inspection_pdf      
       get :tyre_record_pdf      
+      get :history_pdf      
       
     end
   end

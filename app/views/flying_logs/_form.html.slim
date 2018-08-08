@@ -50,8 +50,7 @@
                             | Action Taken                          
                           th width='13%'
                             | Detail
-                      tbody
-                        / - @flying_log.aircraft.techlogs.techloged.completed.pilot_created.order(number: :desc).each do |techlog|
+                      tbody                        
                         - @flying_log.aircraft.flying_logs.completed.order(number: :desc).each do |flying_log|
                           - if flying_log.techlogs.pilot_created.count > 0
                             - flying_log.techlogs.pilot_created.each do |techlog|
@@ -80,10 +79,7 @@
                               td.table-row-center
                                 = flying_log.sortie.pilot_comment_cd
                               td.table-row-center
-                                
-                              td.table-row-center
-                                /= techlog.action                            
-                                  
+                              td.table-row-center                                                                  
                               td.text-center width='20%'
                                 = link_to pdf_flying_log_path(flying_log, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
                                   i.fa.fa-file-pdf-o                                                            

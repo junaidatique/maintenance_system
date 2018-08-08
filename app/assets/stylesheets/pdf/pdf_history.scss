@@ -1,0 +1,36 @@
+@mixin position-abs-mixin($top, $left) {
+  position: absolute;
+  top: $top;
+  left: $left;
+}
+.history_pdf {  
+  // border: solid 1px #000000;
+  .tl-trade {    
+    width: 100%;
+    height: 100px;
+    background: #ffffff;   
+    font-size: 48px;
+    text-align: center;
+  }
+  table{
+    // border: solid 1px #000000;
+    tr{
+      th{
+        border: solid 1px #000000;
+        font-size: 24px;
+      }
+      td{
+        border: solid 1px #000000;
+        font-size: 20px;
+        padding: 5px;
+        &.table-row-center{
+          text-align: center;
+        }
+      }
+    }
+  }
+  
+  
+  
+    
+}
