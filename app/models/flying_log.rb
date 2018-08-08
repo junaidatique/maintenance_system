@@ -34,8 +34,8 @@ class FlyingLog
   end
   def check_techlogs    
     if flight_released?
-      if aircraft.techlogs.incomplete.count > 0
-        errors.add(:aircraft_id, " has some pending techlogs.")
+      if aircraft.techlogs.techloged.incomplete.count > 0
+        errors.add(:aircraft_id, " has some outstanding techlogs.")
       end
     end
   end

@@ -50,7 +50,7 @@ class FlyingLogsController < ApplicationController
     if @flying_log.flight_cancelled?
       redirect_to flying_log_path(@flying_log), :flash => { :error => "This Flying Log is cancelled." }
     end
-    if @flying_log.aircraft.techlogs.incomplete.count > 0 and @flying_log.servicing_completed?
+    if @flying_log.aircraft.techlogs.techloged.incomplete.count > 0 and @flying_log.servicing_completed?
       redirect_to flying_log_path(@flying_log), :flash => { :error => "#{@flying_log.aircraft.tail_number} has some pending techlogs." }
     end
     

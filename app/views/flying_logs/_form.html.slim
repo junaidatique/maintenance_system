@@ -39,34 +39,54 @@
                       thead
                         tr
                           th width='10%'
-                            | Number
+                            | Pilot                          
                           th width='10%'
                             | Date
                           th width='10%'
                             | Description
                           th width='10%'
-                            | Autherization Code
+                            | Autherization Code                          
                           th width='10%'
                             | Action Taken                          
                           th width='13%'
                             | Detail
                       tbody
-                        - @flying_log.aircraft.techlogs.techloged.completed.pilot_created.order(number: :desc).each do |techlog|
-                          tr
-                            td.table-row-center
-                              = link_to techlog.serial_no, techlog_path(techlog), target: :_blank
-                            td.table-row-center
-                              = display_date(techlog.log_date) 
-                            td.table-row-center
-                              = techlog.description
-                            td.table-row-center
-                              = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
-                            td.table-row-center
-                              = techlog.action                            
+                        / - @flying_log.aircraft.techlogs.techloged.completed.pilot_created.order(number: :desc).each do |techlog|
+                        - @flying_log.aircraft.flying_logs.completed.order(number: :desc).each do |flying_log|
+                          - if flying_log.techlogs.pilot_created.count > 0
+                            - flying_log.techlogs.pilot_created.each do |techlog|
+                              tr
+                                td.table-row-center
+                                  = techlog.user.name
+                                td.table-row-center
+                                  = display_date(techlog.log_date) 
+                                td.table-row-center
+                                  = techlog.description
+                                td.table-row-center
+                                  = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
+                                td.table-row-center
+                                  = techlog.action                            
+                                    
+                                td.text-center width='20%'
+                                  = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
+                                    i.fa.fa-file-pdf-o 
+
+                          - else
+                            tr
+                              td
+                                = flying_log.capt_acceptance_certificate.user.name                            
+                              td.table-row-center
+                                = display_date(flying_log.log_date) 
+                              td.table-row-center
+                                = flying_log.sortie.pilot_comment_cd
+                              td.table-row-center
                                 
-                            td.text-center width='20%'
-                              = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
-                                i.fa.fa-file-pdf-o                                                            
+                              td.table-row-center
+                                /= techlog.action                            
+                                  
+                              td.text-center width='20%'
+                                = link_to pdf_flying_log_path(flying_log, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
+                                  i.fa.fa-file-pdf-o                                                            
                                 
     .row
       .col-md-12
@@ -130,13 +150,11 @@
                           th width='10%'
                             | Techlog
                           th width='10%'
-                            | Date
-                          th width='10%'
-                            | Aircraft
+                            | Date                          
                           th width='10%'
                             | Description
                           th width='10%'
-                            | Autherization Code
+                            | Autherization Code                          
                           th width='13%'
                             | Actions
                       tbody
@@ -145,9 +163,7 @@
                             td.table-row-center
                               = link_to techlog.serial_no, techlog_path(techlog)
                             td.table-row-center
-                              = display_date(techlog.log_date) 
-                            td.table-row-center
-                              = techlog.aircraft.tail_number                
+                              = display_date(techlog.log_date)                             
                             td.table-row-center
                               = techlog.description
                             td.table-row-center
