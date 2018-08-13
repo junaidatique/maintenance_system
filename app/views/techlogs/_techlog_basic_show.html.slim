@@ -49,11 +49,15 @@
               = link_to create_limitation_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
                 i.fa.fa-pencil
                 | &nbsp; Transfer to Limitation Log
+              | &nbsp;
             - if @techlog.log_addled? or @techlog.log_limited? and can? :manage_addl_logs, Techlog
               = link_to create_techlog_techlog_path(@techlog), class: 'btn btn-info btn-flat'
                 i.fa.fa-pencil
                 | &nbsp; Transfer back to Techlog
               | &nbsp;
+            - if current_user.admin?
+              = link_to techlog_path(@techlog), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
+                i.fa.fa-trash
       = render 'techlogs/techlog_short_detail', techlog: @techlog      
 .row
   .col-md-12
