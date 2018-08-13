@@ -32,6 +32,7 @@ class Ability
       can :view_781, Aircraft # view 781 forms on aircraft detail page
       can :view_flight_techlogs, FlyingLog
       can :manage, AutherizationCode
+      can :generate_report, Techlog
     elsif user.master_control?      
       can :read, Aircraft
       can :get_aircrafts, Aircraft

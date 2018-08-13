@@ -29,10 +29,12 @@
         - else
           tr
             td.table-row-center
-              = flying_log.capt_acceptance_certificate.user.name                            
+              - if flying_log.capt_acceptance_certificate.present? and flying_log.capt_acceptance_certificate.user.present?
+                = flying_log.capt_acceptance_certificate.user.name                            
             td.table-row-center
               = display_date(flying_log.log_date) 
             td
-              = flying_log.sortie.pilot_comment_cd            
+              - if flying_log.sortie.present?
+                = flying_log.sortie.pilot_comment_cd            
             td.table-row-center                                                                              
   

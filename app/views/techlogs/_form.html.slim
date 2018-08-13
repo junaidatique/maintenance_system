@@ -2,6 +2,7 @@
   = f.error_notification
   = f.input :work_unit_code_id, as: :hidden  
   = f.input :autherization_code_id, as: :hidden
+  = f.input :closed_by_id, as: :hidden, input_html: { value: current_user.id }  
   - if @techlog.errors.full_messages.count > 0
     .alert.alert-danger
       ul

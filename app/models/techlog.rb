@@ -54,7 +54,8 @@ class Techlog
   belongs_to :work_unit_code, optional: true
   belongs_to :autherization_code, optional: true
   belongs_to :flying_log, optional: true
-  belongs_to :user  
+  belongs_to :user, class_name: User.name, inverse_of: :techlogs
+  belongs_to :closed_by, class_name: User.name, inverse_of: :closed_techlogs, optional: true  
   belongs_to :aircraft, optional: true
   belongs_to :parent_techlog, class_name: Techlog.name, inverse_of: :interm_logs, optional: true
 
@@ -195,6 +196,7 @@ class Techlog
 
   def set_condition
     self.condition_cd = self.condition_cd.to_i
+    self.type_cd = self.type_cd.to_i
   end
 
   def create_serial_no

@@ -1,5 +1,22 @@
 = content_for :box_heading do
   | TechLogs
+- if can? :generate_report, Techlog
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; Generate Daily Report
+        .box-body
+          = form_tag(techlog_pdf_reports_path, method: :get, target: "_blank" )  do |f|
+            .row
+              .col-sm-6
+                label.control-label.string Techlog Date
+                = text_field_tag :flying_date, nil, class: 'form-control datepicker'
+              .col-sm-6
+                br
+                = submit_tag 'Print Sheet', class: "filter-btn btn btn-block btn-primary btn-flat"
 
 .row
   .col-md-12

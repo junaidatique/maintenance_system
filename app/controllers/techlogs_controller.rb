@@ -251,7 +251,7 @@ class TechlogsController < ApplicationController
       params.require(:techlog).permit(:user_id,:work_unit_code_id, :autherization_code_id, :updated_by, :aircraft_id, :location_id, :log_date, :log_time,
                                         :type, :condition, :action, :additional_detail_form, 
                                         :nmcs_pmcs, :demand_notif, :amf_reference_no, :pdr_number, :occurrence_report,
-                                        :description,
+                                        :description, :closed_by_id,
                                         :addl_period_of_deferm, :addl_due, :addl_log_time, :addl_log_date,
                                         :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description, :verified_tools,
                                         flying_log_attributes: [ :fuel_refill, :oil_serviced, :oil_total_qty ],
