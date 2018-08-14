@@ -1,5 +1,5 @@
 class ScheduledInspectionsController < ApplicationController
-  before_action :set_scheduled_inspection, only: [:show, :edit, :update, :destroy, :apply_extention, :save_extention, :cancel_extention]
+  before_action :set_scheduled_inspection, only: [:show, :edit, :update, :destroy, :apply_extention, :save_extention, :cancel_extention, :create_techlog]
 
   # GET /scheduled_inspections
   # GET /scheduled_inspections.json
@@ -36,6 +36,15 @@ class ScheduledInspectionsController < ApplicationController
     if @scheduled_inspection.condition_cd == 1
       @scheduled_inspection.condition_cd = 0
       redirect_to @scheduled_inspection, notice: 'Scheduled inspection extention was successfully canceled.'
+    end
+  end
+
+  def create_techlog
+    if @scheduled_inspection.status_cd == 2 and @scheduled_inspection.techlog.blank?
+      @scheduled_inspection.update_scheduled_inspections @scheduled_inspection.completed_hours
+      @scheduled_inspection.status_cd = 2
+      @scheduled_inspection.save
+      redirect_to @scheduled_inspection
     end
   end
 

@@ -21,6 +21,12 @@
                   i.fa.fa-pencil
                   | &nbsp; Apply for Extention
                 | &nbsp;
+              - if current_user.admin? and @scheduled_inspection.status_cd == 2 and @scheduled_inspection.techlog.blank?
+                = link_to create_techlog_scheduled_inspection_path(@scheduled_inspection), class: 'btn btn-info btn-flat'
+                  i.fa.fa-pencil
+                  | &nbsp; Generate Techlogs
+                | &nbsp;
+                
 
         .box-body
           .row
@@ -116,7 +122,7 @@
       = link_to inspection_path(@scheduled_inspection.inspection), class: 'btn btn-block btn-primary btn-flat' do
         i.fa.fa-angle-double-left
         | &nbsp; Back
-    - if @scheduled_inspection.status_cd == 1 or @scheduled_inspection.status_cd == 4
+    - if (@scheduled_inspection.status_cd == 1 or @scheduled_inspection.status_cd == 4)
       .col-sm-4 class="col-sm-offset-4"
         = f.button :submit, id: 'create_update_user', class: 'btn btn-block btn-success btn-flat' do
           i.fa.fa-refresh        
