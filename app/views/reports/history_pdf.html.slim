@@ -15,26 +15,27 @@
           | Corrected Action                                  
     tbody                        
       - aircraft.flying_logs.completed.order(number: :desc).each do |flying_log|
-        - if flying_log.techlogs.pilot_created.count > 0
-          - flying_log.techlogs.pilot_created.each do |techlog|
+        - if flying_log.flightline_servicing.inspection_performed_cd != 2
+          - if flying_log.techlogs.pilot_created.count > 0
+            - flying_log.techlogs.pilot_created.each do |techlog|
+              tr
+                td.table-row-center
+                  = techlog.user.name
+                td.table-row-center
+                  = display_date(techlog.log_date) 
+                td
+                  = techlog.description              
+                td
+                  = techlog.action                                                            
+          - else
             tr
               td.table-row-center
-                = techlog.user.name
+                - if flying_log.capt_acceptance_certificate.present? and flying_log.capt_acceptance_certificate.user.present?
+                  = flying_log.capt_acceptance_certificate.user.name                            
               td.table-row-center
-                = display_date(techlog.log_date) 
+                = display_date(flying_log.log_date) 
               td
-                = techlog.description              
-              td
-                = techlog.action                                                            
-        - else
-          tr
-            td.table-row-center
-              - if flying_log.capt_acceptance_certificate.present? and flying_log.capt_acceptance_certificate.user.present?
-                = flying_log.capt_acceptance_certificate.user.name                            
-            td.table-row-center
-              = display_date(flying_log.log_date) 
-            td
-              - if flying_log.sortie.present?
-                = flying_log.sortie.pilot_comment_cd            
-            td.table-row-center                                                                              
-  
+                - if flying_log.sortie.present?
+                  = flying_log.sortie.pilot_comment_cd            
+              td.table-row-center                                                                              
+    
