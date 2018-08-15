@@ -1,6 +1,6 @@
 require 'combine_pdf'
 class FlyingLogsController < ApplicationController  
-  before_action :set_flying_log, only: [:show, :edit, :update, :destroy, :pdf, :cancel, :update_timing]
+  before_action :set_flying_log, only: [:show, :edit, :update, :destroy, :pdf, :cancel, :release, :update_timing]
 
   # GET /flying_logs
   # GET /flying_logs.json
@@ -215,6 +215,16 @@ class FlyingLogsController < ApplicationController
 
   def cancel
     @flying_log.cancel_flight
+    redirect_to @flying_log
+  end
+  def release
+    if @flying_log.flightline_serviced?
+      @flying_log.fill_fuel
+    elsif @flying_log.fuel_filled?
+      @flying_log.complete_servicing
+    elsif @flying_log.servicing_completed?
+      @flying_log.release_flight
+    end
     redirect_to @flying_log
   end
   def update_timing

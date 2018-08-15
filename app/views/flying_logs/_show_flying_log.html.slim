@@ -62,9 +62,14 @@
             - if can? :cancel, FlyingLog and @flying_log.flight_released?
               = link_to cancel_flying_log_path(@flying_log), class: 'btn btn-success btn-flat' do
                 | Cancel Flying Log
+              | &nbsp;
             - if can? :bookin_flight, FlyingLog and @flying_log.pilot_commented?
               = link_to update_timing_flying_log_path(@flying_log), class: 'btn btn-success btn-flat' do
                 | Update Flying Log Time
+              | &nbsp;
+            - if can? :release_flight, FlyingLog and @flying_log.techlogs.count == 0 and !@flying_log.flight_cancelled? 
+              = link_to release_flying_log_path(@flying_log), class: 'btn btn-success btn-flat' do
+                | Release Flying Log
       .box-body
         .row
           .col-sm-12

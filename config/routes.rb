@@ -93,6 +93,7 @@ Rails.application.routes.draw do
       get 'pdf'
       get 'cancel'
       get 'update_timing'
+      get 'release'
     end
   end
   root 'flying_logs#index'
