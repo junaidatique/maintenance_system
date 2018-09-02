@@ -59,6 +59,7 @@ class FlyingLog
   end
 
   def check_scheduled_inspections        
+    aircraft.check_inspections
     if started? and aircraft.scheduled_inspections.due.count > 0
       errors.add(:aircraft_id, "has due inspections.")
     end
@@ -188,14 +189,14 @@ class FlyingLog
 
   def update_times
     build_aircraft_total_time
-    aircraft_total_time.carried_over_engine_hours     = aircraft.parts.engine_part.first.completed_hours
-    aircraft_total_time.carried_over_aircraft_hours   = aircraft.flight_hours
-    aircraft_total_time.carried_over_landings         = aircraft.landings
-    aircraft_total_time.carried_over_prop_hours       = aircraft.parts.propeller_part.first.completed_hours
-    aircraft_total_time.corrected_total_engine_hours     = aircraft.parts.engine_part.first.completed_hours
-    aircraft_total_time.corrected_total_aircraft_hours   = aircraft.flight_hours
-    aircraft_total_time.corrected_total_landings         = aircraft.landings
-    aircraft_total_time.corrected_total_prop_hours       = aircraft.parts.propeller_part.first.completed_hours
+    aircraft_total_time.carried_over_engine_hours     = aircraft.parts.engine_part.first.completed_hours.round(2)
+    aircraft_total_time.carried_over_aircraft_hours   = aircraft.flight_hours.round(2)
+    aircraft_total_time.carried_over_landings         = aircraft.landings.round(2)
+    aircraft_total_time.carried_over_prop_hours       = aircraft.parts.propeller_part.first.completed_hours.round(2)
+    aircraft_total_time.corrected_total_engine_hours     = aircraft.parts.engine_part.first.completed_hours.round(2)
+    aircraft_total_time.corrected_total_aircraft_hours   = aircraft.flight_hours.round(2)
+    aircraft_total_time.corrected_total_landings         = aircraft.landings.round(2)
+    aircraft_total_time.corrected_total_prop_hours       = aircraft.parts.propeller_part.first.completed_hours.round(2)
   end
 
   def update_fuel

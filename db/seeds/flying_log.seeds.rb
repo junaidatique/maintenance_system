@@ -1,7 +1,7 @@
-# rails db:seed:flying_log MIN=30 DAYS=0 INS=0
+# rails db:seed:flying_log MIN=30 DAYS=0 INS=0 OFFSET=0
 cur_time = Time.zone.now
 date = Time.zone.now - (ENV['DAYS'].to_i).days
-aircraft = Aircraft.first
+aircraft = Aircraft.limit(1).offset(ENV['OFFSET'].to_i).first
 puts 'Creating Pre flight Flying Log'
 flying_log = FlyingLog.new
 last_flying_log = FlyingLog.last
@@ -47,8 +47,8 @@ flying_log.techlogs.where(type_cd: 0).each do |techlog|
   techlog.action = Faker::Lorem.sentence
   techlog.condition_cd = 1
   techlog.verified_tools = true
-  techlog.user = User.where(role_cd: 4).first
-  techlog.save
+  techlog.user = User.where(role_cd: 5).first
+  techlog.save!
 end
 flying_log.save!
 # sleep(1)
@@ -64,11 +64,12 @@ puts 'built_flightline_released'
 flying_log.build_capt_acceptance_certificate
 flying_log.capt_acceptance_certificate.flight_time = cur_time.strftime("%H:%M %p")
 flying_log.capt_acceptance_certificate.view_history = 1
+flying_log.capt_acceptance_certificate.view_deffered_log = 1
 flying_log.capt_acceptance_certificate.mission = "FLY PAST"
 flying_log.capt_acceptance_certificate.user = User.where(role_cd: 5).first
 flying_log.capt_acceptance_certificate.third_seat_name = Faker::Lorem.word
 flying_log.book_flight
-flying_log.save
+flying_log.save!
 puts 'book out completed'
 # #return
 flying_log.build_sortie
@@ -89,8 +90,8 @@ puts 'Sortie calculated'
 
 flying_log.build_capt_after_flight
 flying_log.capt_after_flight.flight_time = cur_time.strftime("%H:%M %p")
-flying_log.capt_after_flight.user = User.where(role_cd: 7).first
-flying_log.save
+flying_log.capt_after_flight.user = User.where(role_cd: 5).first
+flying_log.save!
 
 puts 'Post mission report'
 flying_log.build_post_mission_report
@@ -105,14 +106,25 @@ flying_log.post_mission_report.map            = 7
 flying_log.post_mission_report.mag_drop_left  = 8
 flying_log.post_mission_report.mag_drop_right = 9
 flying_log.post_mission_report.remarks        = Faker::Lorem.sentence
-flying_log.post_mission_report.user           = User.where(role_cd: 7).first
+flying_log.post_mission_report.user           = User.where(role_cd: 5).first
 flying_log.post_mission_report.aircraft       = flying_log.aircraft
 flying_log.save!
 
 puts 'book in'
 flying_log.pilot_back
+flying_log.pilot_confirmation
 flying_log.sortie.remarks = flying_log.sortie.pilot_comment.to_s
 flying_log.sortie.sortie_code_cd = 1
 flying_log.techlog_check
 flying_log.complete_log
 flying_log.save
+
+exit
+
+Aircraft.limit(1).offset(6).first.parts.each do |part|
+  part.part_histories.where(flying_log_id: nil).ne(hours: 40.8).each do |part_history|
+    puts part_history.hours
+  end
+end
+# ----------------------------------------------------------
+# Aircraft.limit(1).offset(6).first.parts.where(trade_cd: 1).first.part_histories.where(flying_log_id: nil)

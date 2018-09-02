@@ -37,7 +37,7 @@
                     
                   td
 - @scheduled_inspections = @inspection.scheduled_inspections
-== render "scheduled_inspections/table"
+== render "scheduled_inspections/table", options: { heading: "Scheduled Inspections"}
 == render "work_packages/table"
 
 

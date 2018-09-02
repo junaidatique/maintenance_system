@@ -16,6 +16,7 @@ class Inspection
   
 
   validate :part_number_presence
+  
 
   def part_number_presence
     if type_cd == 1 and part_number.blank?

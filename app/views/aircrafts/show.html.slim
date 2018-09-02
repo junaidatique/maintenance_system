@@ -75,8 +75,18 @@
               = link_to history_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank'                 
                 | &nbsp; History
               | &nbsp;
-- @scheduled_inspections = @aircraft.scheduled_inspections.not_completed
-== render "scheduled_inspections/table"
+- @scheduled_inspections = @aircraft.scheduled_inspections.pending
+== render "scheduled_inspections/table", options: { heading: "Aircraft Pending Inspections"}
+- @scheduled_inspections = @aircraft.scheduled_inspections.in_progress
+== render "scheduled_inspections/table", options: { heading: "Aircraft In Progress Inspections"}
+- @scheduled_inspections = @aircraft.scheduled_inspections.due
+== render "scheduled_inspections/table", options: { heading: "Aircraft Due Inspections"}
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: Part.name).in(inspectable_id: @aircraft.parts.map(&:id)).pending
+== render "scheduled_inspections/table", options: { heading: "Aircraft Parts Pending Inspections"}
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: Part.name).in(inspectable_id: @aircraft.parts.map(&:id)).in_progress
+== render "scheduled_inspections/table", options: { heading: "Aircraft Parts in Progress Inspections"}
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: Part.name).in(inspectable_id: @aircraft.parts.map(&:id)).due
+== render "scheduled_inspections/table", options: { heading: "Aircraft Parts Due Inspections"}
 .row
   .col-md-12
     .box.box-info

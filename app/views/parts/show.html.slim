@@ -107,7 +107,7 @@
                     | Servicable
                   td = (@part.is_servicable) ? 'Yes' : 'No'  
 - @scheduled_inspections = @part.scheduled_inspections.not_completed
-== render "scheduled_inspections/table"
+== render "scheduled_inspections/table", options: { heading: "Scheduled Inspections"}
 .row
   .col-md-12
     .box.box-info

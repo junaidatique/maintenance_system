@@ -30,11 +30,11 @@
   table.previous_table border="0"
     tr       
       td.airframe_td
-        = total_aircraft_hours
+        = total_aircraft_hours.round(1)
       td.engine_td
-        = total_engine_hours
+        = total_engine_hours.round(1)
       td.ehr_td
-        = total_engine_hours
+        = total_engine_hours.round(1)
       td.flying_log_td
         /= histories.first.serial_no
       td.landings_td

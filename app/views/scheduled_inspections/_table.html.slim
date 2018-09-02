@@ -6,11 +6,17 @@
             .col-md-6
               h3.box-title
                 i.fa.fa-bars
-                | &nbsp; Scheduled Inspections
+                | &nbsp; 
+                - if options.present? and options[:heading].present?
+                  = options[:heading]
+                - else
+                  | Scheduled Inspections
       .box-body
         table.table.table-bordered.table-striped.data-tabled
           thead
             tr                
+              th
+                | Aircraft
               th
                 | Inspection Item
               th
@@ -30,6 +36,11 @@
           tbody
             - @scheduled_inspections.each do |scheduled_inspection|
               tr
+                td.table-row-center
+                  - if scheduled_inspection.inspectable_type == Aircraft.name
+                    = scheduled_inspection.inspectable.tail_number
+                  - else                    
+                    = scheduled_inspection.inspectable.aircraft.tail_number
                 td.table-row-center
                   - if scheduled_inspection.inspectable_type == Aircraft.name
                     = scheduled_inspection.inspectable.tail_number

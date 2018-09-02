@@ -12,9 +12,15 @@
                 | Number
               th width='10%'
                 | Serial #
-              th 
+              th width='10%'
+                | Hours
+              th width='15%'
+                | Engine Hours
+              th width='10%'
+                | Landings
+              th width='25%' 
                 | Status
-              th width='13%'
+              th width='15%'
                 | Actions
           tbody
             - @aircrafts.each do |aircraft|
@@ -23,6 +29,12 @@
                   = link_to aircraft.tail_number, aircraft_path(aircraft)
                 td.table-row-center
                   = aircraft.serial_no
+                td.table-row-center
+                  = aircraft.flight_hours
+                td.table-row-center
+                  = aircraft.engine_hours
+                td.table-row-center
+                  = aircraft.landings
                 td
                   - if todays_flying_plan.present? and todays_flying_plan.aircraft_ids.include? aircraft.id
                     - last_flying_log = aircraft.flying_logs.first
