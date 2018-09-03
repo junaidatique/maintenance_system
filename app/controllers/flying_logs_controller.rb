@@ -154,7 +154,10 @@ class FlyingLogsController < ApplicationController
           # if @flying_log.flightline_servicing.inspection_performed_cd != 2 and @flying_log.techlogs.incomplete.count == 0
             
           # end        
+        elsif can? :update_flying_hours, FlyingLog and @flying_log.log_completed?
+          @flying_log.update_aircraft_times
         end
+
         
         @flying_log.save
         format.html { redirect_to @flying_log, notice: 'Flying log was successfully updated.' }
