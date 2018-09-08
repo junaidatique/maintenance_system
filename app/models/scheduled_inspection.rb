@@ -108,9 +108,9 @@ class ScheduledInspection
   end
 
   def update_scheduled_inspections completed_hours
-    self.completed_hours = completed_hours
+    self.completed_hours = completed_hours.round(2)
     if hours > 0 and self.completed_hours.present?
-      if (self.hours - self.completed_hours).to_i <= 0
+      if (self.hours - self.completed_hours).to_f <= 0
         self.status = 4
       elsif (self.hours - self.completed_hours) < 10
         self.status = 1

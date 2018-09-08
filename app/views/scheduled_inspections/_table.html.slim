@@ -56,7 +56,7 @@
                 td.table-row-center
                   = scheduled_inspection.status
                 td.table-row-center
-                  = scheduled_inspection.completed_hours
+                  = scheduled_inspection.completed_hours.round(2)
                 td.table-row-center
                   = link_to scheduled_inspection_path(scheduled_inspection), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye

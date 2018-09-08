@@ -3,7 +3,7 @@
 - if histories.first.present?
   - total_aircraft_hours  = histories.first.total_aircraft_hours - histories.first.this_aircraft_hours
   - total_engine_hours    = histories.first.total_engine_hours - histories.first.this_engine_hours   
-  - total_landings        = histories.first.total_landings - (histories.first.full_stop + histories.first.touch_go) 
+  - total_landings        = histories.first.total_landings.to_i - (histories.first.full_stop.to_i + histories.first.touch_go.to_i) 
   - start_date            = display_date histories.first.created_at  if histories.first.present?
 - else 
   - total_aircraft_hours  = aircraft.flight_hours
