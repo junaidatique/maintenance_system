@@ -170,11 +170,16 @@ class TechlogsController < ApplicationController
     @techlog.add_to_limitation_log
     redirect_to limitation_log_path(@techlog)
   end
-  def approve_extension
+  def approve_extension    
     scheduled_inspection = @techlog.scheduled_inspection
-    scheduled_inspection.hours = (scheduled_inspection.hours + scheduled_inspection.extention_hours).round(2)
+    if scheduled_inspection.extention_hours > 0
+      scheduled_inspection.hours = (scheduled_inspection.hours + scheduled_inspection.extention_hours).round(2)      
+    else
+      scheduled_inspection.calender_life_date = scheduled_inspection.calender_life_date + scheduled_inspection.extention_days      
+    end
     scheduled_inspection.condition_cd = 2
     scheduled_inspection.save
+    scheduled_inspection.calculate_status
     @techlog.is_extention_granted = 1
     @techlog.action = "Extension Granted"
     @techlog.condition_cd = 1

@@ -106,10 +106,8 @@ class ScheduledInspection
       end
     end
   end
-
-  def update_scheduled_inspections completed_hours
-    self.completed_hours = completed_hours.round(2)
-    if hours > 0 and self.completed_hours.present?
+  def calculate_status
+    if hours > 0 and selfs
       if (self.hours - self.completed_hours).to_f <= 0
         self.status = 4
       elsif (self.hours - self.completed_hours) < 10
@@ -117,14 +115,18 @@ class ScheduledInspection
       end
     end
     if calender_life_date.present?
-      if calender_life_date < (Time.zone.now + 30.days)
-        self.status_cd = 1 if self.status_cd != 4
-      end
-      if calender_life_date < (Time.zone.now)
-        self.status_cd = 4    
-      end
-    end    
+      if calender_life_date.strftime('%Y-%m-%d').to_date <= (Time.zone.now).strftime('%Y-%m-%d').to_date
+        self.status_cd = 4
+      elsif calender_life_date.strftime('%Y-%m-%d') <= (Time.zone.now + 30.days).strftime('%Y-%m-%d')
+        self.status_cd = 1
+      end      
+    end          
     self.save
+  end
+  def update_scheduled_inspections completed_hours    
+    self.completed_hours = completed_hours.round(2)    
+    self.save
+    self.calculate_status
   end
   
 end
