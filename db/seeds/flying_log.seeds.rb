@@ -121,10 +121,6 @@ flying_log.save
 
 exit
 
-Aircraft.limit(1).offset(6).first.parts.each do |part|
-  part.part_histories.where(flying_log_id: nil).ne(hours: 40.8).each do |part_history|
-    puts part_history.hours
-  end
-end
+
 # ----------------------------------------------------------
 # Aircraft.limit(1).offset(6).first.parts.where(trade_cd: 1).first.part_histories.where(flying_log_id: nil)

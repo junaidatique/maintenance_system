@@ -92,7 +92,7 @@
                   th width="25%"
                     | Completed Hours
                   td
-                    = @scheduled_inspection.completed_hours
+                    = @scheduled_inspection.completed_hours.round(2)
                 tr
                   th width="25%"
                     | Started At

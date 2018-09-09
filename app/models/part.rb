@@ -173,7 +173,7 @@ class Part
   end
 
   def update_values
-    self.completed_hours     = part_histories.sum('hours')
+    self.completed_hours     = part_histories.sum('hours').round(2)
     self.landings_completed  = part_histories.sum('landings')
     self.remaining_hours     = (total_hours.to_f - completed_hours.to_f).round(2)
     save

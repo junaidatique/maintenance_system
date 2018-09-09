@@ -112,6 +112,8 @@ class ScheduledInspection
         self.status = 4
       elsif (self.hours - self.completed_hours) < 10
         self.status = 1
+      else
+        self.status = 0
       end
     end
     if calender_life_date.present?
@@ -119,6 +121,8 @@ class ScheduledInspection
         self.status_cd = 4
       elsif calender_life_date.strftime('%Y-%m-%d') <= (Time.zone.now + 30.days).strftime('%Y-%m-%d')        
         self.status_cd = 1
+      else
+        self.status = 0
       end      
     end          
     self.save

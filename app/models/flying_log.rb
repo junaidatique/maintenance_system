@@ -81,7 +81,7 @@ class FlyingLog
   scope :completed, -> { where(state: :log_completed) }
   scope :not_completed, -> { ne(state: :log_completed) }  
   scope :not_cancelled_not_completed, -> { where("state"=>{"$nin"=>["log_completed","flight_cancelled"] } )}
-  default_scope { order(id: :desc) }
+  # default_scope { order(id: :desc) }
   
   increments :number, seed: 1000
 
@@ -213,6 +213,7 @@ class FlyingLog
 
   def update_aircraft_times
     sortie = self.sortie
+    return if sortie.blank?
     sortie.total_landings = sortie.touch_go.to_i + sortie.full_stop.to_i
     sortie.flight_minutes = sortie.calculate_flight_minutes
     sortie.flight_time    = sortie.calculate_flight_time

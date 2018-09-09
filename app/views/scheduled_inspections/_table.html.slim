@@ -49,7 +49,7 @@
                 td.table-row-center
                   = scheduled_inspection.inspection.name
                 td.table-row-center
-                  = scheduled_inspection.hours
+                  = scheduled_inspection.hours.round(2)
                 td.table-row-center
                   = display_date scheduled_inspection.calender_life_date
                   
