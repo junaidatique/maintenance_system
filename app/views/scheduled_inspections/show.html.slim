@@ -11,10 +11,20 @@
               i.fa.fa-bars
               | &nbsp; Inspection
           .col-md-6.text-right
+            - if can? :defer_inspection, ScheduledInspection and @scheduled_inspection.status_cd == 4
+              = link_to defer_inspection_scheduled_inspection_path(@scheduled_inspection), class: 'btn btn-info btn-flat'
+                i.fa.fa-pencil
+                | &nbsp; Defer Extention
+              | &nbsp;
             - if can? :apply_extention, Inspection and @scheduled_inspection.condition_cd == 0
               = link_to apply_extention_scheduled_inspection_path(@scheduled_inspection), class: 'btn btn-info btn-flat'
                 i.fa.fa-pencil
                 | &nbsp; Apply for Extention
+              | &nbsp;
+            - if can? :cancel_extention, Inspection and @scheduled_inspection.condition_cd == 1
+              = link_to cancel_extention_scheduled_inspection_path(@scheduled_inspection), class: 'btn btn-info btn-flat'
+                i.fa.fa-pencil
+                | &nbsp; Cancel Extention
               | &nbsp;
       .box-body
         .row

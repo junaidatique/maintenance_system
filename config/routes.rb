@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       patch :save_extention
       get :cancel_extention
       get :create_techlog
+      get :defer_inspection
     end    
   end
   resources :autherization_codes do 

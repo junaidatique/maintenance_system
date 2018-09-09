@@ -35,6 +35,9 @@ class Ability
       can :view_flight_techlogs, FlyingLog
       can :manage, AutherizationCode
       can :generate_report, Techlog
+      can :defer_inspection, ScheduledInspection
+      can :apply_extention, ScheduledInspection
+      can :cancel_extention, ScheduledInspection
     elsif user.master_control?      
       can :read, Aircraft
       can :get_aircrafts, Aircraft
