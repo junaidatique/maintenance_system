@@ -78,6 +78,7 @@ Rails.application.routes.draw do
       get 'create_limitation_log'
       get 'create_techlog'
       get 'pdf'
+      get 'approve_extension'
     end
   end
   resources :work_unit_codes do 

@@ -36,11 +36,16 @@
     .box.box-info
       .box-header.with-borderf
         .row
-          .col-sm-6
+          .col-sm-4
             h3.box-title
               i.fa.fa-bars
               | &nbsp; Techlog
-          .col-sm-6.text-right            
+          .col-sm-8.text-right            
+            - if @techlog.log_techloged? and !@techlog.is_completed? and @techlog.is_extention_applied? and !@techlog.is_extention_granted? and can? :approve_extension, Techlog
+              = link_to approve_extension_techlog_path(@techlog), class: 'btn btn-info btn-flat'
+                i.fa.fa-pencil
+                | &nbsp; Approve Extension
+              | &nbsp;
             - if @techlog.log_techloged? and !@techlog.is_completed? and can? :manage_addl_logs, Techlog
               = link_to create_addl_log_techlog_path(@techlog), class: 'btn btn-info btn-flat'
                 i.fa.fa-pencil

@@ -87,8 +87,8 @@ class ScheduledInspection
           log_time: "#{Time.zone.now.strftime("%H:%M %p")}",
           description: "Extention Applied for #{self.inspection.name}", 
           user_id: self.started_by_id, log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
-          aircraft_id: aircraft_id, dms_version: System.first.settings['dms_version_number'], 
-          is_extention_applied: true
+          aircraft_id: aircraft_id, dms_version: System.first.settings['dms_version_number'],
+          scheduled_inspection_id: self.id, is_extention_applied: true
         })
     end    
   end

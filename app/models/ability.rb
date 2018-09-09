@@ -9,6 +9,8 @@ class Ability
     alias_action :index, :read, to: :ir
     if user.admin?
       can :manage, :all
+    elsif user.chief_maintenance_officer?
+      can :approve_extension, Techlog
     elsif user.chief_maintenance_officer? or user.squadron_engineering_officer?
       can :manage, Aircraft
       can :manage, FlyingLog

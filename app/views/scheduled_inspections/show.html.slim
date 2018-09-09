@@ -11,7 +11,7 @@
               i.fa.fa-bars
               | &nbsp; Inspection
           .col-md-6.text-right
-            /- if can? :apply_extention, Inspection and @scheduled_inspection.condition_cd == 0
+            - if can? :apply_extention, Inspection and @scheduled_inspection.condition_cd == 0
               = link_to apply_extention_scheduled_inspection_path(@scheduled_inspection), class: 'btn btn-info btn-flat'
                 i.fa.fa-pencil
                 | &nbsp; Apply for Extention

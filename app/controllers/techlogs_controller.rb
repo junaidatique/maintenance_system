@@ -1,7 +1,7 @@
 require 'combine_pdf'
 class TechlogsController < ApplicationController
   before_action :set_techlog, only: [:show, :edit, :update, :destroy, 
-    :create_addl_log, :create_limitation_log, :pdf, :create_techlog]
+    :create_addl_log, :create_limitation_log, :pdf, :create_techlog, :approve_extension]
   before_action :set_parts, only: [:edit, :update]
   # GET /techlogs
   # GET /techlogs.json
@@ -168,6 +168,20 @@ class TechlogsController < ApplicationController
 
   def create_limitation_log
     @techlog.add_to_limitation_log
+    redirect_to limitation_log_path(@techlog)
+  end
+  def approve_extension
+    scheduled_inspection = @techlog.scheduled_inspection
+    scheduled_inspection.hours = (scheduled_inspection.hours + scheduled_inspection.extention_hours).round(2)
+    scheduled_inspection.condition_cd = 2
+    scheduled_inspection.save
+    @techlog.is_extention_granted = 1
+    @techlog.action = "Extension Granted"
+    @techlog.condition_cd = 1
+    @techlog.verified_tools = true
+    @techlog.user = current_user
+    @techlog.save!
+
     redirect_to limitation_log_path(@techlog)
   end
 
