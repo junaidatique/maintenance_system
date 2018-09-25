@@ -97,6 +97,6 @@ class AutherizationCodesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def autherization_code_params
-      params.fetch(:autherization_code, {})
+      params.require(:autherization_code).permit(:code, :inspection_type, :autherized_trade)      
     end
 end

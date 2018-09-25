@@ -1,7 +1,7 @@
 require 'combine_pdf'
 class TechlogsController < ApplicationController
   before_action :set_techlog, only: [:show, :edit, :update, :destroy, 
-    :create_addl_log, :create_limitation_log, :pdf, :create_techlog]
+    :create_addl_log, :create_limitation_log, :pdf, :create_techlog, :approve_extension]
   before_action :set_parts, only: [:edit, :update]
   # GET /techlogs
   # GET /techlogs.json
@@ -120,7 +120,7 @@ class TechlogsController < ApplicationController
           @techlog.tools_returned_tools
         end
         # this one is for crew cheif
-        if @techlog.flying_log.present? #and current_user.role == :crew_cheif
+        if @techlog.flying_log.present?
           @techlog.flying_log.update_fuel
           @techlog.flying_log.fill_fuel
         end
@@ -168,6 +168,25 @@ class TechlogsController < ApplicationController
 
   def create_limitation_log
     @techlog.add_to_limitation_log
+    redirect_to limitation_log_path(@techlog)
+  end
+  def approve_extension    
+    scheduled_inspection = @techlog.scheduled_inspection
+    if scheduled_inspection.extention_hours > 0
+      scheduled_inspection.hours = (scheduled_inspection.hours + scheduled_inspection.extention_hours).round(2)      
+    else
+      scheduled_inspection.calender_life_date = scheduled_inspection.calender_life_date + scheduled_inspection.extention_days      
+    end
+    scheduled_inspection.condition_cd = 2
+    scheduled_inspection.save
+    scheduled_inspection.calculate_status
+    @techlog.is_extention_granted = 1
+    @techlog.action = "Extension Granted"
+    @techlog.condition_cd = 1
+    @techlog.verified_tools = true
+    @techlog.user = current_user
+    @techlog.save!
+
     redirect_to limitation_log_path(@techlog)
   end
 
@@ -251,7 +270,7 @@ class TechlogsController < ApplicationController
       params.require(:techlog).permit(:user_id,:work_unit_code_id, :autherization_code_id, :updated_by, :aircraft_id, :location_id, :log_date, :log_time,
                                         :type, :condition, :action, :additional_detail_form, 
                                         :nmcs_pmcs, :demand_notif, :amf_reference_no, :pdr_number, :occurrence_report,
-                                        :description,
+                                        :description, :closed_by_id,
                                         :addl_period_of_deferm, :addl_due, :addl_log_time, :addl_log_date,
                                         :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description, :verified_tools,
                                         flying_log_attributes: [ :fuel_refill, :oil_serviced, :oil_total_qty ],

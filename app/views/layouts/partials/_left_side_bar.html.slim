@@ -4,7 +4,7 @@ ul.sidebar-menu
     = link_to aircrafts_path do
       .fa.fa-plane
       span.side-bar-heading-text Aircraft
-  /- if can? :view_781, FlyingLog
+  /- if can? :view_781, Aircraft
     li class="#{params[:controller] == "reports" ? 'active' : ''}"
       a href="#" 
         i.fa.fa-list-ul
@@ -33,15 +33,32 @@ ul.sidebar-menu
           = link_to inspections_path(type_cd: 0) do
             .fa.fa-paper-plane 
             span.side-bar-heading-text Aircraft Inspections
+        li class="#{params[:controller] == "inspections" ? 'active' : ''}"
           = link_to inspections_path(type_cd: 1) do
             .fa.fa-paper-plane 
             span.side-bar-heading-text Part Inspections        
-        
-  - if can? :read, Inspection
-    li class="#{params[:controller] == "scheduled_inspections" ? 'active' : ''}"
-      = link_to scheduled_inspections_path do
-        .fa.fa-paper-plane 
-        span.side-bar-heading-text Pending Inspections  
+        - if can? :read, Inspection
+          li class="#{params[:controller] == "scheduled_inspections" ? 'active' : ''}"
+            = link_to scheduled_inspections_path(status: 1, type: :status) do
+              .fa.fa-paper-plane 
+              span.side-bar-heading-text Pending Inspections        
+          li class="#{params[:controller] == "scheduled_inspections" ? 'active' : ''}"
+            = link_to scheduled_inspections_path(status: 4, type: :status) do
+              .fa.fa-paper-plane 
+              span.side-bar-heading-text Due Inspections        
+          li class="#{params[:controller] == "scheduled_inspections" ? 'active' : ''}"
+            = link_to scheduled_inspections_path(status: 2, type: :status) do
+              .fa.fa-paper-plane 
+              span.side-bar-heading-text In Progress Inspections        
+          li class="#{params[:controller] == "scheduled_inspections" ? 'active' : ''}"
+            = link_to scheduled_inspections_path(condition: 1, type: :condition) do
+              .fa.fa-paper-plane 
+              span.side-bar-heading-text Extention Applied
+          li class="#{params[:controller] == "scheduled_inspections" ? 'active' : ''}"
+            = link_to scheduled_inspections_path(condition: 2, type: :condition) do
+              .fa.fa-paper-plane 
+              span.side-bar-heading-text Extention Granted
+  
   - if can? :read, Part
     li class="#{params[:controller] == "parts" ? 'active' : ''}"
       = link_to parts_path do

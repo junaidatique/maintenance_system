@@ -30,6 +30,8 @@ class Techlog
   field :user_generated, type: Mongoid::Boolean, default: 0
 
   field :is_viewed, type: Mongoid::Boolean, default: 0
+  field :is_extention_applied, type: Mongoid::Boolean, default: 0
+  field :is_extention_granted, type: Mongoid::Boolean, default: 0
 
   # ADDL
   field :addl_period_of_deferm, type: String
@@ -52,7 +54,8 @@ class Techlog
   belongs_to :work_unit_code, optional: true
   belongs_to :autherization_code, optional: true
   belongs_to :flying_log, optional: true
-  belongs_to :user  
+  belongs_to :user, class_name: User.name, inverse_of: :techlogs
+  belongs_to :closed_by, class_name: User.name, inverse_of: :closed_techlogs, optional: true  
   belongs_to :aircraft, optional: true
   belongs_to :parent_techlog, class_name: Techlog.name, inverse_of: :interm_logs, optional: true
 
@@ -98,7 +101,7 @@ class Techlog
 
 
   def maintenance_work_unit_code        
-    if type_cd == 1 and flying_log.blank? and work_unit_code.blank?  
+    if type_cd == 1 and flying_log.blank? and autherization_code.blank?  
       errors.add(:autherization_code, " can't be blank")
     end
   end
@@ -193,6 +196,7 @@ class Techlog
 
   def set_condition
     self.condition_cd = self.condition_cd.to_i
+    self.type_cd = self.type_cd.to_i
   end
 
   def create_serial_no
@@ -221,7 +225,10 @@ class Techlog
       if flying_log.techlogs.techloged.flight_created.incomplete.count == 0                
         flying_log.flightline_servicing.flight_end_time = Time.zone.now
         flying_log.flightline_servicing.save
-        flying_log.complete_servicing      
+        flying_log.complete_servicing  
+        if flying_log.flightline_servicing.inspection_performed_cd == 2
+          flying_log.complete_post_flight
+        end    
       end
     end
   end

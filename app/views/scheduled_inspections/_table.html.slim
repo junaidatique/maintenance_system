@@ -6,11 +6,17 @@
             .col-md-6
               h3.box-title
                 i.fa.fa-bars
-                | &nbsp; Scheduled Inspections
+                | &nbsp; 
+                - if options.present? and options[:heading].present?
+                  = options[:heading]
+                - else
+                  | Scheduled Inspections
       .box-body
         table.table.table-bordered.table-striped.data-tabled
           thead
             tr                
+              th
+                | Aircraft
               th
                 | Inspection Item
               th
@@ -33,19 +39,24 @@
                 td.table-row-center
                   - if scheduled_inspection.inspectable_type == Aircraft.name
                     = scheduled_inspection.inspectable.tail_number
+                  - else                    
+                    = scheduled_inspection.inspectable.aircraft.tail_number
+                td.table-row-center
+                  - if scheduled_inspection.inspectable_type == Aircraft.name
+                    = scheduled_inspection.inspectable.tail_number
                   - else
                     = scheduled_inspection.inspectable.number
                 td.table-row-center
                   = scheduled_inspection.inspection.name
                 td.table-row-center
-                  = scheduled_inspection.hours
+                  = scheduled_inspection.hours.round(2)
                 td.table-row-center
                   = display_date scheduled_inspection.calender_life_date
                   
                 td.table-row-center
                   = scheduled_inspection.status
                 td.table-row-center
-                  = scheduled_inspection.completed_hours
+                  = scheduled_inspection.completed_hours.round(2)
                 td.table-row-center
                   = link_to scheduled_inspection_path(scheduled_inspection), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye

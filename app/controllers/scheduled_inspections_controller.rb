@@ -1,15 +1,64 @@
 class ScheduledInspectionsController < ApplicationController
-  before_action :set_scheduled_inspection, only: [:show, :edit, :update, :destroy]
+  before_action :set_scheduled_inspection, only: [:show, :edit, :update, :destroy, :apply_extention, :save_extention, :cancel_extention, :create_techlog, :defer_inspection]
 
   # GET /scheduled_inspections
   # GET /scheduled_inspections.json
   def index
-    @scheduled_inspections = ScheduledInspection.pending_n_due.all
+    if params[:type] == 'condition'
+      @scheduled_inspections = ScheduledInspection.where(condition_cd: params[:condition].to_i).all
+    else
+      @scheduled_inspections = ScheduledInspection.where(status_cd: params[:status].to_i).all
+    end
   end
 
   # GET /scheduled_inspections/1
   # GET /scheduled_inspections/1.json
   def show
+  end
+  
+  def apply_extention
+  end
+  
+  def save_extention    
+    respond_to do |format|      
+      @scheduled_inspection.condition_cd = 1
+      if @scheduled_inspection.update(scheduled_inspection_params)
+        format.html { redirect_to @scheduled_inspection, notice: 'Scheduled inspection was successfully updated.' }
+        format.json { render :show, status: :ok, location: @scheduled_inspection }
+      else
+        format.html { render :apply_extention }
+        format.json { render json: @scheduled_inspection.errors, status: :unprocessable_entity }
+      end
+    end    
+  end
+
+  def defer_inspection
+    @scheduled_inspection.condition_cd = 0      
+    @scheduled_inspection.hours = @scheduled_inspection.completed_hours + @scheduled_inspection.inspection.no_of_hours
+    @scheduled_inspection.starting_date      = Time.zone.now
+    @scheduled_inspection.calender_life_date = @scheduled_inspection.inspection.get_duration Time.zone.now
+    @scheduled_inspection.save
+    redirect_to @scheduled_inspection, notice: 'Scheduled inspection extention was successfully defered.'
+    
+  end
+  def cancel_extention
+    if @scheduled_inspection.condition_cd == 1
+      @scheduled_inspection.techlog.destroy
+      @scheduled_inspection.extention_days = 0
+      @scheduled_inspection.extention_hours = 0
+      @scheduled_inspection.condition_cd = 0
+      @scheduled_inspection.save
+      redirect_to @scheduled_inspection, notice: 'Scheduled inspection extention was successfully canceled.'
+    end
+  end
+
+  def create_techlog
+    if @scheduled_inspection.status_cd == 2 and @scheduled_inspection.techlog.blank?
+      @scheduled_inspection.update_scheduled_inspections @scheduled_inspection.completed_hours
+      @scheduled_inspection.status_cd = 2
+      @scheduled_inspection.save
+      redirect_to @scheduled_inspection
+    end
   end
 
   # GET /scheduled_inspections/new
@@ -24,7 +73,7 @@ class ScheduledInspectionsController < ApplicationController
   # POST /scheduled_inspections
   # POST /scheduled_inspections.json
   def create
-    @scheduled_inspection = ScheduledInspection.new(scheduled_inspection_params)
+    # @scheduled_inspection = ScheduledInspection.new(scheduled_inspection_params)
 
     respond_to do |format|
       if @scheduled_inspection.save
@@ -71,6 +120,6 @@ class ScheduledInspectionsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def scheduled_inspection_params
       # params.fetch(:scheduled_inspection, {})
-      params.require(:scheduled_inspection).permit(:started_by_id, :inspection_started)
+      params.require(:scheduled_inspection).permit(:started_by_id, :inspection_started, :extention_hours, :extention_days)
     end
 end

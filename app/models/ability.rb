@@ -9,36 +9,49 @@ class Ability
     alias_action :index, :read, to: :ir
     if user.admin?
       can :manage, :all
+    elsif user.chief_maintenance_officer?
+      can :approve_extension, Techlog
     elsif user.chief_maintenance_officer? or user.squadron_engineering_officer?
       can :manage, Aircraft
       can :manage, FlyingLog
       can :manage, Techlog
       can :manage, FlyingPlan      
+      can :manage, User      
       can :manage_addl_logs, Techlog
-      cannot :update_fuel, Techlog  
-      cannot :update_work_unit_code, Techlog          
-      can :update_flying_log, FlyingLog
+      cannot :update_fuel, Techlog
+
       can :release_flight, FlyingLog
-      can :view_logs, FlyingLog
-      can :update_sortie, FlyingLog
-      can :view_781, FlyingLog
+      can :view_logs, FlyingLog # view techlogs, deffered logs and limitation logs.
+      can :update_sortie, FlyingLog # update sortie code in case of non satisfactory
+      
+      # can't do anything about the pilot work
       cannot :bookout_flight, FlyingLog      
-      cannot :update_work_unit_code, FlyingLog
-      can :autocomplete, FlyingPlan      
+      cannot :bookin_flight, FlyingLog
+      # cannot :update_work_unit_code, FlyingLog
+
+      can :autocomplete, FlyingPlan   
+      can :cancel, FlyingLog   
+      can :view_781, Aircraft # view 781 forms on aircraft detail page
+      can :view_flight_techlogs, FlyingLog
+      can :manage, AutherizationCode
+      can :generate_report, Techlog
+      can :defer_inspection, ScheduledInspection
+      can :apply_extention, ScheduledInspection
+      can :cancel_extention, ScheduledInspection
     elsif user.master_control?      
       can :read, Aircraft
       can :get_aircrafts, Aircraft
       can :crud, FlyingLog
-      can :crud, Techlog
-      can :read, FlyingPlan
-      can :update_work_unit_code, FlyingLog
-      can :update_work_unit_code, Techlog
+      can :crud, Techlog            
+      can :update_work_unit_code, FlyingLog      
       can :update_autherization_code, Techlog
       can :manage, FlyingPlan      
       can :autocomplete, FlyingPlan 
       can :update_sortie, FlyingLog
-      can :autocomplete_codes, AutherizationCode
-      can :update_flying_log, FlyingLog
+      can :autocomplete_codes, AutherizationCode      
+      can :manage, Inspection
+      can :cancel, FlyingLog
+      can :view_flight_techlogs, FlyingLog
     elsif user.inst_fitt?
       can :read, Aircraft
       can :ru, FlyingLog

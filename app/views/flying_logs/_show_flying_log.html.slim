@@ -38,13 +38,13 @@
                     | Booked out
                   td
                     - unless @flying_log.capt_acceptance_certificate.blank?
-                      = display_date_time @flying_log.capt_acceptance_certificate.created_at
+                      = display_date_time @flying_log.capt_acceptance_certificate.updated_at
                 tr
                   th width="25%"
                     | Booked In
                   td
                     - unless @flying_log.sortie.blank?
-                      = display_date_time @flying_log.sortie.created_at
+                      = display_date_time @flying_log.sortie.updated_at
                 
 .row
   .col-md-12
@@ -58,6 +58,18 @@
           .col-sm-6.text-right
             = link_to pdf_flying_log_path(@flying_log), class: 'btn btn-success btn-flat', target: :_blank do
               | View QSMK Flying Log
+            |  
+            - if can? :cancel, FlyingLog and @flying_log.flight_released?
+              = link_to cancel_flying_log_path(@flying_log), class: 'btn btn-success btn-flat' do
+                | Cancel Flying Log
+              | &nbsp;
+            - if can? :bookin_flight, FlyingLog and @flying_log.pilot_commented?
+              = link_to update_timing_flying_log_path(@flying_log), class: 'btn btn-success btn-flat' do
+                | Update Flying Log Time
+              | &nbsp;
+            - if can? :release_flight, FlyingLog and @flying_log.techlogs.count == 0 and !@flying_log.flight_cancelled? 
+              = link_to release_flying_log_path(@flying_log), class: 'btn btn-success btn-flat' do
+                | Release Flying Log
       .box-body
         .row
           .col-sm-12
@@ -401,27 +413,27 @@
               | &nbsp; Techlogs
           - @flying_log.techlogs.pilot_created.each do |techlog|
             = render 'techlogs/techlog_short_detail', techlog: techlog
-
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-border
-          .row
-            .col-sm-6
-              h3.box-title
-                i.fa.fa-bars
-                | &nbsp; Capt After Flight
-            .col-sm-6.text-right
-              
-        .box-body
-          .row
-            .col-sm-12
-              table.table.table-inverse
-                tbody
-                  tr
-                    th width="25%"
-                      | Time
-                    td = @flying_log.capt_after_flight.flight_time
-                    th width="25%"
-                      | Capt
-                    td = @flying_log.capt_after_flight.user.name
+  - if @flying_log.capt_after_flight.present? and @flying_log.capt_after_flight.user.present?
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-border
+            .row
+              .col-sm-6
+                h3.box-title
+                  i.fa.fa-bars
+                  | &nbsp; Capt After Flight
+              .col-sm-6.text-right
+                
+          .box-body
+            .row
+              .col-sm-12
+                table.table.table-inverse
+                  tbody
+                    tr
+                      th width="25%"
+                        | Time
+                      td = @flying_log.capt_after_flight.flight_time
+                      th width="25%"
+                        | Capt
+                      td = @flying_log.capt_after_flight.user.name if @flying_log.capt_after_flight.user.present?

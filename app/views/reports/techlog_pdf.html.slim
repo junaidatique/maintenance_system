@@ -1,0 +1,66 @@
+.history_pdf 
+  .tl-trade
+    | History Sheet -- Date  
+    = flying_date
+  table.table.table-bordered.table-striped width="99%" border="0" cellspacing="0"
+    thead
+      tr
+        th width='10%'
+          | Date
+        th width='10%'
+          | Aircraft
+        th width='10%'
+          | Created By
+        th width='10%'
+          | Type
+        th width='10%'
+          | Autherization Code        
+        th width='20%'
+          | Defect
+        th width='20%'
+          | Action                                  
+        th width='20%'
+          | Status                                  
+    tbody  
+      - Techlog.ne(type_cd: 3).gte(created_at: flying_date).lte(created_at: flying_date.to_date + 1.day).each do |techlog|
+        tr
+          td.table-row-center
+            = display_date(techlog.log_date) 
+          td.table-row-center
+            = techlog.aircraft.tail_number if techlog.aircraft.present?
+          td.table-row-center
+            = techlog.user.name
+          td.table-row-center
+            = techlog.type
+          td.table-row-center
+            = techlog.autherization_code.code if techlog.autherization_code.present?
+          td.table-row-center
+            = techlog.description
+          td.table-row-center
+            = techlog.action
+          td.table-row-center
+            = techlog.condition.to_s.titleize
+
+      /- aircraft.flying_logs.completed.order(number: :desc).each do |flying_log|
+        - if flying_log.techlogs.pilot_created.count > 0
+          - flying_log.techlogs.pilot_created.each do |techlog|
+            tr
+              td.table-row-center
+                = techlog.user.name
+              
+              td
+                = techlog.description              
+              td
+                = techlog.action                                                            
+        - else
+          tr
+            td.table-row-center
+              - if flying_log.capt_acceptance_certificate.present? and flying_log.capt_acceptance_certificate.user.present?
+                = flying_log.capt_acceptance_certificate.user.name                            
+            td.table-row-center
+              = display_date(flying_log.log_date) 
+            td
+              - if flying_log.sortie.present?
+                = flying_log.sortie.pilot_comment_cd            
+            td.table-row-center                                                                              
+  

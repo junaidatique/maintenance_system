@@ -32,7 +32,7 @@
                 td.text-center width='20%'
                   = link_to autherization_code_path(autherization_code), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye
-                  /= link_to edit_autherization_code_path(autherization_code), class: 'btn btn-info btn-flat ' do
+                  = link_to edit_autherization_code_path(autherization_code), class: 'btn btn-info btn-flat ' do
                     i.fa.fa-pencil
                   
                   /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do

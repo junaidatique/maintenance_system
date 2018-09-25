@@ -10,8 +10,18 @@ namespace :db do
       puts "Seeding #{filename}..."
       load(filename) if File.exist?(filename)
     end
+    task :aircraft_fix => :environment do
+      filename = Dir[File.join(Rails.root, 'db', 'seeds', "aircraft_fix.seed.rb")][0]
+      puts "Seeding #{filename}..."
+      load(filename) if File.exist?(filename)
+    end
     task :create_tyre_parts => :environment do
       filename = Dir[File.join(Rails.root, 'db', 'seeds', "tyre_parts.seed.rb")][0]
+      puts "Seeding #{filename}..."
+      load(filename) if File.exist?(filename)
+    end
+    task :create_work_package => :environment do
+      filename = Dir[File.join(Rails.root, 'db', 'seeds', "work_package.seed.rb")][0]
       puts "Seeding #{filename}..."
       load(filename) if File.exist?(filename)
     end

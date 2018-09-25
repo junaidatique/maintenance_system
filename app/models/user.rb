@@ -60,6 +60,8 @@ class User
   
   has_and_belongs_to_many :autherization_codes
   has_many :requested_tools
+  has_many :techlogs, class_name: Techlog.name, inverse_of: :user
+  has_many :closed_techlogs, class_name: Techlog.name, inverse_of: :closed_by
   validates :username, presence: true, uniqueness: true  
   scope :online, -> { gt(updated_at: 10.minutes.ago) }
 

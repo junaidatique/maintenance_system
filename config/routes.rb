@@ -1,5 +1,14 @@
 Rails.application.routes.draw do
   
+  resources :scheduled_inspections do 
+    member do 
+      get :apply_extention
+      patch :save_extention
+      get :cancel_extention
+      get :create_techlog
+      get :defer_inspection
+    end    
+  end
   resources :autherization_codes do 
     collection do 
       get 'get_codes'
@@ -8,7 +17,7 @@ Rails.application.routes.draw do
       get :upload
     end
   end
-  resources :scheduled_inspections
+  # resources :scheduled_inspections
   resources :inspections do 
     resources :work_packages do
       collection do
@@ -31,6 +40,8 @@ Rails.application.routes.draw do
       get :inspection_record_pdf      
       get :inspection_pdf      
       get :tyre_record_pdf      
+      get :history_pdf      
+      get :techlog_pdf      
       
     end
   end
@@ -68,6 +79,7 @@ Rails.application.routes.draw do
       get 'create_limitation_log'
       get 'create_techlog'
       get 'pdf'
+      get 'approve_extension'
     end
   end
   resources :work_unit_codes do 
@@ -81,6 +93,9 @@ Rails.application.routes.draw do
   resources :flying_logs do 
     member do
       get 'pdf'
+      get 'cancel'
+      get 'update_timing'
+      get 'release'
     end
   end
   root 'flying_logs#index'

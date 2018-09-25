@@ -6,14 +6,7 @@
         .col-sm-12[class="div_id_no#{f.object.type_cd}"]
           = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
           = f.input :type_cd, as: :hidden, input_html: { value: 1 }
-          = f.input :work_unit_code_id, as: :hidden
-          - if can? :update_flying_log, FlyingLog
-            .row
-              .col-sm-6
-                - if f.object.work_unit_code.present?
-                  = f.object.work_unit_code.code
-                - else
-                  = f.input :work_unit_code, :url => autocomplete_codes_work_unit_codes_path, :as => :autocomplete, input_html: {id_element: "#id"}
+          = f.input :work_unit_code_id, as: :hidden          
           .row
             .col-sm-11
               - if can? :bookin_flight, FlyingLog

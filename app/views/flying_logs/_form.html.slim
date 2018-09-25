@@ -7,7 +7,7 @@
           li
             = error_message
   == render 'show_flying_log'  
-  - if (can? :release_flight, FlyingLog and @flying_log.flightline_release.created_at.blank?)
+  - if (can? :release_flight, FlyingLog and @flying_log.servicing_completed? and @flying_log.flightline_release.created_at.blank?)
     .row
       .col-md-12
         .box.box-info
@@ -39,30 +39,53 @@
                       thead
                         tr
                           th width='10%'
-                            | Number
+                            | Pilot                          
                           th width='10%'
                             | Date
                           th width='10%'
                             | Description
                           th width='10%'
+                            | Autherization Code                          
+                          th width='10%'
                             | Action Taken                          
                           th width='13%'
                             | Detail
-                      tbody
-                        - @flying_log.aircraft.techlogs.techloged.completed.pilot_created.order(number: :desc).each do |techlog|
-                          tr
-                            td.table-row-center
-                              = link_to techlog.serial_no, techlog_path(techlog), target: :_blank
-                            td.table-row-center
-                              = display_date(techlog.log_date) 
-                            td.table-row-center
-                              = techlog.description
-                            td.table-row-center
-                              = techlog.action                            
-                                
-                            td.text-center width='20%'
-                              = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
-                                i.fa.fa-file-pdf-o                                                            
+                      tbody                        
+                        - @flying_log.aircraft.flying_logs.completed.order(number: :desc).each do |flying_log|
+                          - if flying_log.flightline_servicing.inspection_performed_cd != 2
+                            - if flying_log.techlogs.pilot_created.count > 0
+                              - flying_log.techlogs.pilot_created.each do |techlog|
+                                tr
+                                  td.table-row-center
+                                    = techlog.user.name
+                                  td.table-row-center
+                                    = display_date(techlog.log_date) 
+                                  td.table-row-center
+                                    = techlog.description
+                                  td.table-row-center
+                                    = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
+                                  td.table-row-center
+                                    = techlog.action                            
+                                      
+                                  td.text-center width='20%'
+                                    = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
+                                      i.fa.fa-file-pdf-o 
+
+                            - else
+                              tr
+                                td
+                                  - if flying_log.capt_acceptance_certificate.present? and flying_log.capt_acceptance_certificate.user.present?
+                                    = flying_log.capt_acceptance_certificate.user.name                            
+                                td.table-row-center
+                                  = display_date(flying_log.log_date) 
+                                td.table-row-center
+                                  - if flying_log.sortie.present?
+                                    = flying_log.sortie.pilot_comment_cd
+                                td.table-row-center
+                                td.table-row-center                                                                  
+                                td.text-center width='20%'
+                                  = link_to pdf_flying_log_path(flying_log, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
+                                    i.fa.fa-file-pdf-o                                                            
                                 
     .row
       .col-md-12
@@ -86,6 +109,8 @@
                           th width='10%'
                             | Description
                           th width='10%'
+                            | Autherization Code
+                          th width='10%'
                             | Action Taken                          
                           th width='13%'
                             | Detail
@@ -98,6 +123,8 @@
                               = display_date(techlog.log_date) 
                             td.table-row-center
                               = techlog.description
+                            td.table-row-center
+                              = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
                             td.table-row-center
                               = techlog.action                            
                                 
@@ -122,9 +149,11 @@
                           th width='10%'
                             | Techlog
                           th width='10%'
-                            | Date
+                            | Date                          
                           th width='10%'
-                            | Aircraft
+                            | Description
+                          th width='10%'
+                            | Autherization Code                          
                           th width='13%'
                             | Actions
                       tbody
@@ -133,9 +162,11 @@
                             td.table-row-center
                               = link_to techlog.serial_no, techlog_path(techlog)
                             td.table-row-center
-                              = display_date(techlog.log_date) 
+                              = display_date(techlog.log_date)                             
                             td.table-row-center
-                              = techlog.aircraft.tail_number                
+                              = techlog.description
+                            td.table-row-center
+                              = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
                             td.text-center width='20%'
                               = link_to pdf_addl_log_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
                                 i.fa.fa-file-pdf-o
@@ -144,7 +175,7 @@
                                 
     
     
-  - if can? :bookout_flight, FlyingLog and @flying_log.flight_released? and !@flying_log.flight_booked?  
+  - if can? :bookout_flight, FlyingLog and @flying_log.flight_released?
     .row
       .col-md-12
         .box.box-info
@@ -160,17 +191,21 @@
             = f.simple_fields_for :capt_acceptance_certificate do |ac_f|
               = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }
               .row
+                /- if @flying_log.ac_configuration.cockpit_cd == 2
+                .col-sm-6
+                  = ac_f.association :second_pilot, collection: User.pilots.ne(_id: current_user._id).all, label_method: :name, include_blank: false, value_method: :id, label: 'Crew', input_html: {class: 'custom-select2'}
+                  br
+                  br                  
+                .col-sm-6
+                  - if @flying_log.ac_configuration.third_seat
+                    = ac_f.input :third_seat_name
+
+              .row
                 .col-md-6
                   = f.input :location_from
                 .col-md-6
                   = f.input :location_to                
-              .row
-                - if @flying_log.ac_configuration.cockpit_cd == 2
-                  .col-sm-6
-                    = ac_f.association :second_pilot, collection: User.pilots.ne(_id: current_user._id).all, label_method: :name, include_blank: false, value_method: :id, label: 'Crew', input_html: {class: 'custom-select2'}
-                .col-sm-6
-                  - if @flying_log.ac_configuration.third_seat
-                    = ac_f.input :third_seat_name
+              
               .row
                 .col-sm-6
                   = ac_f.input :mission, collection: enum_option_pairs(CaptAcceptanceCertificate, :mission)
@@ -181,8 +216,9 @@
                   = ac_f.input :view_history, label: 'I have reviwed Aircraft History', as: :boolean, checked_value: 1, unchecked_value: 0
                 .col-sm-6
                   = ac_f.input :view_deffered_log, label: 'I have reviwed Aircraft Deffered Log', as: :boolean, checked_value: 1, unchecked_value: 0
+              
             
-  - if can? :bookin_flight, FlyingLog and @flying_log.flight_booked? and !@flying_log.pilot_commented?
+  - if can? :bookin_flight, FlyingLog and @flying_log.flight_booked?
     .row
       .col-md-12
         .box.box-info
@@ -214,10 +250,12 @@
                   = ac_f.input :full_stop
               .row
                 .col-sm-6
-                  = ac_f.input :pilot_comment, collection: enum_option_pairs(Sortie, :pilot_comment), as: :radio_buttons 
+                  = ac_f.input :pilot_comment, collection: enum_option_pairs(Sortie, :pilot_comment), as: :radio_buttons
+                .col-sm-6
+                  = ac_f.input :mission_cancelled, label: 'Mission Cancelled', as: :boolean, checked_value: 1, unchecked_value: 0 
                 
     .row
-      .col-md-12#div_techlog_servicing
+      .col-md-12.hide#div_techlog_servicing
         .box.box-info
           .box-header.with-border
             .row
@@ -273,7 +311,7 @@
               .row
                 .col-sm-12
                   = ac_f.input :remarks, as: :text
-        
+  - if can? :bookin_flight, FlyingLog and @flying_log.pilot_commented?
     .row
       .col-md-12
         .box.box-info
@@ -290,7 +328,7 @@
                 .col-sm-6
                   
 
-  - if can? :update_work_unit_code, FlyingLog and !@flying_log.capt_acceptance_certificate.created_at.blank?    
+  - if can? :update_work_unit_code, FlyingLog and @flying_log.pilot_confirmed?
     .row
       .col-md-12
         .box.box-info
@@ -315,7 +353,9 @@
                       th width='10%'
                         | Aircraft
                       th width='10%'
-                        | WUC
+                        | Description
+                      th width='10%'
+                        | Autherization Code
                       th width='10%'
                         | Completed
                       th width='13%'
@@ -330,13 +370,32 @@
                         td.table-row-center
                           = techlog.aircraft.tail_number
                         td.table-row-center
-                          = techlog.work_unit_code.code unless techlog.work_unit_code.blank?
+                          = techlog.description
+                        td.table-row-center
+                          = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
                         td.table-row-center
                           = techlog.is_completed? ? 'Yes' : 'No'
                         td.text-center width='20%'
+                          = link_to edit_techlog_path(techlog), class: 'btn btn-info btn-flat', target: :_blank do
+                            i.fa.fa-pencil
                           = link_to pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-success btn-flat', target: :_blank do
                             i.fa.fa-file-pdf-o
-  - if can? :update_sortie, FlyingLog and !@flying_log.capt_acceptance_certificate.created_at.blank?      
+  - if can? :update_sortie, FlyingLog and @flying_log.pilot_confirmed?      
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Sortie
+          .box-body
+            = f.simple_fields_for :sortie do |ac_f|              
+              .row
+                .col-sm-6
+                  = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code_unsat), as: :radio_buttons    
+    
+     
+  - if can? :update_flying_hours, FlyingLog and @flying_log.log_completed?      
     .row
       .col-md-12
         .box.box-info
@@ -346,27 +405,29 @@
               | &nbsp; Sortie
           .box-body
             = f.simple_fields_for :sortie do |ac_f|
-              /.row
+              = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }
+              
+              .row
                 .col-sm-12
                   h5
                     | Times
-              /.row
+              .row
                 .col-sm-6
                   = ac_f.input :takeoff_time, label: 'Takeoff Time (Local)', input_html: { class: 'timepickerclass' }
                 .col-sm-6
                   = ac_f.input :landing_time, label: 'Landing Time (Local)', input_html: { class: 'timepickerclass' }                  
-              /.row
+              .row
                 .col-sm-12
                   h5
                     | Landings
-              /.row
+              .row
                 .col-sm-6
                   = ac_f.input :touch_go
                 .col-sm-6
-                  = ac_f.input :full_stop
+                  = ac_f.input :full_stop            
               .row
                 .col-sm-6
-                  = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code_unsat), as: :radio_buttons    
+                  = ac_f.input :sortie_code, collection: enum_option_pairs(Sortie, :sortie_code), as: :radio_buttons    
     
      
             

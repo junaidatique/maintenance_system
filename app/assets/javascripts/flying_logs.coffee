@@ -15,7 +15,8 @@ $(document).on 'ready', ->
 
 
   
-  $('#flying_log_ac_configuration_attributes_cockpit_single').on 'ifChecked', (event) ->    
+  $('#flying_log_ac_configuration_attributes_cockpit_single').on 'ifChecked', (event) -> 
+    console.log 'here'   
     $(".flying_log_capt_acceptance_certificate_second_pilot").addClass('hide');
     return
   
@@ -33,10 +34,14 @@ $(document).on 'ready', ->
     $(".smoke-oil-quantity").addClass('hide')
     return
   
-  $('#flying_log_sortie_attributes_pilot_comment_satisfactory').on 'ifChecked', (event) ->
-    $("#div_techlog_servicing").hide()
+  $('#flying_log_sortie_attributes_pilot_comment_satisfactory').on 'ifChecked', (event) ->    
+    $("#div_techlog_servicing").addClass('hide')
     return
 
   $('#flying_log_sortie_attributes_pilot_comment_un_satisfactory').on 'ifChecked', (event) ->
-    $("#div_techlog_servicing").show()
+    $("#div_techlog_servicing").removeClass('hide')
+    return
+
+  $('#flying_log_sortie_attributes_pilot_comment_mission_cancelled').on 'ifChecked', (event) ->
+    $("#div_techlog_servicing").addClass('hide')
     return

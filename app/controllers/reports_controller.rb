@@ -136,5 +136,57 @@ class ReportsController < ApplicationController
                     }
                   )
   end
+
+  def history_pdf
+    i = 0
+    if params[:aircraft].blank? or Aircraft.find(params[:aircraft]).blank?
+      redirect_to aircrafts_path(), :flash => { :error => "Invalid aircraft." }
+    end
+    
+    pdf_data = render(
+                    pdf: "history_pdf",
+                    orientation: 'Portrait',
+                    template: 'reports/history_pdf.html.slim',
+                    layout: 'layouts/pdf/pdf.html.slim',
+                    show_as_html: false,
+                    locals: {
+                      aircraft: Aircraft.find(params[:aircraft])
+                    },
+                    page_height: '17in',
+                    page_width: '13in',
+                    margin:  {
+                      top: 10,
+                      bottom: 10,
+                      left: 5,
+                      right:5 
+                    }
+                  )
+  end
+
+  def techlog_pdf
+    i = 0
+    
+    flying_date  = (params[:flying_date].blank?) ? Time.now.strftime("%d/%m/%Y") : params[:flying_date]
+    
+    
+    pdf_data = render(
+                    pdf: "history_pdf",
+                    orientation: 'Portrait',
+                    template: 'reports/techlog_pdf.html.slim',
+                    layout: 'layouts/pdf/pdf.html.slim',
+                    show_as_html: false,
+                    locals: {
+                      flying_date: flying_date
+                    },
+                    page_height: '17in',
+                    page_width: '13in',
+                    margin:  {
+                      top: 10,
+                      bottom: 10,
+                      left: 5,
+                      right:5 
+                    }
+                  )
+  end
   
 end
