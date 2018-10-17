@@ -1,12 +1,4 @@
 GIT
-  remote: git://github.com/stympy/faker.git
-  revision: be8fc6741bbcec08782208ec7068e889cc16e7e6
-  branch: master
-  specs:
-    faker (1.8.4)
-      i18n (~> 0.5)
-
-GIT
   remote: https://github.com/mongodb/mongoid.git
   revision: a26341e3fd2aad7d7281f5855b75342b4275721c
   specs:
@@ -110,6 +102,8 @@ GEM
       warden (~> 1.2.3)
     erubi (1.6.0)
     execjs (2.7.0)
+    faker (1.9.1)
+      i18n (>= 0.7)
     ffi (1.9.18)
     font-awesome-rails (4.7.0.2)
       railties (>= 3.2, < 5.2)
@@ -324,7 +318,7 @@ DEPENDENCIES
   combine_pdf
   debase (= 0.2.1)
   devise
-  faker!
+  faker
   font-awesome-rails
   growlyflash
   html2slim (~> 0.2.0)
@@ -368,4 +362,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.16.1
+   1.16.2
