@@ -2,15 +2,23 @@ cur_time = Time.zone.now
 
 System.create! settings: {dms_version_number: 0.0}
 puts 'Creating Aircraft'
-aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '42', oil_capacity: '8', flight_hours: 195.4, engine_hours: 195.4, landings: 362, prop_hours: 195.5
-aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '42', oil_capacity: '8', flight_hours: 174.7, engine_hours: 174.7, landings: 309, prop_hours: 174.7
-aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '42', oil_capacity: '8', flight_hours: 165.6, engine_hours: 165.6, landings: 261, prop_hours: 165.6
-aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '42', oil_capacity: '8', flight_hours: 188.3, engine_hours: 188.3, landings: 331, prop_hours: 188.3
-aircraft_304  = Aircraft.create! number: '304', tail_number: 'QA304', serial_no: '#304', fuel_capacity: '42', oil_capacity: '8', flight_hours: 103.7, engine_hours: 103.7, landings: 141, prop_hours: 103.7
-aircraft_305  = Aircraft.create! number: '305', tail_number: 'QA305', serial_no: '#305', fuel_capacity: '42', oil_capacity: '8', flight_hours: 113.5, engine_hours: 113.5, landings: 144, prop_hours: 113.5
-aircraft_306  = Aircraft.create! number: '306', tail_number: 'QA306', serial_no: '#306', fuel_capacity: '42', oil_capacity: '8', flight_hours: 40.8, engine_hours: 9.8, landings: 60, prop_hours: 9.8
-aircraft_307  = Aircraft.create! number: '307', tail_number: 'QA307', serial_no: '#307', fuel_capacity: '42', oil_capacity: '8', flight_hours: 77.8, engine_hours: 77.8, landings: 94, prop_hours: 77.8
+aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '42', oil_capacity: '8', flight_hours: 236.4, engine_hours: 236.4, landings: 456, prop_hours: 236.4
+
+aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '42', oil_capacity: '8', flight_hours: 199.9, engine_hours: 199.9, landings: 348, prop_hours: 199.9
+
+aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '42', oil_capacity: '8', flight_hours: 201.0, engine_hours: 201.0, landings: 318, prop_hours: 201.0
+
+aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '42', oil_capacity: '8', flight_hours: 218.2, engine_hours: 218.2, landings: 390, prop_hours: 218.2
+
+aircraft_304  = Aircraft.create! number: '304', tail_number: 'QA304', serial_no: '#304', fuel_capacity: '42', oil_capacity: '8', flight_hours: 164.5, engine_hours: 164.5, landings: 255, prop_hours: 164.5
+
+aircraft_305  = Aircraft.create! number: '305', tail_number: 'QA305', serial_no: '#305', fuel_capacity: '42', oil_capacity: '8', flight_hours: 156.0, engine_hours: 156.0, landings: 218, prop_hours: 156.0
+
+aircraft_306  = Aircraft.create! number: '306', tail_number: 'QA306', serial_no: '#306', fuel_capacity: '42', oil_capacity: '8', flight_hours: 90.7, engine_hours: 48.7, landings: 131, prop_hours: 48.7
+
+aircraft_307  = Aircraft.create! number: '307', tail_number: 'QA307', serial_no: '#307', fuel_capacity: '42', oil_capacity: '8', flight_hours: 101.6, engine_hours: 101.6, landings: 139, prop_hours: 101.6
 puts 'Aircraft Created'
+
 
 
 puts 'Creating Users'
@@ -342,24 +350,12 @@ aircraft_inspections = [
     calender_value: 6,
     is_repeating: true,
     last_conducted_dates: {
-      300 => DateTime.strptime('2018-03-27', '%Y-%m-%d'),
-      301 => DateTime.strptime('2018-04-12', '%Y-%m-%d'),
-      302 => DateTime.strptime('2018-05-13', '%Y-%m-%d'),
-      303 => DateTime.strptime('2018-04-23', '%Y-%m-%d'),
-      304 => DateTime.strptime('2018-07-24', '%Y-%m-%d'),
-      305 => DateTime.strptime('2018-06-12', '%Y-%m-%d'),
-      306 => DateTime.strptime('2018-05-31', '%Y-%m-%d'),
-      307 => DateTime.strptime('2018-04-18', '%Y-%m-%d'),
+      300 => DateTime.strptime('2018-09-06', '%Y-%m-%d'),
+      
     },
     last_conducted_hours: {
-      300 => 150.1,
-      301 => 145.0,
-      302 => 146.2,
-      303 => 147.5,
-      304 => 100.1,
-      305 => 100.2,
-      306 => 41.0,
-      307 => 49.9,
+      300 => 200,
+      
     }
   },  
   {
@@ -372,22 +368,12 @@ aircraft_inspections = [
     calender_value: 1,
     is_repeating: true ,
     last_conducted_dates: {
-      300 => DateTime.strptime('2017-11-27', '%Y-%m-%d'),
-      301 => DateTime.strptime('2017-12-10', '%Y-%m-%d'),
-      302 => DateTime.strptime('2018-1-14', '%Y-%m-%d'),
-      303 => DateTime.strptime('2017-12-12', '%Y-%m-%d'),
-      304 => DateTime.strptime('2018-07-24', '%Y-%m-%d'),
-      305 => DateTime.strptime('2018-06-12', '%Y-%m-%d'),
-      306 => DateTime.strptime('2017-11-17', '%Y-%m-%d'),
-      307 => DateTime.strptime('2017-11-17', '%Y-%m-%d'),
+      300 => DateTime.strptime('2018-09-06', '%Y-%m-%d'),
+      
     },
     last_conducted_hours: {
-      300 => 100.2,
-      301 => 103.4,
-      302 => 102.7,
-      303 => 98.2,
-      304 => 100.1,
-      305 => 100.2,
+      300 => 200,
+      
     }
   },    
   {
@@ -408,14 +394,8 @@ aircraft_inspections = [
     calender_value: 7,
     is_repeating: true,
     last_conducted_dates: {
-      300 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
-      301 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
-      302 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
-      303 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
-      304 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
-      305 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
-      306 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
-      307 => DateTime.strptime('2018-08-02', '%Y-%m-%d'),
+      300 => DateTime.strptime('2018-10-16', '%Y-%m-%d'),
+      
     },
   },
   # {
@@ -441,14 +421,8 @@ aircraft_inspections = [
     calender_value: 4,
     is_repeating: true,
     last_conducted_dates: {
-      300 => DateTime.strptime('2018-07-26', '%Y-%m-%d'),
-      301 => DateTime.strptime('2018-04-12', '%Y-%m-%d'),
-      302 => DateTime.strptime('2018-05-13', '%Y-%m-%d'),
-      303 => DateTime.strptime('2018-04-23', '%Y-%m-%d'),
-      304 => DateTime.strptime('2018-07-18', '%Y-%m-%d'),
-      305 => DateTime.strptime('2018-06-11', '%Y-%m-%d'),
-      306 => DateTime.strptime('2018-05-28', '%Y-%m-%d'),
-      307 => DateTime.strptime('2018-04-18', '%Y-%m-%d'),
+      300 => DateTime.strptime('2018-08-29', '%Y-%m-%d'),
+      
     }
   },
   {
@@ -481,14 +455,8 @@ aircraft_inspections = [
     calender_value: 1,
     is_repeating: true,
     last_conducted_dates: {
-      300 => DateTime.strptime('2018-07-30', '%Y-%m-%d'),
-      301 => DateTime.strptime('2018-07-30', '%Y-%m-%d'),
-      302 => DateTime.strptime('2018-07-30', '%Y-%m-%d'),
-      303 => DateTime.strptime('2018-07-30', '%Y-%m-%d'),
-      304 => DateTime.strptime('2018-07-30', '%Y-%m-%d'),
-      305 => DateTime.strptime('2018-07-30', '%Y-%m-%d'),
-      306 => DateTime.strptime('2018-07-30', '%Y-%m-%d'),
-      307 => DateTime.strptime('2018-07-30', '%Y-%m-%d'),
+      300 => DateTime.strptime('2018-10-07', '%Y-%m-%d'),
+      
     }
   }
 ]   
