@@ -113,11 +113,25 @@ class Aircraft
         (row[Part::AIRCRAFT_PART_LIFE_CALENDER].present?) ? row[Part::AIRCRAFT_PART_LIFE_CALENDER].downcase.gsub("year",'').strip.to_i : 0
       total_hours  = (row[Part::AIRCRAFT_PART_LIFE_HOUR].present?) ? row[Part::AIRCRAFT_PART_LIFE_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
 
-      if row[Part::AIRCRAFT_PART_INSTALLED_DATE].is_a? Date        
-        installed_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_INSTALLED_DATE].to_s, '%Y-%m-%d')
+      if row[Part::AIRCRAFT_PART_INSTALLED_DATE].present?
+        if row[Part::AIRCRAFT_PART_INSTALLED_DATE].is_a? Date        
+          installed_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_INSTALLED_DATE].to_s, '%Y-%m-%d')
+        else
+          installed_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_INSTALLED_DATE].to_s, '%m/%d/%Y')
+        end
+        if !installed_date.is_a? Date
+          puts 'installed date is not a date'
+        end
       end
-      if row[Part::AIRCRAFT_PART_MANU_DATE].is_a? Date        
-        manufacturing_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_MANU_DATE].to_s, '%Y-%m-%d')
+      if row[Part::AIRCRAFT_PART_MANU_DATE].present?
+        if row[Part::AIRCRAFT_PART_MANU_DATE].is_a? Date        
+          manufacturing_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_MANU_DATE].to_s, '%Y-%m-%d')
+        else
+          manufacturing_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_MANU_DATE].to_s, '%m/%d/%Y')
+        end
+        if !manufacturing_date.is_a? Date
+          puts 'manufacturing date is not a date'
+        end
       end
       if manufacturing_date.present?
         track_from_cd = 1

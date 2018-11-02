@@ -38,6 +38,7 @@ class ScheduledInspectionsController < ApplicationController
     @scheduled_inspection.starting_date      = Time.zone.now
     @scheduled_inspection.calender_life_date = @scheduled_inspection.inspection.get_duration Time.zone.now
     @scheduled_inspection.save
+    @scheduled_inspection.calculate_status
     redirect_to @scheduled_inspection, notice: 'Scheduled inspection extention was successfully defered.'
     
   end

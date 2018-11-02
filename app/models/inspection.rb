@@ -146,7 +146,7 @@ class Inspection
 
   def get_duration starting_date
     calender_life_date = nil
-    if calender_value.present?
+    if calender_value.present? and calender_value > 0
       if self.duration_cd == 0
         calender_life_date = starting_date + calender_value.days
       elsif self.duration_cd == 1

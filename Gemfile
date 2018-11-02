@@ -85,4 +85,4 @@ gem 'state_machines-mongoid'
 gem 'rails-jquery-autocomplete'
 gem 'combine_pdf'
 gem 'roo'
-
+gem "unicode-display_width", ">= 1.3.3"

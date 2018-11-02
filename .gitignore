@@ -17,9 +17,14 @@
 /yarn-error.log
 
 .byebug_history
-/pubic/system/*
-/pubic/system/
+/public/system/*
+/public/system/
 public/system
 .vscode
 .vscode/
 scripts
+/xlsx/*
+xlsx/*
+
+reset_db.sh
+.DS_Store

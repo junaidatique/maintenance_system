@@ -88,7 +88,7 @@
               /= display_date part.calender_life_date
   .proppeller-inspection
     table border="0"     
-      - part = aircraft.parts.where(category_cd: 1).first      
+      - part = aircraft.parts.propeller_part.first      
       - if part.present?
         /tr
           td.td-part_number
@@ -164,7 +164,7 @@
                 = scheduled_inspection.hours
       - part = aircraft.parts.battery.first       
       - if part.present?
-        - scheduled_inspection = part.scheduled_inspections.not_completed.last
+        - scheduled_inspection = part.scheduled_inspections.last
         tr          
           td.td-type
             = scheduled_inspection.inspection.name
@@ -176,7 +176,7 @@
           td.td-comple
             - if scheduled_inspection.inspection.no_of_hours > 0
               = scheduled_inspection.inspection.no_of_hours
-          - scheduled_inspections = scheduled_inspection.inspection.scheduled_inspections.order(created_at: :desc).limit(3)
+          - scheduled_inspections = part.scheduled_inspections.ne(id: scheduled_inspection.id).order(created_at: :desc).limit(3)
           - scheduled_inspections.reverse.each do |scheduled_inspection|            
             td.td-comple
               - if scheduled_inspection.calender_life_date.present?

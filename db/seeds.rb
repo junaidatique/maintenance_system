@@ -6,7 +6,7 @@ aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no:
 
 aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '42', oil_capacity: '8', flight_hours: 199.9, engine_hours: 199.9, landings: 348, prop_hours: 199.9
 
-aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '42', oil_capacity: '8', flight_hours: 201.0, engine_hours: 201.0, landings: 318, prop_hours: 201.0
+aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '42', oil_capacity: '8', flight_hours: 201.0, engine_hours: 202.7, landings: 318, prop_hours: 202.0
 
 aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '42', oil_capacity: '8', flight_hours: 218.2, engine_hours: 218.2, landings: 390, prop_hours: 218.2
 
@@ -351,10 +351,14 @@ aircraft_inspections = [
     is_repeating: true,
     last_conducted_dates: {
       300 => DateTime.strptime('2018-09-06', '%Y-%m-%d'),
+      301 => DateTime.strptime('2018-10-12', '%Y-%m-%d'),
+      303 => DateTime.strptime('2018-10-18', '%Y-%m-%d'),
       
     },
     last_conducted_hours: {
       300 => 200,
+      301 => 199.3,
+      303 => 194.5,
       
     }
   },  
@@ -369,13 +373,32 @@ aircraft_inspections = [
     is_repeating: true ,
     last_conducted_dates: {
       300 => DateTime.strptime('2018-09-06', '%Y-%m-%d'),
-      
+      301 => DateTime.strptime('2018-10-12', '%Y-%m-%d'),
+      303 => DateTime.strptime('2018-10-18', '%Y-%m-%d'),
     },
     last_conducted_hours: {
       300 => 200,
-      
+      301 => 199.3,
+      303 => 194.5,
     }
   },    
+  
+  {
+    kind_cd: 1,
+    type_cd: 0,
+    category_cd: 2,
+    duration_cd: 1,
+    name: 'Aircraft Engine oil INSP Due', 
+    no_of_hours: 0, 
+    calender_value: 4,
+    is_repeating: true,
+    last_conducted_dates: {
+      300 => DateTime.strptime('2018-08-29', '%Y-%m-%d'),
+      301 => DateTime.strptime('2018-10-10', '%Y-%m-%d'),
+      303 => DateTime.strptime('2018-08-22', '%Y-%m-%d'),
+      
+    }
+  }, 
   {
     kind_cd: 1,
     type_cd: 0,
@@ -383,7 +406,7 @@ aircraft_inspections = [
     name: 'Aircraft 400 HRS',
     no_of_hours: 400,    
     is_repeating: true 
-  },    
+  }, 
   {
     kind_cd: 1,
     type_cd: 0,
@@ -393,8 +416,14 @@ aircraft_inspections = [
     no_of_hours: 0, 
     calender_value: 7,
     is_repeating: true,
-    last_conducted_dates: {
-      300 => DateTime.strptime('2018-10-16', '%Y-%m-%d'),
+    last_conducted_dates: {      
+      300 => DateTime.now.strftime('%Y-%m-%d'),
+      301 => DateTime.now.strftime('%Y-%m-%d'),
+      303 => DateTime.now.strftime('%Y-%m-%d'),
+      304 => DateTime.now.strftime('%Y-%m-%d'),
+      305 => DateTime.now.strftime('%Y-%m-%d'),
+      306 => DateTime.now.strftime('%Y-%m-%d'),
+      307 => DateTime.now.strftime('%Y-%m-%d'),
       
     },
   },
@@ -411,26 +440,13 @@ aircraft_inspections = [
   #     300 => DateTime.strptime('2018-06-27', '%Y-%m-%d')
   #   }
   # },
-  {
-    kind_cd: 1,
-    type_cd: 0,
-    category_cd: 2,
-    duration_cd: 1,
-    name: 'Aircraft Engine oil INSP Due', 
-    no_of_hours: 0, 
-    calender_value: 4,
-    is_repeating: true,
-    last_conducted_dates: {
-      300 => DateTime.strptime('2018-08-29', '%Y-%m-%d'),
-      
-    }
-  },
+  
   {
     kind_cd: 1,
     type_cd: 0,
     category_cd: 2,
     duration_cd: 2,
-    name: 'Aircraft Compus Swing INSP Due', 
+    name: 'Aircraft Compass Swing INSP Due', 
     no_of_hours: 0, 
     calender_value: 1,
     is_repeating: true,
@@ -455,7 +471,13 @@ aircraft_inspections = [
     calender_value: 1,
     is_repeating: true,
     last_conducted_dates: {
-      300 => DateTime.strptime('2018-10-07', '%Y-%m-%d'),
+      300 => DateTime.strptime('2018-10-30', '%Y-%m-%d'),
+      301 => DateTime.strptime('2018-10-30', '%Y-%m-%d'),
+      303 => DateTime.strptime('2018-10-30', '%Y-%m-%d'),
+      304 => DateTime.strptime('2018-10-30', '%Y-%m-%d'),
+      305 => DateTime.strptime('2018-10-30', '%Y-%m-%d'),
+      306 => DateTime.strptime('2018-10-30', '%Y-%m-%d'),
+      307 => DateTime.strptime('2018-10-30', '%Y-%m-%d'),
       
     }
   }
@@ -520,7 +542,7 @@ part_inspections = [
   {
     type_cd: 1,
     kind_cd: 1,    
-    name: 'Prop 10 hour', 
+    name: 'Prop 100 hour', 
     no_of_hours: 100,    
     is_repeating: true,
     part_number: 'HC-C2YK-1BF I/L C2K00180'
