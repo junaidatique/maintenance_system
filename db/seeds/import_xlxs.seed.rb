@@ -1,7 +1,7 @@
-AutherizationCode.import './xlsx/code.xlsx'
-Tool.import './xlsx/tools.xlsx'
+AutherizationCode.import '~/xlsx/code.xlsx'
+Tool.import '~/xlsx/tools.xlsx'
 
-xlsx = Roo::Spreadsheet.open('./xlsx/aircraft_summary.xlsx', extension: :xlsx)
+xlsx = Roo::Spreadsheet.open('~/xlsx/aircraft_summary.xlsx', extension: :xlsx)
 (4..xlsx.last_row).each do |i|
   row               = xlsx.row(i)      
   puts row[0].inspect
@@ -36,7 +36,7 @@ xlsx = Roo::Spreadsheet.open('./xlsx/aircraft_summary.xlsx', extension: :xlsx)
   
   inspection = Inspection.where(name: 'Aircraft Fire Bottle INSP Due').first
   inspection.create_aircraft_inspection aircraft, row[12]
-  aircraft.import "./xlsx/#{aircraft.number}.xlsx"
+  aircraft.import "~/xlsx/#{aircraft.number}.xlsx"
 end
 
 
