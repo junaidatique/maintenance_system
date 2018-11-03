@@ -33,6 +33,29 @@ class Inspection
   scope :to_be_replaced, -> { any_of({kind_cd: 0}, {kind_cd: 0.to_s})}
   scope :to_be_inspected, -> { any_of({kind_cd: 1}, {kind_cd: 1.to_s})}
 
+  scope :aircraft_25_hour, -> { where(type_cd: 0).where(no_of_hours: 25) }
+  scope :aircraft_50_hour, -> { where(type_cd: 0).where(no_of_hours: 50) }
+  scope :aircraft_100_hour, -> { where(type_cd: 0).where(no_of_hours: 100) }
+  scope :aircraft_400_hour, -> { where(type_cd: 0).where(no_of_hours: 400) }
+
+  after_create :create_work_package
+
+  def create_work_package
+    if type_cd == 1 and self.part_number.present?
+      
+      part = Part.where(number: self.part_number).first
+      autherization_code = AutherizationCode.where(code: 'BAEO01').first
+      unless part.blank?
+        WorkPackage.create!({
+            inspection: self, 
+            description: "#{part.description} Inspection", 
+            autherization_code: autherization_code
+          })
+      end
+    end
+  end
+
+
   def create_aircraft_inspection aircraft, last_inspection_date = nil, last_inspection_hours = nil
     # if there is no incomplete inspction 
     if aircraft.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0

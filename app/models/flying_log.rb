@@ -19,18 +19,28 @@ class FlyingLog
   field :location_from, type: String
   field :location_to, type: String
   field :completion_time, type: String
-    
+      
   validate :check_flying_logs
   validate :check_techlogs
   validate :check_parts
   validate :check_scheduled_inspections  
-
+  
   
   def check_flying_logs
-    
+    if started? and aircraft.flying_logs.not_cancelled_not_completed.ne(state: 'pilot_confirmed').ne(_id: self._id).count > 0
+      errors.add(:aircraft_id, " Previous flying log not completed.")
+    end
     if started? and aircraft.flying_logs.not_cancelled_not_completed.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
       errors.add(:aircraft_id, " flying log already created.")
     end
+    if started? and (flightline_servicing.inspection_performed_cd == 0) and created_at.strftime("%Y-%m-%d") == Time.zone.now.strftime("%Y-%m-%d") and aircraft.flying_logs.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
+      errors.add(:aircraft_id, " Preflight is already created.")
+    end
+    if started? and (flightline_servicing.inspection_performed_cd == 2) and created_at.strftime("%Y-%m-%d") == Time.zone.now.strftime("%Y-%m-%d") and aircraft.flying_logs.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
+      errors.add(:aircraft_id, " Post flight is already created.")
+    end
+
+
   end
   def check_techlogs    
     if flight_released?
@@ -81,6 +91,7 @@ class FlyingLog
   scope :completed, -> { where(state: :log_completed) }
   scope :not_completed, -> { ne(state: :log_completed) }  
   scope :not_cancelled_not_completed, -> { where("state"=>{"$nin"=>["log_completed","flight_cancelled"] } )}
+  scope :not_booked_in, -> { where("state"=>{"$nin"=>["log_completed","flight_cancelled"] } )}
   # default_scope { order(id: :desc) }
   
   increments :number, seed: 1000

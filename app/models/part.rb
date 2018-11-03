@@ -133,7 +133,7 @@ class Part
   def check_inspections    
     if self.is_inspectable?      
       if Inspection.to_be_inspected.where(part_number: self.number).count == 0 and ((inspection_hours.present? and inspection_hours > 0) or inspection_calender_value.present?)
-        Inspection.create!({kind_cd: 1, type_cd: 1, name: "#{self.description} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, duration_cd: self.inspection_duration, part_number: self.number})
+        Inspection.create!({kind_cd: 1, type_cd: 1, name: "#{self.description.titleize} Inspection", no_of_hours: inspection_hours, calender_value: inspection_calender_value, duration_cd: self.inspection_duration, part_number: self.number})
       end
       part_inspections = Inspection.to_be_inspected.where(part_number: self.number)
       part_inspections.each do |part_inspection| 
@@ -142,7 +142,7 @@ class Part
     end
     if self.is_lifed? and ((self.installed_date.present? and self.calender_life_value.present? and self.calender_life_value > 0) or self.total_hours > 0)
       if Inspection.to_be_replaced.where(part_number: self.number).count == 0
-        Inspection.create!({kind_cd: 0, type_cd: 1, name: "#{self.description} Replacement", no_of_hours: total_hours, calender_value: calender_life_value, duration_cd: 2, part_number: self.number})
+        Inspection.create!({kind_cd: 0, type_cd: 1, name: "#{self.description.titleize} Replacement", no_of_hours: total_hours, calender_value: calender_life_value, duration_cd: 2, part_number: self.number})
       end
       part_inspections = Inspection.to_be_replaced.where(part_number: self.number)
       part_inspections.each do |part_inspection| 
