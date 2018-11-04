@@ -156,7 +156,16 @@ class Part
       part_history = PartHistory.where(flying_log_id: flying_log.id).where(part_id: self.id).first            
       if part_history.blank?      
         part_history = PartHistory.new         
+        self.completed_hours = (self.completed_hours.to_f + flying_log.sortie.flight_time.to_f).round(2)
+        self.landings_completed = self.landings_completed.to_i + flying_log.sortie.total_landings.to_i
+      else 
+        t_completed_hours = (self.completed_hours.to_f - part_history.hours.to_f).round(2)
+        t_landings_completed = self.landings_completed.to_i - part_history.landings.to_i
+        self.completed_hours = (t_completed_hours.to_f + flying_log.sortie.flight_time.to_f).round(2)
+        self.landings_completed = t_landings_completed.to_i + flying_log.sortie.total_landings.to_i
       end
+      self.remaining_hours     = (total_hours.to_f - completed_hours.to_f).round(2)
+      save
       
       part_history.quantity     = self.quantity
       part_history.hours        = flying_log.sortie.flight_time
@@ -168,19 +177,23 @@ class Part
       part_history.total_landings = part_histories.sum('landings')
       part_history.part         = self      
       part_history.save        
-      self.update_values      
+      # self.update_values      
+      
+      self.scheduled_inspections.not_completed.each do |scheduled_inspection|
+        scheduled_inspection.update_scheduled_inspections self.completed_hours      
+      end
     end    
   end
 
   def update_values
-    self.completed_hours     = part_histories.sum('hours').round(2)
-    self.landings_completed  = part_histories.sum('landings')
-    self.remaining_hours     = (total_hours.to_f - completed_hours.to_f).round(2)
-    save
+    # self.completed_hours     = part_histories.sum('hours').round(2)
+    # self.landings_completed  = part_histories.sum('landings')
+    # self.remaining_hours     = (total_hours.to_f - completed_hours.to_f).round(2)
+    # save
     # self.scheduled_inspections.not_completed.inspection.first.update_scheduled_inspections self.completed_hours
-    self.scheduled_inspections.not_completed.each do |scheduled_inspection|
-      scheduled_inspection.update_scheduled_inspections self.completed_hours      
-    end
+    # self.scheduled_inspections.not_completed.each do |scheduled_inspection|
+    #   scheduled_inspection.update_scheduled_inspections self.completed_hours      
+    # end
   end
 
   
