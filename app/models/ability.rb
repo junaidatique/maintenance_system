@@ -8,9 +8,7 @@ class Ability
     alias_action :read, :update, to: :ru
     alias_action :index, :read, to: :ir
     if user.admin?
-      can :manage, :all
-    elsif user.chief_maintenance_officer?
-      can :approve_extension, Techlog
+      can :manage, :all      
     elsif user.chief_maintenance_officer? or user.squadron_engineering_officer?
       can :manage, Aircraft
       can :manage, FlyingLog
@@ -38,6 +36,7 @@ class Ability
       can :defer_inspection, ScheduledInspection
       can :apply_extention, ScheduledInspection
       can :cancel_extention, ScheduledInspection
+      can :approve_extension, Techlog
     elsif user.master_control?      
       can :read, Aircraft
       can :get_aircrafts, Aircraft
