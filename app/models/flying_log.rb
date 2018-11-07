@@ -28,18 +28,18 @@ class FlyingLog
   
   def check_flying_logs
     if started? and aircraft.flying_logs.not_cancelled_not_completed.ne(state: 'pilot_confirmed').ne(_id: self._id).count > 0
-      errors.add(:aircraft_id, " Previous flying log not completed.")
+      errors.add(:aircraft_id, " previous flying log not completed.")
     end
     if started? and aircraft.flying_logs.not_cancelled_not_completed.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
       errors.add(:aircraft_id, " flying log already created.")
     end
     
-    # if started? and (flightline_servicing.inspection_performed_cd == 0) and created_at.strftime("%Y-%m-%d") == Time.zone.now.strftime("%Y-%m-%d") and aircraft.flying_logs.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
-    #   errors.add(:aircraft_id, " Preflight is already created.")
-    # end
-    # if started? and (flightline_servicing.inspection_performed_cd == 2) and created_at.strftime("%Y-%m-%d") == Time.zone.now.strftime("%Y-%m-%d") and aircraft.flying_logs.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
-    #   errors.add(:aircraft_id, " Post flight is already created.")
-    # end
+    if started? and (flightline_servicing.inspection_performed_cd == 0) and aircraft.flying_logs.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
+      errors.add(:aircraft_id, " Preflight is already created.")
+    end
+    if started? and (flightline_servicing.inspection_performed_cd == 2) and aircraft.flying_logs.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
+      errors.add(:aircraft_id, " Post flight is already created.")
+    end
 
 
   end
