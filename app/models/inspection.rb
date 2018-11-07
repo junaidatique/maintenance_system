@@ -60,7 +60,7 @@ class Inspection
     # if there is no incomplete inspction 
     if aircraft.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
       sp = ScheduledInspection.new
-      # if this is the first ever inspection
+      # if this is not the first ever inspection
       if aircraft.scheduled_inspections.where(inspection_id: self.id).completed.count > 0        
         sp.hours = 0
         if no_of_hours > 0
@@ -94,17 +94,12 @@ class Inspection
   
   def create_part_inspection part
     unless part.installed_date.blank?
-      if part.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
+      if self.no_of_hours > 0 and !self.is_repeating and part.completed_hours.present? and part.completed_hours > self.no_of_hours
+        return;
+      end
+      if part.scheduled_inspections.where(inspection_id: self.id).not_completed.to_be_inspected.count == 0
         sp = ScheduledInspection.new
-        if part.scheduled_inspections.where(inspection_id: self.id).count == 0           
-          if self.no_of_hours > 0 and !self.is_repeating and part.completed_hours.present? and part.completed_hours > self.no_of_hours            
-            return;          
-          end           
-          sp.starting_date      = part.installed_date        
-          sp.calender_life_date = self.get_duration sp.starting_date        
-          if sp.calender_life_date.present? and sp.calender_life_date < Time.zone.now
-            sp.calender_life_date = self.get_duration sp.calender_life_date
-          end
+        if part.scheduled_inspections.where(inspection_id: self.id).count == 0                               
           h = 0
           if part.completed_hours.present? and no_of_hours > 0
             begin
@@ -119,27 +114,36 @@ class Inspection
           if no_of_hours > 0
             sp.hours              = part.completed_hours + no_of_hours        
           end
-        end        
-        
-        sp.completed_hours    = part.completed_hours
-        sp.inspection         = self
-        sp.is_repeating       = self.is_repeating
-        sp.status_cd          = 0
-        sp.trade_cd           = part.trade_cd
-        sp.kind_cd            = self.kind_cd
-        sp.inspectable        = part
-        sp.save!
-        self.scheduled_inspections << sp
-        sp.update_scheduled_inspections part.completed_hours
+        end                
+      else
+        sp = part.scheduled_inspections.where(inspection_id: self.id).not_completed.to_be_inspected.first        
+        sp.hours              = 0
+        if no_of_hours > 0
+          sp.hours              = part.completed_hours + no_of_hours        
+        end
       end
-    else
-      
-    end    
+      sp.starting_date      = part.installed_date        
+      sp.calender_life_date = self.get_duration sp.starting_date        
+      # if sp.calender_life_date.present? and sp.calender_life_date < Time.zone.now
+      while sp.calender_life_date.present? and sp.calender_life_date < Time.zone.now do
+        sp.calender_life_date = self.get_duration sp.calender_life_date
+      end
+      sp.completed_hours    = part.completed_hours
+      sp.inspection         = self
+      sp.is_repeating       = self.is_repeating
+      sp.status_cd          = 0
+      sp.trade_cd           = part.trade_cd
+      sp.kind_cd            = self.kind_cd
+      sp.inspectable        = part
+      sp.save!
+      self.scheduled_inspections << sp
+      sp.update_scheduled_inspections part.completed_hours
+    end
   end
 
   def create_part_repalcement part    
     if (part.installed_date.present? and part.calender_life_value > 0) or part.total_hours > 0
-      if part.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
+      if part.scheduled_inspections.where(inspection_id: self.id).not_completed.to_be_replaced.count == 0
         sp = ScheduledInspection.new
         if part.track_from_cd == 0
           sp.starting_date      = part.installed_date
@@ -181,37 +185,5 @@ class Inspection
     calender_life_date
   end
 
-  # def update_scheduled_inspections aircraft_id, hours
-  #   self.scheduled_inspections.not_completed.where(inspectable_id: aircraft_id).gt(hours: 0).update_all({completed_hours: hours})   
-  #   self.scheduled_inspections.not_completed.where(inspectable_id: Aircraft.find(aircraft_id).parts.map{|p|} p.id).gt(hours: 0).update_all({completed_hours: hours})   
-  #   pending_schedules = ScheduledInspection.collection.aggregate([
-  #     { 
-  #       "$project" => 
-  #       {
-  #         "diff" => { 
-  #           "$subtract" => [ "$hours", "$completed_hours" ] 
-  #         }          
-  #       }
-  #     },
-  #     {
-  #       "$match"=>{"diff"=>{"$lt"=>10,"$gt"=>0}}
-  #     }
-  #   ])
-  #   ScheduledInspection.in(id: pending_schedules.map{|sch| sch['_id']}).scheduled_insp.update_all({status_cd: 1})
-  #   due_schedules = ScheduledInspection.collection.aggregate([
-  #     { 
-  #       "$project" => 
-  #       {
-  #         "diff" => { 
-  #           "$subtract" => [ "$hours", "$completed_hours" ] 
-  #         },
-  #         "hours" => 1,
-  #       }
-  #     },
-  #     {
-  #       "$match"=>{"diff"=>{"$lte"=>0}, "hours" => {"$gt" => 0} }
-  #     }
-  #   ])
-  #   ScheduledInspection.in(id: due_schedules.map{|sch| sch['_id']}).not_completed.update_all({status_cd: 4})
-  # end
+  
 end

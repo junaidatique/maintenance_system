@@ -32,6 +32,8 @@ class ScheduledInspection
   scope :pending, -> { where(status_cd: 1)}
   scope :pending_n_due, -> { any_of({status_cd: 1}, {status_cd: 4})}
   scope :calender_based, -> { ne(calender_life_date: nil)}
+  scope :to_be_replaced, -> { any_of({kind_cd: 0}, {kind_cd: 0.to_s})}
+  scope :to_be_inspected, -> { any_of({kind_cd: 1}, {kind_cd: 1.to_s})}
   
   validate :check_extention
 
@@ -107,7 +109,7 @@ class ScheduledInspection
     end
   end
   def calculate_status
-    if hours > 0 and self.completed_hours.present?
+    if self.hours > 0 and self.completed_hours.present?
       if (self.hours - self.completed_hours).to_f <= 0
         self.status = 4
       elsif (self.hours - self.completed_hours) < 10
@@ -116,13 +118,13 @@ class ScheduledInspection
         self.status = 0
       end
     end
-    if calender_life_date.present?
+    if calender_life_date.present? 
       if calender_life_date.strftime('%Y-%m-%d').to_date <= (Time.zone.now).strftime('%Y-%m-%d').to_date
         self.status_cd = 4
       elsif calender_life_date.strftime('%Y-%m-%d') <= (Time.zone.now + 30.days).strftime('%Y-%m-%d')        
         self.status_cd = 1
       else
-        self.status = 0
+        # self.status = 0
       end      
     end          
     self.save

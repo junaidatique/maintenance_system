@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       get :cancel_extention
       get :create_techlog
       get :defer_inspection
+      get :check_status
     end    
   end
   resources :autherization_codes do 

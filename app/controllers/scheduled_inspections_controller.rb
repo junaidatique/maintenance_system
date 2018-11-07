@@ -1,5 +1,5 @@
 class ScheduledInspectionsController < ApplicationController
-  before_action :set_scheduled_inspection, only: [:show, :edit, :update, :destroy, :apply_extention, :save_extention, :cancel_extention, :create_techlog, :defer_inspection]
+  before_action :set_scheduled_inspection, only: [:show, :edit, :update, :destroy, :apply_extention, :save_extention, :cancel_extention, :create_techlog, :defer_inspection, :check_status]
 
   # GET /scheduled_inspections
   # GET /scheduled_inspections.json
@@ -30,6 +30,11 @@ class ScheduledInspectionsController < ApplicationController
         format.json { render json: @scheduled_inspection.errors, status: :unprocessable_entity }
       end
     end    
+  end
+
+  def check_status
+    @scheduled_inspection.calculate_status
+    redirect_to @scheduled_inspection
   end
 
   def defer_inspection
