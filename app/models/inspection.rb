@@ -117,10 +117,10 @@ class Inspection
         end                
       else
         sp = part.scheduled_inspections.where(inspection_id: self.id).not_completed.to_be_inspected.first        
-        sp.hours              = 0
-        if no_of_hours > 0
-          sp.hours              = part.completed_hours + no_of_hours        
-        end
+        # sp.hours              = 0
+        # if no_of_hours > 0
+        #   sp.hours              = part.completed_hours + no_of_hours        
+        # end
       end
       sp.starting_date      = part.installed_date        
       sp.calender_life_date = self.get_duration sp.starting_date        
