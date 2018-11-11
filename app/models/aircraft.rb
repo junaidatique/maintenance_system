@@ -187,8 +187,14 @@ class Aircraft
     scheduled_inspections.scheduled_insp.each do |scheduled_inspection|
       scheduled_inspection.update_scheduled_inspections self.flight_hours
     end
+    scheduled_inspections.pending.each do |scheduled_inspection|
+      scheduled_inspection.update_scheduled_inspections self.flight_hours
+    end
     parts.each do |part|
       part.scheduled_inspections.scheduled_insp.each do |scheduled_inspection|
+        scheduled_inspection.update_scheduled_inspections part.completed_hours  
+      end
+      part.scheduled_inspections.pending.each do |scheduled_inspection|
         scheduled_inspection.update_scheduled_inspections part.completed_hours  
       end
     end    
