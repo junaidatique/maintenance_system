@@ -40,8 +40,8 @@ flying_log.fuel_refill = 1 + rand(flying_log.aircraft.fuel_capacity)
 flying_log.oil_serviced = 1 + rand(flying_log.aircraft.oil_capacity)
 flying_log.update_fuel
 flying_log.save
-flying_log.fill_fuel
 
+# flying_log = FlyingLog.last
 # # ToDo
 flying_log.techlogs.where(type_cd: 0).each do |techlog|
   techlog.action = Faker::Lorem.sentence
@@ -52,6 +52,7 @@ flying_log.techlogs.where(type_cd: 0).each do |techlog|
 end
 flying_log.save!
 # sleep(1)
+flying_log.fill_fuel
 flying_log.complete_servicing      
 puts 'techlog finished'
 flying_log.build_flightline_release

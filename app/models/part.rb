@@ -153,7 +153,7 @@ class Part
 
   def create_history_with_flying_log flying_log
     if self.is_lifed?
-      part_history = PartHistory.where(flying_log_id: flying_log.id).where(part_id: self.id).first            
+      part_history = PartHistory.where(flying_log_id: flying_log.id).where(part_id: self.id).first
       if part_history.blank?      
         part_history = PartHistory.new         
         self.completed_hours = (self.completed_hours.to_f + flying_log.sortie.flight_time.to_f).round(2)
@@ -179,9 +179,9 @@ class Part
       part_history.save        
       # self.update_values      
       
-      self.scheduled_inspections.not_completed.each do |scheduled_inspection|
-        scheduled_inspection.update_scheduled_inspections self.completed_hours      
-      end
+      # self.scheduled_inspections.not_completed.each do |scheduled_inspection|
+      #   scheduled_inspection.update_scheduled_inspections self.completed_hours      
+      # end
     end    
   end
 
