@@ -7,7 +7,7 @@ $(document).on 'ready', ->
         'data-id-element', '#flying_log_techlogs_attributes_' + i + '_work_unit_code_id'
       i++
   $('.timepickerclass').datetimepicker
-    format: 'hh:mm A'
+    format:'HH:mm'
 
   $('#div_techlog_servicing').on 'cocoon:before-insert', (e, row) ->
     id = $(row.find('input.autocomplete')[0]).attr('id')    

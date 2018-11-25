@@ -20,10 +20,46 @@ class FlyingLog
   field :location_to, type: String
   field :completion_time, type: String
       
+
+  belongs_to :aircraft
+  belongs_to :left_tyre, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
+  belongs_to :right_tyre, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
+  belongs_to :nose_tail, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
+
+  has_one :ac_configuration, dependent: :destroy
+  has_one :capt_acceptance_certificate, dependent: :destroy
+  has_one :sortie, dependent: :destroy
+  has_one :capt_after_flight, dependent: :destroy
+  has_one :flightline_release, dependent: :destroy
+  has_one :aircraft_total_time, dependent: :destroy
+  has_one :after_flight_servicing, dependent: :destroy
+  has_one :flightline_servicing, dependent: :destroy
+  has_one :post_mission_report, dependent: :destroy
+  has_one :flying_history, dependent: :destroy
+  has_many :techlogs, dependent: :destroy
+
+
+  
+
+  # embeds_many :notifications, as: :notifiable
+  # embeds_many :flying_log_state_transitions
+
+  accepts_nested_attributes_for :ac_configuration
+  accepts_nested_attributes_for :capt_acceptance_certificate
+  accepts_nested_attributes_for :sortie
+  accepts_nested_attributes_for :capt_after_flight
+  accepts_nested_attributes_for :flightline_release
+  accepts_nested_attributes_for :aircraft_total_time
+  accepts_nested_attributes_for :after_flight_servicing
+  accepts_nested_attributes_for :flightline_servicing
+  accepts_nested_attributes_for :post_mission_report
+  accepts_nested_attributes_for :techlogs, reject_if: :all_blank, allow_destroy: true
+
   validate :check_flying_logs
   validate :check_techlogs
   validate :check_parts
   validate :check_scheduled_inspections  
+  validate :check_flight_total_time  
   
   
   def check_flying_logs
@@ -86,7 +122,14 @@ class FlyingLog
   end
 
   
-
+  def check_flight_total_time
+    if self.sortie.present? and self.sortie.takeoff_time.present? and self.sortie.landing_time.present?
+      minutes = self.sortie.calculate_flight_minutes
+      if minutes > 4 * 60
+        errors.add(:aircraft_id, "Invalid sortie hours.")
+      end
+    end 
+  end
   
 
   scope :completed, -> { where(state: :log_completed) }
@@ -145,39 +188,7 @@ class FlyingLog
     end
   end
 
-  belongs_to :aircraft
-  belongs_to :left_tyre, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
-  belongs_to :right_tyre, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
-  belongs_to :nose_tail, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
-
-  has_one :ac_configuration, dependent: :destroy
-  has_one :capt_acceptance_certificate, dependent: :destroy
-  has_one :sortie, dependent: :destroy
-  has_one :capt_after_flight, dependent: :destroy
-  has_one :flightline_release, dependent: :destroy
-  has_one :aircraft_total_time, dependent: :destroy
-  has_one :after_flight_servicing, dependent: :destroy
-  has_one :flightline_servicing, dependent: :destroy
-  has_one :post_mission_report, dependent: :destroy
-  has_one :flying_history, dependent: :destroy
-  has_many :techlogs, dependent: :destroy
-
-
   
-
-  # embeds_many :notifications, as: :notifiable
-  # embeds_many :flying_log_state_transitions
-
-  accepts_nested_attributes_for :ac_configuration
-  accepts_nested_attributes_for :capt_acceptance_certificate
-  accepts_nested_attributes_for :sortie
-  accepts_nested_attributes_for :capt_after_flight
-  accepts_nested_attributes_for :flightline_release
-  accepts_nested_attributes_for :aircraft_total_time
-  accepts_nested_attributes_for :after_flight_servicing
-  accepts_nested_attributes_for :flightline_servicing
-  accepts_nested_attributes_for :post_mission_report
-  accepts_nested_attributes_for :techlogs, reject_if: :all_blank, allow_destroy: true
 
   after_create :create_serial_no
   after_create :create_techlogs

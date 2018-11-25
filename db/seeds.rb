@@ -2,14 +2,9 @@ cur_time = Time.zone.now
 
 System.create! settings: {dms_version_number: 0.0}
 puts 'Creating Aircraft'
-aircraft_300  = Aircraft.create! number: '300', tail_number: 'QA300', serial_no: '#300', fuel_capacity: '42', oil_capacity: '8'
-aircraft_301  = Aircraft.create! number: '301', tail_number: 'QA301', serial_no: '#301', fuel_capacity: '42', oil_capacity: '8'
-aircraft_302  = Aircraft.create! number: '302', tail_number: 'QA302', serial_no: '#302', fuel_capacity: '42', oil_capacity: '8'
-aircraft_303  = Aircraft.create! number: '303', tail_number: 'QA303', serial_no: '#303', fuel_capacity: '42', oil_capacity: '8'
-aircraft_304  = Aircraft.create! number: '304', tail_number: 'QA304', serial_no: '#304', fuel_capacity: '42', oil_capacity: '8'
-aircraft_305  = Aircraft.create! number: '305', tail_number: 'QA305', serial_no: '#305', fuel_capacity: '42', oil_capacity: '8'
-aircraft_306  = Aircraft.create! number: '306', tail_number: 'QA306', serial_no: '#306', fuel_capacity: '42', oil_capacity: '8'
-aircraft_307  = Aircraft.create! number: '307', tail_number: 'QA307', serial_no: '#307', fuel_capacity: '42', oil_capacity: '8'
+(300..307).each do |aircraft|
+  Aircraft.create! number: aircraft, tail_number: "QA#{aircraft}", serial_no: "##{aircraft}", fuel_capacity: '42', oil_capacity: '8' if Aircraft.where(number: aircraft).first.blank?
+end
 puts 'Aircraft Created'
 
 
@@ -272,9 +267,9 @@ users_list = [
   
 
 users_list.each do |user|  
-  u           = User.new
-  u.name      = user[:name].titleize
-  u.username  = user[:name].downcase.gsub(' ','_')
+  username  = user[:name].downcase.gsub(' ','_')
+  u           = User.where(username: username).first_or_create  
+  u.name      = user[:name].titleize  
   u.rank      = user[:rank]
   u.trade     = user[:trade]
   u.personal_code = user[:personal_code]
@@ -408,7 +403,15 @@ aircraft_inspections.each do |insp|
   # last_conducted_hours = insp[:last_conducted_hours]  
   # insp.delete(:last_conducted_dates)  
   # insp.delete(:last_conducted_hours)  
-  inspection = Inspection.create(insp)
+  inspection = Inspection.where(name: insp[:name]).first_or_create
+  inspection.kind_cd = insp[:kind_cd]
+  inspection.type_cd = insp[:type_cd]
+  inspection.category_cd = insp[:category_cd]
+  inspection.duration_cd = insp[:duration_cd]
+  inspection.no_of_hours = insp[:no_of_hours]
+  inspection.calender_value = insp[:calender_value]
+  inspection.is_repeating = insp[:is_repeating]
+  inspection.save!
   # aircrafts = Aircraft.all
   # aircrafts.each do |aircraft|
   #   last_conducted = Time.zone.now
@@ -469,7 +472,17 @@ part_inspections = [
   }
 ]
 part_inspections.each do |insp|
-  inspection = Inspection.create(insp)  
+  inspection = Inspection.where(name: insp[:name]).first_or_create
+  inspection.kind_cd = insp[:kind_cd]
+  inspection.type_cd = insp[:type_cd]
+  inspection.category_cd = insp[:category_cd]
+  inspection.duration_cd = insp[:duration_cd]
+  inspection.no_of_hours = insp[:no_of_hours]
+  inspection.calender_value = insp[:calender_value]
+  inspection.is_repeating = insp[:is_repeating]
+  inspection.part_number = insp[:part_number]
+  inspection.save!
+  # inspection = Inspection.create(insp)  
 end
 exit
 def create_part aircraft, category, trade, part_number, serial_no, quantity = 0, description = ''

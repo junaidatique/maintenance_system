@@ -17,7 +17,7 @@ $(document).on 'ready', ->
       radioClass: 'iradio_square'
       increaseArea: '10%'
     $('.timepickerclass').datetimepicker
-      format: 'hh:mm A'
+      format:'HH:mm'
     return
   
   if ($('[name="techlog[condition]"]:checked').val() == 'open')
