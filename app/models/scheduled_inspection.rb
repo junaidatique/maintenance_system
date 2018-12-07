@@ -104,7 +104,10 @@ class ScheduledInspection
       end
     else
       if self.inspection.is_repeating
-        self.inspection.create_part_inspection Part.find inspectable_id      
+        part = Part.find inspectable_id
+        part.last_inspection_date = Time.zone.now
+        part.save!
+        self.inspection.create_part_inspection part
       end
     end
   end

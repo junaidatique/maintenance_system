@@ -94,12 +94,15 @@ class Inspection
   
   def create_part_inspection part
     unless part.installed_date.blank?
+      # Dont repeat if part completed hours are greater then the insepection hours
       if self.no_of_hours > 0 and !self.is_repeating and part.completed_hours.present? and part.completed_hours > self.no_of_hours
         return;
       end
+      # if no not completed inspection created
       if part.scheduled_inspections.where(inspection_id: self.id).not_completed.to_be_inspected.count == 0
         sp = ScheduledInspection.new
-        if part.scheduled_inspections.where(inspection_id: self.id).count == 0                               
+        # if this is the first ever inspection creationg. 
+        if part.scheduled_inspections.where(inspection_id: self.id).count == 0
           h = 0
           if part.completed_hours.present? and no_of_hours > 0
             begin
@@ -107,6 +110,7 @@ class Inspection
             end while part.completed_hours > h
           end
           sp.hours              = h
+
         else
           sp.starting_date      = Time.zone.now
           sp.calender_life_date = self.get_duration sp.starting_date        
@@ -122,7 +126,12 @@ class Inspection
         #   sp.hours              = part.completed_hours + no_of_hours        
         # end
       end
-      sp.starting_date      = part.installed_date        
+      if part.last_inspection_date.present?
+        sp.starting_date      = part.installed_date
+      else
+        
+      end
+
       sp.calender_life_date = self.get_duration sp.starting_date        
       # if sp.calender_life_date.present? and sp.calender_life_date < Time.zone.now
       while sp.calender_life_date.present? and sp.calender_life_date < Time.zone.now do

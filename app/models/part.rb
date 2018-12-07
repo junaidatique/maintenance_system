@@ -29,23 +29,27 @@ class Part
   field :condemn, type: String
 
   field :inspection_duration, type: Integer
-  field :inspection_hours, type: Float, default: 0
-  field :inspection_calender_value, type: String  
+  field :inspection_hours, type: Float, default: 0, default: nil
+  field :inspection_calender_value, type: String
+
   field :is_inspectable, type: Mongoid::Boolean
-
   field :is_servicable, type: Mongoid::Boolean, default: true
-
   field :is_lifed, type: Mongoid::Boolean
-  field :calender_life_value, type: Integer # calender life. either calender life or life hours
+  
+  field :life_duration, type: Integer
+  field :calender_life_value, type: Integer # calender life. either calender life or life hours, this is the number in years
   field :calender_life_date, type: Date # calender life. either calender life or life hours
-  field :installed_date, type: Date
-  field :manufacturing_date, type: Date
+  field :installed_date, type: Date # this is the first installation date of this part on any aircraft
+  field :manufacturing_date, type: Date # this is the date when part was manufactured.
 
   field :total_hours, type: Float, default: 0 # life hours or calender life
   field :remaining_hours, type: Float, default: 0
   field :completed_hours, type: Float, default: 0
   
   field :landings_completed, type: Integer, default: 0  
+
+  field :last_inspection_date, type: Date
+  field :last_inspection_hour, type: Float, default: 0  
 
   belongs_to :aircraft, optional: true
 
@@ -95,6 +99,27 @@ class Part
   
   def update_record    
     self.number_serial_no = "#{number}-#{serial_no}"
+    # this calculates that if part is lifed. this means either life years in number or life hours is present.
+    if (calender_life_value.present? and calender_life_value > 0) or (total_hours.present? and total_hours > 0)
+      self.is_lifed = true
+    end
+    # this calculates that if the part is inspectable. 
+    if (inspection_hours.present? and inspection_hours > 0) or 
+      (inspection_calender_value.present? and inspection_calender_value > 0) or
+      (category_cd == 0 or category_cd == 1)
+      self.is_inspectable = true
+    end
+    if manufacturing_date.present?
+        track_from_cd = 1 # total life is calculated from manufacturing date
+        if (manufacturing_date.present? and calender_life_value.present? and calender_life_value > 0)
+          self.calender_life_date = manufacturing_date.to_date + calender_life_value.years      
+        end
+      else
+        track_from_cd = 0 # total life is calcluated from first installation date.
+      end
+    self.save
+    # _____________________
+
     if (total_hours.present? and completed_hours.present?)
       self.remaining_hours = (total_hours.to_f - completed_hours.to_f).round(2)
     end
@@ -104,19 +129,11 @@ class Part
         self.calender_life_date = installed_date.to_date + calender_life_value.years      
       end
     elsif track_from_cd == 1
-      if (manufacturing_date.present? and calender_life_value.present? and calender_life_value > 0)
-        self.calender_life_date = manufacturing_date.to_date + calender_life_value.years      
-      end
+      
     end
     
-    if calender_life_value.present? and total_hours.present? and calender_life_value > 0 or total_hours > 0
-      self.is_lifed = true
-    end
-    self.is_inspectable    = ((inspection_hours.present? and inspection_hours > 0) or inspection_calender_value.present?) ? true : false    
-    if category_cd == 0 or category_cd == 1
-      self.is_inspectable = true
-    end
-    self.save
+    
+    
 
     part_history = PartHistory.new         
     part_history.quantity     = self.quantity
@@ -230,6 +247,9 @@ class Part
   AIRCRAFT_PART_MANU_DATE     = 9
   AIRCRAFT_PART_INSTALL_HOUR  = 10
   AIRCRAFT_PART_TRADE         = 11
+  AIRCRAFT_PART_LAST_CALANDER_INSP = 12
+  AIRCRAFT_PART_LAST_HOUR_INSP = 14
+  AIRCRAFT_PART_LANDINGS = 15
   
   def self.import(file)    
     xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
@@ -250,7 +270,7 @@ class Part
       condemn           = row[Part::CONDEMN]
       is_lifed          = (row[Part::LIFED].present? and row[Part::LIFED].downcase == 'y') ? true : false
 
-      inspection_hours  = (row[Part::INSP_HOUR].present?)? row[Part::INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : 0      
+      inspection_hours  = (row[Part::INSP_HOUR].present?)? row[Part::INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : nil      
       
       inspection_calender_value = nil
       if row[Part::INSP_CALENDER].present?
