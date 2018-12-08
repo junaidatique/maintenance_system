@@ -7,38 +7,33 @@
       .box-body
         table.table.table-bordered.table-striped.data-tabled
           thead
-            tr
-              th
-                | Aircraft
+            tr              
               th
                 | Number
               th
-                | Noun
+                | Noun              
               th
-                | Serviceable
+                | Trade
               th
-                | Serial #
+                | Inspectable
               th
-                | Store Balance
+                | Lifed
               th
                 | Actions
                  
           tbody
             - @parts.each do |part|
-              tr
-                td.table-row-center
-                  - if part.aircraft.present?
-                    = part.aircraft.tail_number
+              tr                
                 td.table-row-center
                   = link_to part.number, part_path(part)
                 td.table-row-center
-                  = link_to part.description, part_path(part)
+                  = link_to part.noun, part_path(part)
                 td.table-row-center
-                  = part.is_servicable ? 'Yes' : 'No'
+                  = part.trade.to_s.titleize
                 td.table-row-center
-                  = part.serial_no
-                td.table-row-center                  
-                  = part.quantity
+                  = part.is_inspectable? ? 'Yes' : 'No'
+                td.table-row-center
+                  = part.is_lifed? ? 'Yes' : 'No'                                
                 td
                   = link_to part_path(part), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye

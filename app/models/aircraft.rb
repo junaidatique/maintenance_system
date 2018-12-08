@@ -33,13 +33,13 @@ class Aircraft
 
   has_many :flying_logs, dependent: :destroy
   has_many :techlogs, dependent: :destroy
-  has_many :parts, dependent: :destroy
+  has_many :part_items, dependent: :destroy
   has_many :part_histories, dependent: :destroy
   has_many :flying_histories, dependent: :destroy
   has_many :landing_histories, dependent: :destroy
   has_many :scheduled_inspections, as: :inspectable
 
-  accepts_nested_attributes_for :parts, :allow_destroy => true  
+  accepts_nested_attributes_for :part_items, :allow_destroy => true  
     
   def update_part_values flying_log
     self.flight_hours = flying_log.aircraft_total_time.corrected_total_aircraft_hours.to_f
@@ -91,13 +91,16 @@ class Aircraft
   end
   def import file
     xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
-    (5..xlsx.last_row).each do |i|
+    (4..xlsx.last_row).each do |i|
       row               = xlsx.row(i)      
       aircraft          = self
-      
-      number            = row[Part::AIRCRAFT_PART_NUMBER].to_s.gsub("\n", '')
-      description       = row[Part::AIRCRAFT_PART_DESCRIPTION]
-      
+      # puts row.inspect
+      # puts row[Part::AIRCRAFT_PART_LAST_HOUR_INSP].inspect
+      # puts row[Part::AIRCRAFT_PART_LANDINGS].inspect
+      # next;
+      number     = row[Part::AIRCRAFT_PART_NUMBER].to_s.gsub("\n", '')
+      noun       = row[Part::AIRCRAFT_PART_NOUN]
+      trade      = row[Part::AIRCRAFT_PART_TRADE].downcase
       # formulate inspection 
       inspection_hours  = (row[Part::AIRCRAFT_PART_INSP_HOUR].present?) ? row[Part::AIRCRAFT_PART_INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : nil
       inspection_calender_value = nil
@@ -112,17 +115,17 @@ class Aircraft
       end
 
       # formulate life
-      calender_life_value   = nil
+      lifed_calender_value   = nil
       if row[Part::AIRCRAFT_PART_LIFE_CALENDER].present?
         if row[Part::AIRCRAFT_PART_LIFE_CALENDER].downcase.count('y') > 0
-          calender_life_value = row[Part::AIRCRAFT_PART_LIFE_CALENDER].downcase.gsub("year",'').strip.to_i
-          life_duration = 2
+          lifed_calender_value = row[Part::AIRCRAFT_PART_LIFE_CALENDER].downcase.gsub("year",'').strip.to_i
+          lifed_duration = 2
         else
-          calender_life_value = row[Part::AIRCRAFT_PART_LIFE_CALENDER].downcase.gsub("month",'').strip.to_i
-          life_duration = 1
+          lifed_calender_value = row[Part::AIRCRAFT_PART_LIFE_CALENDER].downcase.gsub("month",'').strip.to_i
+          lifed_duration = 1
         end
       end      
-      total_hours  = (row[Part::AIRCRAFT_PART_LIFE_HOUR].present?) ? row[Part::AIRCRAFT_PART_LIFE_HOUR].downcase.gsub("hrs",'').strip.to_f : 0
+      lifed_hours  = (row[Part::AIRCRAFT_PART_LIFE_HOUR].present?) ? row[Part::AIRCRAFT_PART_LIFE_HOUR].downcase.gsub("hrs",'').strip.to_f : 0
 
       # manufactoring or installing date 
       if row[Part::AIRCRAFT_PART_INSTALLED_DATE].present?
@@ -146,6 +149,11 @@ class Aircraft
         end
       end
       
+      if manufacturing_date.present?
+        track_from = :manufacturing_date
+      else
+        track_from = :installation_date
+      end
       install_hour        = row[Part::AIRCRAFT_PART_INSTALL_HOUR].to_f
       completed_hours     = (self.flight_hours.to_f - install_hour.to_f).round(2)
       landings_completed  = nil
@@ -154,53 +162,63 @@ class Aircraft
       end
 
       serial_no           = row[Part::AIRCRAFT_PART_SERIAL_NO]
-      trade               = row[Part::AIRCRAFT_PART_TRADE].downcase
+      last_inspection_date = nil
       if row[Part::AIRCRAFT_PART_LAST_CALANDER_INSP].present?        
         if row[Part::AIRCRAFT_PART_LAST_CALANDER_INSP].is_a? Date        
-          installed_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_LAST_CALANDER_INSP].to_s, '%Y-%m-%d')
+          last_inspection_date = DateTime.strptime(row[Part::AIRCRAFT_PART_LAST_CALANDER_INSP].to_s, '%Y-%m-%d')
         else
           puts row[Part::AIRCRAFT_PART_LAST_CALANDER_INSP].inspect
-          installed_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_LAST_CALANDER_INSP].to_s, '%m/%d/%Y')
+          last_inspection_date = DateTime.strptime(row[Part::AIRCRAFT_PART_LAST_CALANDER_INSP].to_s, '%m/%d/%Y')
         end
-        if !installed_date.is_a? Date
+        if !last_inspection_date.is_a? Date
           puts 'installed date is not a date'
         end
       end
-      # last_inspection_date = DateTime.strptime(row[Part::AIRCRAFT_PART_LAST_CALANDER_INSP].to_s, '%m/%d/%Y')
-      last_inspection_hour = (row[Part::AIRCRAFT_PART_LAST_HOUR_INSP].present?) ? row[Part::AIRCRAFT_PART_LAST_HOUR_INSP].downcase.gsub("hrs",'').strip.to_f : 0
-      number_serial_no = "#{number}-#{serial_no}"
-      if serial_no.present?
-        part = Part.where(number_serial_no: number_serial_no).first
-      else
-        part = Part.where(number: number).where(aircraft: aircraft).first
+      last_inspection_hour = nil      
+      last_inspection_hour = (row[Part::AIRCRAFT_PART_LAST_HOUR_INSP].present?) ? row[Part::AIRCRAFT_PART_LAST_HOUR_INSP].to_s.downcase.gsub("hrs",'').strip.to_f : 0
+
+      
+      part = Part.where(number: number).first
+      if part.blank?
+        part_data = {                        
+          trade: trade,             
+          number: number,                         
+          noun: noun,                                     
+          track_from: track_from,                                     
+
+          inspection_duration: inspection_duration, 
+          inspection_hours: inspection_hours, 
+          inspection_calender_value: inspection_calender_value,
+
+          lifed_duration: lifed_duration,
+          lifed_calender_value: lifed_calender_value,
+          lifed_hours: lifed_hours,
+        }   
+        part = Part.create!(part_data)
       end
-      
-      part_data = {            
-            aircraft_id: self.id, 
-            trade: trade,             
-            number: number, 
-            serial_no: serial_no, 
-            number_serial_no: number_serial_no,
-            description: description,                                     
 
-            inspection_duration: inspection_duration, 
-            inspection_hours: inspection_hours, 
-            inspection_calender_value: inspection_calender_value,
 
-            life_duration: life_duration,
-            calender_life_value: calender_life_value,
-            total_hours: total_hours,
-                        
-            completed_hours: completed_hours,
-            installed_date: installed_date,
-            manufacturing_date: manufacturing_date,
-            landings_completed: landings_completed
-          }            
-      
-      if part.present?
-        part.update(part_data)
+      part_item_data = {
+        part_id: part.id,
+        aircraft_id: self.id,             
+        serial_no: serial_no, 
+        completed_hours: completed_hours,
+        installed_date: installed_date,
+        manufacturing_date: manufacturing_date,
+        landings_completed: landings_completed,
+        quantity: 1,
+        last_inspection_hour: last_inspection_hour,
+        last_inspection_date: last_inspection_date
+      }            
+      if serial_no.present?
+        part_item = PartItem.where(part_id: part.id).where(serial_no: serial_no).first
       else
-        part = Part.create(part_data)
+        part_item = PartItem.where(part_id: part.id).where(aircraft: aircraft).first
+      end
+      if part_item.present?
+        part_item.update(part_item_data)
+      else
+        part_item = PartItem.create(part_item_data)
       end      
     end
   end

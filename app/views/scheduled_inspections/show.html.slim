@@ -76,7 +76,7 @@
                     - if @scheduled_inspection.inspectable_type == Aircraft.name
                       = @scheduled_inspection.inspectable.tail_number
                     - else
-                      = @scheduled_inspection.inspectable.number
+                      = @scheduled_inspection.inspectable.part.number
                   th width="25%"
                     | Hours
                   td = @scheduled_inspection.hours

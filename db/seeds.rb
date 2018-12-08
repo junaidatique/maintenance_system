@@ -457,19 +457,21 @@ part_inspections = [
   {
     type_cd: 1,
     kind_cd: 1,    
-    name: 'Prop 10 hour', 
+    name: 'Prop 10 hour Inspection', 
     no_of_hours: 10,    
     is_repeating: false,
     part_number: 'HC-C2YK-1BF I/L C2K00180'
   },
-  {
-    type_cd: 1,
-    kind_cd: 1,    
-    name: 'Prop 100 hour', 
-    no_of_hours: 100,    
-    is_repeating: true,
-    part_number: 'HC-C2YK-1BF I/L C2K00180'
-  }
+  # {
+  #   type_cd: 1,
+  #   kind_cd: 1,    
+  #   name: 'Prop 100 hour Inspection', 
+  #   no_of_hours: 100,    
+  #   is_repeating: true,
+  #   part_number: 'HC-C2YK-1BF I/L C2K00180',
+  #   calender_value: 1,
+  #   duration_cd: 2,
+  # }
 ]
 part_inspections.each do |insp|
   inspection = Inspection.where(name: insp[:name]).first_or_create

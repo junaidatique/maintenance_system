@@ -47,7 +47,7 @@
                   - if scheduled_inspection.inspectable_type == Aircraft.name
                     = scheduled_inspection.inspectable.tail_number
                   - else
-                    = scheduled_inspection.inspectable.number
+                    = scheduled_inspection.inspectable.part.number
                 td.table-row-center
                   = scheduled_inspection.inspection.name
                 td.table-row-center

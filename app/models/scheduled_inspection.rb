@@ -3,7 +3,7 @@ class ScheduledInspection
   include Mongoid::Timestamps
   include SimpleEnum::Mongoid
   
-  as_enum :status, Scheduled: 0, Pending: 1, "In progress": 2, Completed: 3, Due: 4
+  as_enum :status, scheduled: 0, pending: 1, in_progress: 2, completed: 3, due: 4
   as_enum :condition, normal: 0, extention_applied: 1, extention_granted: 2
 
   field :hours, type: Float, default: 0
@@ -38,7 +38,7 @@ class ScheduledInspection
   validate :check_extention
 
   def check_extention
-    if condition_cd == 1
+    if condition == :extention_applied
       if extention_hours == 0 and extention_days == 0
         errors.add(:extention_hours, " Please select at least one option.")
       end
@@ -59,7 +59,7 @@ class ScheduledInspection
   end
 
   def start_work_package    
-    if (status_cd_was == 0 or status_cd_was == 1 or status_cd_was == 4) and status_cd == 2         
+    if (status_was == :scheduled or status_was == :pending or status_was == :due) and status == :in_progress
       if inspectable_type == Aircraft.name
         inspectable_name = inspectable.tail_number
         aircraft_id = inspectable.id
@@ -112,7 +112,7 @@ class ScheduledInspection
     end
   end
   def calculate_status
-    if self.hours > 0 and self.completed_hours.present?
+    if self.hours.present? and self.hours > 0 and self.completed_hours.present?
       if (self.hours - self.completed_hours).to_f <= 0
         self.status = 4
       elsif (self.hours - self.completed_hours) < 10
