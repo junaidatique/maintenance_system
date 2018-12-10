@@ -15,23 +15,23 @@
             td.date
               | Previous
             td
-              = aircraft.parts.left_tyre.first.serial_no
+              = aircraft.part_items.left_tyres.first.serial_no
             td
               /= landing_history.left_tyre_landings
             td
-              = aircraft.parts.left_tyre.first.landings_completed
+              = aircraft.part_items.left_tyres.first.landings_completed
             td
-              = aircraft.parts.right_tyre.first.serial_no              
+              = aircraft.part_items.right_tyres.first.serial_no              
             td
               /= landing_history.right_tyre_landings
             td
-              = aircraft.parts.right_tyre.first.landings_completed
+              = aircraft.part_items.right_tyres.first.landings_completed
             td
-              = aircraft.parts.nose_tail.first.serial_no              
+              = aircraft.part_items.nose_tails.first.serial_no              
             td
               /= landing_history.nose_tail_landings
             td
-              = aircraft.parts.nose_tail.first.landings_completed
+              = aircraft.part_items.nose_tails.first.landings_completed
       - else
         - aircraft.flying_logs.lte(created_at: Time.zone.now).gte(created_at: (Time.zone.now - 10.days)).order(created_at: :asc).each do |flying_log|          
           - if flying_log.left_tyre.present?          

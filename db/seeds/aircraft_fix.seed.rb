@@ -1,7 +1,7 @@
 
 #rails db:seed:aircraft_fix
 aircraft = Aircraft.where(tail_number: 'QA306').first
-aircraft.parts.each do |part|
+aircraft.part_items.each do |part|
   part.part_histories.where(flying_log_id: nil).where(hours: -0.2).each do |part_history|  
     part_history.hours = 9.8
     part_history.save

@@ -60,7 +60,7 @@ class ChangePart
         new_part.installed_date = Time.zone.now
       end        
       if new_part.serial_no.present?        
-        if new_part.category_cd == 0          
+        if new_part.category == :engine
           if new_part.aircraft.present?
             techlog.aircraft.create_engine_history 'installed', new_part.aircraft.tail_number, new_part
           end

@@ -42,9 +42,9 @@ class FlyingHistory
             "month"=> time.utc.strftime("%m").to_i, 
             "day"=> time.utc.strftime("%d").to_i, 
             "aircraft_id"=> aircraft.id, 
-            "left_tyre_id"=> aircraft.parts.left_tyre.first.id,
-            "right_tyre_id"=> aircraft.parts.right_tyre.first.id,
-            "nose_tail_id"=> aircraft.parts.nose_tail.first.id
+            "left_tyre_id"=> aircraft.part_items.left_tyres.first.id,
+            "right_tyre_id"=> aircraft.part_items.right_tyres.first.id,
+            "nose_tail_id"=> aircraft.part_items.nose_tails.first.id
           }
         }        
       ])
@@ -54,25 +54,25 @@ class FlyingHistory
         right_tyre_total_landings = 0        
         nose_tail_total_landings  = 0        
         if last_hist.present?
-          if last_hist.left_tyre.id == aircraft.parts.left_tyre.first.id
+          if last_hist.left_tyre.id == aircraft.part_items.left_tyres.first.id
             left_tyre_total_landings  = last_hist.left_tyre_total_landings
           end
-          if last_hist.right_tyre.id == aircraft.parts.right_tyre.first.id
+          if last_hist.right_tyre.id == aircraft.part_items.right_tyre.first.id
             right_tyre_total_landings  = last_hist.right_tyre_total_landings
           end
-          if last_hist.nose_tail.id == aircraft.parts.nose_tail.first.id
+          if last_hist.nose_tail.id == aircraft.part_items.nose_tail.first.id
             nose_tail_total_landings  = last_hist.nose_tail_total_landings
           end
         else
-          left_tyre_total_landings  = aircraft.parts.left_tyre.first.landings_completed
-          right_tyre_total_landings  = aircraft.parts.right_tyre.first.landings_completed
-          nose_tail_total_landings  = aircraft.parts.nose_tail.first.landings_completed
+          left_tyre_total_landings  = aircraft.part_items.left_tyres.first.landings_completed
+          right_tyre_total_landings  = aircraft.part_items.right_tyres.first.landings_completed
+          nose_tail_total_landings  = aircraft.part_items.nose_tails.first.landings_completed
         end
         hist      = LandingHistory.new
         hist.aircraft = aircraft
-        hist.left_tyre_id = aircraft.parts.left_tyre.first.id
-        hist.right_tyre_id = aircraft.parts.right_tyre.first.id
-        hist.nose_tail_id = aircraft.parts.nose_tail.first.id        
+        hist.left_tyre_id = aircraft.part_items.left_tyres.first.id
+        hist.right_tyre_id = aircraft.part_items.right_tyres.first.id
+        hist.nose_tail_id = aircraft.part_items.nose_tails.first.id        
         hist.created_at = time
       else 
         hist = LandingHistory.find(record.first[:_id])

@@ -88,19 +88,19 @@ class FlyingLog
   end
 
   def check_parts
-    if aircraft.parts.engine_part.count == 0
+    if aircraft.part_items.engines.count == 0
       errors.add(:aircraft_id, "has no engine.")
     end
-    if aircraft.parts.propeller_part.count == 0
+    if aircraft.part_items.propellers.count == 0
       errors.add(:aircraft_id, "has no propeller.")
     end
-    if aircraft.parts.left_tyre.count == 0
+    if aircraft.part_items.left_tyres.count == 0
       errors.add(:aircraft_id, "has no left tyre.")
     end
-    if aircraft.parts.right_tyre.count == 0
+    if aircraft.part_items.right_tyres.count == 0
       errors.add(:aircraft_id, "has no right tyre.")
     end
-    if aircraft.parts.nose_tail.count == 0
+    if aircraft.part_items.nose_tails.count == 0
       errors.add(:aircraft_id, "has no nose tail.")
     end
   end
@@ -113,10 +113,10 @@ class FlyingLog
     if started? and aircraft.scheduled_inspections.in_progress.count > 0
       errors.add(:aircraft_id, "has in progress inspections.")
     end
-    if started? and aircraft.parts.map{|part| part if part.scheduled_inspections.due.count > 0}.reject(&:blank?).count > 0
+    if started? and aircraft.part_items.map{|part| part if part.scheduled_inspections.due.count > 0}.reject(&:blank?).count > 0
       errors.add(:aircraft_id, "has some parts with due inspections.")
     end
-    if started? and aircraft.parts.map{|part| part if part.scheduled_inspections.in_progress.count > 0}.reject(&:blank?).count > 0
+    if started? and aircraft.part_items.map{|part| part if part.scheduled_inspections.in_progress.count > 0}.reject(&:blank?).count > 0
       errors.add(:aircraft_id, "has some parts with in progress inspections.")
     end
   end
@@ -212,14 +212,14 @@ class FlyingLog
 
   def update_times
     build_aircraft_total_time
-    aircraft_total_time.carried_over_engine_hours     = aircraft.parts.engine_part.first.completed_hours.round(2)
+    aircraft_total_time.carried_over_engine_hours     = aircraft.part_items.engines.first.completed_hours.round(2)
     aircraft_total_time.carried_over_aircraft_hours   = aircraft.flight_hours.round(2)
     aircraft_total_time.carried_over_landings         = aircraft.landings.round(2)
-    aircraft_total_time.carried_over_prop_hours       = aircraft.parts.propeller_part.first.completed_hours.round(2)
-    aircraft_total_time.corrected_total_engine_hours     = aircraft.parts.engine_part.first.completed_hours.round(2)
+    aircraft_total_time.carried_over_prop_hours       = aircraft.part_items.propellers.first.completed_hours.round(2)
+    aircraft_total_time.corrected_total_engine_hours     = aircraft.part_items.engines.first.completed_hours.round(2)
     aircraft_total_time.corrected_total_aircraft_hours   = aircraft.flight_hours.round(2)
     aircraft_total_time.corrected_total_landings         = aircraft.landings.round(2)
-    aircraft_total_time.corrected_total_prop_hours       = aircraft.parts.propeller_part.first.completed_hours.round(2)
+    aircraft_total_time.corrected_total_prop_hours       = aircraft.part_items.propellers.first.completed_hours.round(2)
   end
 
   def update_fuel
@@ -264,9 +264,9 @@ class FlyingLog
     f_total.corrected_total_prop_hours       = total_prop_hours.round(2)
 
 
-    self.left_tyre = aircraft.parts.left_tyre.first
-    self.right_tyre = aircraft.parts.right_tyre.first
-    self.nose_tail = aircraft.parts.nose_tail.first
+    self.left_tyre = aircraft.part_items.left_tyres.first
+    self.right_tyre = aircraft.part_items.right_tyres.first
+    self.nose_tail = aircraft.part_items.nose_tails.first
 
     self.save
 

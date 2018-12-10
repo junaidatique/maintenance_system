@@ -3,20 +3,20 @@ class Part
   include Mongoid::Timestamps
   include SimpleEnum::Mongoid
 
-  as_enum :category, 
-    engine: 0, 
-    propeller: 1, 
-    left_tyre: 2, 
-    right_tyre: 3, 
-    nose_tail: 4,
-    battery: 5
+  # as_enum :category, 
+  #   engine: 0, 
+  #   propeller: 1, 
+  #   left_tyre: 2, 
+  #   right_tyre: 3, 
+  #   nose_tail: 4,
+  #   battery: 5
 
   as_enum :trade, airframe: 0, engine: 1, electric: 2, instrument: 3, radio: 4
-  as_enum :track_from, installation_date: 0, manufacturing_date: 1
+  as_enum :track_from, installation_date: 0, manufacturing_date: 1, no_track: 2
 
   field :number, type: String
   field :noun, type: String
-
+  field :unit_of_issue, type: String
   # field :is_repairable, type: Mongoid::Boolean
 
   field :is_inspectable, type: Mongoid::Boolean
@@ -30,27 +30,29 @@ class Part
   field :lifed_hours, type: Float, default: 0 # life hours or calender life
   field :lifed_calender_value, type: Integer # calender life. either calender life or life hours, this is the number in years
   
+  
+
   has_many :part_items
 
-  before_create :set_category  
+  # before_create :set_category  
   before_create :set_inspection_values  
   after_create :set_inspections
 
-  def set_category    
-    if number == 'ENPL-RT10227' 
-      self.category_cd = 0
-    elsif number == 'HC-C2YK-1BF I/L C2K00180'
-      self.category_cd = 1
-    elsif noun == 'MAIN WHEEL LT'
-      self.category_cd = 2
-    elsif noun == 'MAIN WHEEL RT'
-      self.category_cd = 3
-    elsif noun == 'NOSE WHEEL'
-      self.category_cd = 4
-    elsif number == '6127279-067'
-      self.category_cd = 5
-    end
-  end
+  # def set_category    
+  #   if number == 'ENPL-RT10227' 
+  #     self.category = :engine
+  #   elsif number == 'HC-C2YK-1BF I/L C2K00180'
+  #     self.category = :propeller
+  #   elsif noun == 'MAIN WHEEL LT'
+  #     self.category = :left_tyre
+  #   elsif noun == 'MAIN WHEEL RT'
+  #     self.category = :right_tyre
+  #   elsif noun == 'NOSE WHEEL'
+  #     self.category = :nose_tail
+  #   elsif number == '6127279-067'
+  #     self.category = :battery
+  #   end
+  # end
 
   def set_inspection_values
     if (lifed_calender_value.present? and lifed_calender_value > 0) or (lifed_hours.present? and lifed_hours > 0)
@@ -103,9 +105,245 @@ class Part
   AIRCRAFT_PART_INSP_HOUR     = 7
   AIRCRAFT_PART_INSTALLED_DATE= 8
   AIRCRAFT_PART_MANU_DATE     = 9
-  AIRCRAFT_PART_INSTALL_HOUR  = 10
+  AIRCRAFT_PART_COMP_HOURS = 10
+  
   AIRCRAFT_PART_TRADE         = 11
   AIRCRAFT_PART_LAST_CALANDER_INSP = 12
-  AIRCRAFT_PART_LAST_HOUR_INSP = 13
+  AIRCRAFT_PART_INSTALL_HOUR  = 13
   AIRCRAFT_PART_LANDINGS = 14
+
+
+  
+  NUMBER            = 1
+  NOUN              = 2
+  UNIT              = 3
+  CONTRACT_QUANTITY = 4
+  RECIEVED_QUANTITY = 5
+  STORE_BALANCE     = 7
+  LOCATION          = 8
+  COMPLETED_HOURS   = 9
+  INSTALLED_DATE    = 10
+  MANU_DATE         = 11
+  SERIAL_NO         = 12
+  LIFE_CALENDER     = 13
+  LIFE_HOUR         = 14
+  INSP_CALENDER     = 15
+  INSP_HOUR         = 16
+  LANDING_COMPLETED = 17
+
+
+  # REPAIR            = 10
+  # CONDEMN           = 11
+  # LIFED             = 12
+  
+  
+  
+    
+  
+  
+  
+  
+  # TRADE             = 2
+  
+  
+  
+  def self.import(file)    
+    xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
+    (2..xlsx.last_row).each do |i|
+      row               = xlsx.row(i)
+      # part data 
+      number            = row[Part::NUMBER]
+      noun              = row[Part::NOUN]
+      unit_of_issue     = row[Part::UNIT]
+
+
+      # formulate inspection 
+      inspection_hours  = (row[Part::INSP_HOUR].present?) ? row[Part::INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : nil
+      inspection_calender_value = nil
+      if row[Part::INSP_CALENDER].present?
+        if row[Part::INSP_CALENDER].downcase.count('y') > 0
+          inspection_calender_value = row[Part::INSP_CALENDER].downcase.gsub("year",'').strip.to_i
+          inspection_duration = 2
+        else
+          inspection_calender_value = row[Part::INSP_CALENDER].downcase.gsub("month",'').strip.to_i
+          inspection_duration = 1
+        end
+      end
+
+      # formulate life
+      lifed_calender_value   = nil
+      if row[Part::LIFE_CALENDER].present?
+        if row[Part::LIFE_CALENDER].downcase.count('y') > 0
+          lifed_calender_value = row[Part::LIFE_CALENDER].downcase.gsub("year",'').strip.to_i
+          lifed_duration = 2
+        else
+          lifed_calender_value = row[Part::LIFE_CALENDER].downcase.gsub("month",'').strip.to_i
+          lifed_duration = 1
+        end
+      end      
+      lifed_hours  = (row[Part::LIFE_HOUR].present?) ? row[Part::LIFE_HOUR].downcase.gsub("hrs",'').strip.to_f : 0
+
+      # manufactoring or installing date 
+      if row[Part::INSTALLED_DATE].present?
+        if row[Part::INSTALLED_DATE].is_a? Date        
+          installed_date      = DateTime.strptime(row[Part::INSTALLED_DATE].to_s, '%Y-%m-%d')
+        else
+          installed_date      = DateTime.strptime(row[Part::INSTALLED_DATE].to_s, '%m/%d/%Y')
+        end
+        if !installed_date.is_a? Date
+          puts 'installed date is not a date'
+        end
+      end
+
+      if row[Part::MANU_DATE].present?
+        if row[Part::MANU_DATE].is_a? Date        
+          manufacturing_date      = DateTime.strptime(row[Part::MANU_DATE].to_s, '%Y-%m-%d')
+        else
+          manufacturing_date      = DateTime.strptime(row[Part::MANU_DATE].to_s, '%m/%d/%Y')
+        end
+        if !manufacturing_date.is_a? Date
+          puts 'manufacturing date is not a date'
+        end
+      end
+
+      if manufacturing_date.present?
+        track_from = :manufacturing_date
+      elsif installed_date.present?
+        track_from = :installation_date
+      else
+        track_from = :no_track
+      end
+
+
+      part = Part.where(number: number).first
+      part_data = {
+          number: number,                         
+          noun: noun,
+          unit_of_issue: unit_of_issue,
+          track_from: track_from,                                     
+
+          inspection_duration: inspection_duration, 
+          inspection_hours: inspection_hours, 
+          inspection_calender_value: inspection_calender_value,
+
+          lifed_duration: lifed_duration,
+          lifed_calender_value: lifed_calender_value,
+          lifed_hours: lifed_hours,
+        }
+      if part.blank?        
+        part = Part.create!(part_data)
+      else
+        # part.update(part_data)
+      end
+
+      #part item data
+
+      serial_no           = row[Part::SERIAL_NO]
+      completed_hours     = (row[Part::COMPLETED_HOURS]).present? ? row[Part::COMPLETED_HOURS].downcase.gsub("hrs",'').strip.to_i : 0
+      landings_completed  = (row[Part::LANDING_COMPLETED]).present? ? row[Part::LANDING_COMPLETED].downcase.gsub("hrs",'').strip.to_i : 0
+      contract_quantity = row[Part::CONTRACT_QUANTITY]
+      recieved_quantity = row[Part::RECIEVED_QUANTITY]
+      quantity          = row[Part::STORE_BALANCE]
+      location          = row[Part::LOCATION]
+
+
+      part_item_data = {
+        part_id: part.id,                    
+        serial_no: serial_no, 
+        completed_hours: completed_hours,
+        installed_date: installed_date,
+        manufacturing_date: manufacturing_date,
+        landings_completed: landings_completed,
+        contract_quantity: contract_quantity,
+        recieved_quantity: recieved_quantity,
+        quantity: quantity,
+        location: location,
+      }
+
+      if serial_no.present?
+        part_item = PartItem.where(part_id: part.id).where(serial_no: serial_no).first
+      # else
+      #   part_item = PartItem.where(part_id: part.id).first
+      end
+      if part_item.present?
+        part_item.update(part_item_data)
+      else
+        part_item = PartItem.create(part_item_data)
+      end
+
+
+      # #___________________________________
+      # puts row.inspect
+      # break;
+      # aircraft          = Aircraft.where(tail_number: row[Part::TAIL_NO]).first
+      # trade             = (Part::categories.include? row[Part::TRADE]) ? row[Part::TRADE] : nil
+      
+
+      
+      # dfim_balance      = (row[Part::DFIM].present? and row[Part::DFIM].downcase == 'y') ? true : false
+
+      # is_repairable     = (row[Part::REPAIR].present? and row[Part::REPAIR].downcase == 'y') ? true : false
+      # condemn           = row[Part::CONDEMN]
+      # is_lifed          = (row[Part::LIFED].present? and row[Part::LIFED].downcase == 'y') ? true : false
+
+      # inspection_hours  = (row[Part::INSP_HOUR].present?)? row[Part::INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : nil      
+      
+      # inspection_calender_value = nil
+      # if row[Part::INSP_CALENDER].present?
+      #   if row[Part::INSP_CALENDER].downcase.count('y') > 0
+      #     inspection_calender_value = row[Part::INSP_CALENDER].downcase.gsub("year",'').strip.to_i
+      #     inspection_duration = 2
+      #   else
+      #     inspection_calender_value = row[Part::INSP_CALENDER].downcase.gsub("month",'').strip.to_i
+      #     inspection_duration = 1
+      #   end
+      # end
+
+
+      # calender_life_value   = 
+      #   (row[Part::LIFE_CALENDER].present?) ? row[Part::LIFE_CALENDER].downcase.gsub("year",'').strip.to_i : 0
+      # total_hours  = (row[Part::LIFE_HOUR].present?)? row[Part::LIFE_HOUR].downcase.gsub("hrs",'').strip.to_i : 0
+
+      # installed_date      = row[Part::INSTALLED_DATE]
+      
+      
+      
+      
+      # number_serial_no = "#{number}-#{serial_no}"
+      # part = Part.where(number_serial_no: number_serial_no).first      
+      # part_data = {            
+      #       aircraft: aircraft, 
+      #       trade: trade, 
+      #       number: number, 
+      #       serial_no: serial_no, 
+      #       number_serial_no: number_serial_no, 
+      #       description: description, 
+      #       unit_of_issue: unit_of_issue, 
+
+      #       quantity: quantity,            
+      #       contract_quantity: contract_quantity, 
+      #       recieved_quantity: recieved_quantity,    
+      #       dfim_balance: dfim_balance, 
+
+      #       is_repairable: is_repairable, 
+      #       condemn: condemn, 
+      #       is_lifed: is_lifed, 
+
+      #       inspection_duration: inspection_duration, 
+      #       inspection_hours: inspection_hours, 
+      #       inspection_calender_value: inspection_calender_value,
+
+      #       calender_life_value: calender_life_value,            
+      #       total_hours: total_hours,
+                        
+      #       completed_hours: completed_hours,
+      #       installed_date: installed_date,
+      #       landings_completed: landings_completed
+      #     }            
+      
+      
+
+      
+    end
+  end
 end

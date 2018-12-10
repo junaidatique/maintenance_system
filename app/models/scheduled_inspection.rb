@@ -17,6 +17,7 @@ class ScheduledInspection
   field :kind_cd, type: Integer
   field :extention_hours, type: Integer
   field :extention_days, type: Integer
+  field :aircraft_referenced_hours, type: Float
   
   belongs_to :inspection  
   belongs_to :started_by, :class_name => "User", optional: true

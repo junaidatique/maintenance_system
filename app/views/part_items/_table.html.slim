@@ -11,7 +11,8 @@
                 - else                  
                   | &nbsp; Parts
             .col-md-6.text-right
-              = link_to upload_aircraft_path(aircraft: @aircraft), class: 'btn btn-info btn-flat'                 
+              = link_to "Export CSV", part_items_path(format: "csv"), class: 'btn btn-info btn-flat'                 
+              /= link_to upload_aircraft_path(aircraft: @aircraft), class: 'btn btn-info btn-flat'                 
                 | &nbsp; Upload Parts
                 | &nbsp;
       .box-body
@@ -50,6 +51,8 @@
                 | Due Hours
               th
                 | Completed Hours
+              th
+                | Landings
                 
           tbody
             - @part_items.each do |part_item|
@@ -93,3 +96,5 @@
                   = scheduled_regular.hours   if scheduled_regular.present?
                 td.table-row-center
                   = part_item.completed_hours
+                td.table-row-center
+                  = part_item.landings_completed

@@ -13,7 +13,6 @@ class Inspection
   field :calender_value, type: Integer  
   field :part_number, type: String
   field :is_repeating, type: Mongoid::Boolean, default: 1
-  
 
   validate :part_number_presence
   
@@ -114,11 +113,11 @@ class Inspection
         end
       end
       if no_of_hours.present? and no_of_hours > 0
-        if part_item.last_inspection_hour.present?
-          inspection_hours = part_item.last_inspection_hour.to_f + no_of_hours.to_f
-        else
-          inspection_hours = part_item.aircraft_installation_hours.to_f + no_of_hours.to_f
-        end
+        inspection_hours = 0
+        begin
+          inspection_hours              = inspection_hours + no_of_hours.to_f
+        end while part_item.completed_hours > inspection_hours
+        aircraft_referenced_hours = part_item.aircraft_installation_hours.to_f + inspection_hours
       end
       # if no not completed inspection created
       if part_item.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
@@ -129,6 +128,7 @@ class Inspection
       sp.starting_date      = starting_date
       sp.calender_life_date = self.get_duration starting_date
       sp.hours              = inspection_hours
+      sp.aircraft_referenced_hours              = aircraft_referenced_hours
       sp.completed_hours    = part_item.completed_hours
       sp.inspection         = self
       sp.is_repeating       = self.is_repeating
@@ -194,10 +194,14 @@ class Inspection
     else
       sp = part_item.scheduled_inspections.where(inspection_id: self.id).not_completed.first
     end
+    sp.starting_date = nil
     if part_item.part.track_from == :installation_date
       sp.starting_date      = part_item.installed_date
-    else
+    elsif part_item.part.track_from == :manufacturing_date
       sp.starting_date      = part_item.manufacturing_date
+    end
+    if no_of_hours > 0
+      sp.aircraft_referenced_hours = part_item.aircraft_referenced_lifed_hours
     end
     sp.calender_life_date = nil
     sp.calender_life_date = self.get_duration sp.starting_date

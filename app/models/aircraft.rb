@@ -50,11 +50,11 @@ class Aircraft
     self.scheduled_inspections.not_completed.each do |scheduled_inspection|
       scheduled_inspection.update_scheduled_inspections self.flight_hours      
     end
-    lifed_parts = self.parts.lifed    
+    lifed_parts = self.part_items.lifed    
     lifed_parts.each do |part|            
       part.create_history_with_flying_log flying_log
     end    
-    tyre_parts = self.parts.tyre
+    tyre_parts = self.part_items.tyre
     tyre_parts.each do |part|
       part.create_history_with_flying_log flying_log
     end    
@@ -138,6 +138,7 @@ class Aircraft
           puts 'installed date is not a date'
         end
       end
+
       if row[Part::AIRCRAFT_PART_MANU_DATE].present?
         if row[Part::AIRCRAFT_PART_MANU_DATE].is_a? Date        
           manufacturing_date      = DateTime.strptime(row[Part::AIRCRAFT_PART_MANU_DATE].to_s, '%Y-%m-%d')
@@ -151,11 +152,14 @@ class Aircraft
       
       if manufacturing_date.present?
         track_from = :manufacturing_date
-      else
+      elsif installed_date.present?
         track_from = :installation_date
+      else
+        track_from = :no_track
       end
-      install_hour        = row[Part::AIRCRAFT_PART_INSTALL_HOUR].to_f
-      completed_hours     = (self.flight_hours.to_f - install_hour.to_f).round(2)
+
+      
+            
       landings_completed  = nil
       if row[Part::AIRCRAFT_PART_LANDINGS].present?
         landings_completed  = row[Part::AIRCRAFT_PART_LANDINGS].to_i
@@ -174,9 +178,24 @@ class Aircraft
           puts 'installed date is not a date'
         end
       end
-      last_inspection_hour = nil      
-      last_inspection_hour = (row[Part::AIRCRAFT_PART_LAST_HOUR_INSP].present?) ? row[Part::AIRCRAFT_PART_LAST_HOUR_INSP].to_s.downcase.gsub("hrs",'').strip.to_f : 0
+      completed_hours_when_installed = nil      
+      completed_hours_when_installed = (row[Part::AIRCRAFT_PART_COMP_HOURS].present?) ? row[Part::AIRCRAFT_PART_COMP_HOURS].to_s.downcase.gsub("hrs",'').strip.to_f : 0
 
+      aircraft_installation_hours = 0
+      remaining_hours     = 
+      install_hour = (row[Part::AIRCRAFT_PART_INSTALL_HOUR].present?) ? row[Part::AIRCRAFT_PART_INSTALL_HOUR].to_s.downcase.gsub("hrs",'').strip.to_f : 0
+      
+      completed_hours     = ((self.flight_hours.to_f - install_hour.to_f) + completed_hours_when_installed.to_f).round(2)
+      aircraft_installation_hours = install_hour.to_f
+
+      
+      # if install_hour.present? and install_hour > 0
+        
+      # else
+      #   completed_hours     = (self.flight_hours.to_f).round(2)
+      # end
+
+      
       
       part = Part.where(number: number).first
       if part.blank?
@@ -197,6 +216,19 @@ class Aircraft
         part = Part.create!(part_data)
       end
 
+      if number == 'ENPL-RT10227' 
+        category = :engine
+      elsif number == 'HC-C2YK-1BF I/L C2K00180'
+        category = :propeller
+      elsif noun == 'MAIN WHEEL LT'
+        category = :left_tyre
+      elsif noun == 'MAIN WHEEL RT'
+        category = :right_tyre
+      elsif noun == 'NOSE WHEEL'
+        category = :nose_tail
+      elsif number == '6127279-067'
+        category = :battery
+      end
 
       part_item_data = {
         part_id: part.id,
@@ -206,9 +238,11 @@ class Aircraft
         installed_date: installed_date,
         manufacturing_date: manufacturing_date,
         landings_completed: landings_completed,
-        quantity: 1,
-        last_inspection_hour: last_inspection_hour,
-        last_inspection_date: last_inspection_date
+        quantity: 1,        
+        last_inspection_date: last_inspection_date,        
+        aircraft_installation_hours: aircraft_installation_hours,
+        completed_hours_when_installed: completed_hours_when_installed,
+        category: category
       }            
       if serial_no.present?
         part_item = PartItem.where(part_id: part.id).where(serial_no: serial_no).first
@@ -230,7 +264,7 @@ class Aircraft
     scheduled_inspections.pending.each do |scheduled_inspection|
       scheduled_inspection.update_scheduled_inspections self.flight_hours
     end
-    parts.each do |part|
+    part_items.each do |part|
       part.scheduled_inspections.scheduled_insp.each do |scheduled_inspection|
         scheduled_inspection.update_scheduled_inspections part.completed_hours  
       end

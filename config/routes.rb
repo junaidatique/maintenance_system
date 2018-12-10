@@ -48,6 +48,7 @@ Rails.application.routes.draw do
   end
   resources :flying_plans
   resources :requested_tools
+  resources :part_items
   resources :parts do
     collection do
       post :import
