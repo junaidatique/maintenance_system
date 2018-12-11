@@ -59,7 +59,7 @@ class ReportsController < ApplicationController
       sps  = scheduled_inspections.limit(15).offset(i)      
       pdf_data = render_to_string(
                     pdf: "inspection_record_report",
-                    orientation: 'Landscape',
+                    orientation: 'Portrait',
                     template: 'reports/inspection_record_pdf.html.slim',
                     layout: 'layouts/pdf/pdf.html.slim',
                     show_as_html: false,
@@ -69,8 +69,8 @@ class ReportsController < ApplicationController
                       total: num,
                       trade: params[:trade]
                     },
-                    page_height: '17in',
-                    page_width: '9in',
+                    page_height: '11.69in',
+                    page_width: '8.27in',
                     margin:  {
                       top: 0,
                       bottom: 0,

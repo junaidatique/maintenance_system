@@ -28,15 +28,11 @@ class PartItem
   field :manufacturing_date, type: Date # this is the date when part was manufactured.
 
   field :remaining_hours, type: Float, default: 0
-  field :completed_hours, type: Float, default: 0
-  
+  field :completed_hours, type: Float, default: 0  
   field :landings_completed, type: Integer, default: 0
-
   field :aircraft_installation_date, type: Date
-  
   field :last_inspection_date, type: Date
   
-
   field :aircraft_referenced_lifed_hours, type: Float, default: 0
   field :aircraft_referenced_inspection_hours, type: Float, default: 0
 
@@ -112,15 +108,15 @@ class PartItem
   end
   
   
-  def check_inspections    
-    if self.is_inspectable?            
-      part_inspections = Inspection.to_be_inspected.where(part_number: self.part.number)
+  def check_inspections        
+    if self.is_inspectable?
+      part_inspections = Inspection.to_inspects.where(part_number: self.part.number)      
       part_inspections.each do |part_inspection|
         part_inspection.create_part_inspection self      
       end
     end
     if self.is_lifed?
-      part_replacements = Inspection.to_be_replaced.where(part_number: self.part.number)
+      part_replacements = Inspection.to_replaces.where(part_number: self.part.number)
       part_replacements.each do |part_replacement|
         part_replacement.create_part_repalcement self if part_replacement.present?
       end

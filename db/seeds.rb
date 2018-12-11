@@ -446,14 +446,14 @@ part_inspections = [
     is_repeating: false,
     part_number: 'ENPL-RT10227'
   },
-  {
-    type_cd: 1,
-    kind_cd: 1,    
-    name: 'Engine 1000 hour', 
-    no_of_hours: 1000,    
-    is_repeating: false,
-    part_number: 'ENPL-RT10227'
-  },
+  # {
+  #   type_cd: 1,
+  #   kind_cd: 1,    
+  #   name: 'Engine 1000 hour', 
+  #   no_of_hours: 1000,    
+  #   is_repeating: false,
+  #   part_number: 'ENPL-RT10227'
+  # },
   {
     type_cd: 1,
     kind_cd: 1,    

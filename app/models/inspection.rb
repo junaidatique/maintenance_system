@@ -28,10 +28,8 @@ class Inspection
 
   scope :aircraft_inspection, -> { any_of({type_cd: 0}, {type_cd: 0.to_s})}
   scope :part_inspection, -> { any_of({type_cd: 1}, {type_cd: 1.to_s})}
-  
-  scope :to_be_replaced, -> { any_of({kind_cd: 0}, {kind_cd: 0.to_s})}
-  scope :to_be_inspected, -> { any_of({kind_cd: 1}, {kind_cd: 1.to_s})}
-
+    
+  # scope :to_be_inspected, -> { where(kind_cd: 1)}
   scope :aircraft_25_hour, -> { where(type_cd: 0).where(no_of_hours: 25) }
   scope :aircraft_50_hour, -> { where(type_cd: 0).where(no_of_hours: 50) }
   scope :aircraft_100_hour, -> { where(type_cd: 0).where(no_of_hours: 100) }
@@ -97,7 +95,7 @@ class Inspection
     end    
   end
   
-  def create_part_inspection part_item
+  def create_part_inspection part_item    
     return if !part_item.is_inspectable?
     # Dont repeat if part completed hours are greater then the insepection hours    
     if self.no_of_hours.present? and self.no_of_hours > 0 and !self.is_repeating and part_item.completed_hours.present? and part_item.completed_hours > self.no_of_hours
@@ -113,11 +111,21 @@ class Inspection
         end
       end
       if no_of_hours.present? and no_of_hours > 0
-        inspection_hours = 0
-        begin
-          inspection_hours              = inspection_hours + no_of_hours.to_f
-        end while part_item.completed_hours > inspection_hours
+        if part_item.aircraft_installation_hours > 0
+          inspection_hours = 0
+          begin
+            inspection_hours              = inspection_hours + no_of_hours.to_f
+          end while (part_item.completed_hours - part_item.completed_hours_when_installed) > inspection_hours          
+        else
+          inspection_hours = 0
+          begin
+            inspection_hours              = inspection_hours + no_of_hours.to_f
+          end while part_item.completed_hours > inspection_hours
+          # aircraft_referenced_hours = part_item.aircraft_installation_hours.to_f + inspection_hours
+        end
         aircraft_referenced_hours = part_item.aircraft_installation_hours.to_f + inspection_hours
+        
+        
       end
       # if no not completed inspection created
       if part_item.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
@@ -140,50 +148,7 @@ class Inspection
       self.scheduled_inspections << sp
       sp.update_scheduled_inspections part_item.completed_hours
     end
-    # unless part.installed_date.blank?
-      
-      
-    #   # if no not completed inspection created
-    #   if part.scheduled_inspections.where(inspection_id: self.id).not_completed.to_be_inspected.count == 0
-    #     sp = ScheduledInspection.new
-    #     # if this is the first ever inspection creationg. 
-    #     if part.scheduled_inspections.where(inspection_id: self.id).count == 0
-    #       h = 0
-    #       if part.completed_hours.present? and no_of_hours > 0
-    #         begin
-    #           h              = h + no_of_hours.to_f
-    #         end while part.completed_hours > h
-    #       end
-    #       sp.hours              = h
-
-    #     else
-    #       sp.starting_date      = Time.zone.now
-    #       sp.calender_life_date = self.get_duration sp.starting_date
-    #       sp.hours              = 0
-    #       if no_of_hours > 0
-    #         sp.hours              = part.completed_hours + no_of_hours        
-    #       end
-    #     end                
-    #   else
-    #     sp = part.scheduled_inspections.where(inspection_id: self.id).not_completed.to_be_inspected.first        
-    #     # sp.hours              = 0
-    #     # if no_of_hours > 0
-    #     #   sp.hours              = part.completed_hours + no_of_hours        
-    #     # end
-    #   end
-    #   if part.last_inspection_date.present?
-    #     sp.starting_date      = part.installed_date
-    #   else
-        
-    #   end
-
-    #   sp.calender_life_date = self.get_duration sp.starting_date        
-    #   # if sp.calender_life_date.present? and sp.calender_life_date < Time.zone.now
-    #   while sp.calender_life_date.present? and sp.calender_life_date < Time.zone.now do
-    #     sp.calender_life_date = self.get_duration sp.calender_life_date
-    #   end
-      
-    # end
+    
   end
 
   def create_part_repalcement part_item

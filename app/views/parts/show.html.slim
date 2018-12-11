@@ -18,13 +18,13 @@
               tbody                
                 tr                  
                   th width="25%"
-                    | Category
-                  td 
-                    = @part.category
-                  th width="25%"
                     | Trade
                   td 
                     = @part.trade
+                  th width="25%"
+                    | Track From
+                  td 
+                    = @part.track_from.to_s.gsub("_", " ").titleize
                 tr
                   th width="25%"
                     | Part #
@@ -32,10 +32,7 @@
                   th width="25%"
                     | Noun
                   td = @part.noun
-                tr
-                  th width="25%"
-                    | Track From
-                  td = @part.track_from.to_s.gsub("_", " ").titleize
+                
                   
                   
 
@@ -102,6 +99,6 @@
                       - elsif @part.lifed_duration == 2
                         | Year
 - @part_items = @part.part_items
-== render "part_items/table", options: { heading: "Aircraft Parts"}                
+== render "part_items/table", options: { heading: " Part Items"}                
             
 = render 'common/actions_buttons', back_path: parts_path, edit_path: edit_part_path(@part)                    

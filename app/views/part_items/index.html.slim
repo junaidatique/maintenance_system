@@ -1,0 +1,49 @@
+= content_for :box_heading do
+  | Parts
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr              
+              th width="15%"
+                | Number
+              th width="30%"
+                | Noun              
+              th
+                | Trade
+              th
+                | Inspectable
+              th
+                | Lifed
+              th
+                | Actions
+                 
+          tbody
+            - @parts.each do |part|
+              tr                
+                td.table-row-center
+                  = link_to part.number, part_path(part)
+                td.table-row-center
+                  = link_to part.noun, part_path(part)
+                td.table-row-center
+                  = part.trade.to_s.titleize
+                td.table-row-center
+                  = part.is_inspectable? ? 'Yes' : 'No'
+                td.table-row-center
+                  = part.is_lifed? ? 'Yes' : 'No'                                
+                td
+                  = link_to part_path(part), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  - if can? :update, Part
+                    = link_to edit_part_path(part), class: 'btn btn-info btn-flat ' do
+                      i.fa.fa-pencil
+                
+        .col-sm-4.col-sm-offset-2
+          - if can? :create, Part
+            = link_to 'Upload Excel', upload_parts_path, class: 'btn btn-block btn-primary btn-flat'
+        .col-sm-4
+            = link_to 'Create Part', new_part_path, class: 'btn btn-block btn-primary btn-flat'
+        .clearfix

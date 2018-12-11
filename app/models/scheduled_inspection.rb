@@ -32,9 +32,7 @@ class ScheduledInspection
   scope :due, -> { where(status_cd: 4)}
   scope :pending, -> { where(status_cd: 1)}
   scope :pending_n_due, -> { any_of({status_cd: 1}, {status_cd: 4})}
-  scope :calender_based, -> { ne(calender_life_date: nil)}
-  scope :to_be_replaced, -> { any_of({kind_cd: 0}, {kind_cd: 0.to_s})}
-  scope :to_be_inspected, -> { any_of({kind_cd: 1}, {kind_cd: 1.to_s})}
+  scope :calender_based, -> { ne(calender_life_date: nil)}  
   
   validate :check_extention
 
