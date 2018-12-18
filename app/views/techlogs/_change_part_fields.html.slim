@@ -9,13 +9,13 @@
         = f.input :assigned_by_id, as: :hidden, input_html: { value: current_user.id }
       .row          
         .col-sm-2
-          - if current_user.autherization_codes.include? @techlog.autherization_code and f.object.part_number.blank?
-            = f.input :part_number, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :include), :as => :autocomplete, input_html: {id_element: "#id"}
-            /= f.input :part_number, collection: @aircraft_parts.map{ |l| ["#{l['_id']} - #{l['name']}", l['_id']] }
+          - if current_user.autherization_codes.include? @techlog.autherization_code and f.object.part_number.blank? and !f.object.provided
+            /= f.input :part_number, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :include), :as => :autocomplete, input_html: {id_element: "#id"}
+            = f.input :part_id, collection: Part.all.map{ |l| ["#{l.number} - #{l.noun}", l.id] }
           - else
             label Part # 
             br
-            = f.object.part_number            
+            = "#{f.object.part.number} - #{f.object.part.noun}"
             
         .col-sm-2
           - if current_user.autherization_codes.include? @techlog.autherization_code and !f.object.provided
@@ -34,30 +34,30 @@
             
         .col-sm-2
           - if current_user.logistics? and !f.object.provided
-            - if f.object.new_part.present?
+            - if f.object.part.is_serialized?
+              - part_serials = f.object.part.part_items.serviceables.any_of({aircraft_id: nil})
               /= f.input :new_part, :url => autocomplete_serial_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude, part_number: f.object.part_number), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id", value: "#{f.object.new_part.number_serial_no} (#{f.object.new_part.quantity} left)"}              
             - else 
               /= f.input :new_part, :url => autocomplete_serial_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude, part_number: f.object.part_number), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id"} 
-            - part_serials = Part.where(number: f.object.part_number).where(is_servicable: true).ne(aircraft_id: @techlog.aircraft_id).gt(quantity: 0)
+            
+            / - part_serials = Part.where(number: f.object.part_number).where(is_servicable: true).ne(aircraft_id: @techlog.aircraft_id).gt(quantity: 0)
               /= part_serials.inspect
             = f.input :new_part_id, collection: part_serials.map{ |l| [l.serial_no, l.id] }, include_blank: false
           - elsif f.object.new_part.present?
             label Part # and Serial #
             br
-            = f.object.new_part.number_serial_no
-            |  (
-            = f.object.new_part.quantity
-            |  Left)
-        .col-sm-2
+            = f.object.new_part.number_serial_no            
+        /.col-sm-2
             - if current_user.role == :logistics and !f.object.provided
               = f.input :quantity_provided  
             - elsif f.object.new_part.present?             
               label Quantity Provided
               br
               = f.object.quantity_provided
-        .col-sm-1
-          / - if current_user.role == :logistics and !f.object.provided
-          /   = f.input :available, label: 'available', as: :boolean, checked_value: 1, unchecked_value: 0, class: 'part_available[]'
+        .col-sm-2
+          - if current_user.role == :logistics and !f.object.provided
+            = f.input :provided, label: 'provided', as: :boolean, checked_value: 1, unchecked_value: 0 
+            /, class: 'part_available[]'
           / - elsif @techlog.parts_provided?            
           /   label Available
           /   br

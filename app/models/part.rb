@@ -9,6 +9,12 @@ class Part
   field :number, type: String
   field :noun, type: String
   field :unit_of_issue, type: String 
+  field :location, type: String
+
+  field :contract_quantity, type: Float, default: 0
+  field :recieved_quantity, type: Float, default: 0
+  field :quantity, type: Float, default: 0 # Store balance
+  field :system_quantity, type: Float, default: 0 # Store balance
 
   field :is_inspectable, type: Mongoid::Boolean
   field :inspection_duration, type: Integer
@@ -20,6 +26,13 @@ class Part
   field :lifed_hours, type: Float, default: 0 # life hours or calender life
   field :lifed_calender_value, type: Integer # calender life. either calender life or life hours, this is the number in years
   
+  field :is_serialized, type: Mongoid::Boolean
+
+  scope :serialized, -> { where(is_serialized: true) }  
+  scope :lifed, -> { where(is_lifed: true) }  
+  scope :inspectable, -> { where(is_inspectable: true) }  
+
+  has_many :change_parts
   has_many :part_items
   
   before_create :set_inspection_values  
@@ -33,7 +46,7 @@ class Part
     if (inspection_hours.present? and inspection_hours > 0) or 
       (inspection_calender_value.present? and inspection_calender_value > 0)
       self.is_inspectable = true
-    end    
+    end
   end
   
   def set_inspections
@@ -106,7 +119,10 @@ class Part
       number            = row[Part::NUMBER]
       noun              = row[Part::NOUN]
       unit_of_issue     = row[Part::UNIT]
-
+      contract_quantity = row[Part::CONTRACT_QUANTITY]
+      recieved_quantity = row[Part::RECIEVED_QUANTITY]
+      quantity          = row[Part::STORE_BALANCE]
+      location            = row[Part::LOCATION]
 
       # formulate inspection 
       inspection_hours  = (row[Part::INSP_HOUR].present?) ? row[Part::INSP_HOUR].downcase.gsub("hrs",'').strip.to_i : nil
@@ -167,7 +183,9 @@ class Part
 
 
       part = Part.where(number: number).first
-      part_data = {
+      
+      if part.blank?        
+        part_data = {
           number: number,                         
           noun: noun,
           unit_of_issue: unit_of_issue,
@@ -180,22 +198,43 @@ class Part
           lifed_duration: lifed_duration,
           lifed_calender_value: lifed_calender_value,
           lifed_hours: lifed_hours,
+          contract_quantity: contract_quantity,
+          recieved_quantity: recieved_quantity,
+          system_quantity: quantity,
+          quantity: quantity,
+          location: location,
         }
-      if part.blank?        
         part = Part.create!(part_data)
       else
-        # part.update(part_data)
+        part_data = {
+          number: number,                         
+          noun: noun,
+          unit_of_issue: unit_of_issue,          
+          contract_quantity: contract_quantity,
+          recieved_quantity: recieved_quantity,
+          system_quantity: quantity,
+          quantity: quantity,
+          location: location,
+        }
+        part.update(part_data)
       end
 
       #part item data
       serial_no           = row[Part::SERIAL_NO]
       completed_hours     = (row[Part::COMPLETED_HOURS]).present? ? row[Part::COMPLETED_HOURS].downcase.gsub("hrs",'').strip.to_i : 0
-      landings_completed  = (row[Part::LANDING_COMPLETED]).present? ? row[Part::LANDING_COMPLETED].downcase.gsub("hrs",'').strip.to_i : 0
-      contract_quantity = row[Part::CONTRACT_QUANTITY]
-      recieved_quantity = row[Part::RECIEVED_QUANTITY]
-      quantity          = row[Part::STORE_BALANCE]
-      location          = row[Part::LOCATION]
+      landings_completed  = (row[Part::LANDING_COMPLETED]).present? ? row[Part::LANDING_COMPLETED].downcase.gsub("hrs",'').strip.to_i : 0   
+      
 
+      is_lifed_part = false
+      if (lifed_calender_value.present? and lifed_calender_value > 0) or (lifed_hours.present? and lifed_hours > 0)
+        is_lifed_part = true
+      end
+      is_inspectable_part = false
+      # this calculates that if the part is inspectable. 
+      if (inspection_hours.present? and inspection_hours > 0) or 
+        (inspection_calender_value.present? and inspection_calender_value > 0)
+        is_inspectable_part = true
+      end
 
       part_item_data = {
         part_id: part.id,                    
@@ -204,20 +243,23 @@ class Part
         installed_date: installed_date,
         manufacturing_date: manufacturing_date,
         landings_completed: landings_completed,
-        contract_quantity: contract_quantity,
-        recieved_quantity: recieved_quantity,
-        quantity: quantity,
         location: location,
-      }
-
+      }      
       if serial_no.present?
-        part_item = PartItem.where(part_id: part.id).where(serial_no: serial_no).first      
-      end
-      if part_item.present?
-        part_item.update(part_item_data)
+        part_item = PartItem.where(part_id: part.id).where(serial_no: serial_no).first
+        if part_item.present?
+          # part_item = part_item.update(part_item_data)
+        else
+          part_item = PartItem.create!(part_item_data)
+        end
       else
-        part_item = PartItem.create(part_item_data)
-      end      
+        if is_lifed_part == true or is_inspectable_part == true
+          (1..quantity).each do |part_quantity|
+            part_item = PartItem.create!(part_item_data)
+          end
+        end      
+      end
+      
     end
   end
 end

@@ -166,6 +166,11 @@ class Aircraft
       end
 
       serial_no           = row[Part::AIRCRAFT_PART_SERIAL_NO]
+      is_serialized = false
+      if serial_no.present?
+        is_serialized = true
+        is_serialized = true
+      end
       last_inspection_date = nil
       if row[Part::AIRCRAFT_PART_LAST_CALANDER_INSP].present?        
         if row[Part::AIRCRAFT_PART_LAST_CALANDER_INSP].is_a? Date        
@@ -212,6 +217,7 @@ class Aircraft
           lifed_duration: lifed_duration,
           lifed_calender_value: lifed_calender_value,
           lifed_hours: lifed_hours,
+          is_serialized: is_serialized,
         }   
         part = Part.create!(part_data)
       end
@@ -237,8 +243,7 @@ class Aircraft
         completed_hours: completed_hours,
         installed_date: installed_date,
         manufacturing_date: manufacturing_date,
-        landings_completed: landings_completed,
-        quantity: 1,        
+        landings_completed: landings_completed,        
         last_inspection_date: last_inspection_date,        
         aircraft_installation_hours: aircraft_installation_hours,
         completed_hours_when_installed: completed_hours_when_installed,

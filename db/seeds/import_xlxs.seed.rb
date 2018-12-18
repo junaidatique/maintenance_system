@@ -1,6 +1,9 @@
+puts 'creating autherization control'
 AutherizationCode.import './xlsx/code.xlsx'
+puts 'creating tools'
 Tool.import './xlsx/tools.xlsx'
 
+puts 'Importing Aircraft Summary'
 xlsx = Roo::Spreadsheet.open('./xlsx/aircraft_summary.xlsx', extension: :xlsx)
 (4..xlsx.last_row).each do |i|
   row               = xlsx.row(i)      
@@ -37,12 +40,10 @@ xlsx = Roo::Spreadsheet.open('./xlsx/aircraft_summary.xlsx', extension: :xlsx)
   inspection = Inspection.where(name: 'Aircraft Fire Bottle INSP Due').first
   inspection.create_aircraft_inspection aircraft, row[12]
   aircraft.import "./xlsx/#{aircraft.number}.xlsx"
-  break
+  # break
 end
 
-
-
-
+puts 'creating work unit codes for weekly'
 inspection = Inspection.where(name: 'Aircraft Weekly').first
 AutherizationCode.where(type_cd: 3).each do |auth|
   WorkPackage.create!({
@@ -51,3 +52,7 @@ AutherizationCode.where(type_cd: 3).each do |auth|
     autherization_code: auth
   })
 end
+
+# puts 'import logtistic data'
+# Part.import "./xlsx/ams_spares_limited.xlsx"
+

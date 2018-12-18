@@ -91,22 +91,23 @@ class TechlogsController < ApplicationController
           @techlog.parts_requested_parts
         end
         if current_user.role == :logistics
-          if @techlog.change_parts.where(available: 0).count > 0
-            @techlog.parts_not_available_parts
-          else
-            change_part_all =  @techlog.change_parts.where("this.quantity_required == this.quantity_provided").where(provided: false)
-            change_part_all.each do |cp|            
-              cp.provided = true
-              cp.update
-            end
-            change_parts_count = @techlog.change_parts.where("this.quantity_required != this.quantity_provided").count
-            # if @techlog.change_parts.where(available: 0).count
-            if change_parts_count > 0
-              @techlog.parts_pending_parts
-            else            
-              @techlog.parts_provided_parts
-            end
+          if @techlog.change_parts.where(provided: false).count == 0
+            @techlog.parts_provided_parts
           end
+          # else
+          #   change_part_all =  @techlog.change_parts.where("this.quantity_required == this.quantity_provided").where(provided: false)
+          #   change_part_all.each do |cp|            
+          #     cp.provided = true
+          #     cp.update
+          #   end
+          #   change_parts_count = @techlog.change_parts.where("this.quantity_required != this.quantity_provided").count
+          #   # if @techlog.change_parts.where(available: 0).count
+          #   if change_parts_count > 0
+          #     @techlog.parts_pending_parts
+          #   else            
+          #     @techlog.parts_provided_parts
+          #   end
+          # end
         end
         
         # Tools 
@@ -274,7 +275,7 @@ class TechlogsController < ApplicationController
                                         :addl_period_of_deferm, :addl_due, :addl_log_time, :addl_log_date,
                                         :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description, :verified_tools,
                                         flying_log_attributes: [ :fuel_refill, :oil_serviced, :oil_total_qty ],
-                                        change_parts_attributes: [:id, :requested_by_id, :assigned_by_id, :part_number, :quantity_required, :new_part_id, :quantity_provided, :available, :is_servicable, :_destroy],
+                                        change_parts_attributes: [:id, :requested_by_id, :assigned_by_id, :part_id, :quantity_required, :new_part_id, :quantity_provided, :provided, :is_servicable, :_destroy],
                                         requested_tools_attributes: [:id, :requested_by_id, :tool_no, :quantity_required, :_destroy],
                                         work_performed_attributes: [:work_date, :work_time, :user_id],
                                         date_inspected_attributes: [:work_date, :work_time, :user_id],

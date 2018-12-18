@@ -33,7 +33,7 @@
                   td = @part_item.serial_no
                 
 
-.row
+/.row
   .col-md-12
     .box.box-info
       .box-header.with-border
@@ -192,11 +192,13 @@
                     | Hours completed before instllation of current aircraft
                   td = @part_item.completed_hours_when_installed
                 
-- @scheduled_inspections = ScheduledInspection.where(inspectable_type: Part.name).in(inspectable_id: @part_item.id).pending
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: PartItem.name).in(inspectable_id: @part_item.id).scheduleds
+== render "scheduled_inspections/table", options: { heading: "Scheduled Inspections"}
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: PartItem.name).in(inspectable_id: @part_item.id).pending
 == render "scheduled_inspections/table", options: { heading: "Pending Inspections"}
-- @scheduled_inspections = ScheduledInspection.where(inspectable_type: Part.name).in(inspectable_id: @part_item.id).in_progress
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: PartItem.name).in(inspectable_id: @part_item.id).in_progress
 == render "scheduled_inspections/table", options: { heading: "In Progress Inspections"}
-- @scheduled_inspections = ScheduledInspection.where(inspectable_type: Part.name).in(inspectable_id: @part_item.id).due
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: PartItem.name).in(inspectable_id: @part_item.id).due
 == render "scheduled_inspections/table", options: { heading: "Due Inspections"}
 
 

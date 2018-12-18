@@ -113,19 +113,19 @@ class Inspection
       if no_of_hours.present? and no_of_hours > 0
         if part_item.aircraft_installation_hours > 0
           inspection_hours = 0
+          hours_on_this_aircraft = (part_item.completed_hours - part_item.completed_hours_when_installed)
           begin
             inspection_hours              = inspection_hours + no_of_hours.to_f
-          end while (part_item.completed_hours - part_item.completed_hours_when_installed) > inspection_hours          
+          end while hours_on_this_aircraft.to_f > inspection_hours.to_f
+          scheduled_inspection_hours = inspection_hours + part_item.completed_hours
         else
           inspection_hours = 0
           begin
             inspection_hours              = inspection_hours + no_of_hours.to_f
           end while part_item.completed_hours > inspection_hours
-          # aircraft_referenced_hours = part_item.aircraft_installation_hours.to_f + inspection_hours
+          scheduled_inspection_hours = inspection_hours
         end
         aircraft_referenced_hours = part_item.aircraft_installation_hours.to_f + inspection_hours
-        
-        
       end
       # if no not completed inspection created
       if part_item.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
@@ -135,7 +135,7 @@ class Inspection
       end
       sp.starting_date      = starting_date
       sp.calender_life_date = self.get_duration starting_date
-      sp.hours              = inspection_hours
+      sp.hours              = scheduled_inspection_hours
       sp.aircraft_referenced_hours              = aircraft_referenced_hours
       sp.completed_hours    = part_item.completed_hours
       sp.inspection         = self
@@ -166,7 +166,7 @@ class Inspection
       sp.starting_date      = part_item.manufacturing_date
     end
     if no_of_hours > 0
-      sp.aircraft_referenced_hours = part_item.aircraft_referenced_lifed_hours
+      sp.aircraft_referenced_hours = part_item.part.lifed_hours.to_f + part_item.aircraft_installation_hours.to_f - part_item.completed_hours_when_installed.to_f      
     end
     sp.calender_life_date = nil
     sp.calender_life_date = self.get_duration sp.starting_date

@@ -15,10 +15,6 @@ class PartItem
   field :number_serial_no, type: String
   field :location, type: String
 
-  field :contract_quantity, type: Float, default: 0
-  field :recieved_quantity, type: Float, default: 0
-  field :quantity, type: Float, default: 0 # Store balance
-
   # field :dfim_balance, type: Mongoid::Boolean
   # field :condemn, type: String
   
@@ -61,12 +57,11 @@ class PartItem
 
   scope :lifed, -> { where(is_lifed: true) }  
   scope :tyre, -> { any_of({category: :left_tyre}, {category: :right_tyre}, {category: :nose_tail})}
-  # scope :left_tyre, -> { where(category_cd: 2)}
-  # scope :right_tyre, -> { any_of(category: :right_tyre)}
-  # scope :nose_tail, -> { any_of(category: :nose_tail)}
   scope :engine_part, -> { where(category: :engine)}
   scope :propeller_part, -> { where(category: :propeller)}
   scope :battery, -> { where(category: :battery)}
+  scope :serviceables, -> { where(is_servicable: true)}
+  scope :in_stock, -> { where(aircraft_id: nil)}
   
   validate :check_inspection_values
 
@@ -87,7 +82,7 @@ class PartItem
     self.number_serial_no = "#{part.number}-#{serial_no}"
     self.is_lifed = self.part.is_lifed
     self.is_inspectable = self.part.is_inspectable    
-    if (part.lifed_hours.present? and completed_hours.present? and self.part.lifed_hours.to_f > 0)
+    if (part.lifed_hours.present? and self.part.lifed_hours.to_f > 0)
       self.remaining_hours = (self.part.lifed_hours.to_f - completed_hours.to_f).round(2)      
       self.aircraft_referenced_lifed_hours = self.part.lifed_hours.to_f + self.aircraft_installation_hours.to_f - self.completed_hours_when_installed.to_f      
     end    
@@ -96,7 +91,7 @@ class PartItem
 
   def create_history        
     part_history = PartHistory.new         
-    part_history.quantity     = self.quantity
+    part_history.quantity     = self.part.quantity
     part_history.hours        = self.completed_hours
     part_history.landings     = self.landings_completed
     part_history.flying_log   = nil
@@ -105,6 +100,9 @@ class PartItem
     part_history.part_item         = self      
     part_history.save
     
+    part.system_quantity = part.part_items.serviceables.count
+    part.quantity = part.part_items.serviceables.in_stock.count
+    part.save
   end
   
   

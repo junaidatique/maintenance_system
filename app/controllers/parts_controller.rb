@@ -86,22 +86,30 @@ class PartsController < ApplicationController
     # }
 
     search_string = params[:term]
-    record = Part.collection.aggregate([
-      {"$match"=>{"number"=>/#{search_string}.*/i}},
-      {"$group" => {
-          "_id" => "$number",
-          "name" => { "$first": '$description' }, 
-          "count" => {"$sum":1}
-      }},
-      {"$limit" => 5}
-    ])    
-    render :json => record.map { |part| 
+    parts = Part.any_of({number: /#{search_string}.*/i}, {noun: /#{search_string}.*/i})
+    render :json => parts.map { |part| 
       {
-        id: Part.where(number: part[:_id]).first.id.to_s, 
-        label: "#{part[:_id]} (#{part[:name]})", 
-        value: "#{part[:_id]}", 
+        id: part.id, 
+        label: "#{part.number} (#{part.noun})", 
+        value: "#{part.number} (#{part.noun})", 
       } 
     }
+    # record = Part.collection.aggregate([
+    #   {"$match"=>{"number"=>/#{search_string}.*/i}},
+    #   {"$group" => {
+    #       "_id" => "$number",
+    #       "name" => { "$first": '$description' }, 
+    #       "count" => {"$sum":1}
+    #   }},
+    #   {"$limit" => 5}
+    # ])    
+    # render :json => record.map { |part| 
+    #   {
+    #     id: Part.where(number: part[:_id]).first.id.to_s, 
+    #     label: "#{part[:_id]} (#{part[:name]})", 
+    #     value: "#{part[:_id]}", 
+    #   } 
+    # }
   end
   def autocomplete_serial
     search_string = params[:term]

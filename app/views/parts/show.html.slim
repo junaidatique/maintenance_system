@@ -32,9 +32,44 @@
                   th width="25%"
                     | Noun
                   td = @part.noun
+                tr
+                  th width="25%"
+                    | Unit of Issue
+                  td = @part.unit_of_issue
+                  th width="25%"
+                    | Noun
+                  td = @part.location
                 
                   
-                  
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Inventory
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr                  
+                  th width="25%"
+                    | Contract Quantity
+                  td 
+                    = @part.contract_quantity
+                  th width="25%"
+                    | Recieved Qsuantity
+                  td = @part.recieved_quantity
+                tr
+                  th width="25%"
+                    | Total Quantity
+                  td = @part.system_quantity
+                  th width="25%"
+                    | Store Balance
+                  td = @part.quantity
 
 - if @part.is_inspectable?
   .row
