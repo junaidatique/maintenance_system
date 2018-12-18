@@ -15,6 +15,11 @@ class TechlogsController < ApplicationController
     else
       @techlogs = Techlog.techloged.ne(condition_cd: 1)
     end
+
+    respond_to do |format|
+      format.html
+      format.js { render json: TechlogDatatable.new(view_context, current_user, @techlogs)}
+    end
     
   end
 

@@ -22,7 +22,7 @@
   .col-md-12
     .box.box-info
       .box-body
-        table.table.table-bordered.table-striped.data-tabled
+        table.table.table-bordered.table-striped.techlog-tabled id="techlog-tabled"  data-source="#{techlogs_path(format: :js)}"
           thead
             tr
               th width='10%'
@@ -43,7 +43,7 @@
               th width='13%'
                 | Actions
           tbody
-            - @techlogs.order(created_at: :desc).each do |techlog|
+            /- @techlogs.order(created_at: :desc).each do |techlog|
               tr
                 td.table-row-center
                   = link_to techlog.serial_no, techlog_path(techlog)

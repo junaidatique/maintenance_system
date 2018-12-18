@@ -10,6 +10,10 @@ class FlyingLogsController < ApplicationController
     else
       @flying_logs = FlyingLog.not_cancelled_not_completed.all
     end
+    respond_to do |format|
+      format.html
+      format.js { render json: FlyingLogDatatable.new(view_context, current_user, @flying_logs)}
+    end
     
   end
 

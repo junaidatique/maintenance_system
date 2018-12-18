@@ -1,5 +1,16 @@
 $(document).on 'ready', ->
-  
+  $('#flying-log-tabled').dataTable
+    scrollY: '47vh'
+    scrollCollapse: true
+    processing: true
+    serverSide: true
+    pageLength: 50
+    bSort: false
+    "pagingType": "simple_numbers"
+    ajax:
+      url: $("#flying-log-tabled").data('source'),      
+
+
   if $(".nested-fields").length > 0
     i = 0
     while i < $('.nested-fields').length

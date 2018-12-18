@@ -1,4 +1,14 @@
 $(document).on 'ready', ->
+  $('#techlog-tabled').dataTable
+    scrollY: '47vh'
+    scrollCollapse: true
+    processing: true
+    serverSide: true
+    pageLength: 50
+    bSort: false
+    "pagingType": "simple_numbers"
+    ajax:
+      url: $("#techlog-tabled").data('source'),      
   $('.date_class').datepicker
     dateFormat: 'dd/mm/yy'
   $('#div_part_change').on 'cocoon:before-insert', (e, row) ->
