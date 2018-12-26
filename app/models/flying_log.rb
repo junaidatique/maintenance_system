@@ -22,9 +22,9 @@ class FlyingLog
       
 
   belongs_to :aircraft
-  belongs_to :left_tyre, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
-  belongs_to :right_tyre, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
-  belongs_to :nose_tail, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
+  belongs_to :left_tyre, class_name: 'PartItem', optional: true, inverse_of: :fl_left_tyre
+  belongs_to :right_tyre, class_name: 'PartItem', optional: true, inverse_of: :fl_left_tyre
+  belongs_to :nose_tail, class_name: 'PartItem', optional: true, inverse_of: :fl_left_tyre
 
   has_one :ac_configuration, dependent: :destroy
   has_one :capt_acceptance_certificate, dependent: :destroy
@@ -36,6 +36,7 @@ class FlyingLog
   has_one :flightline_servicing, dependent: :destroy
   has_one :post_mission_report, dependent: :destroy
   has_one :flying_history, dependent: :destroy
+  has_one :landing_history, dependent: :destroy
   has_many :techlogs, dependent: :destroy
 
 

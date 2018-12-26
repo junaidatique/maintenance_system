@@ -135,10 +135,10 @@ class PartItem
         self.completed_hours = (t_completed_hours.to_f + flying_log.sortie.flight_time.to_f).round(2)
         self.landings_completed = t_landings_completed.to_i + flying_log.sortie.total_landings.to_i
       end
-      self.remaining_hours     = (total_hours.to_f - completed_hours.to_f).round(2)
+      self.remaining_hours     = (part.lifed_hours.to_f - completed_hours.to_f).round(2)
       save
       
-      part_history.quantity     = self.quantity
+      part_history.quantity     = self.part.quantity
       part_history.hours        = flying_log.sortie.flight_time
       part_history.landings     = flying_log.sortie.total_landings
       part_history.flying_log   = flying_log
@@ -146,7 +146,7 @@ class PartItem
       part_history.created_at   = flying_log.created_at
       part_history.total_hours    = part_histories.sum('hours')
       part_history.total_landings = part_histories.sum('landings')
-      part_history.part         = self      
+      part_history.part_item         = self      
       part_history.save        
       # self.update_values      
       

@@ -9,10 +9,11 @@ class LandingHistory
   field :nose_tail_landings, type: Integer, default: 0  
   field :nose_tail_total_landings, type: Integer, default: 0    
 
-  belongs_to :left_tyre, class_name: 'Part', inverse_of: :left_tyre_histories 
-  belongs_to :right_tyre, class_name: 'Part', inverse_of: :right_tyre_histories
-  belongs_to :nose_tail, class_name: 'Part', inverse_of: :nose_tail_histories
+  belongs_to :left_tyre, class_name: 'PartItem', inverse_of: :left_tyre_histories 
+  belongs_to :right_tyre, class_name: 'PartItem', inverse_of: :right_tyre_histories
+  belongs_to :nose_tail, class_name: 'PartItem', inverse_of: :nose_tail_histories
   belongs_to :aircraft
+  belongs_to :flying_log
   
   def self.create_record time, aircraft_id, landings
     

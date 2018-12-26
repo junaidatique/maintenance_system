@@ -13,7 +13,9 @@ class TechlogsController < ApplicationController
     elsif current_user.logistics?
       @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
     else
-      @techlogs = Techlog.techloged.ne(condition_cd: 1)
+      
+      techlog_ids = current_user.autherization_codes.map{|auth| auth.techlogs.techloged.incomplete.map(&:id)}.reject{|techlog| techlog if techlog.blank?}.first
+      @techlogs = Techlog.in(id: techlog_ids)
     end
 
     respond_to do |format|
