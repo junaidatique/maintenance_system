@@ -124,7 +124,7 @@ class PartItem
 
   def create_history_with_flying_log flying_log
     if self.is_lifed?
-      part_history = PartHistory.where(flying_log_id: flying_log.id).where(part_id: self.id).first
+      part_history = PartHistory.where(flying_log_id: flying_log.id).where(part_item_id: self.id).first
       if part_history.blank?      
         part_history = PartHistory.new         
         self.completed_hours = (self.completed_hours.to_f + flying_log.sortie.flight_time.to_f).round(2)

@@ -32,7 +32,7 @@ class Part
   scope :lifed, -> { where(is_lifed: true) }  
   scope :inspectable, -> { where(is_inspectable: true) }  
 
-  has_many :change_parts
+  has_one :change_part
   has_many :part_items
   
   before_create :set_inspection_values  

@@ -56,9 +56,9 @@ class FlyingHistory
         nose_tail_total_landings    = history.nose_tail_total_landings - landings
       else
         history = LandingHistory.new if history.blank?
-        left_tyre_total_landings    = flying_log.left_tyre.landings_completed - landings
-        right_tyre_total_landings   = flying_log.right_tyre.landings_completed - landings
-        nose_tail_total_landings    = flying_log.nose_tail.landings_completed - landings
+        left_tyre_total_landings    = flying_log.left_tyre.landings_completed
+        right_tyre_total_landings   = flying_log.right_tyre.landings_completed
+        nose_tail_total_landings    = flying_log.nose_tail.landings_completed
       end
       history.aircraft = aircraft
       history.flying_log = flying_log

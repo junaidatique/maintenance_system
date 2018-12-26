@@ -116,8 +116,8 @@ flying_log.pilot_back
 flying_log.pilot_confirmation
 flying_log.sortie.remarks = flying_log.sortie.pilot_comment.to_s
 flying_log.sortie.sortie_code_cd = 1
-# flying_log.techlog_check
-# flying_log.complete_log
+flying_log.techlog_check
+flying_log.complete_log
 flying_log.save
 
 exit
