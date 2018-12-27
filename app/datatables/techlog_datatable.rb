@@ -18,13 +18,13 @@ class TechlogDatatable < Datatable
   def data
     records.map do |techlog|
       [        
-        link_to(techlog.serial_no, techlog_path(techlog), target: "_blank"),
+        link_to(techlog.serial_no, techlog_path(techlog)),
         techlog.type,
         (techlog.aircraft.present?) ? techlog.aircraft.tail_number : '',
         techlog.description,
         (techlog.autherization_code.present?) ? techlog.autherization_code.autherization_code_format : '',
         techlog.condition.to_s.titleize,
-        link_to('<i class="fa fa-pencil"></i>'.html_safe, edit_techlog_path(techlog), target: "_blank", class: 'btn btn-info btn-flat ')
+        link_to('<i class="fa fa-pencil"></i>'.html_safe, edit_techlog_path(techlog), class: 'btn btn-info btn-flat ')
       ]
     end
   end

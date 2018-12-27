@@ -14,7 +14,13 @@ class TechlogsController < ApplicationController
       @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
     else
       
-      techlog_ids = current_user.autherization_codes.map{|auth| auth.techlogs.techloged.incomplete.map(&:id)}.reject{|techlog| techlog if techlog.blank?}.first
+      techlog_ids = current_user.autherization_codes.map{|auth| auth.techlogs.techloged.incomplete.map(&:id)}.reject{|techlog| techlog if techlog.blank?}.first 
+      if techlog_ids.present?
+        techlog_ids = techlog_ids + current_user.techlogs.incomplete.map(&:id)
+      else
+        techlog_ids = current_user.techlogs.incomplete.map(&:id)
+      end
+      
       @techlogs = Techlog.in(id: techlog_ids)
     end
 
