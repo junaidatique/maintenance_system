@@ -6,23 +6,30 @@ class TechlogsController < ApplicationController
   # GET /techlogs
   # GET /techlogs.json
   def index
-    if current_user.admin? or current_user.chief_maintenance_officer?
+    if can? :view_all_techlogs, Techlog
       @techlogs = Techlog.techloged
-    # elsif current_user.gen_fitt?
-    #   @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
-    elsif current_user.logistics?
+    elsif can? :view_open_techlogs, Techlog
+      @techlogs = Techlog.techloged.incomplete
+    elsif can? :logistics_techlog, Techlog
       @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
-    else
-      
+    else 
       techlog_ids = current_user.autherization_codes.map{|auth| auth.techlogs.techloged.incomplete.map(&:id)}.reject{|techlog| techlog if techlog.blank?}.first 
       if techlog_ids.present?
         techlog_ids = techlog_ids + current_user.techlogs.incomplete.map(&:id)
       else
         techlog_ids = current_user.techlogs.incomplete.map(&:id)
-      end
-      
+      end      
       @techlogs = Techlog.in(id: techlog_ids)
     end
+    # if current_user.admin? or current_user.chief_maintenance_officer?
+      
+    # # elsif current_user.gen_fitt?
+    # #   @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
+    # elsif current_user.logistics?
+      
+    # else      
+      
+    # end
 
     respond_to do |format|
       format.html

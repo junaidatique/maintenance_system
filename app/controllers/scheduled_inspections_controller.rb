@@ -38,8 +38,11 @@ class ScheduledInspectionsController < ApplicationController
   end
 
   def defer_inspection
-    @scheduled_inspection.condition_cd = 0      
-    @scheduled_inspection.hours = @scheduled_inspection.completed_hours + @scheduled_inspection.inspection.no_of_hours
+    @scheduled_inspection.condition_cd = 0
+    if @scheduled_inspection.inspection.no_of_hours.to_f > 0
+      @scheduled_inspection.hours = @scheduled_inspection.completed_hours + @scheduled_inspection.inspection.no_of_hours
+    end
+    
     @scheduled_inspection.starting_date      = Time.zone.now
     @scheduled_inspection.calender_life_date = @scheduled_inspection.inspection.get_duration Time.zone.now
     @scheduled_inspection.save

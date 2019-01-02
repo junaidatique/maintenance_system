@@ -76,7 +76,7 @@ class Techlog
   accepts_nested_attributes_for :requested_tools
 
   before_create :set_condition  
-  after_create :create_serial_no  
+  after_create :create_serial_no    
   after_create :set_aircraft
   after_create :set_dms_version
   after_update :update_flying_log_end_time
@@ -200,7 +200,14 @@ class Techlog
   end
 
   def create_serial_no
-    self.serial_no = "#{Time.zone.now.strftime('%d%m%Y')}-#{number}"
+    ser = "#{Time.zone.now.strftime('%d%m%Y')}-#{number}"
+    if self.aircraft.present?
+      ser = "#{ser}-#{self.aircraft.tail_number}"
+    end
+    if self.autherization_code.present?
+      ser = "#{ser}-#{self.autherization_code.autherized_trade.downcase}-#{self.autherization_code.type.downcase}"
+    end
+    self.serial_no = ser
     self.save
   end
 

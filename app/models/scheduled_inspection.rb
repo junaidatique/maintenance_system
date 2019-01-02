@@ -123,7 +123,7 @@ class ScheduledInspection
     if calender_life_date.present? 
       if calender_life_date.strftime('%Y-%m-%d').to_date <= (Time.zone.now).strftime('%Y-%m-%d').to_date
         self.status_cd = 4
-      elsif calender_life_date.strftime('%Y-%m-%d') <= (Time.zone.now + 30.days).strftime('%Y-%m-%d')        
+      elsif calender_life_date.strftime('%Y-%m-%d') <= (Time.zone.now + 30.days).strftime('%Y-%m-%d')
         self.status_cd = 1
       else
         # self.status = 0

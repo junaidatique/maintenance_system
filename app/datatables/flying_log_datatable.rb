@@ -5,7 +5,7 @@ class FlyingLogDatatable < Datatable
   def_delegator :@view, :params
 
   def initialize(view, current_user, flying_logs)
-    @view = view
+    @view = view    
     @flying_logs = flying_logs
     @current_user = current_user
   end
@@ -49,7 +49,8 @@ class FlyingLogDatatable < Datatable
   # and feel free to override them
 
   def filter_records(records)
-    records
+    records.where(serial_no: /#{params['search']['value']}.*/i)
+    # records
   end
   def status flying_log
     if (flying_log.log_completed?)

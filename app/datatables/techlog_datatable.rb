@@ -36,7 +36,7 @@ class TechlogDatatable < Datatable
   end
   
   def filter_records(records)
-    records
+    records.where(serial_no: /#{params['search']['value']}.*/i)
   end
 
 end
