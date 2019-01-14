@@ -75,81 +75,22 @@
               = link_to history_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank'                 
                 | &nbsp; History
               | &nbsp;
+- @scheduled_inspections = @aircraft.scheduled_inspections.scheduled_insp
+== render "scheduled_inspections/table", options: { heading: "Aircraft Scheduled Inspections"}
 - @scheduled_inspections = @aircraft.scheduled_inspections.pending
 == render "scheduled_inspections/table", options: { heading: "Aircraft Pending Inspections"}
 - @scheduled_inspections = @aircraft.scheduled_inspections.in_progress
 == render "scheduled_inspections/table", options: { heading: "Aircraft In Progress Inspections"}
 - @scheduled_inspections = @aircraft.scheduled_inspections.due
 == render "scheduled_inspections/table", options: { heading: "Aircraft Due Inspections"}
-- @scheduled_inspections = ScheduledInspection.where(inspectable_type: Part.name).in(inspectable_id: @aircraft.parts.map(&:id)).pending
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: PartItem.name).in(inspectable_id: @aircraft.part_items.map(&:id)).pending
 == render "scheduled_inspections/table", options: { heading: "Aircraft Parts Pending Inspections"}
-- @scheduled_inspections = ScheduledInspection.where(inspectable_type: Part.name).in(inspectable_id: @aircraft.parts.map(&:id)).in_progress
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: PartItem.name).in(inspectable_id: @aircraft.part_items.map(&:id)).in_progress
 == render "scheduled_inspections/table", options: { heading: "Aircraft Parts in Progress Inspections"}
-- @scheduled_inspections = ScheduledInspection.where(inspectable_type: Part.name).in(inspectable_id: @aircraft.parts.map(&:id)).due
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: PartItem.name).in(inspectable_id: @aircraft.part_items.map(&:id)).due
 == render "scheduled_inspections/table", options: { heading: "Aircraft Parts Due Inspections"}
-.row
-  .col-md-12
-    .box.box-info
-      .box-header.with-border
-          .row
-            .col-md-6
-              h3.box-title
-                i.fa.fa-bars
-                | &nbsp; Parts
-            .col-md-6.text-right
-              = link_to upload_aircraft_path(aircraft: @aircraft), class: 'btn btn-info btn-flat'                 
-                | &nbsp; Upload Parts
-                | &nbsp;
-      .box-body
-        table.table.table-bordered.table-striped.data-tabled
-          thead
-            tr
-              th
-                | Trade
-              th
-                | Number
-              th
-                | Serial #
-              th
-                | Noun
-              th
-                | Ins Date
-              th
-                | Cal Value 
-              th
-                | Cal Date
-              th
-                | Life Hrs
-              th
-                | Hours
-              th
-                | Landings
-                
-          tbody
-            - @aircraft.parts.each do |part|
-              tr
-                td.table-row-center
-                  = part.trade
-                td.table-row-center
-                  = part.number
-                td.table-row-center
-                  = part.serial_no
-                td.table-row-center
-                  = part.description
-                td.table-row-center
-                  = display_date(part.installed_date)
-                td.table-row-center
-                  - if part.calender_life_value.present? and part.calender_life_value > 0
-                    = (part.calender_life_value)
-                    |  years
-                td.table-row-center
-                  = display_date(part.calender_life_date)
-                td.table-row-center
-                  = part.total_hours
-                td.table-row-center
-                  = part.completed_hours.round(2)
-                td.table-row-center
-                  = part.landings_completed
+- @part_items = @aircraft.part_items
+== render "part_items/table", options: { heading: "Aircraft Parts"}
               
         
         .clearfix

@@ -10,6 +10,10 @@ class FlyingLogsController < ApplicationController
     else
       @flying_logs = FlyingLog.not_cancelled_not_completed.all
     end
+    respond_to do |format|
+      format.html
+      format.js { render json: FlyingLogDatatable.new(view_context, current_user, @flying_logs)}
+    end
     
   end
 
@@ -112,7 +116,7 @@ class FlyingLogsController < ApplicationController
       #   update_params = flying_log_params
       # end
 
-      if @flying_log.update!(flying_log_params)
+      if @flying_log.update(flying_log_params)
         if can? :release_flight, FlyingLog and @flying_log.servicing_completed? and @flying_log.flightline_release.created_at.present?
           @flying_log.release_flight
         elsif current_user.pilot? and @flying_log.flight_released?

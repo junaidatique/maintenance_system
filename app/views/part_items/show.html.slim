@@ -1,0 +1,205 @@
+= content_for :box_heading do
+  | Part:&nbsp;
+  = @part_item.part.noun
+
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; General
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr                  
+                  th width="25%"
+                    | Category
+                  td 
+                    = @part_item.category
+                  th width="25%"
+                    | Noun
+                  td = @part_item.part.noun
+                tr
+                  th width="25%"
+                    | Part #
+                  td = @part_item.part.number
+                  th width="25%"
+                    | Serial #
+                  td = @part_item.serial_no
+                
+
+/.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Inventory
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr                  
+                  th width="25%"
+                    | Contract Quantity
+                  td 
+                    = @part_item.contract_quantity
+                  th width="25%"
+                    | Recieved Qsuantity
+                  td = @part_item.recieved_quantity
+                tr
+                  th width="25%"
+                    | Quantity
+                  td = @part_item.quantity
+                  th width="25%"
+                    | Location
+                  td = @part_item.location
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Summary
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr                  
+                  th width="25%"
+                    | Serviceable
+                  td 
+                    = @part_item.is_servicable
+                  th width="25%"
+                    | Unit of issue
+                  td 
+                    = @part_item.part.unit_of_issue
+                tr
+                  th width="25%"
+                    | Installed Date
+                  td = (@part_item.installed_date.present?) ? display_date(@part_item.installed_date) : ''
+                  th width="25%"
+                    | Manufacturing Date
+                  td = (@part_item.manufacturing_date.present?) ? display_date(@part_item.manufacturing_date) : ''
+- if @part_item.part.is_inspectable?
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-md-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Inspection
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody                
+                  tr                  
+                    th width="25%"
+                      | Inspection Hours
+                    td 
+                      = @part_item.part.inspection_hours
+                    th width="25%"
+                      | Inspection Calender Value
+                    td 
+                      = @part_item.part.inspection_calender_value
+                      |  
+                      - if @part_item.part.inspection_duration == 0
+                        | Day
+                      - elsif @part_item.part.inspection_duration == 1
+                        | Month
+                      - elsif @part_item.part.inspection_duration == 2
+                        | Year
+- if @part_item.part.is_lifed?
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-md-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Expiry
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody                
+                  tr                  
+                    th width="25%"
+                      | Expiry Hours
+                    td 
+                      = @part_item.part.lifed_hours
+                    th width="25%"
+                      | Expiry Calender Value
+                    td 
+                      = @part_item.part.lifed_calender_value
+                      |  
+                      - if @part_item.part.lifed_duration == 0
+                        | Day
+                      - elsif @part_item.part.lifed_duration == 1
+                        | Month
+                      - elsif @part_item.part.lifed_duration == 2
+                        | Year
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+        .row
+          .col-md-6
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Hours and Landings
+      .box-body
+        .row
+          .col-sm-12
+            table.table.table-inverse
+              tbody                
+                tr                  
+                  th width="25%"
+                    | Completed Hours
+                  td 
+                    = @part_item.completed_hours
+                  th width="25%"
+                    | Landings
+                  td 
+                    = @part_item.landings_completed
+                tr
+                  th width="25%"
+                    | Aircraft Installed Date
+                  td = (@part_item.aircraft_installation_date.present?) ? display_date(@part_item.aircraft_installation_date) : ''
+                  th width="25%"
+                    | Last Inspection Date
+                  td = (@part_item.last_inspection_date.present?) ? display_date(@part_item.last_inspection_date) : ''
+                tr
+                  th width="25%"
+                    | Aircraft Installed Hours
+                  td = @part_item.aircraft_installation_hours
+                  th width="25%"
+                    | Hours completed before instllation of current aircraft
+                  td = @part_item.completed_hours_when_installed
+                
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: PartItem.name).in(inspectable_id: @part_item.id).scheduleds
+== render "scheduled_inspections/table", options: { heading: "Scheduled Inspections"}
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: PartItem.name).in(inspectable_id: @part_item.id).pending
+== render "scheduled_inspections/table", options: { heading: "Pending Inspections"}
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: PartItem.name).in(inspectable_id: @part_item.id).in_progress
+== render "scheduled_inspections/table", options: { heading: "In Progress Inspections"}
+- @scheduled_inspections = ScheduledInspection.where(inspectable_type: PartItem.name).in(inspectable_id: @part_item.id).due
+== render "scheduled_inspections/table", options: { heading: "Due Inspections"}
+
+
+= render 'common/actions_buttons', back_path: parts_path, edit_path: edit_part_path(@part_item)

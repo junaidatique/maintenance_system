@@ -3,9 +3,9 @@
   top: $top;
   left: $left;
 }
+
 .inspection_record_pdf {
-  font-size: 24px;
-  // .trade {
+  font-size: 24px; // .trade {
   //   @include position-abs-mixin(50px, 1000px);        
   // }
   .background-image {
@@ -13,66 +13,57 @@
     position: absolute;
   }
   .tl-trade {
-    @include position-abs-mixin(10px, 1000px);     
+    @include position-abs-mixin(10px, 1000px);
     width: 500px;
     height: 100px;
-    background: #ffffff;   
+    background: #ffffff;
     font-size: 48px;
     text-align: center;
   }
-  .tl-org {    
-    @include position-abs-mixin(200px, 1200px);        
+  .tl-org {
+    @include position-abs-mixin(200px, 1200px);
   }
-  .tl-aircraft-number {        
-    @include position-abs-mixin(200px, 1770px);            
+  .tl-aircraft-number {
+    @include position-abs-mixin(200px, 1770px);
   }
-  .tl-page_no {        
-    @include position-abs-mixin(200px, 2270px);            
+  .tl-page_no {
+    @include position-abs-mixin(200px, 2270px);
   }
-  
-  
-  
   .parts_data {
-    @include position-abs-mixin(345px, 65px);    
+    @include position-abs-mixin(345px, 65px);
   }
-  
-  .part_number_td{
-    width: 172px;    
+  .part_number_td {
+    width: 182px;
+    font-size: 20px;
   }
-  .description_td{
+  .description_td {
     width: 180px;
     font-size: 20px;
     height: 40px;
   }
-  .serial_td{
-    width: 166px;
-    
+  .serial_td {
+    width: 176px;
   }
-  .calender_td{
-    width: 170px;    
+  .calender_td {
+    width: 177px;
     text-align: center;
-  }  
-  .hours_td{
-    width: 180px;   
-    text-align: center; 
   }
-  .sch_calender_td{
-    width: 150px;    
+  .hours_td {
+    width: 180px;
     text-align: center;
-  }  
-  .sch_hours_td{
-    width: 150px;   
-    text-align: center; 
   }
-  
-  table{
+  .sch_calender_td {
+    width: 150px;
+    text-align: center;
+  }
+  .sch_hours_td {
+    width: 150px;
+    text-align: center;
+  }
+  table {
     tr {
-      height: 96px;
+      height: 50px;
       vertical-align: top;
     }
   }
-  
-  
-  
-    
 }

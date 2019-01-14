@@ -37,19 +37,22 @@
             - @scheduled_inspections.each do |scheduled_inspection|
               tr
                 td.table-row-center
-                  - if scheduled_inspection.inspectable_type == Aircraft.name
-                    = scheduled_inspection.inspectable.tail_number
-                  - else                    
-                    = scheduled_inspection.inspectable.aircraft.tail_number
+                  - if scheduled_inspection.inspectable_type.present?
+                    - if scheduled_inspection.inspectable_type == Aircraft.name
+                      = scheduled_inspection.inspectable.tail_number
+                    - else                    
+                      - if scheduled_inspection.inspectable.aircraft.present?
+                        = scheduled_inspection.inspectable.aircraft.tail_number
                 td.table-row-center
                   - if scheduled_inspection.inspectable_type == Aircraft.name
                     = scheduled_inspection.inspectable.tail_number
                   - else
-                    = scheduled_inspection.inspectable.number
+                    = scheduled_inspection.inspectable.part.number
                 td.table-row-center
                   = scheduled_inspection.inspection.name
                 td.table-row-center
-                  = scheduled_inspection.hours.round(2)
+                  - if scheduled_inspection.hours.present?
+                    = scheduled_inspection.hours.round(2)
                 td.table-row-center
                   = display_date scheduled_inspection.calender_life_date
                   

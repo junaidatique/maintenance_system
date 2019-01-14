@@ -69,12 +69,12 @@
                   th Quantity Required
                   th Requested By
                   th New Part
-                  th Quantity Provided
+                  /th Quantity Provided
                   th Provided By
                 tbody                  
                 - @techlog.change_parts.each do |change_part|
                   tr                    
-                    td = change_part.part_number
+                    td = change_part.part.number
                     td
                       - if change_part.old_part.present?
                         = change_part.old_part.serial_no
@@ -83,7 +83,7 @@
                     td 
                       - if change_part.new_part.present?
                         = change_part.new_part.serial_no
-                    td 
+                    /td 
                       - if change_part.new_part.present?
                         = change_part.quantity_provided
                     td

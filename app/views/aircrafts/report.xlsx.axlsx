@@ -1,6 +1,75 @@
 wb = xlsx_package.workbook
 Aircraft.all.each do |aircraft|
-  wb.add_worksheet(name: aircraft.tail_number) do |sheet|
-        sheet.add_row [aircraft.tail_number]
+
+  wb.styles do |s|
+    heading = s.add_style sz: 20, b: true, alignment: { horizontal: :center, vertical: :center, wrap_text: true}
+    sub_heading = s.add_style sz: 14, b: true, alignment: { horizontal: :center, vertical: :center, wrap_text: true}
+    ins_heading = s.add_style sz: 12, alignment: { horizontal: :center, vertical: :center, wrap_text: true}
+    wb.add_worksheet(name: aircraft.tail_number) do |sheet|
+
+      sheet.add_row ["","","","","",""] #1
+      sheet.merge_cells("A1:F1")
+      sheet.add_row ["Daily Flying Report of #{aircraft.tail_number}","","","","",""], style: heading #2
+      sheet.merge_cells("A2:F2")
+      sheet.add_row ["","","","","",""] #3
+      sheet.merge_cells("A3:F3")      
+      sheet.add_row ["Log Date","","Aircraft","","Log Number",""] #4
+      sheet.add_row ["","","","","",""] #5
+      sheet.add_row ["Location From","","Location To","","Mission",""] #6
+      sheet.add_row ["","","","","",""] #7
+      sheet.add_row ["A/C Configuration","","","","",""], style: sub_heading #8
+      sheet.merge_cells("A8:F8")      
+      sheet.add_row ["Clean","","Third Seat","","Smoke Pods",""] #9
+      sheet.add_row ["","","","","",""] #10
+      sheet.add_row ["Smoke Oil Quantity (gal)","","Cockpit","","",""] #11
+      sheet.add_row ["","","","","",""] #12      
+      sheet.add_row ["Flightline Servicing","","","","",""], style: sub_heading #13
+      sheet.merge_cells("A13:F13")
+      sheet.add_row ["","","","","",""] #14
+      sheet.add_row ["Inspection Performed","","Inspection Start Time","","Inspection End Time",""] #15
+      sheet.add_row ["","","","","",""] #16
+      
+      sheet.add_row ["Pilot Acceptance Certificate","","","","",""], style: sub_heading #17
+      sheet.merge_cells("A17:F17")      
+      sheet.add_row ["Pilot","","Crew","","Third Seat",""] #18
+      sheet.add_row ["","","","","",""] #19
+      
+      sheet.add_row ["Sortie","","","","",""], style: sub_heading #20
+      sheet.merge_cells("A20:F20")      
+      sheet.add_row ["Takeoff Time","","Landing Time","","Flight Time",""] #21
+      sheet.add_row ["","","","","",""] #22
+      sheet.add_row ["Touch &amp; go","","Full Stop","","Landings",""] #23
+      sheet.add_row ["","","","","",""] #24
+      sheet.add_row ["Sortie Code","","","","",""] #25
+      sheet.add_row ["","","","","",""] #26
+      sheet.add_row ["Hours","","","","",""], style: sub_heading #27
+      sheet.merge_cells("A27:F27")
+      sheet.add_row ["Aircraft Hours","","Engine Hours","","Prop Hours",""] #28
+      sheet.add_row ["","","","","",""] #29
+      sheet.add_row ["Parts","","","","",""], style: sub_heading #30
+      sheet.merge_cells("A30:F30")
+      sheet.add_row ["Total Landings","","Engine Sr #","","Prop Sr #",""] #31
+      sheet.add_row ["","","","","",""] #32
+      sheet.add_row ["Left Tyre Sr #","","Right Tyre Sr #","","Nose Tail Sr #",""] #33
+      sheet.add_row ["","","","","",""] #34
+      sheet.add_row ["Left Tyre landings","","Right Tyre landings","","Nose Tail landings",""] #35
+      sheet.add_row ["","","","","",""] #36
+      sheet.add_row ["Inspections","","","","",""], style: sub_heading #37
+      sheet.merge_cells("A37:F37")      
+      Inspection.aircrafts.each do |inspection|
+        sheet.add_row ["#{inspection.name} C/Out Date","","","#{inspection.name} C/Out Hrs","",""]
+        sheet.add_row ["","","","","",""]
+        sheet.add_row ["#{inspection.name} Due Date","","","#{inspection.name} Due Hrs","",""]
+        sheet.add_row ["","","","","",""]
+      end
+      sheet.add_row ["ADDLs","","","","",""], style: sub_heading #70
+      sheet.merge_cells("A70:F70")      
+      sheet.add_row ["Trade","","","System","",""] #71
+      sheet.add_row ["","","","","",""] #72
+      sheet.add_row ["Limitation Logs","","","","",""], style: sub_heading #73
+      sheet.merge_cells("A73:F73")      
+      sheet.add_row ["Trade","","","System","",""] #71
+      sheet.add_row ["","","","","",""] #72
+    end
   end
 end

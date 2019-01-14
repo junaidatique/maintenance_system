@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       get :cancel_extention
       get :create_techlog
       get :defer_inspection
+      get :check_status
     end    
   end
   resources :autherization_codes do 
@@ -47,6 +48,7 @@ Rails.application.routes.draw do
   end
   resources :flying_plans
   resources :requested_tools
+  resources :part_items
   resources :parts do
     collection do
       post :import

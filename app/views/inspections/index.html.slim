@@ -26,13 +26,11 @@
                 td
                   = link_to inspection.name, inspection_path(inspection)                
                 td
-                  - if inspection.no_of_hours > 0
+                  - if inspection.no_of_hours.present? and inspection.no_of_hours > 0
                     = inspection.no_of_hours
                 td
                   - if inspection.calender_value.present?
-                    = inspection.calender_value
-                    |   
-                    = inspection.duration
+                    = pluralize(inspection.calender_value, inspection.duration.to_s)
                 td.text-center width='20%'
                   = link_to inspection_path(inspection), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye

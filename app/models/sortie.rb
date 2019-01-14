@@ -22,12 +22,12 @@ class Sortie
   def mission?
     !mission_cancelled?
   end
-
+  
   
 
   def calculate_flight_minutes
-    takeoff_time = DateTime.strptime(self.takeoff_time, '%H:%M %p') if self.takeoff_time.present?
-    landing_time = DateTime.strptime(self.landing_time, '%H:%M %p') if self.takeoff_time.present?
+    takeoff_time = DateTime.strptime(self.takeoff_time, '%H:%M') if self.takeoff_time.present?
+    landing_time = DateTime.strptime(self.landing_time, '%H:%M') if self.landing_time.present?
     # ((DateTime.strptime((landing_time.to_i + 86400).to_s,'%s') - takeoff_time) * 24 * 60).to_i
     if takeoff_time.blank? or landing_time.blank?
       return 0

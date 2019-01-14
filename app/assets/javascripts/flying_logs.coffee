@@ -1,5 +1,16 @@
 $(document).on 'ready', ->
-  
+  $('#flying-log-tabled').dataTable
+    scrollY: '47vh'
+    scrollCollapse: true
+    processing: true
+    serverSide: true
+    pageLength: 50
+    bSort: false
+    "pagingType": "simple_numbers"
+    ajax:
+      url: $("#flying-log-tabled").data('source'),      
+
+
   if $(".nested-fields").length > 0
     i = 0
     while i < $('.nested-fields').length
@@ -7,7 +18,7 @@ $(document).on 'ready', ->
         'data-id-element', '#flying_log_techlogs_attributes_' + i + '_work_unit_code_id'
       i++
   $('.timepickerclass').datetimepicker
-    format: 'hh:mm A'
+    format:'HH:mm'
 
   $('#div_techlog_servicing').on 'cocoon:before-insert', (e, row) ->
     id = $(row.find('input.autocomplete')[0]).attr('id')    

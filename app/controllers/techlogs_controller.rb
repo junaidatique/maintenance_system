@@ -6,14 +6,34 @@ class TechlogsController < ApplicationController
   # GET /techlogs
   # GET /techlogs.json
   def index
-    if current_user.admin? or current_user.chief_maintenance_officer?
+    if can? :view_all_techlogs, Techlog
       @techlogs = Techlog.techloged
-    # elsif current_user.gen_fitt?
-    #   @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
-    elsif current_user.logistics?
+    elsif can? :view_open_techlogs, Techlog
+      @techlogs = Techlog.techloged.incomplete
+    elsif can? :logistics_techlog, Techlog
       @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
-    else
-      @techlogs = Techlog.techloged.ne(condition_cd: 1)
+    else 
+      techlog_ids = current_user.autherization_codes.map{|auth| auth.techlogs.techloged.incomplete.map(&:id)}.reject{|techlog| techlog if techlog.blank?}.first 
+      if techlog_ids.present?
+        techlog_ids = techlog_ids + current_user.techlogs.incomplete.map(&:id)
+      else
+        techlog_ids = current_user.techlogs.incomplete.map(&:id)
+      end      
+      @techlogs = Techlog.in(id: techlog_ids)
+    end
+    # if current_user.admin? or current_user.chief_maintenance_officer?
+      
+    # # elsif current_user.gen_fitt?
+    # #   @techlogs = Techlog.where(:tools_state.in => ["requested", "provided"])    
+    # elsif current_user.logistics?
+      
+    # else      
+      
+    # end
+
+    respond_to do |format|
+      format.html
+      format.js { render json: TechlogDatatable.new(view_context, current_user, @techlogs)}
     end
     
   end
@@ -91,22 +111,23 @@ class TechlogsController < ApplicationController
           @techlog.parts_requested_parts
         end
         if current_user.role == :logistics
-          if @techlog.change_parts.where(available: 0).count > 0
-            @techlog.parts_not_available_parts
-          else
-            change_part_all =  @techlog.change_parts.where("this.quantity_required == this.quantity_provided").where(provided: false)
-            change_part_all.each do |cp|            
-              cp.provided = true
-              cp.update
-            end
-            change_parts_count = @techlog.change_parts.where("this.quantity_required != this.quantity_provided").count
-            # if @techlog.change_parts.where(available: 0).count
-            if change_parts_count > 0
-              @techlog.parts_pending_parts
-            else            
-              @techlog.parts_provided_parts
-            end
+          if @techlog.change_parts.where(provided: false).count == 0
+            @techlog.parts_provided_parts
           end
+          # else
+          #   change_part_all =  @techlog.change_parts.where("this.quantity_required == this.quantity_provided").where(provided: false)
+          #   change_part_all.each do |cp|            
+          #     cp.provided = true
+          #     cp.update
+          #   end
+          #   change_parts_count = @techlog.change_parts.where("this.quantity_required != this.quantity_provided").count
+          #   # if @techlog.change_parts.where(available: 0).count
+          #   if change_parts_count > 0
+          #     @techlog.parts_pending_parts
+          #   else            
+          #     @techlog.parts_provided_parts
+          #   end
+          # end
         end
         
         # Tools 
@@ -274,7 +295,7 @@ class TechlogsController < ApplicationController
                                         :addl_period_of_deferm, :addl_due, :addl_log_time, :addl_log_date,
                                         :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description, :verified_tools,
                                         flying_log_attributes: [ :fuel_refill, :oil_serviced, :oil_total_qty ],
-                                        change_parts_attributes: [:id, :requested_by_id, :assigned_by_id, :part_number, :quantity_required, :new_part_id, :quantity_provided, :available, :is_servicable, :_destroy],
+                                        change_parts_attributes: [:id, :requested_by_id, :assigned_by_id, :part_id, :quantity_required, :new_part_id, :quantity_provided, :provided, :is_servicable, :_destroy],
                                         requested_tools_attributes: [:id, :requested_by_id, :tool_no, :quantity_required, :_destroy],
                                         work_performed_attributes: [:work_date, :work_time, :user_id],
                                         date_inspected_attributes: [:work_date, :work_time, :user_id],

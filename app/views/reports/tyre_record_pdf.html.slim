@@ -15,29 +15,52 @@
             td.date
               | Previous
             td
-              = aircraft.parts.left_tyre.first.serial_no
+              = aircraft.part_items.left_tyres.first.serial_no
             td
               /= landing_history.left_tyre_landings
             td
-              = aircraft.parts.left_tyre.first.landings_completed
+              = aircraft.part_items.left_tyres.first.landings_completed
             td
-              = aircraft.parts.right_tyre.first.serial_no              
+              = aircraft.part_items.right_tyres.first.serial_no              
             td
               /= landing_history.right_tyre_landings
             td
-              = aircraft.parts.right_tyre.first.landings_completed
+              = aircraft.part_items.right_tyres.first.landings_completed
             td
-              = aircraft.parts.nose_tail.first.serial_no              
+              = aircraft.part_items.nose_tails.first.serial_no              
             td
               /= landing_history.nose_tail_landings
             td
-              = aircraft.parts.nose_tail.first.landings_completed
+              = aircraft.part_items.nose_tails.first.landings_completed
       - else
-        - aircraft.flying_logs.lte(created_at: Time.zone.now).gte(created_at: (Time.zone.now - 10.days)).order(created_at: :asc).each do |flying_log|          
-          - if flying_log.left_tyre.present?          
-            - left_tyre_history = PartHistory.where(flying_log_id: flying_log.id).where(part_id: flying_log.left_tyre.id).first
-            - right_tyre_history = PartHistory.where(flying_log_id: flying_log.id).where(part_id: flying_log.right_tyre.id).first
-            - nose_history = PartHistory.where(flying_log_id: flying_log.id).where(part_id: flying_log.nose_tail.id).first
+        - aircraft.flying_logs.lte(created_at: Time.zone.now).gte(created_at: (Time.zone.now - 10.days)).order(created_at: :asc).each do |flying_log|
+          - if flying_log.landing_history.present?          
+            - landing_history = flying_log.landing_history
+            tr
+              td.date
+                = display_date flying_log.created_at
+              td
+                = landing_history.left_tyre.serial_no
+              td
+                = landing_history.left_tyre_landings
+              td
+                = landing_history.left_tyre_total_landings
+              td
+                = landing_history.right_tyre.serial_no
+              td
+                = landing_history.right_tyre_landings
+              td
+                = landing_history.right_tyre_total_landings
+              td
+                = landing_history.nose_tail.serial_no
+              td
+                = landing_history.nose_tail_landings
+              td
+                = landing_history.nose_tail_total_landings
+          /- if flying_log.left_tyre.present?          
+            - left_tyre_history = PartHistory.where(flying_log_id: flying_log.id).where(part_item_id: flying_log.left_tyre.id).first
+            - landing_history = PartHistory.where(flying_log_id: flying_log.id).where(part_item_id: flying_log.right_tyre.id).first
+            - nose_history = PartHistory.where(flying_log_id: flying_log.id).where(part_item_id: flying_log.nose_tail.id).first
             tr
               td.date
                 = display_date flying_log.created_at
@@ -50,9 +73,9 @@
               td
                 = flying_log.right_tyre.serial_no
               td
-                = right_tyre_history.landings
+                = landing_history.landings
               td
-                = right_tyre_history.total_landings
+                = landing_history.total_landings
               td
                 = flying_log.nose_tail.serial_no
               td

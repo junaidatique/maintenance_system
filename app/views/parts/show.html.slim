@@ -16,98 +16,31 @@
           .col-sm-12
             table.table.table-inverse
               tbody                
-                tr
+                tr                  
                   th width="25%"
-                    | Current Aircraft
-                  td
-                    - if @part.aircraft.present? 
-                      = @part.aircraft.tail_number
-                    - else 
-                      | N/A
-                  th width="25%"
-                    | Category
+                    | Trade
                   td 
-                    = @part.category
+                    = @part.trade
+                  th width="25%"
+                    | Track From
+                  td 
+                    = @part.track_from.to_s.gsub("_", " ").titleize
                 tr
                   th width="25%"
                     | Part #
                   td = @part.number
                   th width="25%"
-                    | Part Serial #
-                  td = @part.serial_no
+                    | Noun
+                  td = @part.noun
                 tr
                   th width="25%"
-                    | Description
-                  td = @part.description
-                  th width="25%"
-                    | Unit of issue
+                    | Unit of Issue
                   td = @part.unit_of_issue
-                tr
                   th width="25%"
-                    | Contract quantity
-                  td = @part.contract_quantity
-                  th width="25%"
-                    | Recieved quantity
-                  td = @part.recieved_quantity
-                tr
-                  th width="25%"
-                    | Store Balance
-                  td = @part.quantity
-                  th width="25%"
-                    | DFIM balance
-                  td = @part.dfim_balance ? 'Yes' : 'No'  
-                tr
-                  th width="25%"
-                    | Inspection Hours
-                  td = @part.inspection_hours
-                  th width="25%"
-                    | Repairable
-                  td = @part.is_repairable ? 'Yes' : 'No'  
-                tr
-                  th width="25%"
-                    | Condemn
-                  td = @part.condemn
-                  th width="25%"
-                    | Trade
-                  td 
-                    = @part.trade
-                tr
-                  th width="25%"
-                    | Part Calender Life
-                  td = (@part.calender_life_value) 
-                  th width="25%"
-                    | Part Installed Date
-                  td = display_date(@part.installed_date)                
-                tr
-                  th width="25%"
-                    | Total Part Hours
-                  td = (@part.total_hours) 
-                  th width="25%"
-                    | Remaining Hours 
-                  td = @part.remaining_hours if @part.remaining_hours > 0
-                tr
-                  th width="25%"
-                    | Part Calender Date
-                  td = display_date(@part.calender_life_date) 
-                  th width="25%"
-                    | Part Flight hours
-                  td = @part.completed_hours
-                tr
-                  th width="25%"
-                    | Landings Completed
-                  td = (@part.landings_completed) 
-                  th width="25%"      
-                    | Is Lifed              
-                  td = (@part.is_lifed) ? 'Yes' : 'No'  
-                tr
-                  th width="25%"
-                    | Inspectable
-                  td = (@part.is_inspectable) ? 'Yes' : 'No'  
-                  th width="25%"      
-                    | Servicable
-                  td = (@part.is_servicable) ? 'Yes' : 'No'  
-- @scheduled_inspections = @part.scheduled_inspections.not_completed
-== render "scheduled_inspections/table", options: { heading: "Scheduled Inspections"}
+                    | Noun
+                  td = @part.location
+                
+                  
 .row
   .col-md-12
     .box.box-info
@@ -116,40 +49,91 @@
           .col-md-6
             h3.box-title
               i.fa.fa-bars
-              | &nbsp; Part History
+              | &nbsp; Inventory
       .box-body
         .row
           .col-sm-12
-            table.table.table-bordered.table-striped.data-tabled
-              thead
+            table.table.table-inverse
+              tbody                
+                tr                  
+                  th width="25%"
+                    | Contract Quantity
+                  td 
+                    = @part.contract_quantity
+                  th width="25%"
+                    | Recieved Qsuantity
+                  td = @part.recieved_quantity
                 tr
-                  th
-                    | Aircraft
-                  th
-                    | Quantity
-                  th
-                    | Hours
-                  th
-                    | Landings
-                  th
-                    | Date Time
-                     
-              tbody
-                - @part.part_histories.each do |part|
-                  
-                  /= history.to_a
-                  tr
-                    td.table-row-center
-                      - if part.aircraft_id.present?
-                        = part.aircraft.tail_number
-                    td.table-row-center
-                      = part.quantity
-                    td.table-row-center
-                      = part.hours
-                    td.table-row-center
-                      = part.landings
-                    td.table-row-center
-                      = display_date part.created_at          
-                      
-                
+                  th width="25%"
+                    | Total Quantity
+                  td = @part.system_quantity
+                  th width="25%"
+                    | Store Balance
+                  td = @part.quantity
+
+- if @part.is_inspectable?
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-md-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Inspection
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody                
+                  tr                  
+                    th width="25%"
+                      | Inspection Hours
+                    td 
+                      = @part.inspection_hours
+                    th width="25%"
+                      | Inspection Calender Value
+                    td 
+                      = @part.inspection_calender_value
+                      |  
+                      - if @part.inspection_duration == 0
+                        | Day
+                      - elsif @part.inspection_duration == 1
+                        | Month
+                      - elsif @part.inspection_duration == 2
+                        | Year
+- if @part.is_lifed?
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-border
+          .row
+            .col-md-6
+              h3.box-title
+                i.fa.fa-bars
+                | &nbsp; Expiry
+        .box-body
+          .row
+            .col-sm-12
+              table.table.table-inverse
+                tbody                
+                  tr                  
+                    th width="25%"
+                      | Expiry Hours
+                    td 
+                      = @part.lifed_hours
+                    th width="25%"
+                      | Expiry Calender Value
+                    td 
+                      = @part.lifed_calender_value
+                      |  
+                      - if @part.lifed_duration == 0
+                        | Day
+                      - elsif @part.lifed_duration == 1
+                        | Month
+                      - elsif @part.lifed_duration == 2
+                        | Year
+- @part_items = @part.part_items
+== render "part_items/table", options: { heading: " Part Items"}                
+            
 = render 'common/actions_buttons', back_path: parts_path, edit_path: edit_part_path(@part)                    

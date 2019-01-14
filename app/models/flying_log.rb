@@ -19,18 +19,66 @@ class FlyingLog
   field :location_from, type: String
   field :location_to, type: String
   field :completion_time, type: String
-    
+      
+
+  belongs_to :aircraft
+  belongs_to :left_tyre, class_name: 'PartItem', optional: true, inverse_of: :fl_left_tyre
+  belongs_to :right_tyre, class_name: 'PartItem', optional: true, inverse_of: :fl_left_tyre
+  belongs_to :nose_tail, class_name: 'PartItem', optional: true, inverse_of: :fl_left_tyre
+
+  has_one :ac_configuration, dependent: :destroy
+  has_one :capt_acceptance_certificate, dependent: :destroy
+  has_one :sortie, dependent: :destroy
+  has_one :capt_after_flight, dependent: :destroy
+  has_one :flightline_release, dependent: :destroy
+  has_one :aircraft_total_time, dependent: :destroy
+  has_one :after_flight_servicing, dependent: :destroy
+  has_one :flightline_servicing, dependent: :destroy
+  has_one :post_mission_report, dependent: :destroy
+  has_one :flying_history, dependent: :destroy
+  has_one :landing_history, dependent: :destroy
+  has_many :techlogs, dependent: :destroy
+
+
+  
+
+  # embeds_many :notifications, as: :notifiable
+  # embeds_many :flying_log_state_transitions
+
+  accepts_nested_attributes_for :ac_configuration
+  accepts_nested_attributes_for :capt_acceptance_certificate
+  accepts_nested_attributes_for :sortie
+  accepts_nested_attributes_for :capt_after_flight
+  accepts_nested_attributes_for :flightline_release
+  accepts_nested_attributes_for :aircraft_total_time
+  accepts_nested_attributes_for :after_flight_servicing
+  accepts_nested_attributes_for :flightline_servicing
+  accepts_nested_attributes_for :post_mission_report
+  accepts_nested_attributes_for :techlogs, reject_if: :all_blank, allow_destroy: true
+
   validate :check_flying_logs
   validate :check_techlogs
   validate :check_parts
   validate :check_scheduled_inspections  
-
+  validate :check_flight_total_time  
+  
   
   def check_flying_logs
-    
+    if started? and aircraft.flying_logs.not_cancelled_not_completed.ne(state: 'pilot_confirmed').ne(_id: self._id).count > 0
+      errors.add(:aircraft_id, " previous flying log not completed.")
+    end
     if started? and aircraft.flying_logs.not_cancelled_not_completed.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
       errors.add(:aircraft_id, " flying log already created.")
     end
+    
+    # if started? and (flightline_servicing.inspection_performed_cd == 0) and aircraft.flying_logs.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
+    #   errors.add(:aircraft_id, " Preflight is already created.")
+    # end
+    # if started? and (flightline_servicing.inspection_performed_cd == 2) and aircraft.flying_logs.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
+    #   errors.add(:aircraft_id, " Post flight is already created.")
+    # end
+
+
   end
   def check_techlogs    
     if flight_released?
@@ -41,46 +89,54 @@ class FlyingLog
   end
 
   def check_parts
-    if aircraft.parts.engine_part.count == 0
+    if aircraft.part_items.engines.count == 0
       errors.add(:aircraft_id, "has no engine.")
     end
-    if aircraft.parts.propeller_part.count == 0
+    if aircraft.part_items.propellers.count == 0
       errors.add(:aircraft_id, "has no propeller.")
     end
-    if aircraft.parts.left_tyre.count == 0
+    if aircraft.part_items.left_tyres.count == 0
       errors.add(:aircraft_id, "has no left tyre.")
     end
-    if aircraft.parts.right_tyre.count == 0
+    if aircraft.part_items.right_tyres.count == 0
       errors.add(:aircraft_id, "has no right tyre.")
     end
-    if aircraft.parts.nose_tail.count == 0
+    if aircraft.part_items.nose_tails.count == 0
       errors.add(:aircraft_id, "has no nose tail.")
     end
   end
 
-  def check_scheduled_inspections        
-    aircraft.check_inspections
+  def check_scheduled_inspections            
+    aircraft.check_inspections if started?
     if started? and aircraft.scheduled_inspections.due.count > 0
       errors.add(:aircraft_id, "has due inspections.")
     end
     if started? and aircraft.scheduled_inspections.in_progress.count > 0
       errors.add(:aircraft_id, "has in progress inspections.")
     end
-    if started? and aircraft.parts.map{|part| part if part.scheduled_inspections.due.count > 0}.reject(&:blank?).count > 0
+    if started? and aircraft.part_items.map{|part| part if part.scheduled_inspections.due.count > 0}.reject(&:blank?).count > 0
       errors.add(:aircraft_id, "has some parts with due inspections.")
     end
-    if started? and aircraft.parts.map{|part| part if part.scheduled_inspections.in_progress.count > 0}.reject(&:blank?).count > 0
+    if started? and aircraft.part_items.map{|part| part if part.scheduled_inspections.in_progress.count > 0}.reject(&:blank?).count > 0
       errors.add(:aircraft_id, "has some parts with in progress inspections.")
     end
   end
 
   
-
+  def check_flight_total_time
+    if self.sortie.present? and self.sortie.takeoff_time.present? and self.sortie.landing_time.present?
+      minutes = self.sortie.calculate_flight_minutes
+      if minutes > 4 * 60
+        errors.add(:aircraft_id, "Invalid sortie hours.")
+      end
+    end 
+  end
   
 
   scope :completed, -> { where(state: :log_completed) }
   scope :not_completed, -> { ne(state: :log_completed) }  
   scope :not_cancelled_not_completed, -> { where("state"=>{"$nin"=>["log_completed","flight_cancelled"] } )}
+  scope :not_booked_in, -> { where("state"=>{"$nin"=>["log_completed","flight_cancelled"] } )}
   # default_scope { order(id: :desc) }
   
   increments :number, seed: 1000
@@ -133,39 +189,7 @@ class FlyingLog
     end
   end
 
-  belongs_to :aircraft
-  belongs_to :left_tyre, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
-  belongs_to :right_tyre, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
-  belongs_to :nose_tail, class_name: 'Part', optional: true, inverse_of: :fl_left_tyre
-
-  has_one :ac_configuration, dependent: :destroy
-  has_one :capt_acceptance_certificate, dependent: :destroy
-  has_one :sortie, dependent: :destroy
-  has_one :capt_after_flight, dependent: :destroy
-  has_one :flightline_release, dependent: :destroy
-  has_one :aircraft_total_time, dependent: :destroy
-  has_one :after_flight_servicing, dependent: :destroy
-  has_one :flightline_servicing, dependent: :destroy
-  has_one :post_mission_report, dependent: :destroy
-  has_one :flying_history, dependent: :destroy
-  has_many :techlogs, dependent: :destroy
-
-
   
-
-  # embeds_many :notifications, as: :notifiable
-  # embeds_many :flying_log_state_transitions
-
-  accepts_nested_attributes_for :ac_configuration
-  accepts_nested_attributes_for :capt_acceptance_certificate
-  accepts_nested_attributes_for :sortie
-  accepts_nested_attributes_for :capt_after_flight
-  accepts_nested_attributes_for :flightline_release
-  accepts_nested_attributes_for :aircraft_total_time
-  accepts_nested_attributes_for :after_flight_servicing
-  accepts_nested_attributes_for :flightline_servicing
-  accepts_nested_attributes_for :post_mission_report
-  accepts_nested_attributes_for :techlogs, reject_if: :all_blank, allow_destroy: true
 
   after_create :create_serial_no
   after_create :create_techlogs
@@ -189,14 +213,14 @@ class FlyingLog
 
   def update_times
     build_aircraft_total_time
-    aircraft_total_time.carried_over_engine_hours     = aircraft.parts.engine_part.first.completed_hours.round(2)
+    aircraft_total_time.carried_over_engine_hours     = aircraft.part_items.engines.first.completed_hours.round(2)
     aircraft_total_time.carried_over_aircraft_hours   = aircraft.flight_hours.round(2)
     aircraft_total_time.carried_over_landings         = aircraft.landings.round(2)
-    aircraft_total_time.carried_over_prop_hours       = aircraft.parts.propeller_part.first.completed_hours.round(2)
-    aircraft_total_time.corrected_total_engine_hours     = aircraft.parts.engine_part.first.completed_hours.round(2)
+    aircraft_total_time.carried_over_prop_hours       = aircraft.part_items.propellers.first.completed_hours.round(2)
+    aircraft_total_time.corrected_total_engine_hours     = aircraft.part_items.engines.first.completed_hours.round(2)
     aircraft_total_time.corrected_total_aircraft_hours   = aircraft.flight_hours.round(2)
     aircraft_total_time.corrected_total_landings         = aircraft.landings.round(2)
-    aircraft_total_time.corrected_total_prop_hours       = aircraft.parts.propeller_part.first.completed_hours.round(2)
+    aircraft_total_time.corrected_total_prop_hours       = aircraft.part_items.propellers.first.completed_hours.round(2)
   end
 
   def update_fuel
@@ -241,9 +265,9 @@ class FlyingLog
     f_total.corrected_total_prop_hours       = total_prop_hours.round(2)
 
 
-    self.left_tyre = aircraft.parts.left_tyre.first
-    self.right_tyre = aircraft.parts.right_tyre.first
-    self.nose_tail = aircraft.parts.nose_tail.first
+    self.left_tyre = aircraft.part_items.left_tyres.first
+    self.right_tyre = aircraft.part_items.right_tyres.first
+    self.nose_tail = aircraft.part_items.nose_tails.first
 
     self.save
 

@@ -8,22 +8,16 @@
         table.table.table-bordered.table-striped.data-tabled
           thead
             tr              
-              th width="20%"
-                | Noun              
-              th width="5%"
+              th width="15%"
                 | Number
+              th width="30%"
+                | Noun              
               th
                 | Trade
-              th width="5%"
-                | Serialized
-              th width="5%"
+              th
                 | Inspectable
-              th width="5%"
+              th
                 | Lifed
-              th
-                | Quantity
-              th
-                | Location              
               th
                 | Actions
                  
@@ -31,21 +25,15 @@
             - @parts.each do |part|
               tr                
                 td.table-row-center
+                  = link_to part.number, part_path(part)
+                td.table-row-center
                   = link_to part.noun, part_path(part)
                 td.table-row-center
-                  = part.number
-                td
                   = part.trade.to_s.titleize
-                td.table-row-center
-                  = part.is_serialized? ? 'Yes' : 'No'
                 td.table-row-center
                   = part.is_inspectable? ? 'Yes' : 'No'
                 td.table-row-center
                   = part.is_lifed? ? 'Yes' : 'No'                                
-                td.table-row-center
-                  = part.quantity
-                td.table-row-center
-                  = part.location
                 td
                   = link_to part_path(part), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye

@@ -90,7 +90,7 @@ class AircraftsController < ApplicationController
     respond_to do |format|
       format.html
       format.xlsx {
-        response.headers['Content-Disposition'] = 'attachment; filename="materials.xlsx"'
+        response.headers['Content-Disposition'] = 'attachment; filename="daily_flying_report.xlsx"'
       }
     end
     

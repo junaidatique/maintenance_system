@@ -76,10 +76,11 @@ class Techlog
   accepts_nested_attributes_for :requested_tools
 
   before_create :set_condition  
-  after_create :create_serial_no  
+  after_create :create_serial_no    
   after_create :set_aircraft
   after_create :set_dms_version
   after_update :update_flying_log_end_time
+  after_update :update_change_parts
   after_update :create_interm_log, if: Proc.new { |t_log| t_log.condition_cd == 2 }
   after_update :check_schedule_inspection, if: Proc.new { |t_log| t_log.condition_cd == 1 }
   
@@ -101,13 +102,13 @@ class Techlog
 
 
   def maintenance_work_unit_code        
-    if type_cd == 1 and flying_log.blank? and autherization_code.blank?  
+    if type == :Maintenance and flying_log.blank? and autherization_code.blank?  
       errors.add(:autherization_code, " can't be blank")
     end
   end
 
   def verify_interm
-    if condition_cd == 2 and action.blank?
+    if condition == :interm and action.blank?
       errors.add(:action, " can't be blank")
     end    
   end
@@ -128,17 +129,16 @@ class Techlog
     end
   end
 
-  def verify_complete    
-    
-    if condition_cd == 1 and (parts_state == "requested" or parts_state == "pending" or parts_state == "not_available")
+  def verify_complete
+    if condition == :completed and (parts_state == "requested" or parts_state == "pending" or parts_state == "not_available")
       errors.add(:status, " Some parts are missing. ")
-    elsif condition_cd == 1 and interm_logs.count > 0 and interm_logs.incomplete.count > 0
+    elsif condition == :completed and interm_logs.count > 0 and interm_logs.incomplete.count > 0
       errors.add(:status, " This techlog has interm log(s). Please complete that log first. ")
     end
-    if condition_cd == 1 and verified_tools.blank?      
+    if condition == :completed and verified_tools.blank?      
       errors.add(:verified_tools, "Please verify that you have verified all the tools.")
     end
-    if condition_cd == 1 and type_cd == 3
+    if condition == :completed and type_cd == 3
       if self.requested_tools.where(is_returned: false).count > 0
         errors.add(:verified_tools, "Please return all tools.")
       end
@@ -200,7 +200,14 @@ class Techlog
   end
 
   def create_serial_no
-    self.serial_no = "#{Time.zone.now.strftime('%d%m%Y')}-#{number}"
+    ser = "#{Time.zone.now.strftime('%d%m%Y')}-#{number}"
+    if self.aircraft.present?
+      ser = "#{ser}-#{self.aircraft.tail_number}"
+    end
+    if self.autherization_code.present?
+      ser = "#{ser}-#{self.autherization_code.autherized_trade.downcase}-#{self.autherization_code.type.downcase}"
+    end
+    self.serial_no = ser
     self.save
   end
 
@@ -218,6 +225,14 @@ class Techlog
   def set_dms_version
     self.dms_version = System.first.settings['dms_version_number'] 
     self.save
+  end
+
+  def update_change_parts
+    if change_parts.count > 0
+      change_parts.each do |change_part|
+        change_part.update_parts_quantity
+      end
+    end
   end
 
   def update_flying_log_end_time

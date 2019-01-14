@@ -1,0 +1,104 @@
+.row
+  .col-md-12
+    .box.box-info
+      .box-header.with-border
+          .row
+            .col-md-6
+              h3.box-title
+                i.fa.fa-bars
+                - if options.present? and options[:heading].present?
+                  = options[:heading]
+                - else                  
+                  | &nbsp; Parts
+            .col-md-6.text-right
+              = link_to "Export CSV", part_items_path(format: "csv"), class: 'btn btn-info btn-flat'                 
+              /= link_to upload_aircraft_path(aircraft: @aircraft), class: 'btn btn-info btn-flat'                 
+                | &nbsp; Upload Parts
+                | &nbsp;
+      .box-body
+        table.table.table-bordered.table-striped.data-tabled
+          thead
+            tr
+              th
+                | Trade
+              th
+                | Number
+              th
+                | Serial #
+              th
+                | Noun
+              th
+                | Location
+              / th
+              /   | Ins Date
+              / th
+              /   | Manu Date
+              / th
+              /   | Calender Life
+              / th
+              /   | Expiry Date
+              / th
+              /   | Inspection Life
+              / th
+              /   | Last Inspection
+              / th
+              /   | Next Inspection
+              /th
+                | Total Life
+              /th
+                | Lifed Hours
+              / th
+              /   | Inspection Hours
+              / th
+              /   | Due Hours
+              / th
+              /   | Completed Hours
+              / th
+              /   | Landings
+                
+          tbody
+            - @part_items.each do |part_item|
+              - scheduled_inspection = nil              
+              - expiry_inspection = Inspection.where(part_number: part_item.part.number).to_replaces.first
+              - regular_inspection = Inspection.where(part_number: part_item.part.number).to_inspects.repeating.first
+              - if expiry_inspection.present?
+                - scheduled_inspection = expiry_inspection.scheduled_inspections.where(inspectable_id: part_item.id).not_completed.first
+              - if regular_inspection.present?
+                - scheduled_regular = regular_inspection.scheduled_inspections.where(inspectable_id: part_item.id).not_completed.first
+              tr
+                td.table-row-center
+                  = part_item.part.trade
+                td.table-row-center
+                  = link_to part_item.part.number, part_item_path(part_item)
+                td.table-row-center
+                  = part_item.serial_no
+                td.table-row-center
+                  = part_item.part.noun
+                td.table-row-center
+                  = (part_item.aircraft.present?) ? part_item.aircraft.tail_number : part_item.location
+                / td.table-row-center
+                /   = display_date(part_item.installed_date)
+                / td.table-row-center
+                /   = display_date(part_item.manufacturing_date)
+                / td.table-row-center
+                /   = pluralize(expiry_inspection.calender_value, expiry_inspection.duration.to_s)  if expiry_inspection.present?
+                / td.table-row-center
+                /   = display_date scheduled_inspection.calender_life_date if scheduled_inspection.present?
+                / td.table-row-center
+                /   = pluralize(regular_inspection.calender_value, regular_inspection.duration.to_s)  if regular_inspection.present?
+                / td.table-row-center
+                /   = display_date(scheduled_regular.starting_date)  if scheduled_regular.present?
+                / td.table-row-center
+                /   = display_date(scheduled_regular.calender_life_date)  if scheduled_regular.present?
+                / td.table-row-center
+                /   = expiry_inspection.no_of_hours if expiry_inspection.present? and expiry_inspection.no_of_hours > 0
+                / td.table-row-center
+                /   = scheduled_inspection.hours if scheduled_inspection.present? and scheduled_inspection.hours > 0
+                / td.table-row-center
+                /   = regular_inspection.no_of_hours if regular_inspection.present?
+                / td.table-row-center
+                /   = scheduled_regular.hours   if scheduled_regular.present?
+                / td.table-row-center
+                /   = part_item.completed_hours
+                / td.table-row-center
+                /   = part_item.landings_completed

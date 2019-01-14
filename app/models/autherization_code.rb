@@ -26,7 +26,7 @@ class AutherizationCode
     xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
     (2..xlsx.last_row).each do |i|
       row                   = xlsx.row(i)
-      puts row.inspect      
+      # puts row.inspect      
       code            = row[0]
       inspection_type = row[1]
       type            = row[2]
@@ -36,7 +36,7 @@ class AutherizationCode
         autherization_code = AutherizationCode.where(code: code).where(type: type).where(autherized_trade: trade).first
         if autherization_code.blank?
           autherization_code = AutherizationCode.create({
-              code: code, inspection_type: inspection_type, type: type, autherized_trade: trade
+              code: code, inspection_type: "#{inspection_type} #{trade} trade", type: type, autherized_trade: trade
             })
         end
         pak_codes.each do |pak_code|

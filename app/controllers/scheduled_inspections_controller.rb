@@ -1,5 +1,5 @@
 class ScheduledInspectionsController < ApplicationController
-  before_action :set_scheduled_inspection, only: [:show, :edit, :update, :destroy, :apply_extention, :save_extention, :cancel_extention, :create_techlog, :defer_inspection]
+  before_action :set_scheduled_inspection, only: [:show, :edit, :update, :destroy, :apply_extention, :save_extention, :cancel_extention, :create_techlog, :defer_inspection, :check_status]
 
   # GET /scheduled_inspections
   # GET /scheduled_inspections.json
@@ -32,12 +32,21 @@ class ScheduledInspectionsController < ApplicationController
     end    
   end
 
+  def check_status
+    @scheduled_inspection.calculate_status
+    redirect_to @scheduled_inspection
+  end
+
   def defer_inspection
-    @scheduled_inspection.condition_cd = 0      
-    @scheduled_inspection.hours = @scheduled_inspection.completed_hours + @scheduled_inspection.inspection.no_of_hours
+    @scheduled_inspection.condition_cd = 0
+    if @scheduled_inspection.inspection.no_of_hours.to_f > 0
+      @scheduled_inspection.hours = @scheduled_inspection.completed_hours + @scheduled_inspection.inspection.no_of_hours
+    end
+    
     @scheduled_inspection.starting_date      = Time.zone.now
     @scheduled_inspection.calender_life_date = @scheduled_inspection.inspection.get_duration Time.zone.now
     @scheduled_inspection.save
+    @scheduled_inspection.calculate_status
     redirect_to @scheduled_inspection, notice: 'Scheduled inspection extention was successfully defered.'
     
   end

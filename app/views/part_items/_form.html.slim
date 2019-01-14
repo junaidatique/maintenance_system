@@ -1,0 +1,73 @@
+= simple_form_for(@part) do |f|
+  = f.error_notification
+  .row
+    .col-md-12
+      .box.box-info
+        .box-header.with-borderf
+          h3.box-title
+            i.fa.fa-bars
+            | &nbsp; General
+        .box-body          
+          .row
+            .col-sm-6
+              = f.association :aircraft, collection: Aircraft.all, label_method: :tail_number, value_method: :id, input_html: {class: 'custom-select2'}
+            .col-sm-6
+              = f.input :category, collection: enum_option_pairs(Part, :category)
+          .row
+            .col-sm-6
+              = f.input :number
+            .col-sm-6
+              = f.input :serial_no, label: 'Serail #'
+          .row
+            .col-sm-6
+              = f.input :track_from, collection: enum_option_pairs(Part, :track_from), as: :radio_buttons
+            .col-sm-6
+              /= f.input :serial_no, label: 'Serail #'
+          .row
+            .col-sm-6
+              = f.input :description
+            .col-sm-6
+              = f.input :unit_of_issue
+          .row
+            .col-sm-6
+              = f.input :contract_quantity
+            .col-sm-6
+              = f.input :recieved_quantity
+          .row
+            .col-sm-6
+              = f.input :quantity, label: "Store Balance"
+            .col-sm-6
+              = f.input :dfim_balance, as: :radio_buttons
+          .row
+            .col-sm-6
+              = f.input :inspection_hours, label: "INSP (HRS)"
+            .col-sm-6
+              = f.input :inspection_calender_value, label: "INSP Calender (month)"
+          .row
+            .col-sm-6
+              = f.input :trade, collection: enum_option_pairs(Part, :trade)
+            .col-sm-6
+              = f.input :is_repairable, as: :radio_buttons
+          .row
+            .col-sm-6
+              = f.input :condemn
+            .col-sm-6
+              = f.input :is_lifed, as: :radio_buttons
+          .row
+            .col-sm-6
+              = f.input :calender_life_value, label: "Calender Life (year)"
+            .col-sm-6
+              = f.input :installed_date, input_html: {class: 'datepicker'}
+          .row
+            .col-sm-6
+              = f.input :total_hours, label: "Hourly Life (HRS)"
+            .col-sm-6
+              = f.input :completed_hours, label: "Hours Completed (HRS)"
+          .row            
+            .col-sm-6
+              = f.input :landings_completed
+            .col-sm-6
+              = f.input :is_servicable, as: :radio_buttons
+              
+            
+  == render 'common/form_action_buttons', options: { form: f, index_path: parts_path}

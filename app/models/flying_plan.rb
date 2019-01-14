@@ -16,7 +16,7 @@ class FlyingPlan
       if aircraft.scheduled_inspections.due.count > 0
         due_inspection = aircraft
       end
-      if aircraft.parts.map{|part| part if part.scheduled_inspections.due.count > 0}.reject(&:blank?).count > 0
+      if aircraft.part_items.map{|part| part if part.scheduled_inspections.due.count > 0}.reject(&:blank?).count > 0
         due_inspection = aircraft
       end
     end
