@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       get :create_techlog
       get :defer_inspection
       get :check_status
+      get :restart_techlogs
     end    
   end
   resources :autherization_codes do 

@@ -61,6 +61,9 @@
                 td.table-row-center
                   = scheduled_inspection.completed_hours.round(2)
                 td.table-row-center
+                  - if scheduled_inspection.techlog.present?
+                    = link_to techlog_path(scheduled_inspection.techlog), class: 'btn btn-success btn-flat ' do
+                      i.fa.fa-file
                   = link_to scheduled_inspection_path(scheduled_inspection), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye
                   - if scheduled_inspection.kind_cd != 0

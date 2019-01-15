@@ -37,6 +37,7 @@ class Ability
       can :defer_inspection, ScheduledInspection
       can :apply_extention, ScheduledInspection
       can :cancel_extention, ScheduledInspection
+      can :start_inspection, ScheduledInspection
       can :approve_extension, Techlog
       can :view_open_techlogs, Techlog
     elsif user.master_control?      
