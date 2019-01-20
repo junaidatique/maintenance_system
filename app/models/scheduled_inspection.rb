@@ -59,7 +59,7 @@ class ScheduledInspection
 
   def start_work_package    
     if (status_was == :scheduled or status_was == :pending or status_was == :due) and status == :in_progress
-      
+      self.start_inspection
     end
     if condition_cd_was == 0 and condition_cd == 1
       log = Techlog.create!({type_cd: 2, condition_cd: 0, 
