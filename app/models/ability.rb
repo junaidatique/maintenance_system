@@ -55,6 +55,7 @@ class Ability
       can :cancel, FlyingLog
       can :view_flight_techlogs, FlyingLog
       can :view_open_techlogs, Techlog
+      can :start_inspection, ScheduledInspection
     elsif user.inst_fitt?
       can :read, Aircraft
       can :ru, FlyingLog
