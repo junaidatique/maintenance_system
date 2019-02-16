@@ -63,7 +63,7 @@
                       - if @scheduled_inspection.inspectable_type == Aircraft.name
                         = @scheduled_inspection.inspectable.tail_number
                       - else
-                        = @scheduled_inspection.inspectable.number
+                        = @scheduled_inspection.inspectable.part.number
                     th width="25%"
                       | Hours Frequency
                     td = @scheduled_inspection.inspection.no_of_hours
@@ -103,7 +103,7 @@
                       
                     td
   
-  .row
+  /.row
     .col-md-12
       .box.box-info
         .box-header.with-border
@@ -124,11 +124,13 @@
             | Expection Time
         .box-body
           .row
-            .col-sm-6              
-              = f.input :extention_hours, collection: 0..10, include_blank: false       
-            .col-sm-6              
-              = f.input :extention_days, collection: 0..30, include_blank: false       
-              = f.input :started_by_id, as: :hidden, input_html: { value: current_user.id }
+            - if @scheduled_inspection.hours.present? and @scheduled_inspection.hours > 0            
+              .col-sm-6                            
+                = f.input :extention_hours, collection: 0..10, include_blank: false       
+            - if @scheduled_inspection.calender_life_date.present?
+              .col-sm-6                            
+                = f.input :extention_days, collection: 0..30, include_blank: false       
+            = f.input :started_by_id, as: :hidden, input_html: { value: current_user.id }
   
   .row
     .col-sm-4

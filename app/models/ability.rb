@@ -16,6 +16,7 @@ class Ability
       can :manage, Techlog
       can :manage, FlyingPlan      
       can :manage, User      
+      can :manage, Inspection
       can :manage_addl_logs, Techlog
       cannot :update_fuel, Techlog
 
@@ -35,7 +36,7 @@ class Ability
       can :manage, AutherizationCode
       can :generate_report, Techlog
       can :defer_inspection, ScheduledInspection
-      can :apply_extention, ScheduledInspection
+      # can :apply_extention, ScheduledInspection
       can :cancel_extention, ScheduledInspection
       can :start_inspection, ScheduledInspection
       can :approve_extension, Techlog
@@ -56,6 +57,7 @@ class Ability
       can :view_flight_techlogs, FlyingLog
       can :view_open_techlogs, Techlog
       can :start_inspection, ScheduledInspection
+      can :apply_extention, ScheduledInspection
     elsif user.inst_fitt?
       can :read, Aircraft
       can :ru, FlyingLog

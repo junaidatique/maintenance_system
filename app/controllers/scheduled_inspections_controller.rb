@@ -52,7 +52,7 @@ class ScheduledInspectionsController < ApplicationController
   end
   def cancel_extention
     if @scheduled_inspection.condition_cd == 1
-      @scheduled_inspection.techlog.destroy
+      @scheduled_inspection.techlog.destroy if @scheduled_inspection.techlog.present?
       @scheduled_inspection.extention_days = 0
       @scheduled_inspection.extention_hours = 0
       @scheduled_inspection.condition_cd = 0
