@@ -45,11 +45,17 @@
               | Type
             td = techlog.type
           tr
-            th width="25%" colspan="2"
-              | Description
+            th width="25%"
+              | Technician Name
+            td
+              - if @techlog.closed_by.present? and @techlog.condition == :completed
+                = @techlog.closed_by.name  
             th width="25%"
               | Autherization Code
             td = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
+          tr
+            th colspan="4"
+              | Description
           tr
             td colspan="4"
               = techlog.description
