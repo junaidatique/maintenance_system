@@ -58,6 +58,7 @@ class Ability
       can :view_open_techlogs, Techlog
       can :start_inspection, ScheduledInspection
       can :apply_extention, ScheduledInspection
+      can :view_781, Aircraft # view 781 forms on aircraft detail page
     elsif user.inst_fitt?
       can :read, Aircraft
       can :ru, FlyingLog

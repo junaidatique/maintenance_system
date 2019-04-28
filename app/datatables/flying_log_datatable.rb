@@ -31,7 +31,7 @@ class FlyingLogDatatable < Datatable
         link_to(flying_log.serial_no, flying_log_path(flying_log)),
         self.display_date(flying_log.log_date),
         flying_log.aircraft.tail_number,
-        status(flying_log),
+        flying_log.show_text_status,
         # link_to('<i class="fa fa-eye"></i>'.html_safe, flying_log_path(flying_log), target: "_blank", class: 'btn btn-success btn-flat'),
         link_to('<i class="fa fa-pencil"></i>'.html_safe, edit_flying_log_path(flying_log), class: 'btn btn-info btn-flat ')
       ]

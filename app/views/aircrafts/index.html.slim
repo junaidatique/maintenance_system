@@ -36,10 +36,11 @@
                 td.table-row-center
                   = aircraft.landings
                 td
+                  
                   - if todays_flying_plan.present? and todays_flying_plan.aircraft_ids.include? aircraft.id
-                    - last_flying_log = aircraft.flying_logs.first
+                    - last_flying_log = aircraft.flying_logs.last
                     - if last_flying_log.present?
-                      = last_flying_log.state.gsub('_', ' ').titleize
+                      = last_flying_log.show_text_status
                     - else 
                       | No Flying Log created.
                   - else

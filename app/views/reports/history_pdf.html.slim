@@ -9,10 +9,12 @@
           | Pilot                          
         th width='10%'
           | Date
-        th width='40%'
+        th width='35%'
           | Defect        
-        th width='40%'
+        th width='35%'
           | Corrected Action                                  
+        th width='35%'
+          | Corrected By
     tbody                        
       - aircraft.flying_logs.completed.order(number: :desc).each do |flying_log|
         - if flying_log.flightline_servicing.inspection_performed_cd != 2
@@ -27,6 +29,9 @@
                   = techlog.description              
                 td
                   = techlog.action                                                            
+                td.table-row-center  
+                  - if techlog.closed_by.present? and @techlog.condition == :completed
+                    = techlog.closed_by.name
           - else
             tr
               td.table-row-center
@@ -37,5 +42,6 @@
               td
                 - if flying_log.sortie.present?
                   = flying_log.sortie.pilot_comment_cd            
-              td.table-row-center                                                                              
+              td.table-row-center  
+              td                                                                            
     

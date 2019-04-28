@@ -2,9 +2,14 @@
 #rails db:seed:aircraft_fix
 
 aircraft = Aircraft.where(tail_number: 'QA307').first
-aircraft.flying_logs.order(created_at: :asc).each do |flying_log| 
-  puts flying_log.created_at
+aircraft.flying_logs.gt(created_at: '2019-04-04 00:00:00').order(created_at: :asc).each do |flying_log| 
+  flying_log = FlyingLog.find(flying_log.id)
+  puts '-----------------'
+  puts 'c carried_over_aircraft_hours'
+  puts flying_log.aircraft_total_time.id
   puts flying_log.aircraft_total_time.carried_over_aircraft_hours
+  puts 'c this_sortie_aircraft_hours'
+  puts flying_log.aircraft_total_time.this_sortie_aircraft_hours
 
   previous_flying_log = aircraft.flying_logs.lt(id: flying_log.id).order(created_at: :desc).first  
   if (previous_flying_log.blank?) 
@@ -12,8 +17,11 @@ aircraft.flying_logs.order(created_at: :asc).each do |flying_log|
     carried_over_engine_hours   = flying_log.aircraft_total_time.carried_over_engine_hours
     carried_over_landings       = flying_log.aircraft_total_time.carried_over_landings
     carried_over_prop_hours     = flying_log.aircraft_total_time.carried_over_prop_hours
-  else
-    puts previous_flying_log.created_at
+  else    
+    puts 'p carried_over_aircraft_hours'
+    puts previous_flying_log.aircraft_total_time.id
+    puts previous_flying_log.aircraft_total_time.corrected_total_aircraft_hours
+
     carried_over_aircraft_hours = previous_flying_log.aircraft_total_time.corrected_total_aircraft_hours
     carried_over_engine_hours   = previous_flying_log.aircraft_total_time.corrected_total_engine_hours
     carried_over_landings       = previous_flying_log.aircraft_total_time.corrected_total_landings
@@ -23,9 +31,12 @@ aircraft.flying_logs.order(created_at: :asc).each do |flying_log|
   flying_log.aircraft_total_time.carried_over_engine_hours     = carried_over_engine_hours.round(2)
   flying_log.aircraft_total_time.carried_over_landings         = carried_over_landings.round(2)
   flying_log.aircraft_total_time.carried_over_prop_hours       = carried_over_prop_hours.round(2)
-
-  flying_log.save
+  puts 'bc carried_over_aircraft_hours'
+  puts flying_log.aircraft_total_time.carried_over_aircraft_hours
+  flying_log.save!
   flying_log = FlyingLog.find(flying_log.id)
+  puts 'ac carried_over_aircraft_hours'
+  puts flying_log.aircraft_total_time.carried_over_aircraft_hours
   sortie = flying_log.sortie
   if sortie.blank?
     flight_time    = 0
@@ -56,6 +67,9 @@ aircraft.flying_logs.order(created_at: :asc).each do |flying_log|
   f_total.corrected_total_aircraft_hours   = total_aircraft_hours.round(2)
   f_total.corrected_total_landings         = t_landings
   f_total.corrected_total_prop_hours       = total_prop_hours.round(2)
+
+  puts 'p corrected_total_aircraft_hours'
+  puts flying_log.aircraft_total_time.corrected_total_aircraft_hours
 
   flying_log.save
   flying_log.create_history

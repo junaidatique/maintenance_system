@@ -45,6 +45,7 @@ class FlyingLog
   # embeds_many :notifications, as: :notifiable
   # embeds_many :flying_log_state_transitions
 
+  accepts_nested_attributes_for :flightline_servicing
   accepts_nested_attributes_for :ac_configuration
   accepts_nested_attributes_for :capt_acceptance_certificate
   accepts_nested_attributes_for :sortie
@@ -52,7 +53,6 @@ class FlyingLog
   accepts_nested_attributes_for :flightline_release
   accepts_nested_attributes_for :aircraft_total_time
   accepts_nested_attributes_for :after_flight_servicing
-  accepts_nested_attributes_for :flightline_servicing
   accepts_nested_attributes_for :post_mission_report
   accepts_nested_attributes_for :techlogs, reject_if: :all_blank, allow_destroy: true
 
@@ -189,7 +189,25 @@ class FlyingLog
     end
   end
 
-  
+  def show_text_status
+    if state == 'flightline_serviced' or state == 'fuel_filled'
+      return "#{flightline_servicing.inspection_performed.to_s.gsub('_', ' ').titleize}: In Progress"
+    elsif state == 'servicing_completed'
+      return "#{flightline_servicing.inspection_performed.to_s.gsub('_', ' ').titleize}: Awaiting Release"
+    elsif state == 'flight_released'
+      return "#{flightline_servicing.inspection_performed.to_s.gsub('_', ' ').titleize}: Flight Released"
+    elsif state == 'flight_cancelled'
+      return "#{flightline_servicing.inspection_performed.to_s.gsub('_', ' ').titleize}: Flight Cancelled"
+    elsif state == 'flight_booked'
+      return "#{flightline_servicing.inspection_performed.to_s.gsub('_', ' ').titleize}: Aircraft Booked out"
+    elsif state == 'pilot_commented' or state == 'pilot_confirmed'
+      return "#{flightline_servicing.inspection_performed.to_s.gsub('_', ' ').titleize}: Aircraft Booked in"
+    elsif state == 'log_completed'
+      return "#{flightline_servicing.inspection_performed.to_s.gsub('_', ' ').titleize}: Log Completed."
+    else
+      return "#{flightline_servicing.inspection_performed.to_s.gsub('_', ' ').titleize}: Unknown"
+    end
+  end
 
   after_create :create_serial_no
   after_create :create_techlogs
