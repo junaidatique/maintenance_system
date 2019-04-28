@@ -102,7 +102,7 @@ class FlyingLog
       errors.add(:aircraft_id, "has no right tyre.")
     end
     if aircraft.part_items.nose_tails.count == 0
-      errors.add(:aircraft_id, "has no nose tail.")
+      errors.add(:aircraft_id, "has no nose wheel.")
     end
   end
 
@@ -276,6 +276,7 @@ class FlyingLog
   end
 
   def create_history
+    return if sortie.blank?
     history = FlyingHistory.where(flying_log_id: self.id).first
     history = FlyingHistory.new if history.blank?
     history.aircraft        = aircraft
