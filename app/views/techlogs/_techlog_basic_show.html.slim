@@ -23,7 +23,10 @@
                       | Aircraft
                     td = @techlog.flying_log.aircraft.tail_number
                     th width="25%"
+                      | Technician Name
                     td
+                      - if @techlog.closed_by.present?
+                        = @techlog.closed_by.name
                   tr
                     th width="25%"
                       | Location From

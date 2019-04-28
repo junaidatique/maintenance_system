@@ -16,9 +16,9 @@
         i.fa.fa-angle-double-left
         | &nbsp; Back
     
-    - if can? :start_inspection, ScheduledInspection and (@scheduled_inspection.status_cd == 1 or @scheduled_inspection.status_cd == 4) and @scheduled_inspection.inspection.work_packages.count > 0
-      .col-sm-4 class="col-sm-offset-4"
-        = f.button :submit, "Start Scheduled Inspection", class: 'btn btn-block btn-success btn-flat'
+    /- if can? :start_inspection, ScheduledInspection and (@scheduled_inspection.status_cd == 1 or @scheduled_inspection.status_cd == 4) and @scheduled_inspection.inspection.work_packages.count > 0
+    .col-sm-4 class="col-sm-offset-4"
+      = f.button :submit, "Start Scheduled Inspection", class: 'btn btn-block btn-success btn-flat'
           
   
       
