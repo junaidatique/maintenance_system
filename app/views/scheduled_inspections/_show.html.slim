@@ -18,16 +18,22 @@
                 i.fa.fa-pencil
                 | &nbsp; Defer Extention
               | &nbsp;
-            - if can? :apply_extention, Inspection and @scheduled_inspection.condition_cd == 0
+            - if can? :apply_extention, ScheduledInspection and @scheduled_inspection.condition_cd == 0 and (@scheduled_inspection.status_cd == 4)
               = link_to apply_extention_scheduled_inspection_path(@scheduled_inspection), class: 'btn btn-info btn-flat'
                 i.fa.fa-pencil
                 | &nbsp; Apply for Extention
               | &nbsp;
-            - if can? :cancel_extention, Inspection and @scheduled_inspection.condition_cd == 1
+            - if can? :cancel_extention, ScheduledInspection and @scheduled_inspection.condition_cd == 1
               = link_to cancel_extention_scheduled_inspection_path(@scheduled_inspection), class: 'btn btn-info btn-flat'
                 i.fa.fa-pencil
                 | &nbsp; Cancel Extention
               | &nbsp;
+            - if can? :start_inspection, ScheduledInspection and @scheduled_inspection.status_cd == 2 and @scheduled_inspection.techlog.blank?
+              = link_to create_techlog_scheduled_inspection_path(@scheduled_inspection), class: 'btn btn-info btn-flat'
+                i.fa.fa-pencil
+                | &nbsp; Generate Techlogs
+              | &nbsp;
+            
       .box-body
         .row
           .col-sm-12
@@ -58,9 +64,7 @@
             h3.box-title
               i.fa.fa-bars
               | &nbsp; Scheduled Inspection
-          .col-sm-6.text-right            
-            
-              
+          .col-sm-6.text-right
       .box-body
         .row
           .col-sm-12

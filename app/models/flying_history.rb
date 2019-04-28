@@ -49,6 +49,15 @@ class FlyingHistory
       #     }
       #   }        
       # ])
+      # puts 'flying_log.id'
+      # puts flying_log.id
+      # puts 'flying_log.left_tyre'
+      # puts flying_log.left_tyre.inspect
+      # puts 'flying_log.right_tyre'
+      # puts flying_log.right_tyre.inspect
+      # puts 'flying_log.nose_tail'
+      # puts flying_log.nose_tail.inspect
+      
       history = LandingHistory.where(flying_log_id: self.id).first      
       if history.present?
         left_tyre_total_landings    = history.left_tyre_total_landings - landings

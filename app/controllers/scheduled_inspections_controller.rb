@@ -52,7 +52,7 @@ class ScheduledInspectionsController < ApplicationController
   end
   def cancel_extention
     if @scheduled_inspection.condition_cd == 1
-      @scheduled_inspection.techlog.destroy
+      @scheduled_inspection.techlog.destroy if @scheduled_inspection.techlog.present?
       @scheduled_inspection.extention_days = 0
       @scheduled_inspection.extention_hours = 0
       @scheduled_inspection.condition_cd = 0
@@ -63,9 +63,7 @@ class ScheduledInspectionsController < ApplicationController
 
   def create_techlog
     if @scheduled_inspection.status_cd == 2 and @scheduled_inspection.techlog.blank?
-      @scheduled_inspection.update_scheduled_inspections @scheduled_inspection.completed_hours
-      @scheduled_inspection.status_cd = 2
-      @scheduled_inspection.save
+      @scheduled_inspection.start_inspection      
       redirect_to @scheduled_inspection
     end
   end

@@ -92,3 +92,6 @@ gem 'roo'
 gem 'rubyzip'
 gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'axlsx_rails'
+gem "unicode-display_width", ">= 1.3.3"
+
+gem 'rb-readline'

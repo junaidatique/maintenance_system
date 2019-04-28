@@ -193,9 +193,10 @@ class TechlogsController < ApplicationController
   end
   def approve_extension    
     scheduled_inspection = @techlog.scheduled_inspection
-    if scheduled_inspection.extention_hours > 0
+    if scheduled_inspection.extention_hours.present? and scheduled_inspection.extention_hours > 0
       scheduled_inspection.hours = (scheduled_inspection.hours + scheduled_inspection.extention_hours).round(2)      
-    else
+    end
+    if scheduled_inspection.extention_days.present? and scheduled_inspection.extention_days > 0
       scheduled_inspection.calender_life_date = scheduled_inspection.calender_life_date + scheduled_inspection.extention_days      
     end
     scheduled_inspection.condition_cd = 2

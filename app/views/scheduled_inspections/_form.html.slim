@@ -15,9 +15,12 @@
       = link_to inspection_path(@scheduled_inspection.inspection), class: 'btn btn-block btn-primary btn-flat' do
         i.fa.fa-angle-double-left
         | &nbsp; Back
-    - if (@scheduled_inspection.status_cd == 1 or @scheduled_inspection.status_cd == 4)
+    
+    - if can? :start_inspection, ScheduledInspection and (@scheduled_inspection.status_cd == 1 or @scheduled_inspection.status_cd == 4) and @scheduled_inspection.inspection.work_packages.count > 0
       .col-sm-4 class="col-sm-offset-4"
-        = f.button :submit, id: 'create_update_user', class: 'btn btn-block btn-success btn-flat' do
-          i.fa.fa-refresh        
-          | Start Scheduled Inspection
+        = f.button :submit, "Start Scheduled Inspection", class: 'btn btn-block btn-success btn-flat'
+          
+  
+      
+    
         

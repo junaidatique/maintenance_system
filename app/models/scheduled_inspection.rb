@@ -41,10 +41,10 @@ class ScheduledInspection
       if extention_hours == 0 and extention_days == 0
         errors.add(:extention_hours, " Please select at least one option.")
       end
-      if extention_days > 0 and self.calender_life_date.blank?
+      if extention_days.present? and extention_days > 0 and self.calender_life_date.blank?
         errors.add(:extention_days, " This inspection is not based on days.")
       end
-      if extention_hours > 0 and self.hours == 0
+      if extention_hours.present? and extention_hours > 0 and self.hours == 0
         errors.add(:extention_hours, " This inspection is not based on hours.")
       end
     end
@@ -59,31 +59,16 @@ class ScheduledInspection
 
   def start_work_package    
     if (status_was == :scheduled or status_was == :pending or status_was == :due) and status == :in_progress
+      self.start_inspection
+    end
+    if condition_cd_was == 0 and condition_cd == 1
       if inspectable_type == Aircraft.name
         inspectable_name = inspectable.tail_number
         aircraft_id = inspectable.id
       else
-        inspectable_name = inspectable.number        
+        inspectable_name = inspectable.part.number        
         aircraft_id = inspectable.aircraft_id
       end
-      parent_log = Techlog.create!({type_cd: 2, condition_cd: 2, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
-        description: "#{self.inspection.name} for #{inspectable_name}", 
-        action: "#{self.inspection.name} for #{inspectable_name}", 
-        user_id: self.started_by_id, log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
-        aircraft_id: aircraft_id, dms_version: System.first.settings['dms_version_number'],
-        scheduled_inspection_id: self.id
-      })      
-      self.inspection.work_packages.each do |work_package|        
-        log = Techlog.create!({type_cd: 2, condition_cd: 0, 
-          log_time: "#{Time.zone.now.strftime("%H:%M %p")}",
-          description: work_package.description, autherization_code: work_package.autherization_code.id, 
-          user_id: self.started_by_id, log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
-          aircraft_id: aircraft_id, dms_version: System.first.settings['dms_version_number'],
-          parent_techlog_id: parent_log.id
-        })
-      end
-    end
-    if condition_cd_was == 0 and condition_cd == 1
       log = Techlog.create!({type_cd: 2, condition_cd: 0, 
           log_time: "#{Time.zone.now.strftime("%H:%M %p")}",
           description: "Extention Applied for #{self.inspection.name}", 
@@ -92,6 +77,32 @@ class ScheduledInspection
           scheduled_inspection_id: self.id, is_extention_applied: true
         })
     end    
+  end
+
+  def start_inspection
+    if inspectable_type == Aircraft.name
+      inspectable_name = inspectable.tail_number
+      aircraft_id = inspectable.id
+    else
+      inspectable_name = inspectable.part.number        
+      aircraft_id = inspectable.aircraft_id
+    end
+    parent_log = Techlog.create!({type_cd: 2, condition_cd: 2, log_time: "#{Time.zone.now.strftime("%H:%M %p")}", 
+      description: "#{self.inspection.name} for #{inspectable_name}", 
+      action: "#{self.inspection.name} for #{inspectable_name}", 
+      user_id: self.started_by_id, log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
+      aircraft_id: aircraft_id, dms_version: System.first.settings['dms_version_number'],
+      scheduled_inspection_id: self.id
+    })      
+    self.inspection.work_packages.each do |work_package|        
+      log = Techlog.create!({type_cd: 2, condition_cd: 0, 
+        log_time: "#{Time.zone.now.strftime("%H:%M %p")}",
+        description: work_package.description, autherization_code: work_package.autherization_code.id, 
+        user_id: self.started_by_id, log_date: "#{Time.zone.now.strftime("%Y-%m-%d")}", 
+        aircraft_id: aircraft_id, dms_version: System.first.settings['dms_version_number'],
+        parent_techlog_id: parent_log.id
+      })
+    end
   end
   def complete_inspection
     self.status_cd = 3

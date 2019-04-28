@@ -53,9 +53,9 @@
                     /= link_to edit_part_path(part), class: 'btn btn-info btn-flat ' do
                       i.fa.fa-pencil
                 
-        .col-sm-4.col-sm-offset-2
+        .col-sm-4.col-sm-offset-4
           - if can? :create, Part
             = link_to 'Upload Excel', upload_parts_path, class: 'btn btn-block btn-primary btn-flat'
-        .col-sm-4
+        /.col-sm-4
             = link_to 'Create Part', new_part_path, class: 'btn btn-block btn-primary btn-flat'
         .clearfix
