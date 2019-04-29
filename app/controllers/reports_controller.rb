@@ -20,15 +20,15 @@ class ReportsController < ApplicationController
       histories  = @histories.limit(8).offset(i)      
       pdf_data = render_to_string(
                   pdf: "airframe_report",
-                  orientation: 'Landscape',
+                  orientation: 'Portrait',
                   template: 'reports/airframe_pdf.html.slim',
                   layout: 'layouts/pdf/pdf.html.slim',
                   show_as_html: false,
                   locals: {
                     histories: histories
                   },
-                  page_height: '17in',
-                  page_width: '9in',
+                  page_width: 170,
+                  page_height: 90,
                   margin:  {
                     top: 0,
                     bottom: 0,
@@ -59,7 +59,7 @@ class ReportsController < ApplicationController
       sps  = scheduled_inspections.limit(15).offset(i)      
       pdf_data = render_to_string(
                     pdf: "inspection_record_report",
-                    orientation: 'Landscape',
+                    orientation: 'Portrait',
                     template: 'reports/inspection_record_pdf.html.slim',
                     layout: 'layouts/pdf/pdf.html.slim',
                     show_as_html: false,
@@ -69,8 +69,8 @@ class ReportsController < ApplicationController
                       total: num,
                       trade: params[:trade]
                     },
-                    page_height: '17in',
-                    page_width: '9in',
+                    page_width: 170,
+                    page_height: 90,
                     margin:  {
                       top: 0,
                       bottom: 0,
@@ -94,15 +94,15 @@ class ReportsController < ApplicationController
     
     pdf_data = render(
                     pdf: "inspection_report",
-                    orientation: 'Landscape',
+                    orientation: 'Portrait',
                     template: 'reports/inspection_pdf.html.slim',
                     layout: 'layouts/pdf/pdf.html.slim',
                     show_as_html: false,
                     locals: {
                       aircraft: Aircraft.find(params[:aircraft])
                     },
-                    page_height: '17in',
-                    page_width: '13in',
+                    page_width: 170,
+                    page_height: 90,
                     margin:  {
                       top: 0,
                       bottom: 0,
@@ -119,15 +119,15 @@ class ReportsController < ApplicationController
     
     pdf_data = render(
                     pdf: "tyre_record",
-                    orientation: 'Landscape',
+                    orientation: 'Portrait',
                     template: 'reports/tyre_record_pdf.html.slim',
                     layout: 'layouts/pdf/pdf.html.slim',
                     show_as_html: false,
                     locals: {
                       aircraft: Aircraft.find(params[:aircraft])
                     },
-                    page_height: '17in',
-                    page_width: '13in',
+                    page_width: 170,
+                    page_height: 90,
                     margin:  {
                       top: 0,
                       bottom: 0,
@@ -152,8 +152,8 @@ class ReportsController < ApplicationController
                     locals: {
                       aircraft: Aircraft.find(params[:aircraft])
                     },
-                    page_height: '17in',
-                    page_width: '13in',
+                    page_width: 170,
+                    page_height: 90,
                     margin:  {
                       top: 10,
                       bottom: 10,
