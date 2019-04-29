@@ -168,8 +168,7 @@ class Aircraft
       serial_no           = row[Part::AIRCRAFT_PART_SERIAL_NO]
       is_serialized = false
       if serial_no.present?
-        is_serialized = true
-        is_serialized = true
+        is_serialized = true        
       end
       last_inspection_date = nil
       if row[Part::AIRCRAFT_PART_LAST_CALANDER_INSP].present?        

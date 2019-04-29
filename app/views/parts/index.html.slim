@@ -50,7 +50,7 @@
                   = link_to part_path(part), class: 'btn btn-success btn-flat ' do
                     i.fa.fa-eye
                   - if can? :update, Part
-                    /= link_to edit_part_path(part), class: 'btn btn-info btn-flat ' do
+                    = link_to edit_part_path(part), class: 'btn btn-info btn-flat ' do
                       i.fa.fa-pencil
                 
         .col-sm-4.col-sm-offset-4
