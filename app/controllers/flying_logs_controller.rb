@@ -195,7 +195,7 @@ class FlyingLogsController < ApplicationController
       puts techlogs
       pdf_data = render_to_string(
                   pdf: "flying_log_#{@flying_log.id}",
-                  orientation: 'Landscape',
+                  orientation: 'Portrait',
                   template: 'flying_logs/flying_log_pdf.html.slim',
                   layout: 'layouts/pdf/pdf.html.slim',
                   show_as_html: false,
@@ -203,8 +203,8 @@ class FlyingLogsController < ApplicationController
                     flying_log: @flying_log,
                     techlogs: techlogs
                   },
-                  page_height: '17in',
-                  page_width: '13in',
+                  page_height: 71,
+                  page_width: 100,
                   margin:  {
                     top: 0,
                     bottom: 0,

@@ -52,7 +52,7 @@
                     = link_to edit_aircraft_path(aircraft), class: 'btn btn-info btn-flat ' do
                       i.fa.fa-pencil
         .col-sm-4.col-sm-offset-4
-          - if can? :create, Aircraft
+          - if can? :generate_report, Aircraft
             /= link_to 'New Aircraft', new_aircraft_path, class: 'btn btn-block btn-primary btn-flat'
-            /= link_to 'Generate Aircraft Report', new_aircraft_path, class: 'btn btn-block btn-primary btn-flat'
+            = link_to 'Generate Aircraft Report', report_aircrafts_path(format: :xlsx), class: 'btn btn-block btn-primary btn-flat'
         .clearfix

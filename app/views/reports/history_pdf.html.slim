@@ -30,7 +30,7 @@
                 td
                   = techlog.action                                                            
                 td.table-row-center  
-                  - if techlog.closed_by.present? and @techlog.condition == :completed
+                  - if techlog.closed_by.present? and techlog.condition == :completed
                     = techlog.closed_by.name
           - else
             tr

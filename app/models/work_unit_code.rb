@@ -3,7 +3,7 @@ class WorkUnitCode
   include Mongoid::Timestamps
   include SimpleEnum::Mongoid
 
-  
+  as_enum :trade, Airframe: 0, Engine: 1, Electric: 2, Instrument: 3, Radio: 4, GRP: 5, CMO: 6, SEO: 7
 
   field :code, type: String
   field :description, type: String
@@ -15,7 +15,6 @@ class WorkUnitCode
   
   validates :code, presence: true, uniqueness: true  
   
-
   def self.import(file)    
     xlsx = Roo::Spreadsheet.open(file, extension: :xlsx)
     (2..xlsx.last_row).each do |i|
