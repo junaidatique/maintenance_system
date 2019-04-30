@@ -17,7 +17,9 @@ class User
                 elect_fitt: 13,
                 gen_fitt: 14,                
                 master_control: 15,
-                qci: 16
+                qci: 16,
+                dms_controller: 17,
+                data_repo_controller: 18
 
                 
 

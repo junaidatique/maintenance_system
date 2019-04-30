@@ -2,4 +2,5 @@
   | Scheduled Inspection:&nbsp;
   = @scheduled_inspection.inspection.name
 == render "scheduled_inspections/show"
-= render 'common/actions_buttons', back_path: scheduled_inspections_path()
+- if can? :update, ScheduledInspection
+  = render 'common/actions_buttons', back_path: scheduled_inspections_path()

@@ -7,6 +7,7 @@ class Ability
     alias_action :read, :update, :destroy, to: :rud
     alias_action :read, :update, to: :ru
     alias_action :index, :read, to: :ir
+    can :read, TechnicalOrder
     if user.admin?
       can :manage, :all
       can :view_all_techlogs, Techlog
@@ -32,9 +33,11 @@ class Ability
       can :autocomplete, FlyingPlan   
       can :cancel, FlyingLog   
       can :view_781, Aircraft # view 781 forms on aircraft detail page
+      
       can :view_flight_techlogs, FlyingLog
       can :manage, AutherizationCode
       can :generate_report, Techlog
+      can :crud, ScheduledInspection
       can :defer_inspection, ScheduledInspection
       # can :apply_extention, ScheduledInspection
       can :cancel_extention, ScheduledInspection
@@ -44,6 +47,7 @@ class Ability
     elsif user.master_control?      
       can :read, Aircraft
       can :get_aircrafts, Aircraft
+      can :generate_report, Aircraft 
       can :crud, FlyingLog
       can :crud, Techlog            
       can :update_work_unit_code, FlyingLog      
@@ -58,6 +62,7 @@ class Ability
       can :view_open_techlogs, Techlog
       can :start_inspection, ScheduledInspection
       can :apply_extention, ScheduledInspection
+      can :crud, ScheduledInspection
       can :view_781, Aircraft # view 781 forms on aircraft detail page
     elsif user.inst_fitt?
       can :read, Aircraft
@@ -108,7 +113,13 @@ class Ability
       can :cru, Part
       can :logistics_techlog, Techlog
       can :rud, Techlog
-      
+    elsif user.dms_controller?
+      can :read, Aircraft
+      can :crud, TechnicalOrder
+    elsif user.data_repo_controller?
+      can :read, Aircraft
+      can :generate_report, Aircraft
+      can :view_781, Aircraft
     end
   end
 end
