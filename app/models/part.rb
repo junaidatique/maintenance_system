@@ -5,6 +5,7 @@ class Part
 
   as_enum :trade, airframe: 0, engine: 1, electric: 2, instrument: 3, radio: 4
   as_enum :track_from, installation_date: 0, manufacturing_date: 1, no_track: 2
+  as_enum :duration, day: 0, month: 1, year: 2
 
   field :number, type: String
   field :noun, type: String
@@ -36,16 +37,21 @@ class Part
   has_many :part_items
   
   before_create :set_inspection_values  
+  before_update :set_inspection_values  
   after_create :set_inspections
   
   def set_inspection_values
     if (lifed_calender_value.present? and lifed_calender_value > 0) or (lifed_hours.present? and lifed_hours > 0)
       self.is_lifed = true
+    else
+      self.is_lifed = false
     end
     # this calculates that if the part is inspectable. 
     if (inspection_hours.present? and inspection_hours > 0) or 
       (inspection_calender_value.present? and inspection_calender_value > 0)
       self.is_inspectable = true
+    else
+      self.is_inspectable = false
     end
   end
   

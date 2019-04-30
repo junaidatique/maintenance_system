@@ -202,4 +202,4 @@
 == render "scheduled_inspections/table", options: { heading: "Due Inspections"}
 
 
-/ = render 'common/actions_buttons', back_path: parts_path, edit_path: edit_part_path(@part_item)
+= render 'common/actions_buttons', back_path: part_path(@part_item.part), edit_path: edit_part_item_path(@part_item)

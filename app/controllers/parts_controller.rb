@@ -151,12 +151,8 @@ class PartsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def part_params
-      params.require(:part).permit(:aircraft_id, :category, :trade, :number, :serial_no, :description, :unit_of_issue, 
-      :contract_quantity, :recieved_quantity, :quantity, :dfim_balance, 
-      :is_repairable, :condemn, :is_lifed,
-      :inspection_hours, :inspection_calender_value, 
-      :calender_life_value, :total_hours,       
-      :completed_hours, :installed_date, :landings_completed,
-      :is_servicable)
+      params.require(:part).permit(  :number, :noun, :track_from, :trade, :unit_of_issue, :location, 
+      :inspection_calender_value, :inspection_duration, :inspection_hours, :lifed_calender_value, 
+      :lifed_duration, :lifed_hours, :is_serialized)
     end
 end

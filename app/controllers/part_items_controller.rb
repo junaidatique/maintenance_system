@@ -21,7 +21,7 @@ class PartItemsController < ApplicationController
 
   # GET /parts/new
   def new
-    @part = PartItem.new
+    @part_item = PartItem.new
   end
 
   # GET /parts/1/edit
@@ -31,14 +31,14 @@ class PartItemsController < ApplicationController
   # POST /parts
   # POST /parts.json
   def create
-    @part = PartItem.new(part_params)    
+    @part_item = PartItem.new(part_params)    
     respond_to do |format|
-      if @PartItem.save
+      if @part_item.save
         format.html { redirect_to @part, notice: 'Part was successfully created.' }
-        format.json { render :show, status: :created, location: @part }
+        format.json { render :show, status: :created, location: @part_item }
       else
         format.html { render :new }
-        format.json { render json: @PartItem.errors, status: :unprocessable_entity }
+        format.json { render json: @part_item.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -47,12 +47,12 @@ class PartItemsController < ApplicationController
   # PATCH/PUT /parts/1.json
   def update
     respond_to do |format|
-      if @PartItem.update(part_params)        
-        format.html { redirect_to @part, notice: 'Part was successfully updated.' }
+      if @part_item.update(part_params)        
+        format.html { redirect_to @part_item, notice: 'Part was successfully updated.' }
         format.json { render :show, status: :ok, location: @part }
       else
         format.html { render :edit }
-        format.json { render json: @PartItem.errors, status: :unprocessable_entity }
+        format.json { render json: @part_item.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -60,7 +60,7 @@ class PartItemsController < ApplicationController
   # DELETE /parts/1
   # DELETE /parts/1.json
   def destroy
-    @PartItem.destroy
+    @part_item.destroy
     respond_to do |format|
       format.html { redirect_to parts_url, notice: 'Part was successfully destroyed.' }
       format.json { head :no_content }
@@ -68,7 +68,7 @@ class PartItemsController < ApplicationController
   end
 
   def upload
-    @part = PartItem.new
+    @part_item = PartItem.new
   end
 
   def import
@@ -150,12 +150,6 @@ class PartItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def part_params
-      params.require(:part).permit(:aircraft_id, :category, :trade, :number, :serial_no, :description, :unit_of_issue, 
-      :contract_quantity, :recieved_quantity, :quantity, :dfim_balance, 
-      :is_repairable, :condemn, :is_lifed,
-      :inspection_hours, :inspection_calender_value, 
-      :calender_life_value, :total_hours,       
-      :completed_hours, :installed_date, :landings_completed,
-      :is_servicable)
+      params.require(:part_item).permit(:aircraft_id, :category, :part, :serial_no)
     end
 end
