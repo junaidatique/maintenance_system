@@ -11,6 +11,8 @@
           thead
             tr
               th
+                | Change Name
+              th
                 | Change Number
               th
                 | Change Date
@@ -23,11 +25,13 @@
             - @technical_changes.each do |technical_change|
               tr
                 td.table-row-center
+                  = technical_change.technical_order.name
+                td.table-row-center
                   = technical_change.change_number
                 td.table-row-center
-                  = technical_change.dms_version_number
-                td.table-row-center
                   = technical_change.change_date
+                td.table-row-center
+                  = technical_change.dms_version_number
                 td
                   - if technical_change.pdf_file.exists?
                     = link_to 'Open file', technical_change.pdf_file.url, target: :_blank

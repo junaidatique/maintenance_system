@@ -28,7 +28,7 @@
                     i.fa.fa-eye
                   - if can? :update, TechnicalOrder
                     = link_to edit_technical_order_path(technical_order), class: 'btn btn-info btn-flat ' do
-                    i.fa.fa-pencil
+                      i.fa.fa-pencil
                   
                   /= link_to admin_store_path(store), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
                    /   i.fa.fa-trash

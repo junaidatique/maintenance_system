@@ -45,7 +45,8 @@ class ChangesController < ApplicationController
   def update
     respond_to do |format|
       if @change.update(change_params)
-        format.html { redirect_to @change, notice: 'Change was successfully updated.' }
+        
+        format.html { redirect_to @technical_order, notice: 'Change was successfully updated.' }
         format.json { render :show, status: :ok, location: @change }
       else
         format.html { render :edit }

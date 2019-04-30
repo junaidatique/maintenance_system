@@ -11,7 +11,7 @@
         .col-sm-2
           - if current_user.autherization_codes.include? @techlog.autherization_code and f.object.part_number.blank? and !f.object.provided
             /= f.input :part_number, :url => autocomplete_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :include), :as => :autocomplete, input_html: {id_element: "#id"}
-            = f.input :part_id, collection: Part.all.map{ |l| ["#{l.number} - #{l.noun}", l.id] }
+            = f.input :part_id, collection: Part.all.map{ |l| ["#{l.number} - #{l.noun}", l.id] }, input_html: {class: 'custom-select2'}
           - else
             label Part # 
             br

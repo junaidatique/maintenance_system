@@ -119,6 +119,7 @@ class Ability
     elsif user.data_repo_controller?
       can :read, Aircraft
       can :generate_report, Aircraft
+      can :report, Aircraft
       can :view_781, Aircraft
     end
   end

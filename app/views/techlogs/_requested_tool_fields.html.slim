@@ -13,6 +13,9 @@
             = f.input :quantity_required
           - else
             = f.object.quantity_required
+        .col-sm-4
+          - if f.object.is_assigned?            
+            = f.object.serial_no
         .col-sm-1
           - if f.object.requested_by_id.present? and f.object.requested_by_id == current_user.id and !f.object.is_returned? and !f.object.is_assigned?
             = link_to_remove_association f, class: 'btn btn-block btn-danger btn-flat' do

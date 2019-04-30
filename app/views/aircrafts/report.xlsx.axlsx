@@ -109,6 +109,20 @@ Aircraft.all.each do |aircraft|
         sheet.add_row ["#{inspection.name} Due Date","","#{inspection.name} Due Hrs"]
         sheet.add_row [inspection_completed,"",completed_hours]
       end
+      battery_part = aircraft.part_items.battery.first       
+      if battery_part.present?        
+        completed_insp = battery_part.scheduled_inspections.order(created_at: :desc).limit(2)
+        inspection_completed = (completed_insp.present?) ? (display_date(completed_insp.inspection_completed)) : ""
+        completed_hours = (completed_insp.present?) ? (completed_insp.completed_hours) : ""
+        sheet.add_row ["#{completed_insp.inspection.name} C/Out Date","","#{completed_insp.inspection.name} C/Out Hrs"]
+        sheet.add_row [inspection_completed,"",completed_hours]
+
+        due_sch_insp = inspection.scheduled_inspections.where(inspectable_id: aircraft.id).not_completed.order(created_at: :desc).last
+        inspection_completed = (due_sch_insp.present? and due_sch_insp.calender_life_date.present?) ? (display_date(due_sch_insp.calender_life_date)) : ""
+        completed_hours = (due_sch_insp.present?) ? (due_sch_insp.hours) : ""
+        sheet.add_row ["#{inspection.name} Due Date","","#{inspection.name} Due Hrs"]
+        sheet.add_row [inspection_completed,"",completed_hours]
+      end
       if aircraft.techlogs.addled.count > 0
         sheet.add_row ["ADDLs","",""], style: sub_heading #70    
         aircraft.techlogs.addled.each do |addl|    

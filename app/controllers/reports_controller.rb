@@ -2,7 +2,7 @@ class ReportsController < ApplicationController
   def airframe
     
   end
-  def airframe_pdf
+  def airframe_pdf #781J
     i = 0
     if params[:aircraft].blank? or Aircraft.find(params[:aircraft]).blank?
       redirect_to airframe_reports_path(), :flash => { :error => "Invalid aircraft." }
@@ -27,8 +27,8 @@ class ReportsController < ApplicationController
                   locals: {
                     histories: histories
                   },
-                  page_width: 170,
-                  page_height: 90,
+                  page_width: '7in',
+                  page_height: '4in',
                   margin:  {
                     top: 0,
                     bottom: 0,
@@ -42,7 +42,7 @@ class ReportsController < ApplicationController
     end while i < num
     send_data merged_certificates.to_pdf, :disposition => 'inline', :type => "application/pdf"
   end
-  def inspection_record_pdf
+  def inspection_record_pdf # 781 D
     i = 0
     if params[:aircraft].blank? or Aircraft.find(params[:aircraft]).blank?
       redirect_to aircrafts_path(), :flash => { :error => "Invalid aircraft." }
@@ -69,8 +69,8 @@ class ReportsController < ApplicationController
                       total: num,
                       trade: params[:trade]
                     },
-                    page_width: 170,
-                    page_height: 90,
+                    page_width: '7in',
+                    page_height: '4in',
                     margin:  {
                       top: 0,
                       bottom: 0,
@@ -86,7 +86,7 @@ class ReportsController < ApplicationController
     
 
   end
-  def inspection_pdf
+  def inspection_pdf # 781 K
     i = 0
     if params[:aircraft].blank? or Aircraft.find(params[:aircraft]).blank?
       redirect_to aircrafts_path(), :flash => { :error => "Invalid aircraft." }
@@ -101,8 +101,8 @@ class ReportsController < ApplicationController
                     locals: {
                       aircraft: Aircraft.find(params[:aircraft])
                     },
-                    page_width: 170,
-                    page_height: 90,
+                    page_width: '7in',
+                    page_height: '4in',                    
                     margin:  {
                       top: 0,
                       bottom: 0,
@@ -126,8 +126,8 @@ class ReportsController < ApplicationController
                     locals: {
                       aircraft: Aircraft.find(params[:aircraft])
                     },
-                    page_width: 170,
-                    page_height: 90,
+                    page_width: '7in',
+                    page_height: '4in',
                     margin:  {
                       top: 0,
                       bottom: 0,
@@ -152,8 +152,8 @@ class ReportsController < ApplicationController
                     locals: {
                       aircraft: Aircraft.find(params[:aircraft])
                     },
-                    page_width: 170,
-                    page_height: 90,
+                    page_width: '7in',
+                    page_height: '4in',
                     margin:  {
                       top: 10,
                       bottom: 10,
@@ -178,8 +178,8 @@ class ReportsController < ApplicationController
                     locals: {
                       flying_date: flying_date
                     },
-                    page_height: '17in',
-                    page_width: '13in',
+                    page_width: '7in',
+                    page_height: '4in',
                     margin:  {
                       top: 10,
                       bottom: 10,

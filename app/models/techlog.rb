@@ -108,7 +108,7 @@ class Techlog
   end
 
   def verify_interm
-    if condition == :interm and action.blank?
+    if (condition == :interm and action.blank?) or (condition == :completed and action.blank?)
       errors.add(:action, " can't be blank")
     end    
   end
