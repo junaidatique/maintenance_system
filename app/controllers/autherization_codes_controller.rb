@@ -65,7 +65,7 @@ class AutherizationCodesController < ApplicationController
   # GET /autherization_codes/get_autherization_codes.json
   def get_codes
     search_string = params[:q]
-    auth_codes = AutherizationCode.where(code: /.*#{search_string}.*/i)
+    auth_codes = AutherizationCode.where(inspection_type: /.*#{search_string}.*/i)
     respond_to do |format|
       format.json { render json: { items: auth_codes.map { |ac| { id: ac.id.to_s, code: ac.autherization_code_format } }, total_count: auth_codes.length, incomplete_results: false } }
     end

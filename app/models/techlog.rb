@@ -130,7 +130,7 @@ class Techlog
   end
 
   def verify_complete
-    if condition == :completed and (parts_state == "requested" or parts_state == "pending" or parts_state == "not_available")
+    if condition == :completed and change_parts.count > 0 and (parts_state == "requested" or parts_state == "pending" or parts_state == "not_available")
       errors.add(:status, " Some parts are missing. ")
     elsif condition == :completed and interm_logs.count > 0 and interm_logs.incomplete.count > 0
       errors.add(:status, " This techlog has interm log(s). Please complete that log first. ")
