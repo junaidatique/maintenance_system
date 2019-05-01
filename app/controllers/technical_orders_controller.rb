@@ -21,6 +21,7 @@ class TechnicalOrdersController < ApplicationController
 
   # GET /technical_orders/1/edit
   def edit
+    @technical_order.technical_changes.build
   end
 
   # POST /technical_orders
@@ -42,8 +43,12 @@ class TechnicalOrdersController < ApplicationController
   # PATCH/PUT /technical_orders/1
   # PATCH/PUT /technical_orders/1.json
   def update
+    pdf = @technical_order.pdf_file.clone
     respond_to do |format|
       if @technical_order.update(technical_order_params)
+        change = @technical_order.technical_changes.last
+        change.pdf_file = pdf
+        change.save
         format.html { redirect_to @technical_order, notice: 'Technical order was successfully updated.' }
         format.json { render :show, status: :ok, location: @technical_order }
       else
@@ -71,6 +76,6 @@ class TechnicalOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def technical_order_params
-      params.require(:technical_order).permit(:name)
+      params.require(:technical_order).permit(:name, :pdf_file, technical_changes_attributes: [ :change_number, :change_date ],)
     end
 end

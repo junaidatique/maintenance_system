@@ -10,17 +10,18 @@ class Change
   field :dms_version_number, type: String
 
   has_mongoid_attached_file :pdf_file
-  validates_attachment_content_type :pdf_file,
-    :content_type => ['application/pdf']
+  validates_attachment_content_type :pdf_file, content_type: ['application/pdf']
 
-  after_create :update_version_number
+  validates :change_number, presence: true
+
+  # after_create :update_version_number
 
   def update_version_number
     self.technical_order.update! version_number: (self.technical_order.version_number + 0.1).to_f
     system_ = System.first
-    dms_version_number = system_.settings[:dms_version_number] + 0.1
+    dms_version_number = ((system_.settings[:dms_version_number] == 0) ? 1 : system_.settings[:dms_version_number]) + 0.1    
     system_.update! settings: { dms_version_number: dms_version_number }
-    self.dms_version_number = dms_version_number.round(2)
+    self.dms_version_number = dms_version_number.round(1)
     self.save
   end
 end

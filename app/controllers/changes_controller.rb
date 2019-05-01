@@ -29,7 +29,13 @@ class ChangesController < ApplicationController
     @change.technical_order = @technical_order
     
     respond_to do |format|
+      @change.change_date = Time.zone.now.strftime("%d-%m-%Y")
       if @change.save        
+        t = @change.technical_order 
+        pdf_file = @change.pdf_file.clone
+        t.pdf_file = @change.pdf_file
+        t.save!
+        @change.update_version_number
         format.html { redirect_to @technical_order, notice: 'Change was successfully created.' }
         format.json { render :show, status: :created, location: @change }
       else

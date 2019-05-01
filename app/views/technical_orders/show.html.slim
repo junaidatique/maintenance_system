@@ -23,6 +23,10 @@
                   th width="50%"
                     | Name
                   td = @technical_order.name
+                tr
+                  th width="50%"
+                    | File
+                  td = link_to 'Open file', @technical_order.pdf_file.url, target: :_blank
 
 .row
   .col-md-12
@@ -43,8 +47,7 @@
                 | Change Date
               th
                 | File Path
-              th
-                | Action
+              
                  
           tbody
             - @technical_order.technical_changes.each do |technical_change|
@@ -56,16 +59,16 @@
                 td
                   - if technical_change.pdf_file.exists?
                     = link_to 'Open file', technical_change.pdf_file.url, target: :_blank
-                td.text-center width='20%'
+                /td.text-center width='20%'
                   - if can? :update, TechnicalOrder        
                     = link_to edit_technical_order_change_path(@technical_order, technical_change), class: 'btn btn-info btn-flat' do
                      i.fa.fa-pencil
                   /- if can? :delete, TechnicalOrder        
                     = link_to technical_order_change_path(@technical_order, technical_change), data: {:confirm => 'Are you sure?'}, class: 'btn btn-danger btn-flat', :method => :delete do
                      i.fa.fa-trash
-        .col-sm-4.col-sm-offset-4
+        /.col-sm-4.col-sm-offset-4
           - if can? :update, TechnicalOrder        
             = link_to 'New Technical Change', new_technical_order_change_path(@technical_order), class: 'btn btn-block btn-primary btn-flat'
         .clearfix
 - if can? :update, TechnicalOrder        
-  = render 'common/actions_buttons', back_path: technical_orders_path, edit_path: edit_technical_order_path(@technical_order)
+  = render 'common/actions_buttons', back_path: technical_orders_path, edit_path: new_technical_order_change_path(@technical_order)

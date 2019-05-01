@@ -1,6 +1,7 @@
 cur_time = Time.zone.now
 
 System.create! settings: {dms_version_number: 0.0}
+#  s.update settings: {dms_version_number: 1.0}
 puts 'Creating Aircraft'
 (300..307).each do |aircraft|
   Aircraft.create! number: aircraft, tail_number: "QA#{aircraft}", serial_no: "##{aircraft}", fuel_capacity: '42', oil_capacity: '8' if Aircraft.where(number: aircraft).first.blank?

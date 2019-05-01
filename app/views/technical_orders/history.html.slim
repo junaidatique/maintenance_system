@@ -19,7 +19,10 @@
               th
                 | DMS Version
               th
-                | File Path              
+                | File Path 
+              - if can? :update, TechnicalOrder
+                th
+                  | Action 
                  
           tbody
             - @technical_changes.each do |technical_change|
@@ -35,5 +38,8 @@
                 td
                   - if technical_change.pdf_file.exists?
                     = link_to 'Open file', technical_change.pdf_file.url, target: :_blank
-                                          
+                td
+                  - if can? :update, TechnicalOrder
+                    = link_to edit_technical_order_change_path(technical_change.technical_order, technical_change), class: 'btn btn-info btn-flat' do
+                     i.fa.fa-pencil
         .clearfix

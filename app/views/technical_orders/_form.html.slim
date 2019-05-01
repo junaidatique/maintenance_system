@@ -9,5 +9,16 @@
         .box-body
           .row
             .col-sm-6
-              = f.input :name
+              = f.input :name              
+            .col-sm-6
+              = f.label :pdf_file
+              = f.file_field :pdf_file
+          - if @technical_order.created_at.present?
+            = f.simple_fields_for :technical_changes do |change|
+              .row
+                .col-sm-6                
+                  = change.input :change_number
+                .col-sm-6
+                  = change.input :change_date, input_html: { class: 'date_class' }
+            
   == render 'common/form_action_buttons', options: { form: f, index_path: technical_orders_path}
