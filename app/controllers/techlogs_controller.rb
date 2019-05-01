@@ -106,7 +106,7 @@ class TechlogsController < ApplicationController
     # puts techlog_params.inspect
 
     respond_to do |format|
-      if @techlog.update!(techlog_params)
+      if @techlog.update(techlog_params)
         # Parts required 
         if @techlog.parts_started? and @techlog.change_parts.count > 0
           @techlog.parts_requested_parts
@@ -283,7 +283,7 @@ class TechlogsController < ApplicationController
                                         :addl_period_of_deferm, :addl_due, :addl_log_time, :addl_log_date,
                                         :limitation_period_of_deferm, :limitation_due, :limitation_log_time, :limitation_log_date, :limitation_description, :verified_tools,
                                         flying_log_attributes: [ :fuel_refill, :oil_serviced, :oil_total_qty ],
-                                        change_parts_attributes: [:id, :requested_by_id, :assigned_by_id, :part_id, :quantity_required, :new_part_id, :quantity_provided, :provided, :is_servicable, :_destroy],
+                                        change_parts_attributes: [:id, :requested_by_id, :assigned_by_id, :part_id, :quantity_required, :new_part_id, :old_part_id, :quantity_provided, :provided, :is_servicable, :_destroy],
                                         requested_tools_attributes: [:id, :requested_by_id, :tool_no, :quantity_required, :_destroy],
                                         work_performed_attributes: [:work_date, :work_time, :user_id],
                                         date_inspected_attributes: [:work_date, :work_time, :user_id],

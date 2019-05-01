@@ -31,22 +31,23 @@
             label Serviceable
             br
             = (f.object.is_servicable) ? 'Yes' : 'No'
-            
+        .col-sm-2
+          - if f.object.old_part.blank? and current_user.logistics? and !f.object.provided
+            - old_parts = f.object.part.part_items.where(aircraft_id: @techlog.aircraft_id)
+            = f.input :old_part_id, collection: old_parts.map{ |l| [l.serial_no, l.id] }, include_blank: false, label: 'Old Serail #'
+          - elsif f.object.old_part.present?
+            label Old Serial #
+            br
+            = f.object.old_part.serial_no            
         .col-sm-2
           - if current_user.logistics? and !f.object.provided
             - if f.object.part.is_serialized?
-              - part_serials = f.object.part.part_items.serviceables.any_of({aircraft_id: nil})
-              /= f.input :new_part, :url => autocomplete_serial_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude, part_number: f.object.part_number), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id", value: "#{f.object.new_part.number_serial_no} (#{f.object.new_part.quantity} left)"}              
-            - else 
-              /= f.input :new_part, :url => autocomplete_serial_parts_path(aircraft_id: @techlog.aircraft_id.to_s, search_type: :exclude, part_number: f.object.part_number), :as => :autocomplete, input_html: {id_element: "#techlog_change_parts_attributes_#{counter}_new_part_id"} 
-            
-            / - part_serials = Part.where(number: f.object.part_number).where(is_servicable: true).ne(aircraft_id: @techlog.aircraft_id).gt(quantity: 0)
-              /= part_serials.inspect
-            = f.input :new_part_id, collection: part_serials.map{ |l| [l.serial_no, l.id] }, include_blank: false
+              - part_serials = f.object.part.part_items.serviceables.any_of({aircraft_id: nil})                                      
+              = f.input :new_part_id, collection: part_serials.map{ |l| [l.serial_no, l.id] }, include_blank: false, label: 'New Serail #'
           - elsif f.object.new_part.present?
-            label Part # and Serial #
+            label New Serial #
             br
-            = f.object.new_part.number_serial_no            
+            = f.object.new_part.serial_no            
         /.col-sm-2
             - if current_user.role == :logistics and !f.object.provided
               = f.input :quantity_provided  

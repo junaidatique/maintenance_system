@@ -102,7 +102,7 @@ class Techlog
 
 
   def maintenance_work_unit_code        
-    if type == :Maintenance and flying_log.blank? and autherization_code.blank?  
+    if type == :Maintenance and flying_log.blank? and autherization_code.blank? and parent_techlog.blank?
       errors.add(:autherization_code, " can't be blank")
     end
   end

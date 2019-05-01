@@ -43,29 +43,30 @@
             .row
               .col-sm-6
                 = f.input :autherization_code, :url => autocomplete_codes_autherization_codes_path, :as => :autocomplete, input_html: {id_element: "#techlog_autherization_code_id"}
-  .row
-    .col-md-12
-      .box.box-info
-        .box-header.with-borderf
-          h3.box-title
-            i.fa.fa-bars
-            | &nbsp; Status
-        .box-body
-          - if current_user.autherization_codes.include? @techlog.autherization_code or (@techlog.user == current_user and @techlog.type_cd != 0)
-            .row
-              .col-sm-12                
-                  = f.input :condition, collection: enum_option_pairs(Techlog, :condition), as: :radio_buttons
-            .row
-              .col-sm-12                
-                  = f.input :verified_tools, label: 'I have verfied tools', as: :boolean, checked_value: 1, unchecked_value: 0, required: true  
-          - else
-            .row
-              .col-sm-12
-                label Condition
-                br
-                = @techlog.condition.to_s.titleize
+  - if @techlog.autherization_code.present?
+    .row
+      .col-md-12
+        .box.box-info
+          .box-header.with-borderf
+            h3.box-title
+              i.fa.fa-bars
+              | &nbsp; Status
+          .box-body
+            - if current_user.autherization_codes.include? @techlog.autherization_code or (@techlog.user == current_user and @techlog.type_cd != 0)
+              .row
+                .col-sm-12                
+                    = f.input :condition, collection: enum_option_pairs(Techlog, :condition), as: :radio_buttons
+              .row
+                .col-sm-12                
+                    = f.input :verified_tools, label: 'I have verfied tools', as: :boolean, checked_value: 1, unchecked_value: 0, required: true  
+            - else
+              .row
+                .col-sm-12
+                  label Condition
+                  br
+                  = @techlog.condition.to_s.titleize
           
-  - if current_user.autherization_codes.include? @techlog.autherization_code or (@techlog.user == current_user and @techlog.type_cd != 0)
+  - if current_user.autherization_codes.include? @techlog.autherization_code or (@techlog.user == current_user and @techlog.type_cd != 0) and @techlog.autherization_code.present?
     .row
       .col-md-12.action_div
         .box.box-info
