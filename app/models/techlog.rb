@@ -274,7 +274,7 @@ class Techlog
           parent_techlog.scheduled_inspection.complete_inspection
         end
       else
-        parent_techlog.condition_cd = 1
+        parent_techlog.condition_cd = 0
         parent_techlog.save
       end
     end
