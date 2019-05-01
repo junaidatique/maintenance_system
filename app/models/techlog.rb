@@ -258,18 +258,24 @@ class Techlog
       temp_interm_log.location_to = self.location_to
       temp_interm_log.condition_cd = 0
       temp_interm_log.action = ''
-      temp_interm_log.user = self.user      
+      temp_interm_log.user = self.closed_by      
+      temp_interm_log.autherization_code = nil
       temp_interm_log.save!
     end    
   end
 
   def check_schedule_inspection
-    if parent_techlog.present? and parent_techlog.scheduled_inspection.present?
-      if parent_techlog.interm_logs.incomplete.count == 0
+    if parent_techlog.present? 
+      if parent_techlog.scheduled_inspection.present?
+        if parent_techlog.interm_logs.incomplete.count == 0
+          parent_techlog.condition_cd = 1
+          parent_techlog.verified_tools = true
+          parent_techlog.save
+          parent_techlog.scheduled_inspection.complete_inspection
+        end
+      else
         parent_techlog.condition_cd = 1
-        parent_techlog.verified_tools = true
         parent_techlog.save
-        parent_techlog.scheduled_inspection.complete_inspection
       end
     end
   end

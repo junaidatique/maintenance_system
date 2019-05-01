@@ -31,7 +31,7 @@
                 .col-sm-6
                   = ac_f.input :oil_serviced, as: :float, label: "Serviced (Quartz) : Total Capacity #{@techlog.flying_log.aircraft.oil_capacity} (Quartz)", input_html: { max: @techlog.flying_log.aircraft.oil_capacity, required: true, min: 0 }
   
-  - if can? :update_autherization_code, Techlog and @techlog.autherization_code.blank?
+  - if (can? :update_autherization_code, Techlog or @techlog.user_id == current_user.id) and @techlog.autherization_code.blank?
     .row
       .col-md-12
         .box.box-info
