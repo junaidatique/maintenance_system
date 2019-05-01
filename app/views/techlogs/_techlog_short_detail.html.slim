@@ -48,8 +48,8 @@
             th width="25%"
               | Technician Name
             td
-              - if @techlog.closed_by.present? and @techlog.condition == :completed
-                = @techlog.closed_by.name  
+              - if techlog.closed_by.present? and @techlog.condition == :completed
+                = techlog.closed_by.name  
             th width="25%"
               | Autherization Code
             td = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
