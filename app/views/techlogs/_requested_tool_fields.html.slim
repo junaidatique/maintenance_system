@@ -13,7 +13,7 @@
             = f.input :quantity_required
           - else
             = f.object.quantity_required
-        .col-sm-4
+        /.col-sm-4
           - if f.object.is_assigned? and f.object.serial_no.present?
             = f.object.serial_no
         .col-sm-1
