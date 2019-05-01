@@ -72,8 +72,8 @@ class Techlog
   accepts_nested_attributes_for :date_inspected
   accepts_nested_attributes_for :work_duplicate  
   accepts_nested_attributes_for :flying_log
-  accepts_nested_attributes_for :change_parts
-  accepts_nested_attributes_for :requested_tools
+  accepts_nested_attributes_for :change_parts, :allow_destroy => true  
+  accepts_nested_attributes_for :requested_tools, :allow_destroy => true  
 
   before_create :set_condition  
   after_create :create_serial_no    

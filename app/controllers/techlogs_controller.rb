@@ -106,7 +106,7 @@ class TechlogsController < ApplicationController
     # puts techlog_params.inspect
 
     respond_to do |format|
-      if @techlog.update(techlog_params)
+      if @techlog.update!(techlog_params)
         # Parts required 
         if @techlog.parts_started? and @techlog.change_parts.count > 0
           @techlog.parts_requested_parts
@@ -114,21 +114,7 @@ class TechlogsController < ApplicationController
         if current_user.role == :logistics
           if @techlog.change_parts.where(provided: false).count == 0
             @techlog.parts_provided_parts
-          end
-          # else
-          #   change_part_all =  @techlog.change_parts.where("this.quantity_required == this.quantity_provided").where(provided: false)
-          #   change_part_all.each do |cp|            
-          #     cp.provided = true
-          #     cp.update
-          #   end
-          #   change_parts_count = @techlog.change_parts.where("this.quantity_required != this.quantity_provided").count
-          #   # if @techlog.change_parts.where(available: 0).count
-          #   if change_parts_count > 0
-          #     @techlog.parts_pending_parts
-          #   else            
-          #     @techlog.parts_provided_parts
-          #   end
-          # end
+          end          
         end
         
         # Tools 

@@ -18,7 +18,7 @@ class ChangePart
 
   validate :validate_requested_quantity
   validate :verify_quantity_provided
-  after_create :change_old_part
+  # after_create :change_old_part
   # after_update :update_parts_quantity
   
 
