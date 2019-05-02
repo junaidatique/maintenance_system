@@ -18,19 +18,20 @@
               = f.input :category, collection: enum_option_pairs(PartItem, :category)
             .col-sm-6
               = f.input :serial_no, label: 'Serail #'
-          .row
-            .col-sm-6
-              - if @part_item.part.track_from == :installation_date
-                = f.input :installed_date, input_html: { class: 'date_class' }
-            .col-sm-6
-              - if @part_item.part.track_from == :manufacturing_date
-                = f.input :manufacturing_date, input_html: { class: 'date_class' }            
-          .row
-            .col-sm-6
-              - if @part_item.is_inspectable?
-                = f.input :aircraft_installation_date, input_html: { class: 'date_class' }            
-            .col-sm-6
-              /= f.input :unit_of_issue
+          - if @part_item.is_lifed?
+            .row
+              .col-sm-6
+                - if @part_item.part.track_from == :installation_date
+                  = f.input :installed_date, input_html: { class: 'date_class' }
+              .col-sm-6
+                - if @part_item.part.track_from == :manufacturing_date
+                  = f.input :manufacturing_date, input_html: { class: 'date_class' }            
+          - if @part_item.is_inspectable?
+            .row
+              .col-sm-6                
+                = f.input :aircraft_installation_date, input_html: { class: 'date_class' }
+              .col-sm-6
+                = f.input :last_inspection_date, input_html: { class: 'date_class' }
           /.row
             .col-sm-6
               = f.input :contract_quantity
