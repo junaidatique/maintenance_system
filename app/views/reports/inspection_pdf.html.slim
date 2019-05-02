@@ -140,7 +140,7 @@
             td.td-comple
               - if inspection.no_of_hours > 0 and scheduled_inspection.hours > 0
                 = scheduled_inspection.hours
-      - part = aircraft.part_items.battery.first       
+      - part = aircraft.part_items.battery_part.first       
       - if part.present?
         - scheduled_inspection = part.scheduled_inspections.last
         tr          
@@ -152,7 +152,7 @@
               |  
               = scheduled_inspection.inspection.duration              
           td.td-comple
-            - if scheduled_inspection.inspection.no_of_hours > 0
+            - if scheduled_inspection.inspection.no_of_hours.present? and scheduled_inspection.inspection.no_of_hours > 0
               = scheduled_inspection.inspection.no_of_hours
           - scheduled_inspections = part.scheduled_inspections.ne(id: scheduled_inspection.id).order(created_at: :desc).limit(3)
           - scheduled_inspections.reverse.each do |scheduled_inspection|            
@@ -160,5 +160,5 @@
               - if scheduled_inspection.calender_life_date.present?
                 = display_date scheduled_inspection.calender_life_date
             td.td-comple
-              - if scheduled_inspection.inspection.no_of_hours > 0 and scheduled_inspection.hours > 0
+              - if scheduled_inspection.inspection.no_of_hours.present? and scheduled_inspection.inspection.no_of_hours > 0 and scheduled_inspection.hours > 0
                 = scheduled_inspection.hours

@@ -59,7 +59,7 @@ class PartItem
   scope :tyre, -> { any_of({category: :left_tyre}, {category: :right_tyre}, {category: :nose_tail})}
   scope :engine_part, -> { where(category: :engine)}
   scope :propeller_part, -> { where(category: :propeller)}
-  scope :battery, -> { where(category: :battery)}
+  scope :battery_part, -> { where(category_cd: 5)}
   scope :serviceables, -> { where(is_servicable: true)}
   scope :in_stock, -> { where(aircraft_id: nil)}
   

@@ -150,6 +150,6 @@ class PartItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def part_params
-      params.require(:part_item).permit(:aircraft_id, :category, :part, :serial_no)
+      params.require(:part_item).permit(:aircraft_id, :category, :part, :serial_no, :installed_date, :manufacturing_date, :aircraft_installation_date)
     end
 end

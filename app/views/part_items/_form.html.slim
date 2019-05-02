@@ -18,16 +18,19 @@
               = f.input :category, collection: enum_option_pairs(PartItem, :category)
             .col-sm-6
               = f.input :serial_no, label: 'Serail #'
-          /.row
+          .row
             .col-sm-6
-              = f.input :track_from, collection: enum_option_pairs(Part, :track_from), as: :radio_buttons
+              - if @part_item.part.track_from == :installation_date
+                = f.input :installed_date, input_html: { class: 'date_class' }
             .col-sm-6
-              /= f.input :serial_no, label: 'Serail #'
-          /.row
+              - if @part_item.part.track_from == :manufacturing_date
+                = f.input :manufacturing_date, input_html: { class: 'date_class' }            
+          .row
             .col-sm-6
-              = f.input :description
+              - if @part_item.is_inspectable?
+                = f.input :aircraft_installation_date, input_html: { class: 'date_class' }            
             .col-sm-6
-              = f.input :unit_of_issue
+              /= f.input :unit_of_issue
           /.row
             .col-sm-6
               = f.input :contract_quantity
