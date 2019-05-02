@@ -203,8 +203,8 @@ class FlyingLogsController < ApplicationController
                     flying_log: @flying_log,
                     techlogs: techlogs
                   },
-                  page_height: 71,
-                  page_width: 100,
+                  page_width: '15in',
+                  page_height: '8in',
                   margin:  {
                     top: 0,
                     bottom: 0,

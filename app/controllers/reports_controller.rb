@@ -27,8 +27,8 @@ class ReportsController < ApplicationController
                   locals: {
                     histories: histories
                   },
-                  page_width: '7in',
-                  page_height: '4in',
+                  page_width: '15in',
+                  page_height: '8in',
                   margin:  {
                     top: 0,
                     bottom: 0,
@@ -69,8 +69,8 @@ class ReportsController < ApplicationController
                       total: num,
                       trade: params[:trade]
                     },
-                    page_width: '7in',
-                    page_height: '4in',
+                    page_width: '15in',
+                    page_height: '8in',
                     margin:  {
                       top: 0,
                       bottom: 0,
@@ -101,8 +101,8 @@ class ReportsController < ApplicationController
                     locals: {
                       aircraft: Aircraft.find(params[:aircraft])
                     },
-                    page_width: '7in',
-                    page_height: '4in',                    
+                    page_width: '15in',
+                    page_height: '8in',
                     margin:  {
                       top: 0,
                       bottom: 0,
@@ -126,8 +126,8 @@ class ReportsController < ApplicationController
                     locals: {
                       aircraft: Aircraft.find(params[:aircraft])
                     },
-                    page_width: '7in',
-                    page_height: '4in',
+                    page_width: '15in',
+                    page_height: '8in',
                     margin:  {
                       top: 0,
                       bottom: 0,
@@ -152,8 +152,8 @@ class ReportsController < ApplicationController
                     locals: {
                       aircraft: Aircraft.find(params[:aircraft])
                     },
-                    page_width: '7in',
-                    page_height: '4in',
+                    page_width: '15in',
+                    page_height: '8in',
                     margin:  {
                       top: 10,
                       bottom: 10,
@@ -178,8 +178,8 @@ class ReportsController < ApplicationController
                     locals: {
                       flying_date: flying_date
                     },
-                    page_width: '7in',
-                    page_height: '4in',
+                    page_width: '15in',
+                    page_height: '8in',
                     margin:  {
                       top: 10,
                       bottom: 10,
