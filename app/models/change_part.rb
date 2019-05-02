@@ -69,6 +69,7 @@ class ChangePart
         if new_part.is_lifed? and new_part.installed_date.blank?
           new_part.installed_date = Time.zone.now
         end
+        new_part.category = old_part.category
         new_part.aircraft_installation_date = Time.zone.now
         new_part.aircraft_installation_hours = techlog.aircraft.flight_hours
         new_part.completed_hours_when_installed = new_part.completed_hours
