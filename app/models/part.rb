@@ -227,7 +227,7 @@ class Part
 
       #part item data
       serial_no           = row[Part::SERIAL_NO]
-      completed_hours     = (row[Part::COMPLETED_HOURS]).present? ? row[Part::COMPLETED_HOURS].downcase.gsub("hrs",'').strip.to_i : 0
+      completed_hours     = (row[Part::COMPLETED_HOURS]).present? ? row[Part::COMPLETED_HOURS].to_s.downcase.gsub("hrs",'').strip.to_i : 0
       landings_completed  = (row[Part::LANDING_COMPLETED]).present? ? row[Part::LANDING_COMPLETED].downcase.gsub("hrs",'').strip.to_i : 0   
       
 
