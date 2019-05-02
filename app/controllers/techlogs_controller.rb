@@ -9,7 +9,7 @@ class TechlogsController < ApplicationController
     if can? :view_all_techlogs, Techlog
       @techlogs = Techlog.techloged
     elsif can? :view_open_techlogs, Techlog
-      @techlogs = Techlog.techloged.incomplete
+      @techlogs = Techlog.techloged.incomplete.ne(type_cd: 3)
     elsif can? :logistics_techlog, Techlog
       @techlogs = Techlog.incomplete.where(:parts_state.in => ["requested", "provided"])
     else 

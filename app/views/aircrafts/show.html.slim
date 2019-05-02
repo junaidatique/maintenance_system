@@ -57,24 +57,24 @@
       .box-body
         .row
           .col-sm-12
-            - if can? :view_781, Aircraft
-              = link_to airframe_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank' 
-                | &nbsp; 781J
+            /- if can? :view_781, Aircraft
+            = link_to airframe_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank' 
+              | &nbsp; 781J
+            | &nbsp;
+            - Part::trades.each do |trade,value|
+              = link_to inspection_record_pdf_reports_path(aircraft: @aircraft, trade: trade), class: 'btn btn-info btn-flat', target: '_blank' 
+                = trade.titleize
+                | &nbsp; 781D
               | &nbsp;
-              - Part::trades.each do |trade,value|
-                = link_to inspection_record_pdf_reports_path(aircraft: @aircraft, trade: trade), class: 'btn btn-info btn-flat', target: '_blank' 
-                  = trade.titleize
-                  | &nbsp; 781D
-                | &nbsp;
-              = link_to inspection_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank'                 
-                | &nbsp; 781K
-              | &nbsp;
-              = link_to tyre_record_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank'                 
-                | &nbsp; Tyre Landing Record
-              | &nbsp;
-              = link_to history_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank'                 
-                | &nbsp; History
-              | &nbsp;
+            = link_to inspection_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank'                 
+              | &nbsp; 781K
+            | &nbsp;
+            = link_to tyre_record_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank'                 
+              | &nbsp; Tyre Landing Record
+            | &nbsp;
+            = link_to history_pdf_reports_path(aircraft: @aircraft), class: 'btn btn-info btn-flat', target: '_blank'                 
+              | &nbsp; History
+            | &nbsp;
 - @scheduled_inspections = @aircraft.scheduled_inspections.scheduled_insp
 == render "scheduled_inspections/table", options: { heading: "Aircraft Scheduled Inspections"}
 - @scheduled_inspections = @aircraft.scheduled_inspections.pending
