@@ -42,7 +42,7 @@
             .col-sm-6
               = f.input :inspection_calender_value, label: "INSP Calender number"
             .col-sm-6
-              = f.input :inspection_duration, collection: enum_option_pairs(Part, :duration), as: :radio_buttons
+              = f.input :inspection_duration, collection: [['Day', '0'], ['Month', '1'], ['Year', '2']], as: :radio_buttons
           .row
             .col-sm-6
               = f.input :inspection_hours              
@@ -50,8 +50,8 @@
           .row
             .col-sm-6
               = f.input :lifed_calender_value, label: "Life Calender number"
-            .col-sm-6
-              = f.input :lifed_duration, collection: enum_option_pairs(Part, :duration), as: :radio_buttons
+            .col-sm-6              
+              = f.input :lifed_duration, collection: [['Day', '0'], ['Month', '1'], ['Year', '2']], as: :radio_buttons
           .row
             .col-sm-6
               = f.input :lifed_hours

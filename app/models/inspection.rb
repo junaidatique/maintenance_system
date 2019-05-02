@@ -95,8 +95,11 @@ class Inspection
     end    
   end
   
-  def create_part_inspection part_item    
-    return if !part_item.is_inspectable?
+  def create_part_inspection part_item
+    if !part_item.is_inspectable?
+      part_item.scheduled_inspections.where(inspection_id: self.id).not_completed.destroy_all
+      return
+    end
     # Dont repeat if part completed hours are greater then the insepection hours    
     if self.no_of_hours.present? and self.no_of_hours > 0 and !self.is_repeating and part_item.completed_hours.present? and part_item.completed_hours > self.no_of_hours
       return;
@@ -110,6 +113,7 @@ class Inspection
           starting_date = part_item.aircraft_installation_date
         end
       end
+      
       if no_of_hours.present? and no_of_hours > 0
         if part_item.aircraft_installation_hours > 0
           inspection_hours = 0
@@ -152,7 +156,10 @@ class Inspection
   end
 
   def create_part_repalcement part_item
-    return if !part_item.is_lifed?
+    if !part_item.is_lifed?
+      part_item.scheduled_inspections.where(inspection_id: self.id).not_completed.destroy_all
+      return
+    end
     return if calender_value.present? and part_item.part.track_from == :installation_date and part_item.installed_date.blank?
     if part_item.scheduled_inspections.where(inspection_id: self.id).not_completed.count == 0
       sp = ScheduledInspection.new

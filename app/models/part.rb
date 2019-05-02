@@ -39,6 +39,7 @@ class Part
   before_create :set_inspection_values  
   before_update :set_inspection_values  
   after_create :set_inspections
+  after_update :update_inspections
   
   def set_inspection_values
     if (lifed_calender_value.present? and lifed_calender_value > 0) or (lifed_hours.present? and lifed_hours > 0)
@@ -83,6 +84,73 @@ class Part
       )
     end
   end 
+  def update_inspections
+    pt = self
+    if is_lifed? 
+      if Inspection.to_replaces.where(part_number: self.number).count > 0
+        life_insp = Inspection.to_replaces.where(part_number: self.number)
+        life_insp.each do |insp|
+          insp.no_of_hours = self.lifed_hours
+          insp.calender_value = self.lifed_calender_value
+          insp.duration_cd = self.lifed_duration
+          insp.save
+          pt.part_items.each do |part_item|
+            insp.create_part_repalcement part_item        
+          end
+        end        
+      else
+        insp = Inspection.create!(
+            {
+              kind: :to_replace, 
+              type: :part, 
+              name: "#{self.noun.titleize} Replacement", 
+              no_of_hours: self.lifed_hours, 
+              calender_value: self.lifed_calender_value, 
+              duration_cd: self.lifed_duration, 
+              part_number: self.number
+            }
+          )
+          pt.part_items.each do |part_item|
+            insp.create_part_repalcement part_item        
+          end
+      end
+    else
+      Inspection.to_replaces.where(part_number: self.number).destroy_all
+    end
+    
+    if is_inspectable?       
+      if Inspection.to_inspects.where(part_number: pt.number).where(is_repeating: true).count > 0
+        to_insp = Inspection.to_inspects.where(part_number: pt.number).where(is_repeating: true)
+        to_insp.each do |insp|
+          insp.no_of_hours = pt.inspection_hours
+          insp.calender_value = pt.inspection_calender_value
+          insp.duration_cd = pt.inspection_duration
+          insp.save!
+          pt.part_items.each do |part_item|
+            insp.create_part_inspection part_item        
+          end
+        end
+      else
+        insp = Inspection.create(
+          {
+            kind: :to_inspect, 
+            type: :part, 
+            name: "#{self.noun.titleize} Inspection", 
+            no_of_hours: self.inspection_hours, 
+            calender_value: self.inspection_calender_value,
+            duration_cd: self.inspection_duration, 
+            part_number: self.number
+          }
+        )
+        pt.part_items.each do |part_item|
+          insp.create_part_inspection part_item
+        end
+      end
+      
+    else
+      Inspection.to_inspects.where(part_number: self.number).destroy_all      
+    end
+  end
 
   AIRCRAFT_PART_NUMBER        = 1
   AIRCRAFT_PART_NOUN          = 2 
