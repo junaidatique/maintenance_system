@@ -29,8 +29,8 @@
                 | Noun
               th
                 | Location
-              / th
-              /   | Ins Date
+              th
+                | Action
               / th
               /   | Manu Date
               / th
@@ -76,7 +76,12 @@
                   = part_item.part.noun
                 td.table-row-center
                   = (part_item.aircraft.present?) ? part_item.aircraft.tail_number : part_item.location
-                / td.table-row-center
+                td.table-row-center
+                  = link_to part_item_path(part_item), class: 'btn btn-success btn-flat ' do
+                    i.fa.fa-eye
+                  - if can? :update, PartItem
+                    = link_to edit_part_item_path(part_item), class: 'btn btn-info btn-flat ' do
+                      i.fa.fa-pencil
                 /   = display_date(part_item.installed_date)
                 / td.table-row-center
                 /   = display_date(part_item.manufacturing_date)

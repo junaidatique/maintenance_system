@@ -32,11 +32,12 @@
                 = f.input :aircraft_installation_date, input_html: { class: 'date_class' }
               .col-sm-6
                 = f.input :last_inspection_date, input_html: { class: 'date_class' }
-          /.row
-            .col-sm-6
-              = f.input :contract_quantity
-            .col-sm-6
-              = f.input :recieved_quantity
+          - if @part_item.is_lifed? or @part_item.is_inspectable?
+            .row
+              .col-sm-6
+                = f.input :aircraft_installation_hours, label: "Aircraft Hours when Installed"
+              .col-sm-6
+                = f.input :completed_hours_when_installed, label: "Hours already completed when installed"
           /.row
             .col-sm-6
               = f.input :quantity, label: "Store Balance"
