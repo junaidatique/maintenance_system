@@ -121,7 +121,7 @@ class ScheduledInspection
       end
     end
   end
-  def calculate_status
+  def calculate_status    
     if self.hours.present? and self.hours > 0 and self.completed_hours.present?
       if (self.hours - self.completed_hours).to_f <= 0
         self.status = 4

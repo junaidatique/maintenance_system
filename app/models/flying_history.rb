@@ -58,7 +58,7 @@ class FlyingHistory
       # puts 'flying_log.nose_tail'
       # puts flying_log.nose_tail.inspect
       
-      history = LandingHistory.where(flying_log_id: self.id).first      
+      history = LandingHistory.where(flying_log_id: flying_log.id).first      
       if history.present?
         left_tyre_total_landings    = history.left_tyre_total_landings - landings
         right_tyre_total_landings   = history.right_tyre_total_landings - landings
@@ -69,6 +69,7 @@ class FlyingHistory
         right_tyre_total_landings   = flying_log.right_tyre.landings_completed
         nose_tail_total_landings    = flying_log.nose_tail.landings_completed
       end
+      
       history.aircraft = aircraft
       history.flying_log = flying_log
       history.left_tyre_id = flying_log.left_tyre.id
@@ -78,9 +79,9 @@ class FlyingHistory
       history.left_tyre_landings   = landings
       history.right_tyre_landings  = landings
       history.nose_tail_landings   = landings
-      history.left_tyre_total_landings   = left_tyre_total_landings + landings
-      history.right_tyre_total_landings  = right_tyre_total_landings + landings
-      history.nose_tail_total_landings   = nose_tail_total_landings + landings
+      history.left_tyre_total_landings   = left_tyre_total_landings
+      history.right_tyre_total_landings  = right_tyre_total_landings
+      history.nose_tail_total_landings   = nose_tail_total_landings       
       history.save!
 
 

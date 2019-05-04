@@ -122,8 +122,9 @@ class PartItem
     
   end
 
-  def create_history_with_flying_log flying_log
-    if self.is_lifed?
+  def create_history_with_flying_log flying_log    
+    if self.is_lifed?  or self.category == :right_tyre or self.category == :left_tyre or self.category == :nose_tail
+
       part_history = PartHistory.where(flying_log_id: flying_log.id).where(part_item_id: self.id).first
       if part_history.blank?      
         part_history = PartHistory.new         
@@ -135,7 +136,7 @@ class PartItem
         self.completed_hours = (t_completed_hours.to_f + flying_log.sortie.flight_time.to_f).round(2)
         self.landings_completed = t_landings_completed.to_i + flying_log.sortie.total_landings.to_i
       end
-      self.remaining_hours     = (part.lifed_hours.to_f - completed_hours.to_f).round(2)
+      self.remaining_hours     = (part.lifed_hours.to_f - completed_hours.to_f).round(2)      
       save
       
       part_history.quantity     = self.part.quantity
@@ -144,8 +145,9 @@ class PartItem
       part_history.flying_log   = flying_log
       part_history.aircraft_id  = flying_log.aircraft.id
       part_history.created_at   = flying_log.created_at
-      part_history.total_hours    = part_histories.sum('hours')
-      part_history.total_landings = part_histories.sum('landings')
+      part_history.total_hours    = part_histories.lt(flying_log_id: flying_log.id).sum('hours') + flying_log.sortie.flight_time
+      part_history.total_landings = part_histories.lt(flying_log_id: flying_log.id).sum('landings') + flying_log.sortie.total_landings
+
       part_history.part_item         = self      
       part_history.save        
       # self.update_values      

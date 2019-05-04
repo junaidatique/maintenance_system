@@ -9,7 +9,7 @@
     = aircraft.tail_number  
   .typres_data   
     table border="0"
-      - aircraft_landing_histories = aircraft.flying_logs.lte(created_at: Time.zone.now).gte(created_at: (Time.zone.now - 10.days))
+      - aircraft_landing_histories = aircraft.flying_logs #.lte(created_at: Time.zone.now).gte(created_at: (Time.zone.now - 10.days))
       - if aircraft_landing_histories.count == 0
         tr
             td.date
@@ -33,7 +33,7 @@
             td
               = aircraft.part_items.nose_tails.first.landings_completed
       - else
-        - aircraft.flying_logs.lte(created_at: Time.zone.now).gte(created_at: (Time.zone.now - 10.days)).order(created_at: :asc).each do |flying_log|
+        - aircraft.flying_logs.order(created_at: :asc).ne(right_tyre_id: nil).each do |flying_log|
           - if flying_log.landing_history.present?          
             - landing_history = flying_log.landing_history
             tr
