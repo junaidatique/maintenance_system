@@ -1,5 +1,5 @@
 = content_for :box_heading do
-  | Upload Autherization Codes
+  | Upload Authorisation Codes
 = simple_form_for(@autherization_code, :url => import_autherization_codes_path, :method => :post, html: { multipart: true}) do |f|
   = f.error_notification
   .row

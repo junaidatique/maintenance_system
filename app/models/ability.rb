@@ -8,6 +8,7 @@ class Ability
     alias_action :read, :update, to: :ru
     alias_action :index, :read, to: :ir
     can :read, TechnicalOrder
+    can :read, Tool
     if user.admin?
       can :manage, :all
       can :view_all_techlogs, Techlog

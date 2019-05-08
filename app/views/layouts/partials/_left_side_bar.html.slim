@@ -88,7 +88,7 @@ ul.sidebar-menu
     li class="#{params[:controller] == "autherization_codes" ? 'active' : ''}"
       = link_to autherization_codes_path do 
         .fa.fa-chain
-        span.side-bar-heading-text Autherization Codes
+        span.side-bar-heading-text Authorisation Codes
   - if can? :read, TechnicalOrder
     li class="#{params[:controller] == "technical_orders" ? 'active' : ''}"
       a href="#" 

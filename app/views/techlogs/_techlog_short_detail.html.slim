@@ -52,7 +52,7 @@
               - if techlog.closed_by.present? and @techlog.condition == :completed
                 = techlog.closed_by.name  
             th width="25%"
-              | Autherization Code
+              | Authorisation Code
             td = techlog.autherization_code.autherization_code_format if techlog.autherization_code.present?
           tr
             th colspan="4"

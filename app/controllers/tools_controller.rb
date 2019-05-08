@@ -77,7 +77,7 @@ class ToolsController < ApplicationController
           "name" => { "$first": '$name' }, 
           "count" => {"$sum":1}
       }},
-      {"$limit" => 5}
+      {"$limit" => 20}
     ])    
     render :json => record.map { |tool| 
       {
