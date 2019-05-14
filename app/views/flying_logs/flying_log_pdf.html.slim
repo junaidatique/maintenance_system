@@ -134,7 +134,7 @@
       = flying_log.aircraft_total_time.corrected_total_landings
     .corrected-total.prop-hours
       = flying_log.aircraft_total_time.corrected_total_prop_hours
-- if flying_log.capt_after_flight.present?
+- if flying_log.capt_after_flight.present? and flying_log.capt_after_flight.user.present?
   .pilot-after-flight
     .time-local
       = flying_log.capt_after_flight.flight_time
@@ -163,7 +163,7 @@
         br
       - if flying_log.ac_configuration.third_seat
         = flying_log.capt_acceptance_certificate.third_seat_name
-- if flying_log.after_flight_servicing.present?
+- if flying_log.after_flight_servicing.present? and flying_log.after_flight_servicing.user.present?
   .after-flight-servicing
     .time-local
       = flying_log.after_flight_servicing.flight_time

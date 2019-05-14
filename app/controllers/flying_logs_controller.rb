@@ -77,6 +77,8 @@ class FlyingLogsController < ApplicationController
     @flying_log.build_after_flight_servicing if @flying_log.after_flight_servicing.blank?
     @flying_log.build_post_mission_report if @flying_log.post_mission_report.blank?
     
+    # merged_certificates = generate_pdf @flying_log
+    # merged_certificates.save "#{@flying_log.serial_no}.pdf"
   end
 
   # POST /flying_logs
@@ -109,6 +111,7 @@ class FlyingLogsController < ApplicationController
   # PATCH/PUT /flying_logs/1
   # PATCH/PUT /flying_logs/1.json
   def update    
+    redirect_page = @flying_log
     respond_to do |format|      
       # if current_user.pilot? and @flying_log.flight_booked? and flying_log_params[:sortie_attributes][:pilot_comment] == 'Satisfactory'
       #   update_params = flying_log_params.except(:techlogs_attributes)
@@ -116,7 +119,7 @@ class FlyingLogsController < ApplicationController
       #   update_params = flying_log_params
       # end
 
-      if @flying_log.update(flying_log_params)
+      if @flying_log.update!(flying_log_params)
         if can? :release_flight, FlyingLog and @flying_log.servicing_completed? and @flying_log.flightline_release.created_at.present?
           @flying_log.release_flight
         elsif current_user.pilot? and @flying_log.flight_released?
@@ -141,6 +144,7 @@ class FlyingLogsController < ApplicationController
             end
             @flying_log.pilot_back
           end
+          redirect_page = edit_flying_log_path(@flying_log)
         elsif current_user.pilot? and @flying_log.pilot_commented? #and !@flying_log.sortie.mission_cancelled?
           @flying_log.pilot_confirmation
           if @flying_log.sortie.pilot_comment_cd == "SAT"
@@ -164,7 +168,7 @@ class FlyingLogsController < ApplicationController
 
         
         @flying_log.save
-        format.html { redirect_to @flying_log, notice: 'Flying log was successfully updated.' }
+        format.html { redirect_to redirect_page, notice: 'Flying log was successfully updated.' }
         format.json { render :show, status: :ok, location: @flying_log }
       else
         format.html { render :edit }
@@ -183,24 +187,21 @@ class FlyingLogsController < ApplicationController
     end
   end
 
-  # GET /flying_logs/1/pdf
-  # GET /flying_logs/1/pdf.json
-  def pdf      
+  def generate_pdf flying_log
     i = 0
-    num = @flying_log.techlogs.where(type_cd: 1.to_s).count
+    num = flying_log.techlogs.where(type_cd: 1.to_s).count
     merged_certificates = CombinePDF.new
     
     begin
-      techlogs  = @flying_log.techlogs.where(type_cd: 1.to_s).limit(3).offset(i)
-      puts techlogs
+      techlogs  = flying_log.techlogs.where(type_cd: 1.to_s).limit(3).offset(i)
       pdf_data = render_to_string(
-                  pdf: "flying_log_#{@flying_log.id}",
+                  pdf: "flying_log_#{flying_log.id}",
                   orientation: 'Portrait',
                   template: 'flying_logs/flying_log_pdf.html.slim',
                   layout: 'layouts/pdf/pdf.html.slim',
                   show_as_html: false,
                   locals: {
-                    flying_log: @flying_log,
+                    flying_log: flying_log,
                     techlogs: techlogs
                   },
                   page_width: '15in',
@@ -216,8 +217,14 @@ class FlyingLogsController < ApplicationController
       merged_certificates  << CombinePDF.parse(pdf_data)
       i +=3  
     end while i < num
-    send_data merged_certificates.to_pdf, :disposition => 'inline', :type => "application/pdf"
+    return merged_certificates
+  end
 
+  # GET /flying_logs/1/pdf
+  # GET /flying_logs/1/pdf.json
+  def pdf      
+    merged_certificates = generate_pdf @flying_log
+    send_data merged_certificates.to_pdf, :disposition => 'inline', :type => "application/pdf"
   end
 
   def cancel
