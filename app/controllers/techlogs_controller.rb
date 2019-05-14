@@ -59,7 +59,7 @@ class TechlogsController < ApplicationController
 
   # GET /techlogs/1/edit
   def edit
-    if !@techlog.open?
+    if !@techlog.open? and cannot? :update_completed, Techlog
       redirect_to techlog_path(@techlog), :flash => { :error => "You can't edit completed techlog." }
     end
     if @techlog.interm_logs.incomplete.count > 0
@@ -107,6 +107,7 @@ class TechlogsController < ApplicationController
 
     respond_to do |format|
       if @techlog.update(techlog_params)
+        @techlog.create_serial_no
         # Parts required 
         if @techlog.parts_started? and @techlog.change_parts.count > 0
           @techlog.parts_requested_parts

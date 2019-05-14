@@ -66,7 +66,7 @@
                   br
                   = @techlog.condition.to_s.titleize
           
-  - if current_user.autherization_codes.include? @techlog.autherization_code or (@techlog.user == current_user and @techlog.type_cd != 0) and (@techlog.autherization_code.present? or @techlog.type_cd == 3)
+  - if current_user.autherization_codes.include? @techlog.autherization_code or (@techlog.user == current_user and @techlog.type_cd != 0) and (@techlog.autherization_code.present? or @techlog.type_cd == 3) or can? :update_completed, Techlog
     .row
       .col-md-12.action_div
         .box.box-info

@@ -45,6 +45,7 @@ class Ability
       can :start_inspection, ScheduledInspection
       can :approve_extension, Techlog
       can :view_open_techlogs, Techlog
+      can :update_completed, Techlog
     elsif user.master_control?      
       can :read, Aircraft
       can :get_aircrafts, Aircraft
