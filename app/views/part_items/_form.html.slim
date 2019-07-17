@@ -38,11 +38,11 @@
                 = f.input :aircraft_installation_hours, label: "Aircraft Hours when Installed"
               .col-sm-6
                 = f.input :completed_hours_when_installed, label: "Hours already completed when installed"
-          /.row
+          .row
             .col-sm-6
-              = f.input :quantity, label: "Store Balance"
+              = f.input :is_servicable, as: :radio_buttons
             .col-sm-6
-              = f.input :dfim_balance, as: :radio_buttons
+              / = f.input :dfim_balance, as: :radio_buttons
           /.row
             .col-sm-6
               = f.input :inspection_hours, label: "INSP (HRS)"

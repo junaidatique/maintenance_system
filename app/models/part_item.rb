@@ -124,7 +124,6 @@ class PartItem
 
   def create_history_with_flying_log flying_log    
     if self.is_lifed?  or self.category == :right_tyre or self.category == :left_tyre or self.category == :nose_tail
-
       part_history = PartHistory.where(flying_log_id: flying_log.id).where(part_item_id: self.id).first
       if part_history.blank?      
         part_history = PartHistory.new         
