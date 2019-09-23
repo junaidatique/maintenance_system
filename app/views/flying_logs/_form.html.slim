@@ -22,7 +22,7 @@
                 .col-sm-6
                   = ac_f.input :flight_time, label: 'Time (Local)', readonly: true, input_html: { value: cur_time() }
                 
-  - if can? :view_logs, FlyingLog
+  /- if can? :view_logs, FlyingLog
     .row
       .col-md-12
         .box.box-info
@@ -283,22 +283,22 @@
             = f.simple_fields_for :post_mission_report do |ac_f|
               = ac_f.input :user_id, as: :hidden, input_html: { value: current_user.id }             
               = ac_f.input :aircraft_id, as: :hidden, input_html: { value: @flying_log.aircraft.id }             
-              .row
+              /.row
                 .col-sm-6
                   = ac_f.input :oat, label: 'OAT (C°)'
                 .col-sm-6
                   = ac_f.input :idle_rpm, label: 'IDLE RPM'
-              .row
+              /.row
                 .col-sm-6
                   = ac_f.input :max_rpm, label: 'MAX RPM'
                 .col-sm-6
                   = ac_f.input :cht, label: 'CHT (F°)'
-              .row
+              /.row
                 .col-sm-6
                   = ac_f.input :oil_temp, label: 'Oil Temp (F°)'
                 .col-sm-6
                   = ac_f.input :oil_pressure, label: 'Oil Pressure (PSI)'
-              .row
+              /.row
                 .col-sm-6
                   = ac_f.input :map, label: 'MAP (MMHg)'
                 .col-sm-6
@@ -308,7 +308,7 @@
                   = ac_f.input :mag_drop_left, label: 'MAG DROP LT'
                 .col-sm-6
                   = ac_f.input :mag_drop_right, label: 'MAG DROP RT'
-              .row
+              /.row
                 .col-sm-12
                   = ac_f.input :remarks, as: :text
   - if can? :bookin_flight, FlyingLog and @flying_log.pilot_commented?

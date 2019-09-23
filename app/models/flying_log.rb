@@ -61,6 +61,7 @@ class FlyingLog
   validate :check_parts
   validate :check_scheduled_inspections  
   validate :check_flight_total_time  
+  validate :pilot_selections  
   
   
   def check_flying_logs
@@ -77,8 +78,6 @@ class FlyingLog
     # if started? and (flightline_servicing.inspection_performed_cd == 2) and aircraft.flying_logs.ne(_id: self._id).map{|fl| (fl.flightline_servicing.inspection_performed_cd == self.flightline_servicing.inspection_performed_cd) ? 1 : 0}.sum > 0
     #   errors.add(:aircraft_id, " Post flight is already created.")
     # end
-
-
   end
   def check_techlogs    
     if flight_released?
@@ -131,7 +130,23 @@ class FlyingLog
       end
     end 
   end
-  
+  def pilot_selections
+    puts '-------==========--------------'
+    puts sortie.inspect
+    puts '---------------------'
+    if pilot_commented? and sortie.pilot_comment_cd.blank? and !sortie.mission_cancelled?
+      errors.add(:pilot_comment, "Please select SAT/Un SAT")
+    end
+    if pilot_commented? and sortie.pilot_comment_cd == 'SAT' and sortie.takeoff_time.blank? and !sortie.mission_cancelled?
+      errors.add(:pilot_comment, "Please select take off time.")
+    end
+    if pilot_commented? and sortie.pilot_comment_cd == 'SAT' and sortie.landing_time.blank? and !sortie.mission_cancelled?
+      errors.add(:pilot_comment, "Please select landing time.")
+    end
+    if pilot_commented? and sortie.pilot_comment_cd == 'SAT' and sortie.full_stop.blank? and !sortie.mission_cancelled?
+      errors.add(:pilot_comment, "Please select full stop.")
+    end
+  end
 
   scope :completed, -> { where(state: :log_completed) }
   scope :not_completed, -> { ne(state: :log_completed) }  

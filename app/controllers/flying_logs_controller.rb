@@ -112,67 +112,63 @@ class FlyingLogsController < ApplicationController
   # PATCH/PUT /flying_logs/1.json
   def update    
     redirect_page = @flying_log
-    respond_to do |format|      
-      # if current_user.pilot? and @flying_log.flight_booked? and flying_log_params[:sortie_attributes][:pilot_comment] == 'Satisfactory'
-      #   update_params = flying_log_params.except(:techlogs_attributes)
-      # else
-      #   update_params = flying_log_params
-      # end
-
-      if @flying_log.update!(flying_log_params)
-        if can? :release_flight, FlyingLog and @flying_log.servicing_completed? and @flying_log.flightline_release.created_at.present?
-          @flying_log.release_flight
-        elsif current_user.pilot? and @flying_log.flight_released?
-          if @flying_log.sortie.present?
-            @flying_log.sortie.mission_cancelled    = false 
-            @flying_log.sortie.remarks              = '' 
-            @flying_log.post_mission_report.remarks = '' 
-            @flying_log.save
-          end
-          
-          @flying_log.book_flight
-          ActionCable.server.broadcast("log_channel", 
-          message: "#{@flying_log.aircraft.tail_number} is booked out.")
-        elsif current_user.pilot? and @flying_log.flight_booked? 
-          if @flying_log.sortie.mission_cancelled?
-            @flying_log.sortie.remarks = @flying_log.post_mission_report.remarks
-            @flying_log.back_to_release
-          else            
+    respond_to do |format|            
+      begin
+        if @flying_log.update!(flying_log_params)
+          if can? :release_flight, FlyingLog and @flying_log.servicing_completed? and @flying_log.flightline_release.created_at.present?
+            @flying_log.release_flight
+          elsif current_user.pilot? and @flying_log.flight_released?
+            if @flying_log.sortie.present?
+              @flying_log.sortie.mission_cancelled    = false 
+              @flying_log.sortie.remarks              = '' 
+              @flying_log.post_mission_report.remarks = '' 
+              @flying_log.save
+            end
+            
+            @flying_log.book_flight
+            ActionCable.server.broadcast("log_channel", 
+            message: "#{@flying_log.aircraft.tail_number} is booked out.")
+          elsif current_user.pilot? and @flying_log.flight_booked? 
+            if @flying_log.sortie.mission_cancelled?
+              @flying_log.sortie.remarks = @flying_log.post_mission_report.remarks
+              @flying_log.back_to_release
+            else            
+              if @flying_log.sortie.pilot_comment_cd == "SAT"
+                @flying_log.sortie.remarks = @flying_log.sortie.pilot_comment.to_s
+                @flying_log.sortie.sortie_code_cd = 1
+              end
+              @flying_log.pilot_back!
+            end
+            redirect_page = edit_flying_log_path(@flying_log)
+          elsif current_user.pilot? and @flying_log.pilot_commented? #and !@flying_log.sortie.mission_cancelled?
+            @flying_log.pilot_confirmation
             if @flying_log.sortie.pilot_comment_cd == "SAT"
               @flying_log.sortie.remarks = @flying_log.sortie.pilot_comment.to_s
               @flying_log.sortie.sortie_code_cd = 1
-            end
-            @flying_log.pilot_back
-          end
-          redirect_page = edit_flying_log_path(@flying_log)
-        elsif current_user.pilot? and @flying_log.pilot_commented? #and !@flying_log.sortie.mission_cancelled?
-          @flying_log.pilot_confirmation
-          if @flying_log.sortie.pilot_comment_cd == "SAT"
-            @flying_log.sortie.remarks = @flying_log.sortie.pilot_comment.to_s
-            @flying_log.sortie.sortie_code_cd = 1
+              @flying_log.techlog_check
+              @flying_log.techlogs.pilot_created.each do  |techlog|
+                techlog.destroy
+              end
+              @flying_log.complete_log
+            end      
+          elsif can? :update_sortie, FlyingLog and @flying_log.pilot_confirmed?
             @flying_log.techlog_check
-            @flying_log.techlogs.pilot_created.each do  |techlog|
-              techlog.destroy
-            end
-            @flying_log.complete_log
-          end      
-        elsif can? :update_sortie, FlyingLog and @flying_log.pilot_confirmed?
-          @flying_log.techlog_check
-          @flying_log.complete_log
-          # if @flying_log.flightline_servicing.inspection_performed_cd != 2 and @flying_log.techlogs.incomplete.count == 0
-            
-          # end        
-        elsif can? :update_flying_hours, FlyingLog and @flying_log.log_completed?
-          @flying_log.update_aircraft_times
-        end
+            @flying_log.complete_log          
+          elsif can? :update_flying_hours, FlyingLog and @flying_log.log_completed?
+            @flying_log.update_aircraft_times
+          end
 
-        
-        @flying_log.save
-        format.html { redirect_to redirect_page, notice: 'Flying log was successfully updated.' }
-        format.json { render :show, status: :ok, location: @flying_log }
-      else
+          
+          @flying_log.save
+          format.html { redirect_to redirect_page, notice: 'Flying log was successfully updated.' }
+          format.json { render :show, status: :ok, location: @flying_log }
+        else
+          format.html { render :edit }
+          format.json { render json: @flying_log.errors, status: :unprocessable_entity }        
+        end
+      rescue StandardError => e 
         format.html { render :edit }
-        format.json { render json: @flying_log.errors, status: :unprocessable_entity }        
+        format.json { render json: e.message, status: :unprocessable_entity }        
       end
     end
   end
