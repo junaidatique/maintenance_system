@@ -31,7 +31,7 @@
                   th width="25%"
                     | Flightline Released
                   td
-                    - unless @flying_log.flightline_release.blank?
+                    - if @flying_log.flightline_release.present? and @flying_log.flightline_release.created_at.present?
                       = display_date_time @flying_log.flightline_release.created_at                
                 tr
                   th width="25%"
@@ -237,10 +237,14 @@
                   tr
                     th width="25%"
                       | Release Time
-                    td = @flying_log.flightline_release.flight_time
+                    td
+                      - if @flying_log.flightline_release.present? 
+                        = @flying_log.flightline_release.flight_time
                     th width="25%"
                       |  Released by
-                    td = @flying_log.flightline_release.user.name                  
+                    td
+                      - if @flying_log.flightline_release.present?
+                        = @flying_log.flightline_release.user.name                  
 - if !@flying_log.capt_acceptance_certificate.blank? and @flying_log.capt_acceptance_certificate.created_at.present?
   .row
     .col-md-12

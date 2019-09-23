@@ -6,7 +6,7 @@ class AircraftsController < ApplicationController
   # GET /aircrafts
   # GET /aircrafts.json
   def index
-    @aircrafts = Aircraft.all
+    @aircrafts = Aircraft.all.order(tail_number: :asc)
   end
 
   # GET /aircrafts/1

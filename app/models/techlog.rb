@@ -240,7 +240,10 @@ class Techlog
       if flying_log.techlogs.techloged.flight_created.incomplete.count == 0                
         flying_log.flightline_servicing.flight_end_time = Time.zone.now
         flying_log.flightline_servicing.save
-        flying_log.complete_servicing  
+        flying_log.complete_servicing
+        if flying_log.flightline_servicing.inspection_performed_cd == 1
+          flying_log.release_flight
+        end  
         if flying_log.flightline_servicing.inspection_performed_cd == 2
           flying_log.complete_post_flight
         end    
