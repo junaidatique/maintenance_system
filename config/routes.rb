@@ -99,6 +99,7 @@ Rails.application.routes.draw do
       get 'cancel'
       get 'update_timing'
       get 'release'
+      get 'get_history'
     end
   end
   root 'flying_logs#index'

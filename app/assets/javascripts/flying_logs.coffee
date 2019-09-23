@@ -10,6 +10,16 @@ $(document).on 'ready', ->
     ajax:
       url: $("#flying-log-tabled").data('source'),      
 
+  $('#history-tabled').dataTable
+    scrollY: '47vh'
+    scrollCollapse: true
+    processing: true
+    serverSide: true
+    pageLength: 10
+    bSort: false
+    "pagingType": "simple_numbers"
+    ajax:
+      url: $("#history-tabled").data('source'), 
 
   if $(".nested-fields").length > 0
     i = 0

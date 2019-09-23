@@ -1,6 +1,6 @@
 require 'combine_pdf'
 class FlyingLogsController < ApplicationController  
-  before_action :set_flying_log, only: [:show, :edit, :update, :destroy, :pdf, :cancel, :release, :update_timing]
+  before_action :set_flying_log, only: [:show, :edit, :update, :destroy, :pdf, :cancel, :release, :update_timing, :get_history]
 
   # GET /flying_logs
   # GET /flying_logs.json
@@ -240,6 +240,22 @@ class FlyingLogsController < ApplicationController
   def update_timing
     @flying_log.update_timing
     redirect_to edit_flying_log_path @flying_log
+  end
+
+  def get_history
+    techlogs = []
+    @flying_log.aircraft.flying_logs.completed.order(number: :desc).each do |flying_log|
+      if flying_log.flightline_servicing.inspection_performed_cd != 2
+        if flying_log.techlogs.pilot_created.count > 0
+          flying_log.techlogs.pilot_created.each do |techlog|
+            techlogs << techlog
+          end
+        end
+      end
+    end
+    respond_to do |format|      
+      format.js { render json: HistoryDatatable.new(view_context, current_user, techlogs)}
+    end
   end
 
   private

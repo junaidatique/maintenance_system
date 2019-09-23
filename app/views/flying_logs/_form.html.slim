@@ -22,7 +22,7 @@
                 .col-sm-6
                   = ac_f.input :flight_time, label: 'Time (Local)', readonly: true, input_html: { value: cur_time() }
                 
-  /- if can? :view_logs, FlyingLog
+  - if can? :view_logs, FlyingLog
     .row
       .col-md-12
         .box.box-info
@@ -35,7 +35,7 @@
               .col-md-12
                 .box.box-info
                   .box-body
-                    table.table.table-bordered.table-striped.data-tabled
+                    table.table.table-bordered.table-striped.history-tabled id="history-tabled"  data-source="#{get_history_flying_log_path(@flying_log, format: :js)}"
                       thead
                         tr
                           th width='10%'
@@ -51,7 +51,7 @@
                           th width='13%'
                             | Detail
                       tbody                        
-                        - @flying_log.aircraft.flying_logs.completed.order(number: :desc).each do |flying_log|
+                        /- @flying_log.aircraft.flying_logs.completed.order(number: :desc).each do |flying_log|
                           - if flying_log.flightline_servicing.inspection_performed_cd != 2
                             - if flying_log.techlogs.pilot_created.count > 0
                               - flying_log.techlogs.pilot_created.each do |techlog|

@@ -1,7 +1,8 @@
-class TechlogDatatable < Datatable
+class HistoryDatatable < Datatable
 
   def_delegator :@view, :techlog_path
   def_delegator :@view, :edit_techlog_path
+  def_delegator :@view, :pdf_techlog_path
   def_delegator :@view, :params
 
   def initialize(view, current_user, techlogs)
@@ -18,25 +19,29 @@ class TechlogDatatable < Datatable
   def data
     records.map do |techlog|
       [        
-        (techlog.type_cd == 1) ? link_to(techlog.serial_no, techlog_path(techlog), class: 'error') : link_to(techlog.serial_no, techlog_path(techlog)), 
-        techlog.type,
-        (techlog.aircraft.present?) ? techlog.aircraft.tail_number : '',
-        techlog.description,
+        techlog.user.name,
+        display_date(techlog.log_date),
+        techlog.description,                
         (techlog.autherization_code.present?) ? techlog.autherization_code.autherization_code_format : '',
-        techlog.condition.to_s.titleize,
-        link_to('<i class="fa fa-pencil"></i>'.html_safe, edit_techlog_path(techlog), class: 'btn btn-info btn-flat ')
+        techlog.action,
+        link_to('<i class="fa fa-file-pdf-o"></i>'.html_safe, pdf_techlog_path(techlog, format: :pdf), class: 'btn btn-info btn-flat', target: :_blank)
       ]
     end
   end
 
   private
 
+  def paginate_records(records)
+    # records.offset(datatable.offset).limit(datatable.per_page)
+    records.slice(datatable.offset, datatable.per_page)
+  end
+
   def get_raw_records
     @techlogs
   end
   
   def filter_records(records)
-    records.where(serial_no: /#{params['search']['value']}.*/i)
+    records
   end
 
 end
