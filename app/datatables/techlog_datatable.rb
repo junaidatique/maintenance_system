@@ -18,7 +18,7 @@ class TechlogDatatable < Datatable
   def data
     records.map do |techlog|
       [        
-        (techlog.type_cd == 1) ? link_to(techlog.serial_no, techlog_path(techlog), class: 'error') : link_to(techlog.serial_no, techlog_path(techlog)), 
+        (techlog.type_cd == 1 and techlog.flying_log.present?) ? link_to(techlog.serial_no, techlog_path(techlog), class: 'error') : link_to(techlog.serial_no, techlog_path(techlog)), 
         techlog.type,
         (techlog.aircraft.present?) ? techlog.aircraft.tail_number : '',
         techlog.description,
