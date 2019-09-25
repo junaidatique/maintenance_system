@@ -7,7 +7,7 @@
           li
             = error_message
   == render 'show_flying_log'  
-  - if (can? :release_flight, FlyingLog and @flying_log.servicing_completed? and @flying_log.flightline_release.created_at.blank?) and @flying_log.flightline_servicing.inspection_performed_cd == 0
+  - if (can? :release_flight, FlyingLog and @flying_log.servicing_completed? and @flying_log.flightline_release.present? and @flying_log.flightline_release.created_at.blank?) and @flying_log.flightline_servicing.inspection_performed_cd == 0
     .row
       .col-md-12
         .box.box-info
