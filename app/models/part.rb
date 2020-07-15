@@ -118,8 +118,8 @@ class Part
       Inspection.to_replaces.where(part_number: self.number).destroy_all
     end
     
-    if is_inspectable? and pt.number.present?
-      if Inspection.to_inspects.where(part_number: pt.number).where(is_repeating: true).count > 0
+    if is_inspectable? 
+      if Inspection.to_inspects.where(part_number: pt.number).where(is_repeating: true).where(type_cd: 1).count > 0
         to_insp = Inspection.to_inspects.where(part_number: pt.number).where(is_repeating: true)
         to_insp.each do |insp|
           insp.no_of_hours = pt.inspection_hours
